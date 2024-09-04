@@ -1,58 +1,12 @@
 import { Link } from "react-router-dom";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import proptype from "prop-types";
+import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
 export const FormContainer = () => {
   return (
     <div className="card my-3">
       <div className="card-body">
-        <div className="pb-3 border-bottom">
-          <div className="d-flex align-items-center gap-2 gap-lg-5 flex-wrap">
-            <div
-              className="d-flex align-items-center"
-              style={{ width: "fit-content" }}
-            >
-              <span
-                className="d-flex justify-content-center align-items-center bs-icon-sm bs-icon-circle me-2 bs-icon text-white"
-                style={{
-                  background: "rgb(99,59,188)",
-                  color: "rgb(99,59,188)",
-                }}
-              >
-                <span>1</span>
-              </span>
-              <span style={{ fontWeight: "bold" }}>Details</span>
-            </div>
-            <i className="icon ion-ios-arrow-forward"></i>
-            <div
-              className="d-flex align-items-center"
-              style={{ width: "fit-content" }}
-            >
-              <span className="d-flex justify-content-center align-items-center bs-icon-sm bs-icon-circle bg-light me-2 bs-icon text-secondary">
-                <span>2</span>
-              </span>
-              <span style={{ fontWeight: "bold" }}>Participants</span>
-            </div>
-            <i className="icon ion-ios-arrow-forward"></i>
-            <div
-              className="d-flex align-items-center"
-              style={{ width: "fit-content" }}
-            >
-              <span className="d-flex justify-content-center align-items-center bs-icon-sm bs-icon-circle bg-light text-secondary me-2 bs-icon">
-                <span>3</span>
-              </span>
-              <span style={{ fontWeight: "bold" }}>Details</span>
-            </div>
-            <i className="icon ion-ios-arrow-forward"></i>
-            <div
-              className="d-flex align-items-center"
-              style={{ width: "fit-content" }}
-            >
-              <span className="d-flex justify-content-center align-items-center bs-icon-sm bs-icon-circle bg-light text-secondary me-2 bs-icon">
-                <span>4</span>
-              </span>
-              <span style={{ fontWeight: "bold" }}>Details</span>
-            </div>
-          </div>
-        </div>
+        <FormHeader/>
         <div className="row my-3">
           <div className="col col-md-7 border-end">
             <div className="row row-cols-1 gy-3">
@@ -219,4 +173,47 @@ export const FormContainer = () => {
       </div>
     </div>
   );
+};
+export const FormHeader=()=>{
+return(<>
+<div className="pb-3 border-bottom">
+          <div className="d-flex align-items-center gap-2 gap-lg-5 flex-wrap">
+            <FormStep step={2} title="Details" state="success" />
+            <FontAwesomeIcon icon={faGreaterThan} />
+            <FormStep step={2} title="Details" state="active" />
+            <FontAwesomeIcon icon={faGreaterThan} />
+            <FormStep step={3} title="Details" />
+            <FontAwesomeIcon icon={faGreaterThan} />
+            <FormStep step={4} title="Details" />
+          </div>
+        </div>
+</>)
+}
+export const FormStep = ({ step, title, state }) => {
+  var style =
+    state == "success"
+      ? "formStep-success"
+      : state == "active"
+      ? "formStep-active"
+      : "bg-light text-secondary";
+  return (
+    <>
+      <div
+        className="d-flex align-items-center"
+        style={{ width: "fit-content" }}
+      >
+        <span
+          className={`d-flex justify-content-center me-2  rounded-circle align-items-center p-2 bs-icon-sm bs-icon-circle bs-icon ${style}`}
+        >
+          <span style={{ lineHeight: "0.7rem" }}>{step}</span>
+        </span>
+        <span className="fw-bold">{title}</span>
+      </div>
+    </>
+  );
+};
+FormStep.propTypes = {
+  step: proptype.number,
+  title: proptype.string.isRequired,
+  state: proptype.bool,
 };
