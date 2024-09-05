@@ -1,14 +1,16 @@
 import proptype from 'prop-types'
 import { Link } from 'react-router-dom'
-export const ActionButton =({title, actionLink, toggleItem, targetItem })=>{
+export const ActionButton =({title, actionLink, toggle , variant})=>{
+  const style = variant && variant.brand == "secondary" ? "brand-secondary" : "brand-bg";
+  const size = variant && variant.size ? variant.size : "btn-lg";
     return(<>    
     <Link
-        className="btn brand-btn btn-lg me-2"
+        className={`btn ${size} me-2 ${style}`}
         role="button"
         to={actionLink? actionLink : "#"}
         style={{background: '#00a76f;border-color: #00a76f'}}
-        data-bs-toggle={toggleItem? toggleItem: ""}
-        data-bs-target={targetItem? `#${targetItem}`: ""}
+        data-bs-toggle={toggle && toggle.Item ? toggle.Item: ""}
+        data-bs-target={toggle && toggle.Target? toggle.Target: ""}
       >{title}
       </Link>
     </>)
@@ -17,6 +19,6 @@ export const ActionButton =({title, actionLink, toggleItem, targetItem })=>{
 ActionButton.propTypes={
 title: proptype.string.isRequired,
 actionLink: proptype.string,
-toggleItem: proptype.string,
-targetItem: proptype.string
+toggle: proptype.object,
+variant: proptype.object
 }

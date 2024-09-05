@@ -215,5 +215,5 @@ export const FormStep = ({ step, title, state }) => {
 FormStep.propTypes = {
   step: proptype.number,
   title: proptype.string.isRequired,
-  state: proptype.bool,
+  state: proptype.string,
 };

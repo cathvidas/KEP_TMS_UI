@@ -1,4 +1,6 @@
 import { Col, Row } from "react-bootstrap";
+import { ActionButton } from "./Button";
+import bannerimg from '../img/banner.png';
 
 const Banner = () => {
   return (
@@ -21,24 +23,8 @@ const Banner = () => {
               Enhance your skills with our training programs. Click &apos;Request
               Training&apos; to start or &apos;View All Requests&apos; to track your progress.
             </p>
-            <a
-              className="btn brand-btn btn-lg me-2"
-              role="button"
-              href="#"
-              style={{background: '#00a76f;border-color: #00a76f'}}
-              data-bs-toggle="modal"
-              data-bs-target="#TRtype"
-            >
-              Request Training
-            </a>
-            <a
-              className="btn btn-lg"
-              role="button"
-              href="#"
-              style={{background: '#f6fbf9;color: #066337'}}
-            >
-              View Request
-            </a>
+            <ActionButton title="Request Training" toggle={{Item: "modal", Target: "#TRtype"}}/>
+            <ActionButton title="View All Request" actionLink="/Newrequest" variant={{brand:'secondary'}}/>
           </div>
         </Col>
         <Col className="col-md-4">
@@ -46,7 +32,7 @@ const Banner = () => {
             <img
               className="rounded img-fluid fit-cover"
               style={{ minHeight: "150px" }}
-              src="assets/img/personal%201.png"
+              src={bannerimg}
             />
           </div>
         </Col>
