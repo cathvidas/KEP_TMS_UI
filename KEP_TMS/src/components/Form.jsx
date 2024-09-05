@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import proptype from "prop-types";
 import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
+import { ActionButton } from "./Button";
 export const FormContainer = () => {
   return (
     <div className="card my-3">
@@ -132,13 +133,9 @@ export const FormContainer = () => {
           </div>
         </div>
         <div className="d-flex flex-shrink-0 justify-content-end">
-          <button
-            className="btn text-white"
-            type="button"
-            style={{ background: "#633bbc" }}
-          >
-            Next&nbsp;<i className="icon ion-ios-arrow-forward"></i>
-          </button>
+          
+    <ActionButton title="Next" actionLink="/Newrequest" variant={{brand:'next-btn', size: 'btn-sm'}}/>
+        
         </div>
         <div className="modal fade" role="dialog" tabIndex="-1" id="modal-1">
           <div className="modal-dialog" role="document">

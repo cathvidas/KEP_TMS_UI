@@ -1,5 +1,4 @@
 import proptype from "prop-types";
-import React from "react";
 import { Link } from "react-router-dom";
 export const SectionTitle = ({ title, Action }) => {
   return (

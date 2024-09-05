@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import proptype from "prop-types";
+import UserIcon from "./UserIcon";
 const NavItem = ({ item, icon }) => {
   const locations = useLocation();
   const getClassNames = (page) =>
@@ -163,14 +164,7 @@ const Sidebar = () => {
             data-bs-toggle="dropdown"
             role="button"
           >
-            <img
-              className="rounded-circle"
-              alt=""
-              width="32"
-              height="32"
-              src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png"
-              style={{ objectFit: "cover" }}
-            />
+            <UserIcon Name="Jhon Doe "/>
           </Link>
           <div
             className="dropdown-menu shadow text-small"

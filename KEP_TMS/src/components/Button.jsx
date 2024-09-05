@@ -1,7 +1,7 @@
 import proptype from 'prop-types'
 import { Link } from 'react-router-dom'
 export const ActionButton =({title, actionLink, toggle , variant})=>{
-  const style = variant && variant.brand == "secondary" ? "brand-secondary" : "brand-bg";
+  const style = variant && variant.brand == "secondary" ? "brand-secondary" : variant.brand == "next-btn" ? "formStep-active" : "brand-bg";
   const size = variant && variant.size ? variant.size : "btn-lg";
     return(<>    
     <Link

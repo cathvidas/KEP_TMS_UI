@@ -10,8 +10,8 @@
     background-color: #dff8ee;
 }
 .formStep-active {
-    background-color: #633bbc;
-    color: white;
+    background-color: #633bbc !important;
+    color: white !important;
 }
 .formStep-success{
     background-color: green;

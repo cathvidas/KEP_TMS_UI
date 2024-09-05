@@ -3,7 +3,6 @@ import { FormContainer } from "../components/Form";
 import TMS_Header from "../components/Header";
 import RenderLayout from "../components/Layout";
 import { SectionBanner, SectionTitle } from "../components/Section";
-import RTable from "../components/Table";
 
 const NewRequest = () => {
   const action = () =>(<>
