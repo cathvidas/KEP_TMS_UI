@@ -6,9 +6,7 @@ import RequestView from "./pages/Request_View";
 import { NotFoundPage } from "./pages/Error";
 import Login from "./pages/Login";
 import NewRequest from "./pages/NewRequest";
-
 function App() {
-  const [count, setCount] = useState(0);
 
   return (
     <>
@@ -22,5 +20,4 @@ function App() {
     </>
   );
 }
-
 export default App;
