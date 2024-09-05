@@ -30,3 +30,7 @@
     bottom: -100px;
     right: -100px;
 }
+
+.brand-hover:hover *{
+    color: rgb(22, 187, 159) !important;
+}
