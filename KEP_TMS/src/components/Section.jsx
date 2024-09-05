@@ -1,17 +1,18 @@
 import proptype from "prop-types";
 import React from "react";
-export const SectionTitle = ({ title, ViewAll }) => {
+import { Link } from "react-router-dom";
+export const SectionTitle = ({ title, Action }) => {
   return (
-    <div className="d-flex justify-content-between">
+    <div className="d-flex py-2 justify-content-between">
       <h6>{title}</h6>
-      {ViewAll && <p>{ViewAll}</p>}
+      {Action && <Link className="text-muted text-decoration-none" to={Action.Link}>{Action.Text}</Link>}
     </div>
   );
 };
 
 SectionTitle.propTypes = {
   title: proptype.string.isRequired,
-  ViewAll: proptype.string,
+  Action: proptype.object,
 }
 
 export const SectionBanner =({title, subtitle, actionComponents})=>{

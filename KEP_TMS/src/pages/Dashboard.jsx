@@ -1,9 +1,7 @@
 import Banner from "../components/Banner";
 import TMS_Header from "../components/Header";
 import RenderLayout from "../components/Layout";
-import RequestModal from "../components/RequestType";
 import { SectionTitle } from "../components/Section";
-import Sidebar from "../components/Sidebar";
 import RTable from "../components/Table";
 
 const Content=()=>{
@@ -11,7 +9,7 @@ const Content=()=>{
     <>
     <TMS_Header title="das" />
     <Banner/>
-    <SectionTitle title={"Recent Trainings"} ViewAll={"View All"}/>
+    <SectionTitle title={"Recent Trainings"} Action={{Link: "#i", Text: "View All"}}/>
     <RTable/>
     </>)
 }
