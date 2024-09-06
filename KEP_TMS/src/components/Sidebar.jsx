@@ -1,6 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import proptype from "prop-types";
 import UserIcon from "./UserIcon";
+import Swal from "sweetalert2";
+
 const NavItem = ({ item, icon }) => {
   const locations = useLocation();
   const getClassNames = (page) =>
@@ -16,11 +18,29 @@ const NavItem = ({ item, icon }) => {
     </li>
   );
 };
-NavItem.propTypes ={
-  item: proptype.string.isRequired,
-  icon: proptype.object
-}
+
 const Sidebar = () => {
+  const navigate = useNavigate();
+
+  const firstname = sessionStorage.getItem("firstname");
+  const lastname = sessionStorage.getItem("lastname");
+
+  const handleSignOut = () => {
+    Swal.fire({
+      title: "Signing Out",
+      text: "Do you want to continue",
+      icon: "question",
+      confirmButtonText: "Yes",
+      confirmButtonColor: "green",
+      cancelButtonText: "No",
+      showCancelButton: true,
+    }).then((res) => {
+      if (res.isConfirmed) {
+        navigate("/KEP_TMS");
+      }
+    });
+  };
+
   return (
     <div
       className="bg-body position-fixed d-flex top-0 bottom-0 z-1 border-right justify-content-center"
@@ -61,7 +81,7 @@ const Sidebar = () => {
         </Link>
         <ul className="nav nav-pills flex-column text-center nav-flush mb-auto">
           <NavItem
-            item={"/Dashboard"}
+            item={"/KEP_TMS/Dashboard"}
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +96,7 @@ const Sidebar = () => {
             }
           />
           <NavItem
-            item={"/Request_View"}
+            item={"/KEP_TMS/Request_View"}
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +115,7 @@ const Sidebar = () => {
             }
           />
           <NavItem
-            item={"/Dashboard"}
+            item={"/KEP_TMS/Dashboard"}
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +131,7 @@ const Sidebar = () => {
             }
           />
           <NavItem
-            item={"/NewRequest"}
+            item={"/KEP_TMS/NewRequest"}
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -164,7 +184,7 @@ const Sidebar = () => {
             data-bs-toggle="dropdown"
             role="button"
           >
-            <UserIcon Name="Jhon Doe "/>
+            <UserIcon Name={lastname + "," + firstname} />
           </Link>
           <div
             className="dropdown-menu shadow text-small"
@@ -180,7 +200,7 @@ const Sidebar = () => {
               Profile
             </Link>
             <div className="dropdown-divider"></div>
-            <Link className="dropdown-item" href="#">
+            <Link className="dropdown-item" onClick={handleSignOut}>
               Sign out
             </Link>
           </div>
@@ -189,4 +209,10 @@ const Sidebar = () => {
     </div>
   );
 };
+
+NavItem.propTypes = {
+  item: proptype.string.isRequired,
+  icon: proptype.object,
+};
+
 export default Sidebar;
