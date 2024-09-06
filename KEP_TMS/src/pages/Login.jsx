@@ -10,26 +10,14 @@ import {
 import { useNavigate } from "react-router-dom";
 import logo from "../img/logo.png";
 import axios from "axios";
-import Swal from "sweetalert2";
 import { useState } from "react";
+import { Toast } from "../components/SweetToast";
 
 const Login = () => {
   const navigate = useNavigate();
 
   const [badge, setBadge] = useState("");
   const [password, setPassword] = useState("");
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-      toast.onmouseenter = Swal.stopTimer;
-      toast.onmouseleave = Swal.resumeTimer;
-    },
-  });
 
   // response variables
   var unauthorized = 401;
