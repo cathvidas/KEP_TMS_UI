@@ -46,11 +46,11 @@ const Banner = () => {
             />
           </div>
         </Col>
-        <Col className="col-md-4">
-          <div className="m-xl-5">
+        <Col className="col-md-4 d-flex align-items-center justify-content-center">
+          <div className="m-xl-5 ">
             <img
               className="rounded img-fluid fit-cover"
-              style={{ minHeight: "150px" }}
+              style={{ minHeight: "150px", maxHeight: '200px' }}
               src={bannerimg}
             />
           </div>
