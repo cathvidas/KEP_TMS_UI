@@ -10,25 +10,81 @@ import {
 import { useNavigate } from "react-router-dom";
 import logo from "../img/logo.png";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { useState } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
 
+  const [badge, setBadge] = useState("");
+  const [password, setPassword] = useState("");
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    },
+  });
+
+  // response variables
+  var unauthorized = 401;
+
   const handleLogin = (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:5030/api/Users/Login", {
-        employeeId: e.target.badge.value,
-        password: e.target.password.value,
-      })
-      .then((response) => {
-        console.log(response.data);
-        localStorage.setItem("token", response.data.token);
-        navigate("/KEP_TMS/Dashboard");
-      })
-      .catch((err) => {
-        console.log(err);
+    if (validate()) {
+      axios
+        .post("http://localhost:5030/api/Users/Login", {
+          employeeId: e.target.badge.value,
+          password: e.target.password.value,
+        })
+        .then((res) => {
+          if (res.data.status === unauthorized) {
+            Toast.fire({
+              icon: "error",
+              title: res.data.message,
+            });
+          }
+          console.log(res);
+
+          if (res.data.isSuccess === true) {
+            const response = res.data;
+            console.log(response.data);
+            sessionStorage.setItem("fullname", response.data.fullname);
+            sessionStorage.setItem("username", response.data.username);
+            sessionStorage.setItem("firstname", response.data.firstname);
+            sessionStorage.setItem("lastname", response.data.lastname);
+            sessionStorage.setItem("token", response.token);
+            navigate("/KEP_TMS/Dashboard");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  const validate = () => {
+    let result = true;
+    if (badge === "" || badge === null) {
+      result = false;
+      Toast.fire({
+        icon: "warning",
+        title: "Please Enter Your Badge",
       });
+    }
+    if (password === "" || password === null) {
+      result = false;
+      Toast.fire({
+        icon: "warning",
+        title: "Please Enter Password",
+      });
+    }
+    return result;
   };
 
   return (
@@ -63,7 +119,9 @@ const Login = () => {
                         className="p-3"
                         type="text"
                         name="badge"
-                        placeholder="Username or User Id"
+                        value={badge}
+                        onChange={(e) => setBadge(e.target.value)}
+                        placeholder="Employee Badge"
                       />
                     </Form.Group>
                     <Form.Group className="mb-3">
@@ -71,6 +129,8 @@ const Login = () => {
                         className="p-3"
                         type="password"
                         name="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
                       />
                     </Form.Group>
