@@ -7,7 +7,7 @@ import RTable from "../components/Table";
 const Content = () => {
   return (
     <>
-      <TMS_Header title="das" />
+      <TMS_Header title="Dashboard" />
       <Banner />
       <SectionTitle
         title={"Recent Trainings"}
