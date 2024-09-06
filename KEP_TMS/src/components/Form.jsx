@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import proptype from "prop-types";
 import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
@@ -7,7 +6,7 @@ export const FormContainer = () => {
   return (
     <div className="card my-3">
       <div className="card-body">
-        <FormHeader/>
+        <FormHeader />
         <div className="row my-3">
           <div className="col col-md-7 border-end">
             <div className="row row-cols-1 gy-3">
@@ -133,9 +132,11 @@ export const FormContainer = () => {
           </div>
         </div>
         <div className="d-flex flex-shrink-0 justify-content-end">
-          
-    <ActionButton title="Next" actionLink="/Newrequest" variant={{brand:'next-btn', size: 'btn-sm'}}/>
-        
+          <ActionButton
+            title="Next"
+            actionLink="/KEP_TMS/Newrequest"
+            variant={{ brand: "next-btn", size: "btn-sm" }}
+          />
         </div>
         <div className="modal fade" role="dialog" tabIndex="-1" id="modal-1">
           <div className="modal-dialog" role="document">
@@ -171,21 +172,23 @@ export const FormContainer = () => {
     </div>
   );
 };
-export const FormHeader=()=>{
-return(<>
-<div className="pb-3 border-bottom">
-          <div className="d-flex align-items-center gap-2 gap-lg-5 flex-wrap">
-            <FormStep step={2} title="Details" state="success" />
-            <FontAwesomeIcon icon={faGreaterThan} />
-            <FormStep step={2} title="Details" state="active" />
-            <FontAwesomeIcon icon={faGreaterThan} />
-            <FormStep step={3} title="Details" />
-            <FontAwesomeIcon icon={faGreaterThan} />
-            <FormStep step={4} title="Details" />
-          </div>
+export const FormHeader = () => {
+  return (
+    <>
+      <div className="pb-3 border-bottom">
+        <div className="d-flex align-items-center gap-2 gap-lg-5 flex-wrap">
+          <FormStep step={2} title="Details" state="success" />
+          <FontAwesomeIcon icon={faGreaterThan} />
+          <FormStep step={2} title="Details" state="active" />
+          <FontAwesomeIcon icon={faGreaterThan} />
+          <FormStep step={3} title="Details" />
+          <FontAwesomeIcon icon={faGreaterThan} />
+          <FormStep step={4} title="Details" />
         </div>
-</>)
-}
+      </div>
+    </>
+  );
+};
 export const FormStep = ({ step, title, state }) => {
   var style =
     state == "success"
