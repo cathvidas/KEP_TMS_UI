@@ -37,6 +37,8 @@ const Sidebar = () => {
     }).then((res) => {
       if (res.isConfirmed) {
         navigate("/KEP_TMS");
+        sessionStorage.clear();
+        localStorage.clear();
       }
     });
   };

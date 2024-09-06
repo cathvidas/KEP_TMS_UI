@@ -10,26 +10,14 @@ import {
 import { useNavigate } from "react-router-dom";
 import logo from "../img/logo.png";
 import axios from "axios";
-import Swal from "sweetalert2";
 import { useState } from "react";
+import { Toast } from "../components/SweetToast";
 
 const Login = () => {
   const navigate = useNavigate();
 
   const [badge, setBadge] = useState("");
   const [password, setPassword] = useState("");
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-      toast.onmouseenter = Swal.stopTimer;
-      toast.onmouseleave = Swal.resumeTimer;
-    },
-  });
 
   // response variables
   var unauthorized = 401;
@@ -64,20 +52,39 @@ const Login = () => {
         })
         .catch((err) => {
           console.log(err);
+          if (err.code === "ERR_NETWORK") {
+            Toast.fire({
+              icon: "error",
+              title: err.message,
+            });
+          } else {
+            Toast.fire({
+              icon: "error",
+              title: err,
+            });
+          }
         });
     }
   };
 
   const validate = () => {
     let result = true;
-    if (badge === "" || badge === null) {
+    if (
+      (badge === "" || badge === null) &&
+      (password === "" || password === null)
+    ) {
+      result = false;
+      Toast.fire({
+        icon: "warning",
+        title: "Please Enter Credentials",
+      });
+    } else if (badge === "" || badge === null) {
       result = false;
       Toast.fire({
         icon: "warning",
         title: "Please Enter Your Badge",
       });
-    }
-    if (password === "" || password === null) {
+    } else if (password === "" || password === null) {
       result = false;
       Toast.fire({
         icon: "warning",

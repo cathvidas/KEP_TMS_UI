@@ -16,7 +16,7 @@ const NewRequest = () => {
       />
       <ActionButton
         title="View All Request"
-        actionLink="/Newrequest"
+        actionLink="/KEP_TMS/Newrequest"
         variant={{ brand: "secondary", size: "btn-sm" }}
       />
     </>
