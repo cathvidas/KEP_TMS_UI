@@ -139,7 +139,7 @@ const Login = () => {
                         className="d-block w-100 p-3"
                         type="submit"
                         style={{
-                          background: "#84c7ae",
+                          background: "#2eb396",
                           borderColor: "var(--bs-btn-disabled-color)",
                         }}
                         onSubmit={handleLogin}
