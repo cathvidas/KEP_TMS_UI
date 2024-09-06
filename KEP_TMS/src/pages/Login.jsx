@@ -52,20 +52,39 @@ const Login = () => {
         })
         .catch((err) => {
           console.log(err);
+          if (err.code === "ERR_NETWORK") {
+            Toast.fire({
+              icon: "error",
+              title: err.message,
+            });
+          } else {
+            Toast.fire({
+              icon: "error",
+              title: err,
+            });
+          }
         });
     }
   };
 
   const validate = () => {
     let result = true;
-    if (badge === "" || badge === null) {
+    if (
+      (badge === "" || badge === null) &&
+      (password === "" || password === null)
+    ) {
+      result = false;
+      Toast.fire({
+        icon: "warning",
+        title: "Please Enter Credentials",
+      });
+    } else if (badge === "" || badge === null) {
       result = false;
       Toast.fire({
         icon: "warning",
         title: "Please Enter Your Badge",
       });
-    }
-    if (password === "" || password === null) {
+    } else if (password === "" || password === null) {
       result = false;
       Toast.fire({
         icon: "warning",
