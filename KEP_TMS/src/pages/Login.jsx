@@ -25,6 +25,9 @@ const Login = () => {
         console.log(response.data);
         localStorage.setItem("token", response.data.token);
         navigate("/KEP_TMS/Dashboard");
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -46,7 +49,7 @@ const Login = () => {
                   <Col className="col-md-9 col-xl-6 text-center mx-auto w-100">
                     <img width="200" src={logo} height="" />
                     <h4 style={{ color: "#2eb396" }}>
-                      Training Request System
+                      Training Management System
                     </h4>
                     <p className="w-lg-50">Please log in your credentials</p>
                   </Col>
