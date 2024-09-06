@@ -1,6 +1,6 @@
 import { Col, Row } from "react-bootstrap";
 import { ActionButton } from "./Button";
-import bannerimg from '../img/banner.png';
+import bannerimg from "../img/banner.png";
 
 const Banner = () => {
   return (
@@ -14,17 +14,25 @@ const Banner = () => {
       <Row className="gy-4 gy-md-0 w-100">
         <Col className="d-md-flex align-items-md-center col-md-8">
           <div className="p-5">
-            <h2 className="fw-bold" style={{color: 'rgb(0,75,80)'}}>
+            <h2 className="fw-bold" style={{ color: "rgb(0,75,80)" }}>
               Welcome back
               <br />
               USERNAME
             </h2>
             <p className="my-3">
-              Enhance your skills with our training programs. Click &apos;Request
-              Training&apos; to start or &apos;View All Requests&apos; to track your progress.
+              Enhance your skills with our training programs. Click
+              &apos;Request Training&apos; to start or &apos;View All
+              Requests&apos; to track your progress.
             </p>
-            <ActionButton title="Request Training" toggle={{Item: "modal", Target: "#TRtype"}}/>
-            <ActionButton title="View All Request" actionLink="/Newrequest" variant={{brand:'secondary'}}/>
+            <ActionButton
+              title="Request Training"
+              toggle={{ Item: "modal", Target: "#TRtype" }}
+            />
+            <ActionButton
+              title="View All Request"
+              actionLink="/Newrequest"
+              variant={{ brand: "secondary" }}
+            />
           </div>
         </Col>
         <Col className="col-md-4">
