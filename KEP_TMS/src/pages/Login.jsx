@@ -9,11 +9,23 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import logo from "../img/logo.png";
+import axios from "axios";
+
 const Login = () => {
   const navigate = useNavigate();
-  const handlesubmit = (event) => {
-    event.preventDefault();
-    navigate("/Dashboard");
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    axios
+      .post("http://localhost:5030/api/Users/Login", {
+        employeeId: e.target.badge.value,
+        password: e.target.password.value,
+      })
+      .then((response) => {
+        console.log(response.data);
+        localStorage.setItem("token", response.data.token);
+        navigate("/KEP_TMS/Dashboard");
+      });
   };
 
   return (
@@ -41,13 +53,13 @@ const Login = () => {
                   <Form
                     className="text-center w-100"
                     method="post"
-                    onSubmit={handlesubmit}
+                    onSubmit={handleLogin}
                   >
                     <Form.Group className="mb-3">
                       <Form.Control
                         className="p-3"
-                        type="email"
-                        name="email"
+                        type="text"
+                        name="badge"
                         placeholder="Username or User Id"
                       />
                     </Form.Group>
@@ -67,6 +79,7 @@ const Login = () => {
                           background: "#84c7ae",
                           borderColor: "var(--bs-btn-disabled-color)",
                         }}
+                        onSubmit={handleLogin}
                       >
                         <strong>Login</strong>
                       </Button>
