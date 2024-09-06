@@ -3,6 +3,17 @@ import { ActionButton } from "./Button";
 import bannerimg from "../img/banner.png";
 
 const Banner = () => {
+  const username = sessionStorage.getItem("username");
+  const fullname = sessionStorage.getItem("fullname");
+
+  const displayName = () => {
+    if (username) {
+      return username;
+    } else {
+      return fullname;
+    }
+  };
+
   return (
     <div
       className="rounded-3 mb-3"
@@ -17,7 +28,7 @@ const Banner = () => {
             <h2 className="fw-bold" style={{ color: "rgb(0,75,80)" }}>
               Welcome back
               <br />
-              USERNAME
+              {displayName()}
             </h2>
             <p className="my-3">
               Enhance your skills with our training programs. Click
