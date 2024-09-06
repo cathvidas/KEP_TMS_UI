@@ -1,6 +1,7 @@
 import RequestModal from "./RequestType";
 import Sidebar from "./Sidebar";
-import proptype from 'prop-types'
+import proptype from "prop-types";
+
 const RenderLayout = ({ ActionComponent }) => {
   return (
     <>
@@ -16,6 +17,6 @@ const RenderLayout = ({ ActionComponent }) => {
   );
 };
 RenderLayout.propTypes = {
-  ActionComponent: proptype.func
-}
+  ActionComponent: proptype.func,
+};
 export default RenderLayout;

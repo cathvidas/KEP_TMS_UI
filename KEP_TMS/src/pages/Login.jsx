@@ -9,11 +9,82 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import logo from "../img/logo.png";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useState } from "react";
+
 const Login = () => {
   const navigate = useNavigate();
-  const handlesubmit = (event) => {
-    event.preventDefault();
-    navigate("/Dashboard");
+
+  const [badge, setBadge] = useState("");
+  const [password, setPassword] = useState("");
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    },
+  });
+
+  // response variables
+  var unauthorized = 401;
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      axios
+        .post("http://localhost:5030/api/Users/Login", {
+          employeeId: e.target.badge.value,
+          password: e.target.password.value,
+        })
+        .then((res) => {
+          if (res.data.status === unauthorized) {
+            Toast.fire({
+              icon: "error",
+              title: res.data.message,
+            });
+          }
+          console.log(res);
+
+          if (res.data.isSuccess === true) {
+            const response = res.data;
+            console.log(response.data);
+            sessionStorage.setItem("fullname", response.data.fullname);
+            sessionStorage.setItem("username", response.data.username);
+            sessionStorage.setItem("firstname", response.data.firstname);
+            sessionStorage.setItem("lastname", response.data.lastname);
+            sessionStorage.setItem("token", response.token);
+            navigate("/KEP_TMS/Dashboard");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  const validate = () => {
+    let result = true;
+    if (badge === "" || badge === null) {
+      result = false;
+      Toast.fire({
+        icon: "warning",
+        title: "Please Enter Your Badge",
+      });
+    }
+    if (password === "" || password === null) {
+      result = false;
+      Toast.fire({
+        icon: "warning",
+        title: "Please Enter Password",
+      });
+    }
+    return result;
   };
 
   return (
@@ -34,21 +105,23 @@ const Login = () => {
                   <Col className="col-md-9 col-xl-6 text-center mx-auto w-100">
                     <img width="200" src={logo} height="" />
                     <h4 style={{ color: "#2eb396" }}>
-                      Training Request System
+                      Training Management System
                     </h4>
                     <p className="w-lg-50">Please log in your credentials</p>
                   </Col>
                   <Form
                     className="text-center w-100"
                     method="post"
-                    onSubmit={handlesubmit}
+                    onSubmit={handleLogin}
                   >
                     <Form.Group className="mb-3">
                       <Form.Control
                         className="p-3"
-                        type="email"
-                        name="email"
-                        placeholder="Username or User Id"
+                        type="text"
+                        name="badge"
+                        value={badge}
+                        onChange={(e) => setBadge(e.target.value)}
+                        placeholder="Employee Badge"
                       />
                     </Form.Group>
                     <Form.Group className="mb-3">
@@ -56,6 +129,8 @@ const Login = () => {
                         className="p-3"
                         type="password"
                         name="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
                       />
                     </Form.Group>
@@ -67,6 +142,7 @@ const Login = () => {
                           background: "#84c7ae",
                           borderColor: "var(--bs-btn-disabled-color)",
                         }}
+                        onSubmit={handleLogin}
                       >
                         <strong>Login</strong>
                       </Button>

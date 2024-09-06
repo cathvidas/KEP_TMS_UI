@@ -37,25 +37,24 @@ const RTable = () => {
           </tr>
         </thead>
         <tbody>
-          {
-            items.map((item, index) => (
-              <tr key={index}>
-                <td>{item.key1}</td>
-                <td>{item.key2}</td>
-                <td>{item.key3}</td>
-                <td>{item.key4}</td>
-                <td>{item.key5}</td>
-                <td>{item.key6}</td>
-                <td>
-                  <span className="badge bg-primary">{item.key7}</span>
-                </td>
-                <td>
-                  <Button type="button" className="btn-primary btn-sm">
-                    View
-                  </Button>
-                </td>
-              </tr>
-            ))}
+          {items.map((item, index) => (
+            <tr key={index}>
+              <td>{item.key1}</td>
+              <td>{item.key2}</td>
+              <td>{item.key3}</td>
+              <td>{item.key4}</td>
+              <td>{item.key5}</td>
+              <td>{item.key6}</td>
+              <td>
+                <span className="badge bg-primary">{item.key7}</span>
+              </td>
+              <td>
+                <Button type="button" className="btn-primary btn-sm">
+                  View
+                </Button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </Table>
     </div>
