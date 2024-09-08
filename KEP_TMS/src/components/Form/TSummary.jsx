@@ -1,61 +1,25 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import proptype from "prop-types";
-import TrainingScheduleList from "./TScheduleList";
 import { UserList } from "../List/UserList";
 import EmptyState from "./EmptyState";
 import { GetEmployees } from "../../services/getApis";
 import { SectionHeading } from "../General/Section";
+import { DetailItem, Heading } from "../TrainingDetails/DetailItem";
+import TDOverview from "../TrainingDetails/TDetOverview";
+import TScheduleOverview from "../TrainingDetails/TSchedOverview";
 
 const TrainingSummary = ({ details, schedule, participants }) => {
-  const DetailItem = ({ label, value }) => (
-    <p className="m-0 d-flex gap-2">
-      <span className="fw-bold text-muted">{label}: </span>{" "}
-      {value ? value : "N/A"}
-    </p>
-  );
-  const Heading = ({ value }) => <h6 className="text-uppercase">{value}</h6>;
+
   return (
     <>
       <SectionHeading
         title="Training Summary"
         icon={<FontAwesomeIcon icon={faInfoCircle} />}
       />
-      <Heading value="Details" />
-      <DetailItem
-        label="Program"
-        value={details?.program ? details.program.category : "N/A"}
-      />
-      <DetailItem
-        label="Category"
-        value={details?.program ? details.program.category : "N/A"}
-      />
-      <DetailItem
-        label="Objective"
-        value={details?.program ? details.program.category : "N/A"}
-      />
-      <DetailItem
-        label="Venue"
-        value={details?.program ? details.program.category : "N/A"}
-      />
-      <DetailItem
-        label="Provider"
-        value={details?.program ? details.program.category : "N/A"}
-      />
-
+      <TDOverview/>
       <br />
-      <Heading value="DATES AND SCHEDULES" />
-      <div className="mb-2 d-flex gap-5">
-        <DetailItem
-          label="Start Date"
-          value={details?.program ? details.program.category : "N/A"}
-        />
-        <DetailItem
-          label="End Date"
-          value={details?.program ? details.program.category : "N/A"}
-        />
-      </div>
-      <TrainingScheduleList schedules={schedule} />
+      <TScheduleOverview schedule={schedule}/>
       <br />
       <Heading value="participants" />
       {GetEmployees()?.length > 0 ? (
