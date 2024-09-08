@@ -6,6 +6,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 const RequestModal = () => {
+  const handleRedirect = () => {
+    const modal = Modal.getInstance(document.getElementById('TRtype')); 
+    console.log(modal)
+    if (modal) {
+      modal.hide(); // Close the modal
+    }
+  };
   return (
     <>
       <div className="modal fade" role="dialog" tabIndex="-1" id="TRtype">
@@ -32,8 +39,8 @@ const RequestModal = () => {
               <p>Please select category</p>
               <Row className="gy-4 mt-3">
                 <Col>
-                  <div className="text-center brand-hover d-flex flex-column align-items-center align-items-xl-center">
-                    <Link className="text-decoration-none" to="NewRequest.html">
+                  <div className="text-center text-theme-hover d-flex flex-column align-items-center align-items-xl-center">
+                    <Link to="/KEP_TMS/NewRequest" className="text-decoration-none"  onClick={() => handleRedirect()}>
                       {" "}
                       <FontAwesomeIcon
                         icon={faBuildingCircleCheck}
@@ -44,8 +51,8 @@ const RequestModal = () => {
                   </div>
                 </Col>
                 <Col>
-                  <div className="text-center brand-hover d-flex flex-column align-items-center align-items-xl-center">
-                    <Link className="text-decoration-none" to="NewRequest.html">
+                  <div className="text-center text-theme-hover d-flex flex-column align-items-center align-items-xl-center">
+                    <Link className="text-decoration-none" to="/KEP_TMS/NewRequest">
                       <FontAwesomeIcon
                         icon={faBuildingCircleArrowRight}
                         style={{ color: "rgb(0,153,81)", fontSize: "50px" }}

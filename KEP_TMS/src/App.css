@@ -1,14 +1,26 @@
-.nav-pills .nav-link.active, .brand-bg, .brand-bg *,
-.brand-btn{
-    background-color: rgb(0,167,111) !important;
+:root{
+    --theme-color: rgb(0,167,111);
+}
+
+.nav-pills .nav-link.active, .theme-bg, .theme-bg *,
+.theme-btn{
+    background-color: var(--theme-color) !important;
     color: #fff !important;
+    border-color: var(--theme-color)!important;
 }
-.brand-color{
-    color: rgb(0,167,111) !important;
+.theme-color{
+    color: var(--theme-color) !important;
 }
-.brand-table tr:hover td {
+.text-theme-hover:hover *{
+    color: rgb(22, 187, 159) !important;
+}
+.theme-table tr:hover td, .theme-hover:hover {
     background-color: #dff8ee;
 }
+.filter-hover:hover {
+    filter: brightness(110%);
+}
+
 .formStep-active {
     background-color: #633bbc !important;
     color: white !important;
@@ -17,9 +29,9 @@
     background-color: green;
     color: white;
 }
-.brand-secondary{
+.theme-secondary{
     background-color: #ffffff75 !important;
-    color: rgb(0,167,111) !important;
+    color: var(--theme-color) !important;
 }
 
 .login-bg{
@@ -41,6 +53,17 @@
     right: -100px;
 }
 
-.brand-hover:hover *{
-    color: rgb(22, 187, 159) !important;
+.border-md-0 {
+    border-top: unset !important;
+    border-bottom: unset !important;
+    border-left: unset !important;
+    border-right: unset !important;/* Change the color or style as needed */
+  }
+
+.cursor-pointer{
+    cursor: pointer;
+}
+.form-check-input:checked {
+    background-color: var(--theme-color) !important;
+    border-color: var(--theme-color) !important;
 }

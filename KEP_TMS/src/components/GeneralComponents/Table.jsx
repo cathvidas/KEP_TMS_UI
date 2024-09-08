@@ -23,8 +23,8 @@ const RTable = () => {
   ];
   return (
     <div className="">
-      <Table className="brand-table bg-success border m-0">
-        <thead className="brand-bg">
+      <Table className="theme-table bg-success border m-0">
+        <thead className="theme-bg">
           <tr>
             <th>R_No</th>
             <th>Program</th>

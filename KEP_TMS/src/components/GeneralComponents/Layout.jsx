@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import RequestModal from "./RequestType";
+import RequestModal from "../ModalsComponent/RequestType";
 import Sidebar from "./Sidebar";
 import proptype from "prop-types";
 import { useNavigate } from "react-router-dom";

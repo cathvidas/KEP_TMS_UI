@@ -1,6 +1,6 @@
 import { Col, Row } from "react-bootstrap";
 import { ActionButton } from "./Button";
-import bannerimg from "../img/banner.png";
+import bannerimg from "../../img/banner.png";
 
 const Banner = () => {
   const username = sessionStorage.getItem("username");
@@ -42,7 +42,7 @@ const Banner = () => {
             <ActionButton
               title="View All Request"
               actionLink="/KEP_TMS/Newrequest"
-              variant={{ brand: "secondary" }}
+              variant={{ theme: "secondary" }}
             />
           </div>
         </Col>

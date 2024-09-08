@@ -1,6 +1,5 @@
 import proptype from "prop-types";
-
-function GetInitials(name) {
+const GetInitials = (name) => {
   let initials = "";
   const nameStr = String(name || "");
   if (nameStr) {
@@ -20,8 +19,8 @@ function GetInitials(name) {
     }
   }
   return initials;
-}
-function getInitialsFromParts(lastName, firstName) {
+};
+const getInitialsFromParts = (lastName, firstName) => {
   let initials = "";
 
   if (firstName.length > 0) {
@@ -31,23 +30,9 @@ function getInitialsFromParts(lastName, firstName) {
     initials += lastName[0];
   }
   return initials.toUpperCase(); // Optional: convert initials to uppercase
-}
+};
 
-const UserIcon = ({ Name }) => {
-  return (
-    <>
-      <div className="d-flex align-items-center gap-2">
-        <div
-          className="border rounded-circle ratio ratio-1x1 d-flex text-center align-items-center justify-content-center"
-          style={{ width: "30px" }}
-        >
-          <span style={{ marginTop: "1px" }}>{GetInitials(Name)}</span>
-        </div>
-      </div>
-    </>
-  );
-};
-UserIcon.propTypes = {
-  Name: proptype.string.isRequired,
-};
-export default UserIcon;
+GetInitials.propTypes={
+    name: proptype.string.isRequired
+}
+export default GetInitials
