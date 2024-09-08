@@ -1,8 +1,9 @@
 import { Row } from "react-bootstrap"
-import { FormFieldItem, FormsectionHeading } from "./FormElements"
+import { FormFieldItem } from "./FormElements"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons"
 import Select from "react-select";
+import { SectionHeading } from "../General/Section";
 const TrainingDetailsContainer =()=>{
     const options = [
       { value: "chocolate", label: "Chocolate" },
@@ -12,7 +13,7 @@ const TrainingDetailsContainer =()=>{
     return (<>
     
     <Row>
-          <FormsectionHeading
+          <SectionHeading
             title="Training Details"
             icon={<FontAwesomeIcon icon={faCircleInfo} />}
           />

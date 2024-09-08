@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FormFieldItem, FormsectionHeading } from "./FormElements";
+import { FormFieldItem } from "./FormElements";
 import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { UserList } from "../List/UserList";
 import { ModalContainer } from "../Modal/ModalContainer";
@@ -9,6 +9,7 @@ import { GetEmployees } from "../../services/getApis";
 import SearchBar from "./SearchBar";
 import { ActionButton } from "../General/Button";
 import Select from "react-select";
+import { SectionHeading } from "../General/Section";
 
 const TrainingParticipant = () => {
   const [showModal, setShowModal] = useState(false);
@@ -48,7 +49,7 @@ const TrainingParticipant = () => {
   const participants = [];
   return (
     <>
-      <FormsectionHeading
+      <SectionHeading
         title="Training Participants"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
@@ -74,7 +75,7 @@ const TrainingParticipant = () => {
       )}
 
       <div className="mt-4"></div>
-      <FormsectionHeading
+      <SectionHeading
         title="Training faciltator"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
@@ -100,7 +101,7 @@ const TrainingParticipant = () => {
       )}
       
       <div className="mt-4"></div>
-      <FormsectionHeading
+      <SectionHeading
         title="Training Provider"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />

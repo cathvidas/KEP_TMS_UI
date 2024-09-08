@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FormsectionHeading } from "./FormElements";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import proptype from "prop-types";
 import TrainingScheduleList from "./TScheduleList";
 import { UserList } from "../List/UserList";
 import EmptyState from "./EmptyState";
 import { GetEmployees } from "../../services/getApis";
+import { SectionHeading } from "../General/Section";
 
 const TrainingSummary = ({ details, schedule, participants }) => {
   const DetailItem = ({ label, value }) => (
@@ -17,7 +17,7 @@ const TrainingSummary = ({ details, schedule, participants }) => {
   const Heading = ({ value }) => <h6 className="text-uppercase">{value}</h6>;
   return (
     <>
-      <FormsectionHeading
+      <SectionHeading
         title="Training Summary"
         icon={<FontAwesomeIcon icon={faInfoCircle} />}
       />
