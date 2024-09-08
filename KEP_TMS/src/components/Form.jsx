@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
-import { ActionButton } from "./General/Button";
+import { ActionButton, NavigationButton } from "./General/Button";
 import { useEffect, useRef, useState } from "react";
 import { Card, Col } from "react-bootstrap";
 import { FormStep } from "./Form/FormElements";
@@ -68,12 +68,8 @@ export const FormContainer = () => {
         <FormHeader />
         {FormContent}
         <Col className="col-12 col-md-7 "></Col>
-        <div className="d-flex mt-3 flex-shrink-0 justify-content-end">
-          <ActionButton
-            title="Next"
-            variant={{ theme: "next-btn", size: "btn-sm" }}
-          />
-        </div>
+        <br/>
+        <NavigationButton leftButton={{placeholder: "back"}} RightButton={{placeholder: "next"}}/>
       </Card.Body>
     </Card>
   );
