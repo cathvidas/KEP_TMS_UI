@@ -1,6 +1,6 @@
-import TMS_Header from "../components/GeneralComponents/Header";
-import RenderLayout from "../components/GeneralComponents/Layout";
-import { RequestMenu } from "../components/FormComponents/Menu";
+import TMS_Header from "../components/General/Header";
+import RenderLayout from "../components/General/Layout";
+import { RequestMenu } from "../components/Form/Menu";
 
 const Content = () => {
   return (
