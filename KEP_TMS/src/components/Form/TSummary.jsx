@@ -3,7 +3,7 @@ import { FormsectionHeading } from "./FormElements";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import proptype from "prop-types";
 import TrainingScheduleList from "./TScheduleList";
-import { UserList } from "../ListComponents/UserList";
+import { UserList } from "../List/UserList";
 import EmptyState from "./EmptyState";
 import { GetEmployees } from "../../services/getApis";
 

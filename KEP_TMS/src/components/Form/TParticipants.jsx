@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormFieldItem, FormsectionHeading } from "./FormElements";
 import { faUsers } from "@fortawesome/free-solid-svg-icons";
-import { UserList } from "../ListComponents/UserList";
-import { ModalContainer } from "../ModalsComponent/ModalContainer";
+import { UserList } from "../List/UserList";
+import { ModalContainer } from "../Modal/ModalContainer";
 import { useState } from "react";
 import EmptyState from "./EmptyState";
 import { GetEmployees } from "../../services/getApis";
 import SearchBar from "./SearchBar";
-import { ActionButton } from "../GeneralComponents/Button";
+import { ActionButton } from "../General/Button";
 import Select from "react-select";
 
 const TrainingParticipant = () => {
