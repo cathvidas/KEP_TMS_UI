@@ -1,5 +1,5 @@
 import proptype from "prop-types";
-import UserIcon from "../GeneralComponents/UserIcon";
+import UserIcon from "../General/UserIcon";
 import { Form } from "react-bootstrap";
 
 export const UserList = ({ leadingElement, userlist, trailingElement, col, onSelect }) => {
