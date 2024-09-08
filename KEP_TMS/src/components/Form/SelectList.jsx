@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { GetEmployees } from "../../services/getApis"
-import { UserList } from "../ListComponents/UserList"
+import { UserList } from "../List/UserList"
 import SearchBar from "./SearchBar"
 
 const SelectList=()=>{

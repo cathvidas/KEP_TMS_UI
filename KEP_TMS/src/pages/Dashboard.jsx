@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Banner from "../components/GeneralComponents/Banner";
-import TMS_Header from "../components/GeneralComponents/Header";
-import RenderLayout from "../components/GeneralComponents/Layout";
-import { SectionTitle } from "../components/GeneralComponents/Section";
-import RTable from "../components/GeneralComponents/Table";
+import Banner from "../components/General/Banner";
+import TMS_Header from "../components/General/Header";
+import RenderLayout from "../components/General/Layout";
+import { SectionTitle } from "../components/General/Section";
+import RTable from "../components/General/Table";
 import { faHouse } from "@fortawesome/free-solid-svg-icons";
 
 

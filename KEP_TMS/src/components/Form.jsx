@@ -1,14 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
-import { ActionButton } from "./GeneralComponents/Button";
+import { ActionButton, NavigationButton } from "./General/Button";
 import { useEffect, useRef, useState } from "react";
 import { Card, Col } from "react-bootstrap";
-import { FormStep } from "./FormComponents/FormElements";
-import TrainingDetailsContainer from "./FormComponents/TDetails";
-import ScheduleContainer from "./FormComponents/TSchedule";
-import TrainingParticipant from "./FormComponents/TParticipants";
-import TrainingCost from "./FormComponents/TrainingCost";
-import TrainingSummary from "./FormComponents/TSummary";
+import { FormStep } from "./Form/FormElements";
+import TrainingDetailsContainer from "./Form/TDetails";
+import ScheduleContainer from "./Form/TSchedule";
+import TrainingParticipant from "./Form/TParticipants";
+import TrainingCost from "./Form/TrainingCost";
+import TrainingSummary from "./Form/TSummary";
 
 export const FormContainer = () => {
   const [participants, setParticipants] = useState([{ name: "" },{id: ""}]);
@@ -68,12 +68,8 @@ export const FormContainer = () => {
         <FormHeader />
         {FormContent}
         <Col className="col-12 col-md-7 "></Col>
-        <div className="d-flex mt-3 flex-shrink-0 justify-content-end">
-          <ActionButton
-            title="Next"
-            variant={{ theme: "next-btn", size: "btn-sm" }}
-          />
-        </div>
+        <br/>
+        <NavigationButton leftButton={{placeholder: "back"}} RightButton={{placeholder: "next"}}/>
       </Card.Body>
     </Card>
   );

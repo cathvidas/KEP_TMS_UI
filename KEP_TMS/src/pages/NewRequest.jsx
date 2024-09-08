@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ActionButton } from "../components/GeneralComponents/Button";
+import { ActionButton } from "../components/General/Button";
 import { FormContainer } from "../components/Form";
-import TMS_Header from "../components/GeneralComponents/Header";
-import RenderLayout from "../components/GeneralComponents/Layout";
-import { SectionBanner } from "../components/GeneralComponents/Section";
+import TMS_Header from "../components/General/Header";
+import RenderLayout from "../components/General/Layout";
+import { SectionBanner } from "../components/General/Section";
 import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
 
 const NewRequest = () => {

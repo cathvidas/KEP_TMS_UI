@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import RequestModal from "../ModalsComponent/RequestType";
+import RequestModal from "../Modal/RequestType";
 import Sidebar from "./Sidebar";
 import proptype from "prop-types";
 import { useNavigate } from "react-router-dom";
@@ -9,13 +9,13 @@ const RenderLayout = ({ ActionComponent }) => {
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
 
-  useEffect(() => {
-    if (token != null) {
-      setshowmenu(true);
-    } else {
-      navigate("*");
-    }
-  }, [token, navigate]);
+  // useEffect(() => {
+  //   if (token != null) {
+  //     setshowmenu(true);
+  //   } else {
+  //     navigate("*");
+  //   }
+  // }, [token, navigate]);
 
   return (
     <>

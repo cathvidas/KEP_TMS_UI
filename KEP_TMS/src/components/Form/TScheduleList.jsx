@@ -50,6 +50,6 @@ const TrainingScheduleList = ({schedules, onDelete}) => {
 };
 TrainingScheduleList.propTypes={
     schedules: proptype.array,
-    onDelete: proptype.func.isRequired,
+    onDelete: proptype.func,
  };
 export default TrainingScheduleList

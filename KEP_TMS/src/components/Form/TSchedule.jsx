@@ -2,15 +2,16 @@ import { Col, Row } from "react-bootstrap"
 import TrainingScheduleList from "./TScheduleList"
 import { Form } from "react-bootstrap"
 import proptype from 'prop-types'
-import { FormFieldItem, FormsectionHeading } from "./FormElements"
+import { FormFieldItem } from "./FormElements"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCalendar } from "@fortawesome/free-solid-svg-icons"
+import { SectionHeading } from "../General/Section"
 
 const ScheduleContainer =({trainingSchedules, removeSechedule, schedData, handleInputChange, handleTrainingSched})=>{
     return(
         <>
         <Row className="mt-2">
-          <FormsectionHeading
+          <SectionHeading
             title="Training Dates"
             icon={<FontAwesomeIcon icon={faCalendar} />}
           />

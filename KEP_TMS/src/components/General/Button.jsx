@@ -1,4 +1,7 @@
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import proptype from "prop-types";
+import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 export const ActionButton = ({ title, actionLink, toggle, variant, onClick }) => {
   const style =
@@ -24,6 +27,20 @@ export const ActionButton = ({ title, actionLink, toggle, variant, onClick }) =>
     </>
   );
 };
+
+export const NavigationButton=({leftButton, RightButton})=>{
+  return (<>
+  <div className="d-flex justify-content-between">
+    <Button variant="light"><FontAwesomeIcon icon={faArrowLeft}/> {leftButton.placeholder}  </Button>
+    <Button variant="success">{RightButton.placeholder} <FontAwesomeIcon icon={faArrowRight}/></Button>
+  </div>
+  </>)
+}
+NavigationButton.propTypes = {
+  leftButton: proptype.object,
+  RightButton: proptype.object,
+};
+
 ActionButton.propTypes = {
   title: proptype.string.isRequired,
   actionLink: proptype.string,

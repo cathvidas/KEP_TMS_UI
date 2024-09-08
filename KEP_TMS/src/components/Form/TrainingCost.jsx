@@ -1,9 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FormFieldItem, FormsectionHeading } from "./FormElements";
+import { FormFieldItem } from "./FormElements";
 import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { Row } from "react-bootstrap";
 import proptype from "prop-types";
 import { useState } from "react";
+import { SectionHeading } from "../General/Section";
 
 const TrainingCost = ({totalCost, participants, onInput}) => {  
     const [cost , setCost] = useState(totalCost);
@@ -25,7 +26,7 @@ const TrainingCost = ({totalCost, participants, onInput}) => {
   return (
     <>
       <div className="mt-4"></div>
-      <FormsectionHeading
+      <SectionHeading
         title="Training Cost"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />

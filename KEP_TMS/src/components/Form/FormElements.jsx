@@ -35,14 +35,7 @@ export const FormFieldItem = ({ col, label, FieldComponent }) => (
   </>
 );
 
-export const FormsectionHeading = ({ title, icon }) => (
-  <>
-    <h5 className="my-2 text-uppercase theme-color">
-      {icon && icon}
-      &nbsp;{title}
-    </h5>
-  </>
-);
+
 FormFieldItem.propTypes = {
   col: proptype.string,
   label: proptype.string,
@@ -52,8 +45,4 @@ FormStep.propTypes = {
   step: proptype.number,
   title: proptype.string.isRequired,
   state: proptype.string,
-};
-FormsectionHeading.propTypes = {
-  title: proptype.string.isRequired,
-  icon: proptype.object,
 };
