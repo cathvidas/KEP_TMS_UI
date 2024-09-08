@@ -6,6 +6,10 @@ const RandomizeExam = () => {
   const exam = SampleExamQuestionaire().sort(() => Math.random() - 0.5);
   return exam;
 };
+const randoMizeOptions=(options)=>{
+    options = options.sort(()=> Math.random() - 0.5);
+    return options;
+}
 const ExamContainer = () => {
    const [exam] = useState(()=>RandomizeExam());
 // const [exam] = useState(SampleExamQuestionaire);
@@ -36,7 +40,7 @@ console.log(currentQuestion)
         <ExamItem
           itemNo={`Question ${index + 1}`}
           question={currentQuestion.question}
-          options={currentQuestion.options}
+          options={randoMizeOptions(currentQuestion.options)}
           answer={currentQuestion.answer}
           onAnswer={handleAnswer}
         />
