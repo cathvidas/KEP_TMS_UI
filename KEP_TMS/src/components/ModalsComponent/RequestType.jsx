@@ -39,7 +39,7 @@ const RequestModal = () => {
               <p>Please select category</p>
               <Row className="gy-4 mt-3">
                 <Col>
-                  <div className="text-center theme-hover d-flex flex-column align-items-center align-items-xl-center">
+                  <div className="text-center text-theme-hover d-flex flex-column align-items-center align-items-xl-center">
                     <Link to="/KEP_TMS/NewRequest" className="text-decoration-none"  onClick={() => handleRedirect()}>
                       {" "}
                       <FontAwesomeIcon
@@ -51,7 +51,7 @@ const RequestModal = () => {
                   </div>
                 </Col>
                 <Col>
-                  <div className="text-center theme-hover d-flex flex-column align-items-center align-items-xl-center">
+                  <div className="text-center text-theme-hover d-flex flex-column align-items-center align-items-xl-center">
                     <Link className="text-decoration-none" to="/KEP_TMS/NewRequest">
                       <FontAwesomeIcon
                         icon={faBuildingCircleArrowRight}

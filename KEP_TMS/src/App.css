@@ -11,7 +11,7 @@
 .theme-color{
     color: var(--theme-color) !important;
 }
-.theme-hover:hover *{
+.text-theme-hover:hover *{
     color: rgb(22, 187, 159) !important;
 }
 .theme-table tr:hover td, .theme-hover:hover {
