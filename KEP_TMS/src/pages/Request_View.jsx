@@ -9,6 +9,8 @@ import TScheduleOverview from "../components/TrainingDetails/TSchedOverview.jsx"
 import { GetSchedule, SampleStringList } from "../services/getApis.jsx";
 import { TabHeader } from "../components/General/Tab.jsx";
 import ExamContainer from "../components/Exam/ExamContainer.jsx";
+import StatusCard from "../components/General/StatusCard.jsx";
+import StatusChart from "../components/General/Chart.jsx";
 
 const Content = () => {
   
@@ -22,6 +24,8 @@ const Content = () => {
             title="Overview"
             icon={<FontAwesomeIcon icon={faInfoCircle} />}
           />
+          <StatusChart data={24}/>
+          <StatusCard variant={"success"} placeholder="Submitted" value={{internal: "12", external: "18"}}/>
           <p>Here you can see the details of your training.</p>
           <TDOverview/>
           <TScheduleOverview schedule={GetSchedule()}/>
