@@ -8,6 +8,7 @@ import TDOverview from "../components/TrainingDetails/TDetOverview.jsx";
 import TScheduleOverview from "../components/TrainingDetails/TSchedOverview.jsx";
 import { GetSchedule, SampleStringList } from "../services/getApis.jsx";
 import { TabHeader } from "../components/General/Tab.jsx";
+import ExamContainer from "../components/Exam/ExamContainer.jsx";
 
 const Content = () => {
   
@@ -26,6 +27,7 @@ const Content = () => {
           <TScheduleOverview schedule={GetSchedule()}/>
           <br />
           <TabHeader tablist={SampleStringList()} activeItem={"Apple"}/>
+          <ExamContainer/>
         </div>
       </div>
     </>
