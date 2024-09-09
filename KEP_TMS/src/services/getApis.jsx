@@ -118,3 +118,30 @@ export const GetSchedule=()=>{
 export const SampleStringList=()=>{
     return ["Apple", "Orange", "Green", "Yellow"]
 }
+export const SampleExamQuestionaire =()=>{
+    return[{
+        question: "What is the capital of France?",
+        options: ["Paris", "London", "Madrid", "Berlin"],
+        answer: "Paris"
+    }, {
+        question: "Who is the current Prime Minister of the United Kingdom?",
+        options: ["Theresa May", "David Cameron", "Boris Johnson", "David Corbyn"],
+        answer: "David Cameron"
+    }, {
+        question: "What is the most famous song by Queen?",
+        options: ["Bohemian Rhapsody", "We Will Rock You", "A Night at the Opera", "Bohemian Rhapsody"],
+        answer: "Bohemian Rhapsody"
+    }, {
+        question: "Who wrote the novel 'Pride and Prejudice'?",
+        options: ["Jane Austen", "Charles Dickens", "William Shakespeare", "George Orwell"],
+        answer: "Jane Austen"
+    }, {
+        question: "What is the largest island in the world?",
+        options: ["Greenland", "New Zealand", "Iceland", "Antarctica"],
+        answer: "Greenland"
+    },{
+        question: "What is the tallest mountain in the world?",
+        options: ["Mount Everest", "K2", "Mount Kilimanjaro", "Mount McKinley"],
+        answer: "Mount Everest"
+    },]
+}
