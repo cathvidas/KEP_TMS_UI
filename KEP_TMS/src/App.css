@@ -67,3 +67,11 @@
     background-color: var(--theme-color) !important;
     border-color: var(--theme-color) !important;
 }
+.flex, .flex-between {
+    display: flex !important;
+    align-items: center;
+    gap: .5rem;
+}
+.flex-between{
+    justify-content: space-between !important;
+}
