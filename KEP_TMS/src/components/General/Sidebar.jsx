@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import proptype from "prop-types";
 import UserIcon from "./UserIcon";
 import Swal from "sweetalert2";
-import icon from "../../../public/icon.png";
+import icon from "/src/img/icon.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleRight,
