@@ -21,13 +21,13 @@ const RenderLayout = ({ ActionComponent }) => {
     <>
       {showmenu && (
         <>
+        <div className="d-flex">
           <Sidebar />
           <div
-            className="flex-grow-1 px-3 px-md-4"
-            style={{ marginLeft: "4.5rem" }}
+            className="flex-grow-1  px-3 px-md-4"
           >
             {ActionComponent && <ActionComponent />}
-          </div>
+          </div></div>
           <RequestModal />
         </>
       )}
