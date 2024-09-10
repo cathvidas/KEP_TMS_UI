@@ -1,53 +1,76 @@
-import { Row } from "react-bootstrap"
-import { FormFieldItem } from "./FormElements"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircleInfo } from "@fortawesome/free-solid-svg-icons"
+import { Row } from "react-bootstrap";
+import { FormFieldItem } from "./FormElements";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import { SectionHeading } from "../General/Section";
-const TrainingDetailsContainer =()=>{
-    const options = [
-      { value: "chocolate", label: "Chocolate" },
-      { value: "strawberry", label: "Strawberry" },
-      { value: "vanilla", label: "Vanilla" },
-    ];
-    return (<>
-    
-    <Row>
-          <SectionHeading
-            title="Training Details"
-            icon={<FontAwesomeIcon icon={faCircleInfo} />}
-          />
-          <FormFieldItem
-            col="col-6"
-            label={"Program"}
-            FieldComponent={<Select options={options} />}
-          />
-          <FormFieldItem
-            col="col-6"
-            label={"Category"}
-            FieldComponent={<Select options={options} />}
-          />
-          <FormFieldItem
-            col="col-12"
-            label={"Objective"}
-            FieldComponent={
-              <textarea
-                className="form-control"
-                placeholder="Training objective"
-              ></textarea>
-            }
-          />
-          <FormFieldItem
-            label={"Venue"}
-            FieldComponent={
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Training Venue"
-              />
-            }
-          />
-        </Row>
-    </>)
+import { ReturnAllCategories, ReturnAllPrograms } from "../../services/actions";
+import proptype from "prop-types"
+import { useState } from "react";
+const TrainingDetailsContainer = ({ onChange, state }) => {
+  const [programs, setPrograms] = useState(null);
+  const [categories, setCategories] = useState(null);
+  const handleOnChange = () => {
+    console.log(programs + ", " + categories)
+    onChange({
+      ...state ,
+      programs: programs,
+    })
+  };
+  
+
+  return (
+    <>
+      <Row>
+        <SectionHeading
+          title="Training Details"
+          icon={<FontAwesomeIcon icon={faCircleInfo} />}
+        />
+        <FormFieldItem
+          col="col-6"
+          label={"Program"}
+          FieldComponent={
+            <Select
+              options={ReturnAllPrograms()}
+              name="TProgram"
+              onChange={(e) => setPrograms(e.value)}
+            />
+          }
+        />
+        <FormFieldItem
+          col="col-6"
+          label={"Category"}
+          FieldComponent={<Select options={ReturnAllCategories()} 
+          name="TCategories"
+              onChange={(e) => setCategories(e.value)}
+          />}
+        />
+        <FormFieldItem
+          col="col-12"
+          label={"Objective"}
+          FieldComponent={
+            <textarea
+              className="form-control"
+              placeholder="Training objective"
+              onChange={handleOnChange}
+            ></textarea>
+          }
+        />
+        <FormFieldItem
+          label={"Venue"}
+          FieldComponent={
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Training Venue"
+            />
+          }
+        />
+      </Row>
+    </>
+  );
+};
+TrainingDetailsContainer.propTypes ={
+  onChange: proptype.func,
 }
-export default TrainingDetailsContainer
+export default TrainingDetailsContainer;

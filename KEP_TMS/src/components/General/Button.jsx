@@ -28,15 +28,16 @@ export const ActionButton = ({ title, actionLink, toggle, variant, onClick }) =>
   );
 };
 
-export const NavigationButton=({leftButton, RightButton})=>{
+export const NavigationButton=({state, leftButton, RightButton})=>{
   return (<>
   <div className="d-flex justify-content-between">
-    <Button variant="light"><FontAwesomeIcon icon={faArrowLeft}/> {leftButton.placeholder}  </Button>
-    <Button variant="success">{RightButton.placeholder} <FontAwesomeIcon icon={faArrowRight}/></Button>
+    <Button variant={"light"} onClick={()=>leftButton.onClick(state > 0 ? state - 1 : 0)} disabled={leftButton.state}><FontAwesomeIcon icon={faArrowLeft}/> {leftButton.placeholder}</Button>
+    <Button variant="success" onClick={() =>RightButton.onClick(state + 1)} disabled={RightButton.state}>{RightButton.placeholder} <FontAwesomeIcon icon={faArrowRight}/></Button>
   </div>
   </>)
 }
 NavigationButton.propTypes = {
+  state: proptype.number.isRequired,
   leftButton: proptype.object,
   RightButton: proptype.object,
 };

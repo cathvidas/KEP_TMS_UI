@@ -5,6 +5,8 @@ import TMS_Header from "../components/General/Header";
 import RenderLayout from "../components/General/Layout";
 import { SectionBanner } from "../components/General/Section";
 import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
+import { GetAllPrograms } from "../services/getApis";
+import { ReturnAllPrograms } from "../services/actions";
 
 const NewRequest = () => {
   const action = () => (
@@ -28,6 +30,7 @@ const NewRequest = () => {
           title="Training Request"
           IconComponent={<FontAwesomeIcon icon={faStickyNote} />}
         />
+        <div className="w-100 overflow-hidden">
         <SectionBanner
           title="Training Requests || Add Request"
           subtitle={
@@ -35,7 +38,7 @@ const NewRequest = () => {
           }
           //  ActionComponents={action}
         />
-        <FormContainer />
+        <FormContainer /></div>
       </>
     );
   };
