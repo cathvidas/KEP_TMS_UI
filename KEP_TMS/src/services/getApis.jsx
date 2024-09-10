@@ -1,3 +1,5 @@
+import axios from "axios"
+
 export const GetEmployees =()=>{
     // return fetch('https://jsonplaceholder.typicode.com/users')
     // .then((response) => response.json())
@@ -145,3 +147,14 @@ export const SampleExamQuestionaire =()=>{
         answer: "Mount Everest"
     },]
 }
+
+export const GetAllPrograms = async () =>{
+    const response = await axios.get("https://localhost:44305/api/TrainingProgram/GetAllTrainingPrograms")
+   return await response.data
+} 
+
+export const GetAllCategories = async () =>{
+    const response = await axios.get("https://localhost:44305/api/TrainingCategory/GetAllTrainingCategories")
+   return await response.data
+} 
+
