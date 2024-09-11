@@ -93,7 +93,7 @@ console.log(expanded)
       style={{
         borderRight:
           "var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)",
-          width: expanded == "true" ? "450px" : "4.5rem",
+          width: expanded == "true" ? "" : "4.5rem",
           height: "100vh"
 
       }}
