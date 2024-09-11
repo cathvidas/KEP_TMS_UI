@@ -1,5 +1,6 @@
-import { API_ENDPOINTS } from "./apiEndpoints"
-import fetchFromApi from "./apiUtils"
+import { API_ENDPOINTS } from "../api/apiEndpoints"
+import fetchFromApi from "../api/apiUtils";
+
 
 export const getTrainingPrograms = async () => {
     return await fetchFromApi(API_ENDPOINTS.GET_TRAINING_PROGRAMS);

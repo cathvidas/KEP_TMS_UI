@@ -1,5 +1,3 @@
-import { Component } from "react";
-
 export const TrainingRequest = () => ({
   requestorId: 0,
   categoryId: 0,
