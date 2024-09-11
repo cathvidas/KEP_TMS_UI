@@ -4,9 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import { SectionHeading } from "../General/Section";
-import { ReturnAllCategories, ReturnAllPrograms } from "../../services/actions";
 import proptype from "prop-types"
 import { useState } from "react";
+import { GetAllTrainingCategories, GetAllTrainingPrograms } from "../../services/trainingServices";
 const TrainingDetailsContainer = ({ onChange, state }) => {
   const [programs, setPrograms] = useState(null);
   const [categories, setCategories] = useState(null);
@@ -17,7 +17,6 @@ const TrainingDetailsContainer = ({ onChange, state }) => {
       programs: programs,
     })
   };
-  
 
   return (
     <>
@@ -31,7 +30,7 @@ const TrainingDetailsContainer = ({ onChange, state }) => {
           label={"Program"}
           FieldComponent={
             <Select
-              options={ReturnAllPrograms()}
+              options={GetAllTrainingPrograms()}
               name="TProgram"
               onChange={(e) => setPrograms(e.value)}
             />
@@ -40,7 +39,7 @@ const TrainingDetailsContainer = ({ onChange, state }) => {
         <FormFieldItem
           col="col-6"
           label={"Category"}
-          FieldComponent={<Select options={ReturnAllCategories()} 
+          FieldComponent={<Select options={GetAllTrainingCategories()} 
           name="TCategories"
               onChange={(e) => setCategories(e.value)}
           />}

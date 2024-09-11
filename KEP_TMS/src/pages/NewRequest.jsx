@@ -5,8 +5,6 @@ import TMS_Header from "../components/General/Header";
 import RenderLayout from "../components/General/Layout";
 import { SectionBanner } from "../components/General/Section";
 import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
-import { GetAllPrograms } from "../services/getApis";
-import { ReturnAllPrograms } from "../services/actions";
 
 const NewRequest = () => {
   const action = () => (
