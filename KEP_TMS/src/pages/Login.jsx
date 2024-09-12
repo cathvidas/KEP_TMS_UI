@@ -20,79 +20,21 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   // response variables
-  var unauthorized = 401;
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      axios
-        .post("http://localhost:5030/api/Users/Login", {
-          employeeId: e.target.badge.value,
-          password: e.target.password.value,
-        })
-        .then((res) => {
-          if (res.data.status === unauthorized) {
-            Toast.fire({
-              icon: "error",
-              title: res.data.message,
-            });
-          }
-          console.log(res);
-
-          if (res.data.isSuccess === true) {
-            const response = res.data;
-            console.log(response.data);
-            sessionStorage.setItem("fullname", response.data.fullname);
-            sessionStorage.setItem("username", response.data.username);
-            sessionStorage.setItem("firstname", response.data.firstname);
-            sessionStorage.setItem("lastname", response.data.lastname);
-            sessionStorage.setItem("token", response.token);
-            navigate("/KEP_TMS/Dashboard");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          if (err.code === "ERR_NETWORK") {
-            Toast.fire({
-              icon: "error",
-              title: err.message,
-            });
-          } else {
-            Toast.fire({
-              icon: "error",
-              title: err,
-            });
-          }
-        });
+    if (validateLogin(badge, password)) {
+      var data = {
+        employeeId: e.target.badge.value,
+        password: e.target.password.value,
+      }
+      var res = await handleUserLogin(data);
+      if(res){
+      navigate("/KEP_TMS/Dashboard");
+      }
     }
   };
 
-  const validate = () => {
-    let result = true;
-    if (
-      (badge === "" || badge === null) &&
-      (password === "" || password === null)
-    ) {
-      result = false;
-      Toast.fire({
-        icon: "warning",
-        title: "Please Enter Credentials",
-      });
-    } else if (badge === "" || badge === null) {
-      result = false;
-      Toast.fire({
-        icon: "warning",
-        title: "Please Enter Your Badge",
-      });
-    } else if (password === "" || password === null) {
-      result = false;
-      Toast.fire({
-        icon: "warning",
-        title: "Please Enter Password",
-      });
-    }
-    return result;
-  };
 
   return (
     <>

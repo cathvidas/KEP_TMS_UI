@@ -2,7 +2,6 @@
 const handleApiResponse = (
   actionType,
   apiFunction,
-  params,
   successMessage,
   erroMessage
 ) => {

@@ -34,8 +34,10 @@ export const API_ENDPOINTS = {
   UPDATE_USER: "/Users/UpdateUser",
   DELETE_USER: "/Users/DeleteUser",
   GET_USER_BY_POSITION_ID : "/Users/GetUserByPositionId",
+  USER_LOGIN: "/Users/Login",
 
 //Training Requests
+
 INSERT_TRAINING_REQUEST: "/TrainingRequest/CreateTrainingRequest",
 GET_TRAINING_REQUESTS: "/TrainingRequest/GetAllTrainingRequests",
 GET_TRAINING_REQUEST_BY_ID: "/TrainingRequest/GetSingleTrainingRequest",
@@ -47,4 +49,6 @@ UPDATE_TRAINING_REQUEST: "/TrainingRequest/UpdateTrainingRequest",
     "/TrainingEffectiveness/GetAllTrainingEffectivenesses",
   GET_TRAINING_EVALUATIONS: "/TrainingEvaluation/GetAllTrainingEvaluations",
   GET_TRAINING_PARTICIPANTS: "/TrainingRequest/GetAllTrainingParticipants",
+
+
 };
