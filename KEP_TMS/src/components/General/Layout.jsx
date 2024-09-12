@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 import proptype from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-const RenderLayout = ({ ActionComponent, showModal, setShowModal }) => {
+const Layout = ({ ActionComponent, showModal, setShowModal }) => {
   const [showmenu, setshowmenu] = useState(true);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
@@ -34,9 +34,9 @@ const RenderLayout = ({ ActionComponent, showModal, setShowModal }) => {
     </>
   );
 };
-RenderLayout.propTypes = {
+Layout.propTypes = {
   ActionComponent: proptype.func,
   showModal: proptype.bool,
   setShowModal: proptype.func,
 };
-export default RenderLayout;
+export default Layout;

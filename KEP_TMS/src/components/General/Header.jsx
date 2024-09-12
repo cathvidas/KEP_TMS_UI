@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import proptype from "prop-types";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
-const TMS_Header = ({ title, IconComponent, showModal, setShowModal }) => {
+const Header = ({ title, IconComponent, showModal, setShowModal }) => {
   const handleShow = () => {
     setShowModal(!showModal);
   };
@@ -86,11 +86,11 @@ const TMS_Header = ({ title, IconComponent, showModal, setShowModal }) => {
   );
 };
 
-TMS_Header.propTypes = {
+Header.propTypes = {
   title: proptype.string.isRequired,
   IconComponent: proptype.object,
   showModal: proptype.bool,
   setShowModal: proptype.func,
 };
 
-export default TMS_Header;
+export default Header;
