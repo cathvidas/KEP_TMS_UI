@@ -6,7 +6,6 @@ import { FormFieldItem } from "./FormElements";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { SectionHeading } from "../General/Section";
-import { TrainingDates } from "../../services/insertData";
 import { useState } from "react";
 
 const ScheduleContainer = ({
