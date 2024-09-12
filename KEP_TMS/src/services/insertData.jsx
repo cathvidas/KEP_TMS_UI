@@ -28,12 +28,11 @@ export const TrainingParticipants = () => ({
   reportId: 0,
 });
 
-export const TrainingDates = () => ({
-  id: 0,
-  date: null,
-  startTime: null,
-  endTime: null,
-});
+export const TrainingDates ={
+  date: "",
+  startTime: "",
+  endTime: "",
+};
 export const TrainingFacilitators = () => ({
   facilitorId: 0,
   trainingRequestId: 0,

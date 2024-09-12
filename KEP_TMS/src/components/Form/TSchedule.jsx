@@ -6,8 +6,13 @@ import { FormFieldItem } from "./FormElements"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCalendar } from "@fortawesome/free-solid-svg-icons"
 import { SectionHeading } from "../General/Section"
+import { TrainingDates } from "../../services/insertData"
+import { useState } from "react"
 
 const ScheduleContainer =({trainingSchedules, removeSechedule, schedData, handleInputChange, handleTrainingSched})=>{
+  const [dates, setDate] = useState({
+    
+  });
     return(
         <>
         <Row className="mt-2">
@@ -52,8 +57,8 @@ const ScheduleContainer =({trainingSchedules, removeSechedule, schedData, handle
                   <input
                     className="form-control"
                     type="date"
-                    name="schedDate"
-                    value={schedData.schedDate}
+                    name="date"
+                    value={schedData?.date}
                     onChange={handleInputChange}
                   />
                 </Col>
@@ -68,8 +73,8 @@ const ScheduleContainer =({trainingSchedules, removeSechedule, schedData, handle
                   <input
                     className="form-control"
                     type="time"
-                    name="timeIn"
-                    value={schedData.timeIn}
+                     name="startTime"
+                    value={schedData?.startTime}
                     onChange={handleInputChange}
                   />
                 </Col>
@@ -84,8 +89,8 @@ const ScheduleContainer =({trainingSchedules, removeSechedule, schedData, handle
                   <input
                     className="form-control"
                     type="time"
-                    name="timeOut"
-                    value={schedData.timeOut}
+                    // name={dates.endTime}
+                    value={schedData?.endTime}
                     onChange={handleInputChange}
                   />
                 </Col>
@@ -114,7 +119,7 @@ const ScheduleContainer =({trainingSchedules, removeSechedule, schedData, handle
 ScheduleContainer.propTypes ={
     trainingSchedules: proptype.array.isRequired,
     removeSechedule: proptype.func.isRequired,
-    schedData: proptype.object.isRequired,
+    schedData: proptype.object,
     handleInputChange: proptype.func.isRequired,
     handleTrainingSched: proptype.func.isRequired
 }

@@ -9,9 +9,9 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import logo from "../img/logo.png";
-import axios from "axios";
 import { useState } from "react";
-import { Toast } from "../components/SweetToast";
+import validateLogin from "../utils/LoginValidation";
+import handleUserLogin from "../services/loginServices";
 
 const Login = () => {
   const navigate = useNavigate();
