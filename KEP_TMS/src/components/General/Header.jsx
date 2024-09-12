@@ -1,17 +1,26 @@
 import { Button, Navbar } from "react-bootstrap";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import proptype from 'prop-types'
-import {faPlus} from '@fortawesome/free-solid-svg-icons'
- const TMS_Header = ({ title , IconComponent}) => {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import proptype from "prop-types";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+
+const TMS_Header = ({ title, IconComponent, showModal, setShowModal }) => {
+  const handleShow = () => {
+    setShowModal(!showModal);
+  };
   return (
     <Navbar className="navbar-expand-md d-flex">
       <a className="navbar-brand d-flex align-items-center fw-bold" href="#">
         <span
           className="d-flex justify-content-center align-items-center bs-icon"
-          style={{ color: 'rgb(0, 167, 111)', background: 'rgba(13, 110, 253, 0)' }}
+          style={{
+            color: "rgb(0, 167, 111)",
+            background: "rgba(13, 110, 253, 0)",
+          }}
         >
           {IconComponent && IconComponent}
-        <span className="ms-2 " style={{ color: "#00a76f" }}>{title}</span>
+          <span className="ms-2 " style={{ color: "#00a76f" }}>
+            {title}
+          </span>
         </span>
       </a>
       <button className="navbar-toggler" data-bs-toggle="collapse">
@@ -68,15 +77,20 @@ import {faPlus} from '@fortawesome/free-solid-svg-icons'
           style={{ background: "#00a76f", color: "rgb(255,255,255)" }}
           data-bs-toggle="modal"
           data-bs-target="#TRtype"
+          onClick={handleShow}
         >
-                  <FontAwesomeIcon icon={faPlus} />
+          <FontAwesomeIcon icon={faPlus} />
         </Button>
       </div>
     </Navbar>
   );
-}
-TMS_Header.propTypes ={
+};
+
+TMS_Header.propTypes = {
   title: proptype.string.isRequired,
-  IconComponent: proptype.object
-}
-export default TMS_Header
+  IconComponent: proptype.object,
+  showModal: proptype.bool,
+  setShowModal: proptype.setShowModal,
+};
+
+export default TMS_Header;

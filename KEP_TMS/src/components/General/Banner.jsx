@@ -1,8 +1,9 @@
 import { Col, Row } from "react-bootstrap";
 import { ActionButton } from "./Button";
 import bannerimg from "../../img/banner.png";
+import proptypes from "prop-types";
 
-const Banner = () => {
+const Banner = ({ showModal, setShowModal }) => {
   const username = sessionStorage.getItem("username");
   const fullname = sessionStorage.getItem("fullname");
 
@@ -12,6 +13,10 @@ const Banner = () => {
     } else {
       return fullname;
     }
+  };
+
+  const handleShow = () => {
+    setShowModal(!showModal);
   };
 
   return (
@@ -35,10 +40,7 @@ const Banner = () => {
               &apos;Request Training&apos; to start or &apos;View All
               Requests&apos; to track your progress.
             </p>
-            <ActionButton
-              title="Request Training"
-              toggle={{ Item: "modal", Target: "#TRtype" }}
-            />
+            <ActionButton title="Request Training" onClick={handleShow} />
             <ActionButton
               title="View All Request"
               actionLink="/KEP_TMS/Newrequest"
@@ -50,7 +52,7 @@ const Banner = () => {
           <div className="m-xl-5 ">
             <img
               className="rounded img-fluid fit-cover"
-              style={{ minHeight: "150px", maxHeight: '200px' }}
+              style={{ minHeight: "150px", maxHeight: "200px" }}
               src={bannerimg}
             />
           </div>
@@ -58,5 +60,9 @@ const Banner = () => {
       </Row>
     </div>
   );
+};
+Banner.propTypes = {
+  showModal: proptypes.bool,
+  setShowModal: proptypes.func,
 };
 export default Banner;

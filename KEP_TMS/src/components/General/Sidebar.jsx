@@ -36,12 +36,12 @@ const NavItem = ({ item, icon, title, expanded }) => {
     </Tooltip>
   );
   return (
-    <li className="nav-item " >
+    <li className="nav-item ">
       <OverlayTrigger
         placement="right"
         overlay={expanded === "false" ? tooltip : <></>}
       >
-        <Link className={getClassNames(item)} to={item} aria-current="page" >
+        <Link className={getClassNames(item)} to={item} aria-current="page">
           {icon && <>{icon}</>}
           {expanded == "true" && title && (
             <span className="text-start">{title}</span>
@@ -55,17 +55,16 @@ const Sidebar = () => {
   const [expanded, setExpanded] = useState(localStorage.getItem("s-expand"));
   const navigate = useNavigate();
   const toggleSidebar = () => {
-   var x = localStorage.getItem("s-expand");
-   if(x == "true"){
-    localStorage.setItem("s-expand", "false");
-   setExpanded("false")
-   }else{
-    localStorage.setItem("s-expand", "true");
-    setExpanded("true")
-   }
+    var x = localStorage.getItem("s-expand");
+    if (x == "true") {
+      localStorage.setItem("s-expand", "false");
+      setExpanded("false");
+    } else {
+      localStorage.setItem("s-expand", "true");
+      setExpanded("true");
+    }
   };
 
-console.log(expanded)
   const firstname = sessionStorage.getItem("firstname");
   const lastname = sessionStorage.getItem("lastname");
 
@@ -93,9 +92,8 @@ console.log(expanded)
       style={{
         borderRight:
           "var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)",
-          width: expanded == "true" ? "" : "4.5rem",
-          height: "100vh"
-
+        width: expanded == "true" ? "" : "4.5rem",
+        height: "100vh",
       }}
     >
       <div
@@ -121,8 +119,11 @@ console.log(expanded)
           href="/"
         >
           <img src={icon} width="43" />
-          {expanded === "true" && 
-          <small>KNOWLES TRAINING <br /> REQUEST SYSTEM</small>}
+          {expanded === "true" && (
+            <small>
+              KNOWLES TRAINING <br /> REQUEST SYSTEM
+            </small>
+          )}
         </Link>
         <ul className="nav nav-pills flex-column text-center nav-flush mb-auto">
           <NavItem

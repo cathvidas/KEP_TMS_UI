@@ -10,7 +10,7 @@ import TrainingParticipant from "./Form/TParticipants";
 import TrainingCost from "./Form/TrainingCost";
 import TrainingSummary from "./Form/TSummary";
 import { TrainingDates, TrainingRequest } from "../services/insertData";
-import proptype from "prop-types"
+import proptype from "prop-types";
 
 export const FormContainer = () => {
   const [data, setData] = useState(TrainingRequest);
@@ -37,6 +37,7 @@ export const FormContainer = () => {
     const updatedSchedules = trainingSchedules.filter((item, i) => i !== index);
     setTrainingSchedules(updatedSchedules);
   };
+
   const FormStepTrainingDetails = () => (
     <>
       <TrainingDetailsContainer />
@@ -51,10 +52,23 @@ export const FormContainer = () => {
   );
   const ContentList = [
     <FormStepTrainingDetails key={1} />,
-    <TrainingParticipant key={"2"} participants={participants} onInput={handleParticipants} />,
-    <TrainingCost key={"3"} totalCost={trainingCost} participants={participants} onInput={updateTrainingCost} />,
-    <TrainingSummary key={"4"} schedule={trainingSchedules} participants={participants} />,
-  ]
+    <TrainingParticipant
+      key={"2"}
+      participants={participants}
+      onInput={handleParticipants}
+    />,
+    <TrainingCost
+      key={"3"}
+      totalCost={trainingCost}
+      participants={participants}
+      onInput={updateTrainingCost}
+    />,
+    <TrainingSummary
+      key={"4"}
+      schedule={trainingSchedules}
+      participants={participants}
+    />,
+  ];
   const [index, setIndex] = useState(0);
 
   const changeFormContent = (state) => {
@@ -63,31 +77,38 @@ export const FormContainer = () => {
   return (
     <Card>
       <Card.Body>
-        <FormHeader active={index}/>
+        <FormHeader active={index} />
         {ContentList[index]}
         <Col className="col-12 col-md-7 "></Col>
         <br />
         <NavigationButton
-        state={index}
-          leftButton={{ placeholder: "back", onClick: changeFormContent , state: index <= 0 ? true:false }}
-          RightButton={{ placeholder: "next" , onClick: changeFormContent, state: index < ContentList.length - 1? false:true }}
+          state={index}
+          leftButton={{
+            placeholder: "back",
+            onClick: changeFormContent,
+            state: index <= 0 ? true : false,
+          }}
+          RightButton={{
+            placeholder: "next",
+            onClick: changeFormContent,
+            state: index < ContentList.length - 1 ? false : true,
+          }}
         />
       </Card.Body>
     </Card>
   );
 };
 
-
-export const FormHeader = ({active}) => {
-  const changeState =(step)=>{
-    if(active == step){
-      return "active"
-    } else if(step < active){
-      return "success"
-    }else{
-      return ""
+export const FormHeader = ({ active }) => {
+  const changeState = (step) => {
+    if (active == step) {
+      return "active";
+    } else if (step < active) {
+      return "success";
+    } else {
+      return "";
     }
-  }
+  };
   return (
     <>
       <div className="pb-3 border-bottom">
@@ -96,7 +117,7 @@ export const FormHeader = ({active}) => {
           <FontAwesomeIcon icon={faGreaterThan} />
           <FormStep step={2} title="Participants" state={changeState(1)} />
           <FontAwesomeIcon icon={faGreaterThan} />
-          <FormStep step={3} title="Cost" state={changeState(2)}  />
+          <FormStep step={3} title="Cost" state={changeState(2)} />
           <FontAwesomeIcon icon={faGreaterThan} />
           <FormStep step={4} title="Summary" state={changeState(3)} />
         </div>
@@ -104,6 +125,6 @@ export const FormHeader = ({active}) => {
     </>
   );
 };
-FormHeader.propTypes={
+FormHeader.propTypes = {
   active: proptype.number.isRequired,
-}
+};
