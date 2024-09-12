@@ -25,7 +25,7 @@ export const FormContainer = () => {
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(e.target)
+    console.log(e.target);
     setSchedData((obj) => ({ ...obj, [name]: value }));
   };
 
@@ -37,8 +37,6 @@ export const FormContainer = () => {
     const updatedSchedules = trainingSchedules.filter((item, i) => i !== index);
     setTrainingSchedules(updatedSchedules);
   };
-  
-  console.log(trainingSchedules)
   const FormStepTrainingDetails = () => (
     <>
       <TrainingDetailsContainer />

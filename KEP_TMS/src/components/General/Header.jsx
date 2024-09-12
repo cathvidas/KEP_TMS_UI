@@ -90,7 +90,7 @@ TMS_Header.propTypes = {
   title: proptype.string.isRequired,
   IconComponent: proptype.object,
   showModal: proptype.bool,
-  setShowModal: proptype.setShowModal,
+  setShowModal: proptype.func,
 };
 
 export default TMS_Header;
