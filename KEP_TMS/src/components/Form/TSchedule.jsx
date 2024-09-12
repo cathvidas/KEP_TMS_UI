@@ -91,7 +91,7 @@ const ScheduleContainer = ({
                   <input
                     className="form-control"
                     type="time"
-                    // name={dates.endTime}
+                     name="endTime"
                     value={schedData?.endTime}
                     onChange={handleInputChange}
                   />

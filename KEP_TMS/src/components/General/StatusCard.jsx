@@ -6,10 +6,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Card, Col, Row } from "react-bootstrap";
 import proptype from "prop-types";
-import { useState } from "react";
 const StatusCard = ({ variant, placeholder, value }) => {
-  
-    const background = variant == "success" ? "bg-success" : variant == "danger"? "bg-danger": variant == "warning" ? "bg-warning" : "bg-light";
+  const textcolor = variant == "warning" ? "text-black" : "text-white";
+    const background = variant == "success" ? "bg-success" : variant == "danger"? "bg-danger": variant == "warning" ? "bg-warning" : "bg-secondary";
 
 
   return (
@@ -24,7 +23,7 @@ const StatusCard = ({ variant, placeholder, value }) => {
               <FontAwesomeIcon icon={faIcons} />
             </span>
           </div>
-          <h5 className="m-0">{placeholder}</h5>
+          <h5 className={`m-0 ${textcolor}`}>{placeholder}</h5>
         </div>
         <Row className="bg-white text-muted p-2 mt-2 rounded mx-2">
           <Col>

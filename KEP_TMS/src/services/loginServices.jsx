@@ -12,6 +12,7 @@ const handleUserLogin = async (data) => {
       sessionStorage.setItem("username", data.username);
       sessionStorage.setItem("firstname", data.firstname);
       sessionStorage.setItem("lastname", data.lastname);
+      sessionStorage.setItem("id", data.id);
       sessionStorage.setItem("token", data.token);
       return true
     } else{  

@@ -6,6 +6,7 @@ import { Table } from "react-bootstrap";
 
 const TrainingScheduleList = ({schedules, onDelete}) => {
     console.log(schedules.length)
+    console.log(schedules)
   return (
     <>
       {schedules.length > 0 ? (
@@ -24,9 +25,9 @@ const TrainingScheduleList = ({schedules, onDelete}) => {
             {schedules.map((sched, index) => (
               <tr key={index}>
                 <td>{index + 1}</td>
-                <td>{FormatDate(sched.schedDate)}</td>
-                <td>{FormatTime(sched.timeIn)}</td>
-                <td>{FormatTime(sched.timeOut)}</td>
+                <td>{FormatDate(sched.date)}</td>
+                <td>{FormatTime(sched.startTime)}</td>
+                <td>{FormatTime(sched.endTime)}</td>
                 {onDelete && 
                 <td className="text-danger">
                   <FontAwesomeIcon

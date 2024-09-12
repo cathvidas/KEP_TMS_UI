@@ -5,16 +5,16 @@ const handleApiResponse = (
   successMessage,
   erroMessage
 ) => {
-  var list = [];
+  let list = [];
   try {
-    var response = apiFunction();
+    const response = apiFunction();
     if (response) {
       response.then((res) => {
         res.forEach((data) => {
           if (actionType) {
             list.push(actionType(data));
           } else {
-            list.push({data});
+            list.push(data);
           }
         });
       });
@@ -22,9 +22,10 @@ const handleApiResponse = (
     {
       successMessage && console.log(successMessage);
     }
+    return list;
   } catch (error) {
     console.log(erroMessage && erroMessage, error);
+    return[]
   }
-  return list;
 };
 export default handleApiResponse;

@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import proptype, { func } from "prop-types";
 import React from "react";
 
-export const RequestMenu = () => {
+export const RequestMenu = ({menuList, action, current}) => {
+  
+  console.log(menuList)
   return (
     <>
       <div
@@ -16,9 +18,13 @@ export const RequestMenu = () => {
           <h6 className="m-0">MENU</h6>
         </div>
         <ul className="list-group">
-          <MenuItem title={"Overview"} />
+          {menuList ? menuList.map((item, i)=>(
+            React.cloneElement(item, {key: i})
+          )): (<>
+          
+          <MenuItem title={"Overview"} state={current == 0 && true} onCLick={action} param={0} />
           <MenuItem title={"Modules"} />
-          <MenuItem title={"Exam"} />
+          <MenuItem title={"Exam"} state={current == 1&& true} onCLick={action} param={1}/>
           <MenuItem title={"Reports"} />
           <DropdownContainer
             title={"Dropdowns"}
@@ -26,17 +32,20 @@ export const RequestMenu = () => {
               <MenuItem key={""} title={"Menu 1"} />,
               <MenuItem key={""} title={"Menu 2"} />,
             ]}
-          />
+          /></>
+
+          )}
         </ul>
       </div>
     </>
   );
 };
 
-export const MenuItem = ({title }) => {
+export const MenuItem = ({title, state, onCLick, param }) => {
   return (
       <li
-        className={`list-group-item border-0 py-2 px-3 theme-hover cursor-pointer`}
+        className={`list-group-item border-0 py-2 px-3  theme-hover cursor-pointer ${state ? "theme-bg": ""}`}
+        onClick={()=>onCLick(param)}
       >
         <span>{title}</span>
       </li>
@@ -83,5 +92,9 @@ DropdownContainer.propTypes = {
 MenuItem.propTypes = {
   components: proptype.array,
   title: proptype.string.isRequired,
+  state: proptype.bool,
+};
+RequestMenu.propTypes = {
+  menuList: proptype.arrayOf(proptype.node),  
 };
 

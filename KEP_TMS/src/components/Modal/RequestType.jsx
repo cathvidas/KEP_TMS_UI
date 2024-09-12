@@ -6,9 +6,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import proptypes from "prop-types";
+import { TrainingType } from "../../api/constants";
 
 const RequestModal = ({ showModal, setShowModal }) => {
   console.log(showModal);
+  const handleResponse=(res)=>{
+localStorage.setItem("request-type", res)
+  }
   return (
     <>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -30,7 +34,7 @@ const RequestModal = ({ showModal, setShowModal }) => {
           <Row className="gy-4 mt-3">
             <Col>
               <div className="text-center text-theme-hover d-flex flex-column align-items-center align-items-xl-center">
-                <Link to="/KEP_TMS/NewRequest" className="text-decoration-none">
+                <Link to="/KEP_TMS/NewRequest" className="text-decoration-none" onClick={()=>handleResponse(TrainingType.INTERNAL)}>
                   {" "}
                   <FontAwesomeIcon
                     icon={faBuildingCircleCheck}
@@ -42,7 +46,7 @@ const RequestModal = ({ showModal, setShowModal }) => {
             </Col>
             <Col>
               <div className="text-center text-theme-hover d-flex flex-column align-items-center align-items-xl-center">
-                <Link className="text-decoration-none" to="/KEP_TMS/NewRequest">
+                <Link className="text-decoration-none" to="/KEP_TMS/NewRequest" onClick={()=>handleResponse(TrainingType.EXTERNAL)}>
                   <FontAwesomeIcon
                     icon={faBuildingCircleArrowRight}
                     style={{ color: "rgb(0,153,81)", fontSize: "50px" }}

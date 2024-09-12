@@ -1,13 +1,15 @@
+import { SessionGetUserId } from "./sessions";
+
 export const TrainingRequest = () => ({
-  requestorId: 0,
+  requestorId: SessionGetUserId()??0,
   categoryId: 0,
   trainingProgramId: 0,
   trainingProviderId: 0,
-  trainingTypeId: 0,
-  trainingObjectives: null,
+  trainingTypeId: parseInt(localStorage.getItem("request-type")) ??  0,
+  trainingObjectives: "",
   trainingStartDate: null,
   trainingEndDate: null,
-  venue: null,
+  venue: "",
   trainingParticipants: [],
   isOffSite: true,
   trainingFee: 0,

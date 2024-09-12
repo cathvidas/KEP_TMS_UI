@@ -5,17 +5,17 @@ import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import { SectionHeading } from "../General/Section";
 import proptype from "prop-types"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GetAllTrainingCategories, GetAllTrainingPrograms } from "../../services/trainingServices";
-const TrainingDetailsContainer = ({ onChange, state }) => {
+const TrainingDetailsContainer = ({ onChange, state, handleResponse, formData }) => {
   const [programs, setPrograms] = useState(null);
   const [categories, setCategories] = useState(null);
-  const handleOnChange = () => {
-    console.log(programs + ", " + categories)
-    onChange({
-      ...state ,
-      programs: programs,
-    })
+  const [venue, setVenue] = useState({Venue: null});
+console.log(formData)
+
+  const handleOnChange = (e, value) => {
+console.log(e, value)
+    onChange(e, value.value)
   };
 
   return (
@@ -32,17 +32,21 @@ const TrainingDetailsContainer = ({ onChange, state }) => {
             <Select
               options={GetAllTrainingPrograms()}
               name="TProgram"
-              onChange={(e) => setPrograms(e.value)}
+              defaultValue={formData?.categoryId}
+              onChange={(e) => setPrograms(formData?.categoryId ?? e.value)}
             />
           }
         />
         <FormFieldItem
           col="col-6"
           label={"Category"}
-          FieldComponent={<Select options={GetAllTrainingCategories()} 
-          name="TCategories"
-              onChange={(e) => setCategories(e.value)}
-          />}
+          FieldComponent={
+            <Select
+              options={GetAllTrainingCategories()}
+              onChange={(e) => handleOnChange("categoryId", e)}
+              defaultValue={GetAllTrainingCategories()[formData.categoryId]}
+            />
+          }
         />
         <FormFieldItem
           col="col-12"
@@ -51,7 +55,9 @@ const TrainingDetailsContainer = ({ onChange, state }) => {
             <textarea
               className="form-control"
               placeholder="Training objective"
-              onChange={handleOnChange}
+              name="trainingObjectives"
+              value={formData?.trainingObjectives}
+              onChange={handleResponse}
             ></textarea>
           }
         />
@@ -61,7 +67,10 @@ const TrainingDetailsContainer = ({ onChange, state }) => {
             <input
               type="text"
               className="form-control"
-              placeholder="Training Venue"
+              name="venue"
+              placeholder="Venue"
+              value={formData?.venue}
+              onChange={handleResponse}
             />
           }
         />
@@ -71,5 +80,7 @@ const TrainingDetailsContainer = ({ onChange, state }) => {
 };
 TrainingDetailsContainer.propTypes ={
   onChange: proptype.func,
+  handleResponse: proptype.func,
+  formData: proptype.object,
 }
 export default TrainingDetailsContainer;

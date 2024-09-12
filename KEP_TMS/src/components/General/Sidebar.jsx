@@ -133,43 +133,43 @@ const Sidebar = () => {
             icon={<FontAwesomeIcon icon={faHouse} />}
           />
           <NavItem
-            item={"/KEP_TMS/Request_View"}
+            item={"/KEP_TMS/RequestList"}
             title="Request List"
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faClipboardList} />}
           />
           <NavItem
-            item={"/KEP_TMS/NewRequest"}
-            title="For Approval"
-            expanded={expanded}
-            icon={<FontAwesomeIcon icon={faPenToSquare} />}
-          />
-          <NavItem
-            item={"/KEP_TMS/Request_Approval"}
-            title="For Approval"
-            expanded={expanded}
-            icon={<FontAwesomeIcon icon={faCheckToSlot} />}
-          />
-          <NavItem
-            item="/"
+            item="/KEP_TMS/Trainings"
             title="Training List"
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faClipboardCheck} />}
           />
           <NavItem
-            item="/"
+            item={"/KEP_TMS/ForApproval"}
+            title="For Approval"
+            expanded={expanded}
+            icon={<FontAwesomeIcon icon={faPenToSquare} />}
+          />
+          <NavItem
+            item={"/KEP_TMS/Request_View"}
+            title="For Approval"
+            expanded={expanded}
+            icon={<FontAwesomeIcon icon={faCheckToSlot} />}
+          />
+          <NavItem
+            item="/KEP_TMS/MasterList"
             title="Master List"
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faList} />}
           />
           <NavItem
-            item="/"
+            item="/KEP_TMS/CertificatesPage"
             title="Certificates"
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faAward} />}
           />
           <NavItem
-            item="/"
+            item="/KEP_TMS/AnalyticsPage"
             title="Analytics"
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faBarChart} />}

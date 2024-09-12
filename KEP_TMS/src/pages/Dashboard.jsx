@@ -1,18 +1,18 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Banner from "../components/General/Banner";
-import TMS_Header from "../components/General/Header";
-import RenderLayout from "../components/General/Layout";
 import { SectionTitle } from "../components/General/Section";
 import RTable from "../components/General/Table";
 import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import proptypes from "prop-types";
+import Header from "../components/General/Header";
+import Layout from "../components/General/Layout";
 
 const Content = ({ showModal, setShowModal }) => {
   const icon = <FontAwesomeIcon icon={faHouse} />;
   return (
     <>
-      <TMS_Header
+      <Header
         title="Dashboard"
         IconComponent={icon}
         showModal={showModal}
@@ -35,7 +35,7 @@ Content.propTypes = {
 const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
   return (
-    <RenderLayout
+    <Layout
       ActionComponent={() => (
         <Content showModal={showModal} setShowModal={setShowModal} />
       )}

@@ -15,16 +15,16 @@ export const ExamItem = ({ itemNo, question, options, answer, onAnswer }) => {
     setChosen(chosen);
     var correct = false;
     if (chosen === answer) {
-      Toast.fire({
-        icon: "success",
-        title: "Correct",
-      });
+      // Toast.fire({
+      //   icon: "success",
+      //   title: "Correct",
+      // });
       correct = true;
     } else {
-      Toast.fire({
-        icon: "error",
-        title: "Wrong",
-      });
+      // Toast.fire({
+      //   icon: "error",
+      //   title: "Wrong",
+      // });
       correct = false;
     }
     onAnswer(correct);

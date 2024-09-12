@@ -14,8 +14,9 @@
 .text-theme-hover:hover *{
     color: rgb(22, 187, 159) !important;
 }
-.theme-table tr:hover td, .theme-hover:hover {
+.theme-table tr:hover td, .theme-hover:hover, .theme-hover:hover * {
     background-color: #dff8ee !important;
+    color: var(--theme-color) !important;
 }
 .filter-hover:hover {
     filter: brightness(110%);

@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ActionButton } from "../components/General/Button";
 import { FormContainer } from "../components/Form";
-import TMS_Header from "../components/General/Header";
-import RenderLayout from "../components/General/Layout";
 import { SectionBanner } from "../components/General/Section";
 import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
+import Header from "../components/General/Header";
+import Layout from "../components/General/Layout";
 
 const NewRequest = () => {
   const action = () => (
@@ -24,7 +24,7 @@ const NewRequest = () => {
   const Content = () => {
     return (
       <>
-        <TMS_Header
+        <Header
           title="Training Request"
           IconComponent={<FontAwesomeIcon icon={faStickyNote} />}
         />
@@ -42,6 +42,6 @@ const NewRequest = () => {
     );
   };
 
-  return <RenderLayout ActionComponent={Content} />;
+  return <Layout ActionComponent={Content} />;
 };
 export default NewRequest;

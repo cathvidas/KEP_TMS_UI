@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
 import { ActionButton, NavigationButton } from "./General/Button";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Card, Col, Form } from "react-bootstrap";
 import { FormStep } from "./Form/FormElements";
 import TrainingDetailsContainer from "./Form/TDetails";
@@ -10,13 +10,15 @@ import TrainingParticipant from "./Form/TParticipants";
 import TrainingCost from "./Form/TrainingCost";
 import TrainingSummary from "./Form/TSummary";
 import proptype from "prop-types";
+import { TrainingDates, TrainingRequest } from "../services/insertData";
 
 export const FormContainer = () => {
+  const [formData, setFormData] = useState(TrainingRequest);
   const [trainingSchedules, setTrainingSchedules] = useState([]);
-  const [schedData, setSchedData] = useState();
+  const [schedData, setSchedData] = useState(TrainingDates);
   const [participants, setParticipants] = useState([{ name: "" }, { id: "" }]);
   const [trainingCost, setTrainingCost] = useState(0);
-
+console.log(formData)
   const handleParticipants = (participants) => {
     setParticipants(participants);
   };
@@ -24,22 +26,30 @@ export const FormContainer = () => {
     setTrainingCost(cost);
   };
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
     console.log(e.target);
+    const { name, value } = e.target;
     setSchedData((obj) => ({ ...obj, [name]: value }));
+  };
+  const handleResponse = (e) => {
+    console.log(e.target);
+    const { name, value } = e.target;
+    setFormData((obj) => ({ ...obj, [name]: value }));
+  };
+  const handleOnChange= (e, b) => {
+    setFormData((obj) => ({ ...obj, [e]: b }));
   };
 
   const handleTrainingSched = () => {
     setTrainingSchedules((prevSchedules) => [...prevSchedules, schedData]);
     setSchedData({});
-  };
+  };  
   const removeSechedule = (index) => {
     const updatedSchedules = trainingSchedules.filter((item, i) => i !== index);
     setTrainingSchedules(updatedSchedules);
   };
   const FormStepTrainingDetails = () => (
     <>
-      <TrainingDetailsContainer />
+      <TrainingDetailsContainer onChange={handleOnChange} handleResponse={handleResponse} formData={formData} />
       <ScheduleContainer
         trainingSchedules={trainingSchedules}
         removeSechedule={removeSechedule}

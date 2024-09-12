@@ -2,7 +2,7 @@ import { DetailItem, Heading } from "./DetailItem";
 import proptype from "prop-types";
 const TDOverview = ({ details }) => {
   return (
-    <>
+    <div>
       <Heading value="Details" />
       <DetailItem
         label="Program"
@@ -24,7 +24,7 @@ const TDOverview = ({ details }) => {
         label="Provider"
         value={details?.program ? details.program.category : "N/A"}
       />
-    </>
+    </div>
   );
 };
 TDOverview.propTypes = {

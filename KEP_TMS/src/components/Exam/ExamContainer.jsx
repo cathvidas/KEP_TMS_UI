@@ -11,8 +11,8 @@ const randoMizeOptions=(options)=>{
     return options;
 }
 const ExamContainer = () => {
-   const [exam] = useState(()=>RandomizeExam());
-// const [exam] = useState(SampleExamQuestionaire);
+  const [exam] = useState(()=>RandomizeExam());
+//const [exam] = useState(SampleExamQuestionaire);
 const [currentQuestion, setCurrentQuestion] = useState(exam[0]);
 console.log(currentQuestion)
   const [index, setIndex] = useState(0);
@@ -25,10 +25,12 @@ console.log(currentQuestion)
       setScore(score + 1);
     }
     if (index < exam.length) {
-        setTimeout(()=>{
-            setIndex(index + 1);
-            setCurrentQuestion(exam[index + 1]);
-        }, 5000)
+      setIndex(index + 1);
+      setCurrentQuestion(exam[index + 1]);
+        // setTimeout(()=>{
+        //     setIndex(index + 1);
+        //     setCurrentQuestion(exam[index + 1]);
+        // }, 5000)
     } else {
       alert(`Your score is ${score}/${exam.length}`);
     }

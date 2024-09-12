@@ -1,40 +1,47 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import TMS_Header from "../components/General/Header";
-import RenderLayout from "../components/General/Layout";
 import { RequestMenu } from "../components/TrainingDetails/Menu";
 import { SectionHeading } from "../components/General/Section.jsx";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import TDOverview from "../components/TrainingDetails/TDetOverview.jsx";
 import TScheduleOverview from "../components/TrainingDetails/TSchedOverview.jsx";
 import { GetSchedule, SampleStringList } from "../services/getApis.jsx";
-import { TabHeader } from "../components/General/Tab.jsx";
+import { TabHeader } from "../components/General/TabHeader.jsx";
 import ExamContainer from "../components/Exam/ExamContainer.jsx";
 import StatusCard from "../components/General/StatusCard.jsx";
 import StatusChart from "../components/General/Chart.jsx";
+import Header from "../components/General/Header.jsx";
+import Layout from "../components/General/Layout.jsx";
+import { useEffect, useState } from "react";
 
 const Content = () => {
+  const pages = [
+    <>
+      <SectionHeading
+        title="Overview"
+        icon={<FontAwesomeIcon icon={faInfoCircle} />}
+      />
+      <p>Here you can see the details of your training.</p>
+      <TDOverview />
+      <TScheduleOverview schedule={GetSchedule()} />
+    </>, <>  <ExamContainer /></>
+  ];
+  var curIndex = 0;
+  const [currentContent, setCurrentContent] = useState(0);
+  const handleChangeContent =(i)=>{
+    setCurrentContent(i)
+    
+  }
   return (
     <>
-      <TMS_Header title={"Training Detail"} />
+      <Header title={"Training Detail"} />
       <div className="d-flex gap-3">
-        <RequestMenu />
+        <RequestMenu action={handleChangeContent} current={currentContent}/>
         <div className="flex-fill">
-          <SectionHeading
-            title="Overview"
-            icon={<FontAwesomeIcon icon={faInfoCircle} />}
-          />
-          <StatusChart data={24} />
-          <StatusCard
-            variant={"success"}
-            placeholder="Submitted"
-            value={{ internal: "12", external: "18" }}
-          />
-          <p>Here you can see the details of your training.</p>
-          <TDOverview />
-          <TScheduleOverview schedule={GetSchedule()} />
-          <br />
-          <TabHeader tablist={SampleStringList()} activeItem={"Apple"} />
-          <ExamContainer />
+          {pages[currentContent]}
+          {/* <div className="float-right">
+            <StatusChart data={24} />
+          </div> */}
+
         </div>
       </div>
     </>
@@ -43,7 +50,7 @@ const Content = () => {
 const RequestView = () => {
   return (
     <>
-      <RenderLayout ActionComponent={Content} />
+      <Layout ActionComponent={Content} />
     </>
   );
 };

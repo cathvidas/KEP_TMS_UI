@@ -10,6 +10,9 @@ export const getTrainingCategories = async () => {
     return await fetchFromApi(API_ENDPOINTS.GET_TRAINING_CATEGORIES);
 }
 
+export const getAllTrainingRequests = async () => {
+    return await fetchFromApi(API_ENDPOINTS.GET_TRAINING_REQUESTS);
+}
 export const getTrainingParticipants = async (programId) => {
     return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_PARTICIPANTS}/${programId}`);
 }

@@ -1,5 +1,5 @@
 import handleApiResponse from "../api/apiHandlers";
-import { getTrainingCategories, getTrainingPrograms } from "../api/trainingServiceApi";
+import { getAllTrainingRequests, getTrainingCategories, getTrainingPrograms } from "../api/trainingServiceApi";
 import { FormatToOptions } from "../utils/Formatting";
 
 export const GetAllTrainingPrograms = () => {
@@ -8,3 +8,11 @@ export const GetAllTrainingPrograms = () => {
 export const GetAllTrainingCategories = () => {
   return handleApiResponse(FormatToOptions, getTrainingCategories);
 };
+
+export const GetAllTrainingRequests = () => {
+  var res =  handleApiResponse(null, getAllTrainingRequests);
+   res.then((r)=>{
+    console.log(r)
+  })
+  return res
+}

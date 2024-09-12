@@ -1,63 +1,90 @@
 import { Button, Table } from "react-bootstrap";
-
-const RTable = () => {
-  var items = [
-    {
-      key1: "01",
-      key2: "Economics",
-      key3: "John Doe",
-      key4: "LEP Building",
-      key5: "Jan 25, 2023 - jan 16, 2024",
-      key6: "Jan 25, 2023",
-      key7: "status",
-    },
-    {
-      key1: "02",
-      key2: "sample",
-      key3: "Jane Doe",
-      key4: "LEP Vwnuw",
-      key5: "Jan 25, 2023 - jan 16, 2024",
-      key6: "Jan 25, 2023",
-      key7: "status",
-    },
-  ];
+import { getAllTrainingRequests } from "../../api/trainingServiceApi.jsx";
+import React, { useEffect, useState } from "react";
+import { FormatDate } from "../../utils/FormatDateTime.jsx";
+import proptype from "prop-types"
+import { Link } from "react-router-dom";
+const RTable = ({heading, rows, columns}) => {
+  const [trainingRequests, setTrainingRequests] = useState([]);
+  useEffect(() => {
+    getAllTrainingRequests().then((res) => {
+      setTrainingRequests(res);
+    });
+  }, []);
+  console.log(trainingRequests);
   return (
     <div className="">
       <Table className="theme-table bg-success border m-0">
         <thead className="theme-bg">
           <tr>
-            <th>R_No</th>
-            <th>Program</th>
-            <th>Requestor</th>
-            <th>Venue</th>
-            <th>Date</th>
-            <th>Created</th>
-            <th>Status</th>
-            <th>Action</th>
+            {columns ? (
+              columns.map((col, k) => <th key={k}>{col}</th>)
+            ) : (
+              <>
+                <th>R_No</th>
+                <th>Program</th>
+                <th>Category Name</th>
+                <th>Requestor</th>
+                <th>Venue</th>
+                <th>Date</th>
+                <th>Facilitator</th>
+                <th>Fee</th>
+                <th>Status</th>
+                <th>Action</th>
+              </>
+            )}
           </tr>
         </thead>
         <tbody>
-          {items.map((item, index) => (
-            <tr key={index}>
-              <td>{item.key1}</td>
-              <td>{item.key2}</td>
-              <td>{item.key3}</td>
-              <td>{item.key4}</td>
-              <td>{item.key5}</td>
-              <td>{item.key6}</td>
-              <td>
-                <span className="badge bg-primary">{item.key7}</span>
-              </td>
-              <td>
-                <Button type="button" className="btn-primary btn-sm">
-                  View
-                </Button>
-              </td>
-            </tr>
-          ))}
+          {rows
+            ? rows.map((row, x) => (
+              <>
+              <tr key={x}>
+                {row.map((col, i) => (
+                  <td key={i}>{row[i]}</td>
+                ))}
+              </tr>
+              
+              </>
+            ))
+            : trainingRequests.map((item, index) => (
+              <tr key={index}>
+                <td>{item.id}</td>
+                <td>{item.trainingProgramName}</td>
+                <td>{item.categoryName}</td>
+                <td>{item.requestorName}</td>
+                <td>{item.venue}</td>
+                <td>
+                  {FormatDate(item.trainingStartDate)} -{" "}
+                  {FormatDate(item.trainingEndDate)}
+                </td>
+                <td>
+                  {item.trainingFacilitators.map((fac) => {
+                    return fac.facilitorId;
+                  })}
+                </td>
+                <td>{item.trainingFee}</td>
+                <td>
+                  <span className="badge bg-primary">{item.statusName}</span>
+                </td>
+                <td>
+                  <Link type="button" className="btn btn-primary btn-sm" to="/KEP_TMS/Request_View">
+                    View
+                  </Link>
+                </td>
+              </tr>
+            ))}
+
         </tbody>
       </Table>
     </div>
   );
 };
+RTable.propTypes={
+  content: proptype.func,
+  heading: proptype.string,
+  rows: proptype.array,
+  columns: proptype.array
+  
+}
 export default RTable;
