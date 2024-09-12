@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Chart from "react-apexcharts";
-import proptype from "prop-types"
-const StatusChart = ({data}) => {
+import proptype from "prop-types";
+
+const StatusChart = ({ data }) => {
   const [chartData, setChartData] = useState({
     series: [data],
     options: {
@@ -50,7 +51,7 @@ const StatusChart = ({data}) => {
     </div>
   );
 };
-StatusChart.propTypes={
-    data: proptype.number.isRequired,
-}
+StatusChart.propTypes = {
+  data: proptype.number.isRequired,
+};
 export default StatusChart;

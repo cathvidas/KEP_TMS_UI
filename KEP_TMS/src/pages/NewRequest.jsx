@@ -29,14 +29,15 @@ const NewRequest = () => {
           IconComponent={<FontAwesomeIcon icon={faStickyNote} />}
         />
         <div className="w-100 overflow-hidden">
-        <SectionBanner
-          title="Training Requests || Add Request"
-          subtitle={
-            "To add a new training request, fill out the form with the course name, desired date, and any special requirements. Click 'Submit' to finalize your request."
-          }
-          //  ActionComponents={action}
-        />
-        <FormContainer /></div>
+          <SectionBanner
+            title="Training Requests || Add Request"
+            subtitle={
+              "To add a new training request, fill out the form with the course name, desired date, and any special requirements. Click 'Submit' to finalize your request."
+            }
+            //  ActionComponents={action}
+          />
+          <FormContainer />
+        </div>
       </>
     );
   };

@@ -13,7 +13,6 @@ import StatusCard from "../components/General/StatusCard.jsx";
 import StatusChart from "../components/General/Chart.jsx";
 
 const Content = () => {
-  
   return (
     <>
       <TMS_Header title={"Training Detail"} />
@@ -24,14 +23,18 @@ const Content = () => {
             title="Overview"
             icon={<FontAwesomeIcon icon={faInfoCircle} />}
           />
-          <StatusChart data={24}/>
-          <StatusCard variant={"success"} placeholder="Submitted" value={{internal: "12", external: "18"}}/>
+          <StatusChart data={24} />
+          <StatusCard
+            variant={"success"}
+            placeholder="Submitted"
+            value={{ internal: "12", external: "18" }}
+          />
           <p>Here you can see the details of your training.</p>
-          <TDOverview/>
-          <TScheduleOverview schedule={GetSchedule()}/>
+          <TDOverview />
+          <TScheduleOverview schedule={GetSchedule()} />
           <br />
-          <TabHeader tablist={SampleStringList()} activeItem={"Apple"}/>
-          <ExamContainer/>
+          <TabHeader tablist={SampleStringList()} activeItem={"Apple"} />
+          <ExamContainer />
         </div>
       </div>
     </>

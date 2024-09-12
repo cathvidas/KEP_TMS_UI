@@ -1,8 +1,25 @@
 import { Button, Modal } from "react-bootstrap";
 import proptype from "prop-types";
-export const ModalContainer = ({variantStyle, state, close, heading, body, buttonText, buttonVariant, buttonAction}) => {
-  const background = variantStyle ? variantStyle =="primary" ? "theme-bg" : "danger": "";
-  const color = variantStyle ? variantStyle =="primary" ? "theme-color" : "danger": "";
+export const ModalContainer = ({
+  variantStyle,
+  state,
+  close,
+  heading,
+  body,
+  buttonText,
+  buttonVariant,
+  buttonAction,
+}) => {
+  const background = variantStyle
+    ? variantStyle == "primary"
+      ? "theme-bg"
+      : "danger"
+    : "";
+  const color = variantStyle
+    ? variantStyle == "primary"
+      ? "theme-color"
+      : "danger"
+    : "";
   return (
     <>
       <Modal show={state} onHide={close}>
@@ -14,8 +31,12 @@ export const ModalContainer = ({variantStyle, state, close, heading, body, butto
           <Button variant="secondary" onClick={close}>
             Close
           </Button>
-          <Button variant={buttonVariant ? buttonVariant : "primary"} className={background + " filter-hover"} onClick={buttonAction}>
-          {buttonText}
+          <Button
+            variant={buttonVariant ? buttonVariant : "primary"}
+            className={background + " filter-hover"}
+            onClick={buttonAction}
+          >
+            {buttonText}
           </Button>
         </Modal.Footer>
       </Modal>
