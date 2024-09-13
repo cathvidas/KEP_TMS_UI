@@ -4,18 +4,32 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import { SectionHeading } from "../General/Section";
-import proptype from "prop-types"
+import proptype from "prop-types";
 import { useEffect, useState } from "react";
-import { GetAllTrainingCategories, GetAllTrainingPrograms } from "../../services/trainingServices";
-const TrainingDetailsContainer = ({ onChange, state, handleResponse, formData }) => {
-  const [programs, setPrograms] = useState(null);
+import {
+  GetAllTrainingCategories,
+  GetAllTrainingPrograms,
+} from "../../services/trainingServices";
+const TrainingDetailsContainer = ({
+  onChange,
+  state,
+  handleResponse,
+  formData,
+  setFormdata,
+}) => {
+  const [data, setData] = useState(formData);
+  const [programs, setPrograms] = useState({
+    label: "",
+    value: "",
+  });
   const [categories, setCategories] = useState(null);
-  const [venue, setVenue] = useState({Venue: null});
-console.log(formData)
+  const [venue, setVenue] = useState({ Venue: null });
 
-  const handleOnChange = (e, value) => {
-console.log(e, value)
-    onChange(e, value.value)
+  useEffect(() => {
+    setData(data);
+  }, [data]);
+  const handleOnChange = (name, value) => {
+    setData((obj) => ({ ...obj, [name]: value }));
   };
 
   return (
@@ -32,8 +46,8 @@ console.log(e, value)
             <Select
               options={GetAllTrainingPrograms()}
               name="TProgram"
-              defaultValue={formData?.categoryId}
-              onChange={(e) => setPrograms(formData?.categoryId ?? e.value)}
+              value={{value: programs.value, label: programs.label}}
+              onChange={(e) => setPrograms({value: e.value, label: e.label})}
             />
           }
         />
@@ -78,9 +92,10 @@ console.log(e, value)
     </>
   );
 };
-TrainingDetailsContainer.propTypes ={
+TrainingDetailsContainer.propTypes = {
   onChange: proptype.func,
   handleResponse: proptype.func,
   formData: proptype.object,
-}
+  setFormdata: proptype.func
+};
 export default TrainingDetailsContainer;

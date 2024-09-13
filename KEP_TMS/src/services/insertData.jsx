@@ -1,6 +1,6 @@
 import { SessionGetUserId } from "./sessions";
 
-export const TrainingRequest = () => ({
+export const TrainingRequest =  {
   requestorId: SessionGetUserId()??0,
   categoryId: 0,
   trainingProgramId: 0,
@@ -19,7 +19,7 @@ export const TrainingRequest = () => ({
   trainingDates: [],
   trainingFacilitators: [],
   createdBy: null,
-});
+};
 
 export const TrainingParticipants = () => ({
   id: 0,

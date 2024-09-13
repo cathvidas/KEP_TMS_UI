@@ -18,7 +18,7 @@ export const FormContainer = () => {
   const [schedData, setSchedData] = useState(TrainingDates);
   const [participants, setParticipants] = useState([{ name: "" }, { id: "" }]);
   const [trainingCost, setTrainingCost] = useState(0);
-console.log(formData)
+  console.log(formData);
   const handleParticipants = (participants) => {
     setParticipants(participants);
   };
@@ -26,30 +26,43 @@ console.log(formData)
     setTrainingCost(cost);
   };
   const handleInputChange = (e) => {
-    console.log(e.target);
     const { name, value } = e.target;
     setSchedData((obj) => ({ ...obj, [name]: value }));
   };
   const handleResponse = (e) => {
-    console.log(e.target);
     const { name, value } = e.target;
+    console.log(name, value)
     setFormData((obj) => ({ ...obj, [name]: value }));
   };
-  const handleOnChange= (e, b) => {
-    setFormData((obj) => ({ ...obj, [e]: b }));
+  const handleOnChange = (name, value) => {
+    setFormData((obj) => ({ ...obj, [name]: value }));
+    console.log(name, value);
   };
 
+  const hanldleFormData = (data)=>{
+    setFormData((prevData)=>[...prevData, data])
+  }
   const handleTrainingSched = () => {
     setTrainingSchedules((prevSchedules) => [...prevSchedules, schedData]);
     setSchedData({});
-  };  
+  };
   const removeSechedule = (index) => {
     const updatedSchedules = trainingSchedules.filter((item, i) => i !== index);
     setTrainingSchedules(updatedSchedules);
   };
+
+  // useEffect(() => {
+  //   setFormData((obj) => ({ ...obj, ["trainingDates"]: trainingSchedules }));
+  // }, [trainingSchedules]);
+
   const FormStepTrainingDetails = () => (
     <>
-      <TrainingDetailsContainer onChange={handleOnChange} handleResponse={handleResponse} formData={formData} />
+      <TrainingDetailsContainer
+        onChange={handleOnChange}
+        handleResponse={handleResponse}
+        formData={formData}
+        setFormdata={hanldleFormData}
+      />
       <ScheduleContainer
         trainingSchedules={trainingSchedules}
         removeSechedule={removeSechedule}

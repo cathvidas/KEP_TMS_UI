@@ -5,6 +5,9 @@ import fetchFromApi from "./apiUtils";
 export const getTrainingPrograms = async () => {
     return await fetchFromApi(API_ENDPOINTS.GET_TRAINING_PROGRAMS);
 }
+export const getTrainingRequestById = async (requestId)=>{
+    return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_REQUEST_BY_ID}?id=${requestId}`);
+}
 
 export const getTrainingCategories = async () => {
     return await fetchFromApi(API_ENDPOINTS.GET_TRAINING_CATEGORIES);

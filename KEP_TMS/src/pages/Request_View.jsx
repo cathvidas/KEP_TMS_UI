@@ -12,42 +12,46 @@ import StatusChart from "../components/General/Chart.jsx";
 import Header from "../components/General/Header.jsx";
 import Layout from "../components/General/Layout.jsx";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getTrainingRequestById } from "../api/trainingServiceApi.jsx";
 
-const Content = () => {
-  const pages = [
-    <>
-      <SectionHeading
-        title="Overview"
-        icon={<FontAwesomeIcon icon={faInfoCircle} />}
-      />
-      <p>Here you can see the details of your training.</p>
-      <TDOverview />
-      <TScheduleOverview schedule={GetSchedule()} />
-    </>, <>  <ExamContainer /></>
-  ];
-  var curIndex = 0;
-  const [currentContent, setCurrentContent] = useState(0);
-  const handleChangeContent =(i)=>{
-    setCurrentContent(i)
-    
-  }
-  return (
-    <>
-      <Header title={"Training Detail"} />
-      <div className="d-flex gap-3">
-        <RequestMenu action={handleChangeContent} current={currentContent}/>
-        <div className="flex-fill">
-          {pages[currentContent]}
-          {/* <div className="float-right">
-            <StatusChart data={24} />
-          </div> */}
-
+const RequestView =  () => {
+  const {id} = useParams();
+  
+  const Content = () => {
+    const pages = [
+      <>
+        <SectionHeading
+          title="Overview"
+          icon={<FontAwesomeIcon icon={faInfoCircle} />}
+        />
+        <p>Here you can see the details of your training.</p>
+        <TDOverview id={id} />
+        <TScheduleOverview schedule={GetSchedule()} />
+      </>, <>  <ExamContainer /></>
+    ];
+    const [currentContent, setCurrentContent] = useState(0);
+    const handleChangeContent =(i)=>{
+      setCurrentContent(i)
+      
+    }
+    return (
+      <>
+        <Header title={"Training Detail"} />
+        <div className="d-flex gap-3">
+          <RequestMenu action={handleChangeContent} current={currentContent}/>
+          <div className="flex-fill">
+            {pages[currentContent]}
+            {/* <div className="float-right">
+              <StatusChart data={24} />
+            </div> */}
+  
+          </div>
         </div>
-      </div>
-    </>
-  );
-};
-const RequestView = () => {
+      </>
+    );
+  };
+  
   return (
     <>
       <Layout ActionComponent={Content} />

@@ -3,7 +3,7 @@ import { getAllTrainingRequests } from "../../api/trainingServiceApi.jsx";
 import React, { useEffect, useState } from "react";
 import { FormatDate } from "../../utils/FormatDateTime.jsx";
 import proptype from "prop-types"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const RTable = ({heading, rows, columns}) => {
   const [trainingRequests, setTrainingRequests] = useState([]);
   useEffect(() => {
@@ -11,6 +11,11 @@ const RTable = ({heading, rows, columns}) => {
       setTrainingRequests(res);
     });
   }, []);
+  const navigate = useNavigate();
+  const fetchData = (id) => {
+    console.log(id)
+  // navigate(`/KEP_TMS/Request_View/${id}`)
+  }
   console.log(trainingRequests);
   return (
     <div className="">
@@ -68,7 +73,7 @@ const RTable = ({heading, rows, columns}) => {
                   <span className="badge bg-primary">{item.statusName}</span>
                 </td>
                 <td>
-                  <Link type="button" className="btn btn-primary btn-sm" to="/KEP_TMS/Request_View">
+                  <Link type="button" className="btn btn-primary btn-sm" to={`/KEP_TMS/Request_View/${item.id}`}>
                     View
                   </Link>
                 </td>
