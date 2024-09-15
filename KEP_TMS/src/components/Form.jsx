@@ -11,91 +11,84 @@ import TrainingCost from "./Form/TrainingCost";
 import TrainingSummary from "./Form/TSummary";
 import proptype from "prop-types";
 import { TrainingDates, TrainingRequest } from "../services/insertData";
+import { insertTrainingRequest } from "../services/trainingServices";
+import { actionDelay, actionFailed, actionSuccessful, confirmAction } from "../services/sweetalert";
+import { InsertFormattedTrainingRequestData } from "../services/formatData";
+import { useNavigate } from "react-router-dom";
 
 export const FormContainer = () => {
+  var details = {};
+  var trainingSchedules = {trainingDates: []};
   const [formData, setFormData] = useState(TrainingRequest);
-  const [trainingSchedules, setTrainingSchedules] = useState([]);
-  const [schedData, setSchedData] = useState(TrainingDates);
-  const [participants, setParticipants] = useState([{ name: "" }, { id: "" }]);
-  const [trainingCost, setTrainingCost] = useState(0);
-  console.log(formData);
-  const handleParticipants = (participants) => {
-    setParticipants(participants);
-  };
-  const updateTrainingCost = (cost) => {
-    setTrainingCost(cost);
-  };
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setSchedData((obj) => ({ ...obj, [name]: value }));
-  };
-  const handleResponse = (e) => {
-    const { name, value } = e.target;
-    console.log(name, value)
-    setFormData((obj) => ({ ...obj, [name]: value }));
-  };
-  const handleOnChange = (name, value) => {
-    setFormData((obj) => ({ ...obj, [name]: value }));
-    console.log(name, value);
-  };
-
-  const hanldleFormData = (data)=>{
-    setFormData((prevData)=>[...prevData, data])
-  }
-  const handleTrainingSched = () => {
-    setTrainingSchedules((prevSchedules) => [...prevSchedules, schedData]);
-    setSchedData({});
-  };
-  const removeSechedule = (index) => {
-    const updatedSchedules = trainingSchedules.filter((item, i) => i !== index);
-    setTrainingSchedules(updatedSchedules);
-  };
-
-  // useEffect(() => {
-  //   setFormData((obj) => ({ ...obj, ["trainingDates"]: trainingSchedules }));
-  // }, [trainingSchedules]);
-
+  const navigate = useNavigate();
+  const handleResponse = useCallback((data) => {
+    details = data;
+    console.log(data)
+  }, [details]);
+  
+  
+  const handleTrainingDates= useCallback((data) => {
+    details.trainingDates = data;
+    trainingSchedules.trainingDates = data;
+  })
+  
   const FormStepTrainingDetails = () => (
     <>
       <TrainingDetailsContainer
-        onChange={handleOnChange}
         handleResponse={handleResponse}
         formData={formData}
-        setFormdata={hanldleFormData}
       />
       <ScheduleContainer
-        trainingSchedules={trainingSchedules}
-        removeSechedule={removeSechedule}
-        schedData={schedData}
-        handleInputChange={handleInputChange}
-        handleTrainingSched={handleTrainingSched}
+      formData={formData}
+      handleResponse={handleTrainingDates}
       />
     </>
   );
+  const [index, setIndex] = useState(0);
+
+  const changeFormContent = (state) => {
+    setFormData((prev) =>({...prev, ...details}));
+    setIndex(state);
+  };
+
+
+  const handleFormSubmission = async () => {
+    try{
+      const formmatedData = InsertFormattedTrainingRequestData(formData);
+      console.log(formmatedData)
+      const response = await insertTrainingRequest(formmatedData);
+      if(response.isSuccess ===true){
+        actionSuccessful("Congratulations", "success ra gyd haysst")
+        setTimeout(() => {
+          navigate("/KEP_TMS/RequestList")
+        }, 5000);
+      }else{
+        actionFailed("HUHU", response.message)
+      }
+      console.log(response)
+
+    }catch(error){
+
+      actionFailed("HUHU", error)
+    }
+  }
   const ContentList = [
     <FormStepTrainingDetails key={1} />,
     <TrainingParticipant
       key={"2"}
-      participants={participants}
-      onInput={handleParticipants}
+      formData={formData}
+      handleResponse={handleResponse}
     />,
     <TrainingCost
       key={"3"}
-      totalCost={trainingCost}
-      participants={participants}
-      onInput={updateTrainingCost}
+      formData={formData}
+      handleResponse={handleResponse}
     />,
     <TrainingSummary
       key={"4"}
-      schedule={trainingSchedules}
-      participants={participants}
+      formData={formData}
     />,
   ];
-  const [index, setIndex] = useState(0);
-
-  const changeFormContent = (state) => {
-    setIndex(state);
-  };
   return (
     <Card>
       <Card.Body>
@@ -112,9 +105,9 @@ export const FormContainer = () => {
               state: index <= 0 ? true : false,
             }}
             RightButton={{
-              placeholder: "next",
-              onClick: changeFormContent,
-              state: index < ContentList.length - 1 ? false : true,
+              placeholder: index == ContentList.length-1 ?"Submit":"next",
+              onClick:index == ContentList.length-1 ?()=>confirmAction(handleFormSubmission) : changeFormContent,
+              state: index < ContentList.length ? false : true,
             }}
           />
         </Form>

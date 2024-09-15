@@ -50,5 +50,6 @@ UPDATE_TRAINING_REQUEST: "/TrainingRequest/UpdateTrainingRequest",
   GET_TRAINING_EVALUATIONS: "/TrainingEvaluation/GetAllTrainingEvaluations",
   GET_TRAINING_PARTICIPANTS: "/TrainingRequest/GetAllTrainingParticipants",
 
-
+//comboboxes
+GET_DEPARTMENTS : "Comboboxes/GetDepartments",
 };

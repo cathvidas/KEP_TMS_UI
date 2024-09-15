@@ -22,8 +22,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useState } from "react";
+import { SessionGetRole } from "../../services/sessions";
 
 const NavItem = ({ item, icon, title, expanded }) => {
+  console.log(SessionGetRole())
   const locations = useLocation();
   const getClassNames = (page) =>
     `nav-link py-3  rounded-0  ${expanded === "true" && "flex gap-2 px-4"} ${
@@ -39,7 +41,7 @@ const NavItem = ({ item, icon, title, expanded }) => {
     <li className="nav-item ">
       <OverlayTrigger
         placement="right"
-        overlay={expanded === "false" ? tooltip : <></>}
+        overlay={expanded !== "true" ? tooltip : <></>}
       >
         <Link className={getClassNames(item)} to={item} aria-current="page">
           {icon && <>{icon}</>}
@@ -144,12 +146,15 @@ const Sidebar = () => {
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faClipboardCheck} />}
           />
+          {(SessionGetRole() !== "Trainee" && SessionGetRole !== "Facilitator") && 
+          <>
           <NavItem
             item={"/KEP_TMS/ForApproval"}
             title="For Approval"
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faPenToSquare} />}
           />
+          
           <NavItem
             item={"/KEP_TMS/Request_View"}
             title="For Approval"
@@ -162,6 +167,8 @@ const Sidebar = () => {
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faList} />}
           />
+          </>
+          }
           <NavItem
             item="/KEP_TMS/CertificatesPage"
             title="Certificates"

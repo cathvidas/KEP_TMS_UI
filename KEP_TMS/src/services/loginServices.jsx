@@ -1,6 +1,7 @@
 
 import { Toast } from "../components/SweetToast";
 import { checkUserCredentials } from "../api/UserAccountApi";
+import { SessionSetReference } from "./sessions";
 
 const handleUserLogin = async (data) => {
   try {
@@ -8,12 +9,7 @@ const handleUserLogin = async (data) => {
     if (res.isSuccess === true) {
       const data = res.data;
       console.log(data);
-      sessionStorage.setItem("fullname", data.fullname);
-      sessionStorage.setItem("username", data.username);
-      sessionStorage.setItem("firstname", data.firstname);
-      sessionStorage.setItem("lastname", data.lastname);
-      sessionStorage.setItem("id", data.id);
-      sessionStorage.setItem("token", data.token);
+      SessionSetReference(data);
       return true
     } else{  
         Toast.fire({

@@ -7,29 +7,36 @@ import { SectionHeading } from "../General/Section";
 import proptype from "prop-types";
 import { useEffect, useState } from "react";
 import {
-  GetAllTrainingCategories,
-  GetAllTrainingPrograms,
+  getTrainingCategories,
+  getTrainingPrograms,
 } from "../../services/trainingServices";
-const TrainingDetailsContainer = ({
-  onChange,
-  state,
-  handleResponse,
-  formData,
-  setFormdata,
-}) => {
-  const [data, setData] = useState(formData);
-  const [programs, setPrograms] = useState({
-    label: "",
-    value: "",
-  });
-  const [categories, setCategories] = useState(null);
-  const [venue, setVenue] = useState({ Venue: null });
+const TrainingDetailsContainer = ({ handleResponse, formData }) => {
+  const [details, setDetails] = useState(formData);
+  const [options, setOptions] = useState({ programs: [], categories: [] });
 
   useEffect(() => {
-    setData(data);
-  }, [data]);
+    const getOptions = async () => {
+      const programsOption = await getTrainingPrograms();
+      const categoriesOption = await getTrainingCategories();
+      setOptions({
+        programs: programsOption.map(({ id, name }) => ({
+          label: name,
+          value: id,
+        })),
+        categories: categoriesOption.map(({ id, name }) => ({
+          label: name,
+          value: id,
+        })),
+      });
+    };
+    getOptions();
+  }, []);
+  useEffect(() => {
+    handleResponse(details);
+  }, [details, handleResponse]);
+
   const handleOnChange = (name, value) => {
-    setData((obj) => ({ ...obj, [name]: value }));
+    setDetails((obj) => ({ ...obj, [name]: value }));
   };
 
   return (
@@ -44,10 +51,12 @@ const TrainingDetailsContainer = ({
           label={"Program"}
           FieldComponent={
             <Select
-              options={GetAllTrainingPrograms()}
+              options={options.programs}
               name="TProgram"
-              value={{value: programs.value, label: programs.label}}
-              onChange={(e) => setPrograms({value: e.value, label: e.label})}
+              value={options.programs.filter(
+                (x) => x.value === details.trainingProgramId
+              )}
+              onChange={(e) => handleOnChange("trainingProgramId", e.value)}
             />
           }
         />
@@ -56,9 +65,11 @@ const TrainingDetailsContainer = ({
           label={"Category"}
           FieldComponent={
             <Select
-              options={GetAllTrainingCategories()}
-              onChange={(e) => handleOnChange("categoryId", e)}
-              defaultValue={GetAllTrainingCategories()[formData.categoryId]}
+              options={options.categories}
+              value={options.categories.filter(
+                (x) => x.value === details.categoryId
+              )}
+              onChange={(e) => handleOnChange("categoryId", e.value)}
             />
           }
         />
@@ -69,9 +80,11 @@ const TrainingDetailsContainer = ({
             <textarea
               className="form-control"
               placeholder="Training objective"
+              value={details.trainingObjectives}
               name="trainingObjectives"
-              value={formData?.trainingObjectives}
-              onChange={handleResponse}
+              onChange={(e) => {
+                handleOnChange(e.target.name, e.target.value);
+              }}
             ></textarea>
           }
         />
@@ -83,8 +96,10 @@ const TrainingDetailsContainer = ({
               className="form-control"
               name="venue"
               placeholder="Venue"
-              value={formData?.venue}
-              onChange={handleResponse}
+              value={details.venue}
+              onChange={(e) => {
+                handleOnChange(e.target.name, e.target.value);
+              }}
             />
           }
         />
@@ -96,6 +111,6 @@ TrainingDetailsContainer.propTypes = {
   onChange: proptype.func,
   handleResponse: proptype.func,
   formData: proptype.object,
-  setFormdata: proptype.func
+  setFormdata: proptype.func,
 };
 export default TrainingDetailsContainer;

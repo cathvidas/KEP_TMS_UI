@@ -12,7 +12,7 @@ import {
 } from "../components/General/Section";
 import RTable from "../components/General/Table";
 import { MenuItem, RequestMenu } from "../components/TrainingDetails/Menu";
-import { getAllTrainingRequests, getTrainingPrograms } from "../api/trainingServiceApi";
+import { getTrainingPrograms } from "../services/trainingServices";
 
 const MasterList = () => {
     const tablecolumn = ["Id", "Name", "Description", "Status"];

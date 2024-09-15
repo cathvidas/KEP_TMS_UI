@@ -1,31 +1,23 @@
 
-const handleApiResponse = (
+const handleApiResponse = async (
   actionType,
   apiFunction,
-  successMessage,
+  successAction,
   erroMessage
 ) => {
-  let list = [];
   try {
-    const response = apiFunction();
+    const response = await apiFunction();
     if (response) {
-      response.then((res) => {
-        res.forEach((data) => {
-          if (actionType) {
-            list.push(actionType(data));
-          } else {
-            list.push(data);
-          }
-        });
-      });
+      console.log("success")
+      return true;
     }
-    {
-      successMessage && console.log(successMessage);
+    else{
+      console.log("error")
+      return false
     }
-    return list;
   } catch (error) {
-    console.log(erroMessage && erroMessage, error);
-    return[]
+    console.error(error);
+    throw new Error(error);
   }
 };
 export default handleApiResponse;

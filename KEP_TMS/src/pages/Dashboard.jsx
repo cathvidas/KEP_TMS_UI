@@ -23,7 +23,7 @@ const Content = ({ showModal, setShowModal }) => {
         title={"Recent Trainings"}
         Action={{ Link: "#i", Text: "View All" }}
       />
-      <RTable />
+      <RTable userType={"user"} />
     </>
   );
 };

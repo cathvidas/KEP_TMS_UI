@@ -148,15 +148,6 @@ export const SampleExamQuestionaire =()=>{
     },]
 }
 
-export const GetAllPrograms = async () =>{
-    const response = await axios.get("http://localhost:5030/api/TrainingProgram/GetAllTrainingPrograms")
-   return await response.data
-} 
-
-export const GetAllCategories = async () =>{
-    const response = await axios.get("http://localhost:5030/api/TrainingCategory/GetAllTrainingCategories")
-   return await response.data
-} 
 export const SampleOptions = ()=>{
     return [
     {

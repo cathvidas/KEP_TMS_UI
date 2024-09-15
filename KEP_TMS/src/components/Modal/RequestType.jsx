@@ -9,7 +9,6 @@ import proptypes from "prop-types";
 import { TrainingType } from "../../api/constants";
 
 const RequestModal = ({ showModal, setShowModal }) => {
-  console.log(showModal);
   const handleResponse=(res)=>{
 localStorage.setItem("request-type", res)
   }

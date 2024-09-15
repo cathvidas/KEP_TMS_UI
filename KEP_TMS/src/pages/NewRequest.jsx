@@ -28,7 +28,7 @@ const NewRequest = () => {
           title="Training Request"
           IconComponent={<FontAwesomeIcon icon={faStickyNote} />}
         />
-        <div className="w-100 overflow-hidden">
+        <div className="w-100">
           <SectionBanner
             title="Training Requests || Add Request"
             subtitle={

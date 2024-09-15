@@ -43,7 +43,7 @@ const Banner = ({ showModal, setShowModal }) => {
             <ActionButton title="Request Training" onClick={handleShow} />
             <ActionButton
               title="View All Request"
-              actionLink="/KEP_TMS/Newrequest"
+              actionLink="/KEP_TMS/RequestList"
               variant={{ theme: "secondary" }}
             />
           </div>

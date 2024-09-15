@@ -5,6 +5,7 @@ import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
 import Layout from "../components/General/Layout";
 import StatusCard from "../components/General/StatusCard";
 import RTable from "../components/General/Table";
+import { SessionGetRole } from "../services/sessions";
 
 const RequestList =()=>{
     const Content = () => 
@@ -27,7 +28,7 @@ const RequestList =()=>{
             <StatusCard variant={"danger"} placeholder="Declined Requests" value={{external: 0, internal:0}}/>
             </div>
             <SectionTitle title="Recent Training Requests"/>
-            <RTable/>
+            <RTable userType={SessionGetRole()}/>
           </div>
         </>
       );

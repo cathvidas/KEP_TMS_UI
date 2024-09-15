@@ -3,13 +3,14 @@ import { FormatDate, FormatTime } from "../../utils/FormatDateTime";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import proptype from 'prop-types'
 import { Table } from "react-bootstrap";
+import sortSchedules from "../../utils/SortSchedule";
 
 const TrainingScheduleList = ({schedules, onDelete}) => {
-    console.log(schedules.length)
-    console.log(schedules)
+   schedules && sortSchedules(schedules)
+   
   return (
     <>
-      {schedules.length > 0 ? (
+      {schedules && schedules.length > 0 ? (
         <Table className="theme-table border m-0">
           <thead className="theme-bg">
             <tr>

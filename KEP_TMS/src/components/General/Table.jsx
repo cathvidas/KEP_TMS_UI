@@ -1,22 +1,56 @@
 import { Button, Table } from "react-bootstrap";
-import { getAllTrainingRequests } from "../../api/trainingServiceApi.jsx";
 import React, { useEffect, useState } from "react";
 import { FormatDate } from "../../utils/FormatDateTime.jsx";
 import proptype from "prop-types"
 import { Link, useNavigate } from "react-router-dom";
-const RTable = ({heading, rows, columns}) => {
+import { getAllTrainingRequests } from "../../services/trainingServices.jsx";
+import { SessionGetFirstName } from "../../services/sessions.jsx";
+import { getUserById } from "../../api/UserAccountApi.jsx";
+import StatusColor from "./StatusColor.jsx";
+const RTable = ({heading, rows, columns, userType}) => {
   const [trainingRequests, setTrainingRequests] = useState([]);
   useEffect(() => {
-    getAllTrainingRequests().then((res) => {
-      setTrainingRequests(res);
-    });
-  }, []);
-  const navigate = useNavigate();
-  const fetchData = (id) => {
-    console.log(id)
-  // navigate(`/KEP_TMS/Request_View/${id}`)
-  }
-  console.log(trainingRequests);
+    const getTrainingRequests = async () => {
+      try {
+        const trainingRequests = await getAllTrainingRequests();
+  
+        const updatedRequests = await Promise.all(
+          trainingRequests.map(async (request) => {
+            // Get the list of facilitator IDs
+            const facilitatorIds = request.trainingFacilitators.map(({ facilitorId }) => facilitorId);
+            // Fetch details for each facilitator
+            const facilitatorsDetails = await Promise.all(
+              facilitatorIds.map(async (id) => {
+                const user = await getUserById(id);
+                return { id, name: user.data.username, fullname: user.data.lastname + ", " + user.data.firstname }; 
+              })
+            );
+  
+            return {
+              ...request,
+              trainingFacilitators: facilitatorsDetails, // Replace with detailed facilitator information
+            };
+          })
+        );
+        // Set training requests with updated facilitator information
+        if (userType === "user" || userType === "Trainee") {
+          const userRequests = updatedRequests.filter(
+            (request) => request.requestorName === SessionGetFirstName()
+          );
+          setTrainingRequests(userRequests);
+        } else {
+          setTrainingRequests(updatedRequests);
+        }
+      } catch (error) {
+        console.error("Error fetching training requests:", error);
+      }
+    };
+  
+    getTrainingRequests();
+  }, [userType]); 
+
+
+  
   return (
     <div className="">
       <Table className="theme-table bg-success border m-0">
@@ -29,7 +63,8 @@ const RTable = ({heading, rows, columns}) => {
                 <th>R_No</th>
                 <th>Program</th>
                 <th>Category Name</th>
-                <th>Requestor</th>
+                {userType !== "user" &&
+                <th>Requestor</th> }
                 <th>Venue</th>
                 <th>Date</th>
                 <th>Facilitator</th>
@@ -57,7 +92,8 @@ const RTable = ({heading, rows, columns}) => {
                 <td>{item.id}</td>
                 <td>{item.trainingProgramName}</td>
                 <td>{item.categoryName}</td>
-                <td>{item.requestorName}</td>
+                {userType !== "user" && 
+                <td>{item.requestorName}</td>}
                 <td>{item.venue}</td>
                 <td>
                   {FormatDate(item.trainingStartDate)} -{" "}
@@ -65,15 +101,15 @@ const RTable = ({heading, rows, columns}) => {
                 </td>
                 <td>
                   {item.trainingFacilitators.map((fac) => {
-                    return fac.facilitorId;
+                    return fac.fullname;
                   })}
                 </td>
                 <td>{item.trainingFee}</td>
                 <td>
-                  <span className="badge bg-primary">{item.statusName}</span>
+                  {StatusColor(item.statusName)}
                 </td>
                 <td>
-                  <Link type="button" className="btn btn-primary btn-sm" to={`/KEP_TMS/Request_View/${item.id}`}>
+                  <Link type="button" className="btn theme-bg btn-sm" to={`/KEP_TMS/Request_View/${item.id}`}>
                     View
                   </Link>
                 </td>
@@ -89,7 +125,8 @@ RTable.propTypes={
   content: proptype.func,
   heading: proptype.string,
   rows: proptype.array,
-  columns: proptype.array
+  columns: proptype.array,
+  userType: proptype.string,
   
 }
 export default RTable;

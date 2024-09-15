@@ -1,6 +1,7 @@
 import apiClient from "../api/apiClient";
 
 const fetchFromApi = async (endpoint, method = "GET", data = null) => {
+    console.log(endpoint, method, data)
     try{
         const config ={
             method,

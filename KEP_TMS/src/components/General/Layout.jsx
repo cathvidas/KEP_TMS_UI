@@ -8,7 +8,6 @@ const Layout = ({ ActionComponent, showModal, setShowModal }) => {
   const [showmenu, setshowmenu] = useState(true);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
-  console.log(showModal);
   useEffect(() => {
     if (token != null) {
       setshowmenu(true);

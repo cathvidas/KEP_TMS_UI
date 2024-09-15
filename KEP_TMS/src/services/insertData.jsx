@@ -1,3 +1,4 @@
+import { TrainingType } from "../api/constants";
 import { SessionGetUserId } from "./sessions";
 
 export const TrainingRequest =  {
@@ -7,8 +8,8 @@ export const TrainingRequest =  {
   trainingProviderId: 0,
   trainingTypeId: parseInt(localStorage.getItem("request-type")) ??  0,
   trainingObjectives: "",
-  trainingStartDate: null,
-  trainingEndDate: null,
+  trainingStartDate: "",
+  trainingEndDate: "",
   venue: "",
   trainingParticipants: [],
   isOffSite: true,
@@ -19,6 +20,10 @@ export const TrainingRequest =  {
   trainingDates: [],
   trainingFacilitators: [],
   createdBy: null,
+  
+  programOption: "",
+  categoryOption: "",
+  providerOption: "",
 };
 
 export const TrainingParticipants = () => ({

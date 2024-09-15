@@ -10,9 +10,13 @@ export const FormatDate = (dateString) => {
     return date.toLocaleDateString("en-US", options);
 };
 
-export const FormatTime = (timeString) => {
+
+  export const FormatTime = (timeString) => {
+    // Provide a fallback for timeString
+    const timeToFormat = timeString || "00:00";
+    
     // Split the time string into hours and minutes
-    const [hours, minutes] = timeString?timeString:"00:00".split(':').map(Number);
+    const [hours, minutes] = timeToFormat.split(':').map(Number);
   
     // Create a Date object for the time
     const date = new Date();
@@ -21,5 +25,9 @@ export const FormatTime = (timeString) => {
   
     // Options for formatting
     const options = { hour: '2-digit', minute: '2-digit', hour12: true };
-    return new Intl.DateTimeFormat('en-US', options).format(date);
+  
+    // Format and return the time
+    const result = new Intl.DateTimeFormat('en-US', options).format(date);
+    return result;
   };
+  
