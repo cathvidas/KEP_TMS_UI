@@ -45,3 +45,10 @@ export const TrainingFacilitators = () => ({
   trainingRequestId: 0,
   trainingEvaluationId: 0,
 });
+
+export const TrainingRequestApproval = {
+  requestId: 0,
+  employeeBadge: "string",
+  statusId: 0,
+  updatedBy: "string"
+}

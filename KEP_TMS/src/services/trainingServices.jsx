@@ -37,6 +37,10 @@ export const insertTrainingRequest = async (trainingRequest) => {
     console.log(trainingRequest)
     return await fetchFromApi(API_ENDPOINTS.INSERT_TRAINING_REQUEST, "POST", trainingRequest);
 }
+export const approveTrainingRequest = async (formatData) => {
+    return await fetchFromApi(API_ENDPOINTS.APPROVE_TRAINING_REQUEST, "POST", formatData);
+}
+
 
 //PARTICIPANTS
 export const getTrainingParticipants = async (programId) => {

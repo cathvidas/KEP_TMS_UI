@@ -12,93 +12,162 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getTrainingRequestById } from "../services/trainingServices.jsx";
 import { statusCode } from "../api/constants.jsx";
-import { DetailItem, Heading } from "../components/TrainingDetails/DetailItem.jsx";
+import {
+  DetailItem,
+  Heading,
+} from "../components/TrainingDetails/DetailItem.jsx";
 import StatusColor from "../components/General/StatusColor.jsx";
-import TrainingParticipant from "../components/Form/TParticipants.jsx";
 import { UserList } from "../components/List/UserList.jsx";
 import EmptyState from "../components/Form/EmptyState.jsx";
+import { getUserById } from "../api/UserAccountApi.jsx";
+import ModulesContainer from "../components/TrainingDetails/ModulesContainer.jsx";
 
-const RequestView =  () => {
+const RequestView = () => {
   const [data, setData] = useState({});
-  const {id} = useParams();
-  useEffect(()=>{
-    const getRequest =async()=>{
-      const details = await getTrainingRequestById(id);
-      setData(details);
-    }
-    getRequest();
-  }, [id])
+  const [approvers, setApprovers] = useState({});
+  const { id } = useParams();
+  useEffect(() => {
+    const getRequest = async () => {
+      try {
+        const details = await getTrainingRequestById(id);
+        const participants = await Promise.all(
+          details.trainingParticipants.map(async ({ employeeBadge }) => {
+            const username = await getUserById(employeeBadge);
+            console.log(username.data.fullname);
+            return {
+              id: employeeBadge,
+              name: username.data.fullname,
+            };
+          })
+        );
 
-console.log(data)
+        const facilitators = await Promise.all(
+          details.trainingFacilitators.map(async ({ facilitatorBadge }) => {
+            const username = await getUserById(facilitatorBadge);
+            return {
+              id: facilitatorBadge,
+              name: username.data.fullname,
+            };
+          })
+        );
+        const updatedDetails = {
+          ...details,
+          trainingFacilitators: facilitators,
+          trainingParticipants: participants,
+        };
+        setData(updatedDetails);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    // const getApprovers = async () => {
+    //   try {
+    //     const res = await apiClient.get(`/TrainingRequest/GetTrainingRequestApprovers/${id}`);
+    //     setApprovers(res.data);
+    //   } catch (error) {
+    //     console.error("Error fetching approvers:", error);
+    //   }
+    // }
+    getRequest();
+  }, [id]);
+
+  console.log(data);
   const Content = () => {
     const pages = [
       <>
-      <SectionHeading
-        title="Overview"
-        icon={<FontAwesomeIcon icon={faInfoCircle} />}
-      />
-      <div className="flex justify-content-between">
-        <p>Here you can see the details of your training.</p>
-        {StatusColor(data.status?.name)}</div>
-        <TDOverview formData={data} /><br />
-        <TScheduleOverview endDate={data.trainingEndDate} startdate={data.trainingStartDate} schedule={data.trainingDates} />
+        <SectionHeading
+          title="Overview"
+          icon={<FontAwesomeIcon icon={faInfoCircle} />}
+        />
+        <div className="flex justify-content-between">
+          <p>Here you can see the details of your training.</p>
+          {StatusColor(data.status?.name)}
+        </div>
+        <div className="d-flex justify-content-between pe-5">
+          <TDOverview formData={data} />
+          {data.statusId == statusCode.FORAPPROVAL && (
+            <>
+              <div className="pe-5 me-5">
+                <Heading value="approvers:" />
+                <UserList
+                  userlist={data.trainingFacilitators}
+                  property={"name"}
+                />
+              </div>
+            </>
+          )}{" "}
+        </div>
         <br />
-      <Heading value="participants" />
-      {data.trainingParticipants?.length > 0 ? (
-        <>
-          <small className="text-muted">
-            {data.trainingParticipants.length} participants{" "}
-          </small>
+        <TScheduleOverview
+          endDate={data.trainingEndDate}
+          startdate={data.trainingStartDate}
+          schedule={data.trainingDates}
+        />
+        <br />
+        <Heading value="participants" />
+        {data.trainingParticipants?.length > 0 ? (
+          <>
+            <small className="text-muted">
+              {data.trainingParticipants.length} participants{" "}
+            </small>
+            <UserList
+              leadingElement={true}
+              col="3"
+              userlist={data.trainingParticipants}
+              property={"name"}
+            />
+          </>
+        ) : (
+          <EmptyState placeholder="No participants added" />
+        )}
+        <br />
+        <Heading value="facilitator" />
+        {data.trainingFacilitators?.length > 0 ? (
           <UserList
             leadingElement={true}
-            col="3"
-            userlist={data.trainingParticipants}
-            property={"employeeBadge"}
+            userlist={data.trainingFacilitators}
+            property={"name"}
           />
-        </>
-      ) : (
-        <EmptyState placeholder="No participants added" />
-      )}
-      <br />
-      <Heading value="facilitator" />
-      {data.trainingFacilitators?.length > 0 ? (
-        <UserList
-          leadingElement={true}
-          userlist={data.trainingFacilitators}
-          property={"facilitatorBadge"}
-        />
-      ) : (
-        <EmptyState placeholder="No facilitator added" />
-      )}
-      <br />
-      <Heading value="training cost" />
-      <DetailItem label="Training Fee" value={data.trainingFee} />
-      <DetailItem label="Total Training Cost" value={data.totalTrainingFee} />
-      </>, <>  <ExamContainer /></>
+        ) : (
+          <EmptyState placeholder="No facilitator added" />
+        )}
+        <br />
+        <Heading value="training cost" />
+        <DetailItem label="Training Fee" value={data.trainingFee} />
+        <DetailItem label="Total Training Cost" value={data.totalTrainingFee} />
+      </>,
+      <>
+      <ModulesContainer/></>,
+      <>
+        {" "}
+        <ExamContainer />
+      </>,
     ];
     const [currentContent, setCurrentContent] = useState(0);
-    const handleChangeContent =(i)=>{
-      setCurrentContent(i)
-      
-    }
+    const handleChangeContent = (i) => {
+      setCurrentContent(i);
+    };
     return (
       <>
         <Header title={"Training Detail"} />
         <div className="d-flex gap-3">
-          {data.statusId === statusCode.APPROVED && 
-          <RequestMenu action={handleChangeContent} current={currentContent}/>}
+          {data.statusId === statusCode.APPROVED && (
+            <RequestMenu
+              action={handleChangeContent}
+              current={currentContent}
+            />
+          )}
           <div className="flex-fill">
             {pages[currentContent]}
             {/* <div className="float-right">
               <StatusChart data={24} />
             </div> */}
-  
           </div>
         </div>
       </>
     );
   };
-  
+
   return (
     <>
       <Layout ActionComponent={Content} />

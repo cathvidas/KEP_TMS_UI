@@ -37,3 +37,13 @@ export const InsertFormattedTrainingRequestData = (formData)=>{
         createdBy: SessionGetEmployeeId()
       }
 }
+
+
+export const SubmitApprovalRequest = (data)=>{
+   return {
+    requestId: data.requestId,
+    employeeBadge: data.approverId,
+    statusId: data.statusId,
+    updatedBy: data.approver
+  }
+}

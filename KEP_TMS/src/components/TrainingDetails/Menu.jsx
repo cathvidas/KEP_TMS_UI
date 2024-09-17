@@ -23,8 +23,8 @@ export const RequestMenu = ({menuList, action, current}) => {
           )): (<>
           
           <MenuItem title={"Overview"} state={current == 0 && true} onCLick={action} param={0} />
-          <MenuItem title={"Modules"} />
-          <MenuItem title={"Exam"} state={current == 1&& true} onCLick={action} param={1}/>
+          <MenuItem title={"Modules"} state={current == 1 && true} onCLick={action} param={1}/>
+          <MenuItem title={"Exam"} state={current == 2&& true} onCLick={action} param={2}/>
           <MenuItem title={"Reports"} />
           <DropdownContainer
             title={"Dropdowns"}

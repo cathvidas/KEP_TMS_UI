@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { SampleExamQuestionaire } from "../../services/getApis";
 import { ExamItem } from "./ExamItem";
+import { SectionHeading } from "../General/Section";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 
 const RandomizeExam = () => {
   const exam = SampleExamQuestionaire().sort(() => Math.random() - 0.5);
@@ -37,8 +40,10 @@ console.log(currentQuestion)
   };
   return (
     <div className="exam-container">
+      <SectionHeading title="Exam" icon={
+        <FontAwesomeIcon icon={faQuestion}/>
+      }/>
       <h5>Questionnaire</h5>
-      {console.log(exam[0])}
         <ExamItem
           itemNo={`Question ${index + 1}`}
           question={currentQuestion.question}

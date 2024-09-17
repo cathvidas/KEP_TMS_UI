@@ -59,18 +59,18 @@ export const FormContainer = () => {
       console.log(formmatedData)
       const response = await insertTrainingRequest(formmatedData);
       if(response.isSuccess ===true){
-        actionSuccessful("Congratulations", "success ra gyd haysst")
+        actionSuccessful("Success", "training request successfully submitted, please wait for approval")
         setTimeout(() => {
           navigate("/KEP_TMS/RequestList")
         }, 5000);
       }else{
-        actionFailed("HUHU", response.message)
+        actionFailed("Error", response.message)
       }
       console.log(response)
 
     }catch(error){
 
-      actionFailed("HUHU", error)
+      actionFailed("Error", error)
     }
   }
   const ContentList = [
@@ -107,7 +107,7 @@ export const FormContainer = () => {
             }}
             RightButton={{
               placeholder: index == ContentList.length-1 ?"Submit":"next",
-              onClick:index == ContentList.length-1 ?()=>confirmAction(handleFormSubmission) : changeFormContent,
+              onClick:index == ContentList.length-1 ?()=>confirmAction(null,null,null,null,handleFormSubmission) : changeFormContent,
               state: index < ContentList.length ? false : true,
             }}
           />

@@ -4,17 +4,25 @@ import { FormatDate } from "../../utils/FormatDateTime.jsx";
 import proptype from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import {
+  approveTrainingRequest,
   getAllTrainingRequests,
   getTrainingRequestByApprover,
 } from "../../services/trainingServices.jsx";
 import {
+  SessionGetEmployeeId,
   SessionGetFirstName,
   SessionGetUserId,
+  SessionGetUserName,
 } from "../../services/sessions.jsx";
 import { getUserById } from "../../api/UserAccountApi.jsx";
 import StatusColor from "./StatusColor.jsx";
+import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert.jsx";
+import { TrainingRequestApproval } from "../../services/insertData.jsx";
+import { statusCode } from "../../api/constants.jsx";
 const RTable = ({ heading, rows, columns, userType }) => {
+  const navigate = useNavigate();
   const [trainingRequests, setTrainingRequests] = useState([]);
+  const [requestState, setRequetState] = useState(TrainingRequestApproval);
   useEffect(() => {
     const getTrainingRequests = async () => {
       try {
@@ -69,6 +77,34 @@ const RTable = ({ heading, rows, columns, userType }) => {
     getTrainingRequests();
   }, [userType]);
 
+  useEffect(()=>{
+    setRequetState({employeeBadge: SessionGetEmployeeId(), updatedBy: SessionGetUserName()})
+  }, [trainingRequests.id])
+  const handleApprove = async(id)=>{
+    const formData = {
+      requestId: id,
+      statusId: statusCode.APPROVED,
+      updatedBy: SessionGetUserName(),
+      employeeBadge: SessionGetEmployeeId(),
+    }
+    try{
+      
+      const response = await approveTrainingRequest(formData);
+      if(response.isSuccess ===true){
+        actionSuccessful("Success", "training request successfully approved")
+        setTimeout(() => {
+          navigate("/KEP_TMS/RequestList")
+        }, 5000);
+      }else{
+        actionFailed("Error", response.message)
+      }
+      console.log(response)
+    }catch(err){
+    
+      actionFailed("Error", err)
+  }
+
+  }
   return (
     <div className="">
       <Table className="theme-table bg-success border m-0">
@@ -121,7 +157,8 @@ const RTable = ({ heading, rows, columns, userType }) => {
                   </td>
                   <td>{item.trainingFee}</td>
                   <td>{StatusColor(item.statusName)}</td>
-                  <td>
+                  <td >
+                    <span className="d-flex gap-2 align-items-center">
                     <Link
                       type="button"
                       className="btn theme-bg btn-sm"
@@ -129,6 +166,9 @@ const RTable = ({ heading, rows, columns, userType }) => {
                     >
                       View
                     </Link>
+                    {userType === "forapproval" && 
+                    <Button className="btn-sm" onClick={()=>confirmAction("","Please choose an action", "Approve", "Reject", handleApprove, item.id)}>Approve</Button>
+                    }</span>
                   </td>
                 </tr>
               ))}

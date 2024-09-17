@@ -25,7 +25,6 @@ import { useState } from "react";
 import { SessionGetRole } from "../../services/sessions";
 
 const NavItem = ({ item, icon, title, expanded }) => {
-  console.log(SessionGetRole())
   const locations = useLocation();
   const getClassNames = (page) =>
     `nav-link py-3  rounded-0  ${expanded === "true" && "flex gap-2 px-4"} ${

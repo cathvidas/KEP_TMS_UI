@@ -13,3 +13,8 @@ export const getAllUsers = async () =>{
 export const getUserById = async (id) =>{
     return await fetchFromApi(`${API_ENDPOINTS.GET_USER_BY_ID}?badge=${id}`);
 }
+
+export const getUserNameByUserId = async (id) =>{
+    const user = await getUserById(id);
+    return user.username;
+}
