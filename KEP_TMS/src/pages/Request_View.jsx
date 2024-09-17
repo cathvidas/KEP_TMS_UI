@@ -14,6 +14,9 @@ import { getTrainingRequestById } from "../services/trainingServices.jsx";
 import { statusCode } from "../api/constants.jsx";
 import { DetailItem, Heading } from "../components/TrainingDetails/DetailItem.jsx";
 import StatusColor from "../components/General/StatusColor.jsx";
+import TrainingParticipant from "../components/Form/TParticipants.jsx";
+import { UserList } from "../components/List/UserList.jsx";
+import EmptyState from "../components/Form/EmptyState.jsx";
 
 const RequestView =  () => {
   const [data, setData] = useState({});
@@ -39,6 +42,34 @@ console.log(data)
         {StatusColor(data.status?.name)}</div>
         <TDOverview formData={data} /><br />
         <TScheduleOverview endDate={data.trainingEndDate} startdate={data.trainingStartDate} schedule={data.trainingDates} />
+        <br />
+      <Heading value="participants" />
+      {data.trainingParticipants?.length > 0 ? (
+        <>
+          <small className="text-muted">
+            {data.trainingParticipants.length} participants{" "}
+          </small>
+          <UserList
+            leadingElement={true}
+            col="3"
+            userlist={data.trainingParticipants}
+            property={"employeeBadge"}
+          />
+        </>
+      ) : (
+        <EmptyState placeholder="No participants added" />
+      )}
+      <br />
+      <Heading value="facilitator" />
+      {data.trainingFacilitators?.length > 0 ? (
+        <UserList
+          leadingElement={true}
+          userlist={data.trainingFacilitators}
+          property={"facilitatorBadge"}
+        />
+      ) : (
+        <EmptyState placeholder="No facilitator added" />
+      )}
       <br />
       <Heading value="training cost" />
       <DetailItem label="Training Fee" value={data.trainingFee} />

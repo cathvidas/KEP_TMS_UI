@@ -1,8 +1,8 @@
 import { TrainingType } from "../api/constants";
-import { SessionGetUserId } from "./sessions";
+import { SessionGetEmployeeId } from "./sessions";
 
 export const TrainingRequest =  {
-  requestorId: SessionGetUserId()??0,
+  requestorId: SessionGetEmployeeId()??0,
   categoryId: 0,
   trainingProgramId: 0,
   trainingProviderId: 0,

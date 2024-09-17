@@ -1,21 +1,21 @@
 export const API_ENDPOINTS = {
   //Training Programs
   GET_TRAINING_PROGRAMS: "/TrainingProgram/GetAllTrainingPrograms",
-  GET_TRAINING_PROGRAM_BY_ID: "/TrainingProgram/GetSingleTrainingProgram",
+  GET_TRAINING_PROGRAM_BY_ID: "/TrainingProgram/GetTrainingProgramById",
   INSERT_TRAINING_PROGRAM: "/TrainingProgram/CreateTrainingProgram",
   DELETE_TRAINING_PROGRAM: "/TrainingProgram/DeleteTrainingProgram",
   UPDATE_TRAINING_PROGRAM: "/TrainingProgram/UpdateTrainingProgram",
 
   //Training Categories
   GET_TRAINING_CATEGORIES: "/TrainingCategory/GetAllTrainingCategories",
-  GET_TRAINING_CATEGORY_BY_ID: "/TrainingCategory/GetSingleTrainingCategory",
+  GET_TRAINING_CATEGORY_BY_ID: "/TrainingCategory/GetTrainingCategoryById",
   INSERT_TRAINING_CATEGORY: "/TrainingCategory/CreateTrainingCategory",
   DELETE_TRAINING_CATEGORY: "/TrainingCategory/DeleteTrainingCategory",
   UPDATE_TRAINING_CATEGORY: "/TrainingCategory/UpdateTrainingCategory",
 
   //Training Providers
   GET_TRAINING_PROVIDERS: "/TrainingProvider/GetAllTrainingProviders",
-  GET_TRAINING_PROVIDER_BY_ID: "/TrainingProvider/GetSingleTrainingProvider",
+  GET_TRAINING_PROVIDER_BY_ID: "/TrainingProvider/GetTrainingProviderById",
   INSERT_TRAINING_PROVIDER: "/TrainingProvider/CreateTrainingProvider",
   DELETE_TRAINING_PROVIDER: "/TrainingProvider/DeleteTrainingProvider",
   UPDATE_TRAINING_PROVIDER: "/TrainingProvider/UpdateTrainingProvider",
@@ -29,7 +29,7 @@ export const API_ENDPOINTS = {
 
   //Users
   GET_USERS: "/Users/GetAllUsers",
-  GET_USER_BY_ID: "/Users/GetSingleUser",
+  GET_USER_BY_ID: "/Users/GetUserById",
   INSERT_USER: "/Users/CreateUser",
   UPDATE_USER: "/Users/UpdateUser",
   DELETE_USER: "/Users/DeleteUser",
@@ -40,9 +40,9 @@ export const API_ENDPOINTS = {
 
 INSERT_TRAINING_REQUEST: "/TrainingRequest/CreateTrainingRequest",
 GET_TRAINING_REQUESTS: "/TrainingRequest/GetAllTrainingRequests",
-GET_TRAINING_REQUEST_BY_ID: "/TrainingRequest/GetSingleTrainingRequest",
+GET_TRAINING_REQUEST_BY_ID: "/TrainingRequest/GetTrainingRequestById",
 UPDATE_TRAINING_REQUEST: "/TrainingRequest/UpdateTrainingRequest",
-
+GET_TRAINING_REQUEST_BY_APPROVER_iD: "Services/GetAssignedRequests",
 
   GET_TRAINING_TYPES: "/TrainingType/GetAllTrainingTypes",
   GET_TRAINING_EFFECTIVENESSES:

@@ -11,5 +11,5 @@ export const getAllUsers = async () =>{
 
 
 export const getUserById = async (id) =>{
-    return await fetchFromApi(`${API_ENDPOINTS.GET_USER_BY_ID}?id=${id}`);
+    return await fetchFromApi(`${API_ENDPOINTS.GET_USER_BY_ID}?badge=${id}`);
 }

@@ -1,37 +1,57 @@
 import { Button, Table } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { FormatDate } from "../../utils/FormatDateTime.jsx";
-import proptype from "prop-types"
+import proptype from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
-import { getAllTrainingRequests } from "../../services/trainingServices.jsx";
-import { SessionGetFirstName } from "../../services/sessions.jsx";
+import {
+  getAllTrainingRequests,
+  getTrainingRequestByApprover,
+} from "../../services/trainingServices.jsx";
+import {
+  SessionGetFirstName,
+  SessionGetUserId,
+} from "../../services/sessions.jsx";
 import { getUserById } from "../../api/UserAccountApi.jsx";
 import StatusColor from "./StatusColor.jsx";
-const RTable = ({heading, rows, columns, userType}) => {
+const RTable = ({ heading, rows, columns, userType }) => {
   const [trainingRequests, setTrainingRequests] = useState([]);
   useEffect(() => {
     const getTrainingRequests = async () => {
       try {
-        const trainingRequests = await getAllTrainingRequests();
-  
+        var trainingRequests = await getAllTrainingRequests();
+        if (userType === "forapprovall") {
+          trainingRequests = await getTrainingRequestByApprover(
+            SessionGetUserId()
+          );
+        }
+        
+        console.log(trainingRequests);
         const updatedRequests = await Promise.all(
           trainingRequests.map(async (request) => {
             // Get the list of facilitator IDs
-            const facilitatorIds = request.trainingFacilitators.map(({ facilitorId }) => facilitorId);
+            const facilitatorIds = request.trainingFacilitators.map(
+              ({ facilitorBadge }) => facilitorBadge
+            );
             // Fetch details for each facilitator
             const facilitatorsDetails = await Promise.all(
-              facilitatorIds.map(async (id) => {
-                const user = await getUserById(id);
-                return { id, name: user.data.username, fullname: user.data.lastname + ", " + user.data.firstname }; 
+              facilitatorIds.map(async (employeeBadge) => {
+                const user = await getUserById(employeeBadge);
+                console.log(user);
+                return {
+                  employeeBadge,
+                  name: user.data.username,
+                  fullname: user.data.lastname + ", " + user.data.firstname,
+                };
               })
             );
-  
+
             return {
               ...request,
               trainingFacilitators: facilitatorsDetails, // Replace with detailed facilitator information
             };
           })
         );
+        
         // Set training requests with updated facilitator information
         if (userType === "user" || userType === "Trainee") {
           const userRequests = updatedRequests.filter(
@@ -45,12 +65,10 @@ const RTable = ({heading, rows, columns, userType}) => {
         console.error("Error fetching training requests:", error);
       }
     };
-  
+
     getTrainingRequests();
-  }, [userType]); 
+  }, [userType]);
 
-
-  
   return (
     <div className="">
       <Table className="theme-table bg-success border m-0">
@@ -61,10 +79,9 @@ const RTable = ({heading, rows, columns, userType}) => {
             ) : (
               <>
                 <th>R_No</th>
+                {userType !== "user" && <th>Requestor</th>}
                 <th>Program</th>
                 <th>Category Name</th>
-                {userType !== "user" &&
-                <th>Requestor</th> }
                 <th>Venue</th>
                 <th>Date</th>
                 <th>Facilitator</th>
@@ -78,55 +95,53 @@ const RTable = ({heading, rows, columns, userType}) => {
         <tbody>
           {rows
             ? rows.map((row, x) => (
-              <>
-              <tr key={x}>
-                {row.map((col, i) => (
-                  <td key={i}>{row[i]}</td>
-                ))}
-              </tr>
-              
-              </>
-            ))
+                <>
+                  <tr key={x}>
+                    {row.map((col, i) => (
+                      <td key={i}>{row[i]}</td>
+                    ))}
+                  </tr>
+                </>
+              ))
             : trainingRequests.map((item, index) => (
-              <tr key={index}>
-                <td>{item.id}</td>
-                <td>{item.trainingProgramName}</td>
-                <td>{item.categoryName}</td>
-                {userType !== "user" && 
-                <td>{item.requestorName}</td>}
-                <td>{item.venue}</td>
-                <td>
-                  {FormatDate(item.trainingStartDate)} -{" "}
-                  {FormatDate(item.trainingEndDate)}
-                </td>
-                <td>
-                  {item.trainingFacilitators.map((fac) => {
-                    return fac.fullname;
-                  })}
-                </td>
-                <td>{item.trainingFee}</td>
-                <td>
-                  {StatusColor(item.statusName)}
-                </td>
-                <td>
-                  <Link type="button" className="btn theme-bg btn-sm" to={`/KEP_TMS/Request_View/${item.id}`}>
-                    View
-                  </Link>
-                </td>
-              </tr>
-            ))}
-
+                <tr key={index}>
+                  <td>{item.id}</td>
+                  {userType !== "user" && <td>{item.requestorName}</td>}
+                  <td>{item.trainingProgramName}</td>
+                  <td>{item.categoryName}</td>
+                  <td>{item.venue}</td>
+                  <td>
+                    {FormatDate(item.trainingStartDate)} -{" "}
+                    {FormatDate(item.trainingEndDate)}
+                  </td>
+                  <td>
+                    {item.trainingFacilitators.map((fac) => {
+                      return fac.fullname;
+                    })}
+                  </td>
+                  <td>{item.trainingFee}</td>
+                  <td>{StatusColor(item.statusName)}</td>
+                  <td>
+                    <Link
+                      type="button"
+                      className="btn theme-bg btn-sm"
+                      to={`/KEP_TMS/Request_View/${item.id}`}
+                    >
+                      View
+                    </Link>
+                  </td>
+                </tr>
+              ))}
         </tbody>
       </Table>
     </div>
   );
 };
-RTable.propTypes={
+RTable.propTypes = {
   content: proptype.func,
   heading: proptype.string,
   rows: proptype.array,
   columns: proptype.array,
   userType: proptype.string,
-  
-}
+};
 export default RTable;

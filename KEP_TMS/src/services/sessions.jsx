@@ -12,6 +12,7 @@ export const SessionGetRole = () => {
 };
 export const SessionGetUserId = () => {
   const id = sessionStorage.getItem("id");
+  console.log(id)
   if (id == null) return new Error("User not found, please log in again!");
   return parseInt(id) ;
 };

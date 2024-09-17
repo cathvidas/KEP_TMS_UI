@@ -111,7 +111,7 @@ const ScheduleContainer = (
               </Row>
               <Row className="mt-2">
                 <Col className="col-md-3 ">
-                  <Form.Label className="fw-semibold m-0">Time In:</Form.Label>
+                  <Form.Label className="fw-semibold m-0">Start Time:</Form.Label>
                 </Col>
                 <Col>
                   <input
@@ -125,7 +125,7 @@ const ScheduleContainer = (
               </Row>
               <Row className="mt-2">
                 <Col className="col-md-3">
-                  <Form.Label className="fw-semibold m-0">Time Out:</Form.Label>
+                  <Form.Label className="fw-semibold m-0">End Time:</Form.Label>
                 </Col>
                 <Col>
                   <input

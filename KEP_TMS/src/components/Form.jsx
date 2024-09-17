@@ -53,6 +53,7 @@ export const FormContainer = () => {
 
 
   const handleFormSubmission = async () => {
+    console.log(formData)
     try{
       const formmatedData = InsertFormattedTrainingRequestData(formData);
       console.log(formmatedData)

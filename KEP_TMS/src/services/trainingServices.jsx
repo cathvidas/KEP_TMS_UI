@@ -69,3 +69,8 @@ export const getTrainingReports = async (programId) => {
 }
 
 
+// APPROVER
+export const getTrainingRequestByApprover = async (approverId) => {
+    return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_REQUESTS_BY_APPROVER}?approverId=${approverId}`);
+}
+

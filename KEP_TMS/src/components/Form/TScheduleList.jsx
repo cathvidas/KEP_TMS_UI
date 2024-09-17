@@ -16,7 +16,7 @@ const TrainingScheduleList = ({schedules, onDelete}) => {
             <tr>
               <th>#</th>
               <th>Date</th>
-              <th>End Start</th>
+              <th>Start Time</th>
               <th>End Time</th>
               {onDelete && 
               <th></th>}
