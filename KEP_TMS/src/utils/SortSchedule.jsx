@@ -1,7 +1,6 @@
 
 // Function to sort schedules by date and startTime
 const sortSchedules = (schedules) => {
-  console.log(schedules)
     return schedules.length > 0 && schedules.sort((a, b) => {
       // First, compare by date
       const dateA = new Date(a.date);

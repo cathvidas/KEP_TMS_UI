@@ -114,14 +114,14 @@ const RTable = ({ heading, rows, columns, userType }) => {
               columns.map((col, k) => <th key={k}>{col}</th>)
             ) : (
               <>
-                <th>R_No</th>
+                <th>No</th>
                 {userType !== "user" && <th>Requestor</th>}
                 <th>Program</th>
                 <th>Category Name</th>
                 <th>Venue</th>
                 <th>Date</th>
                 <th>Facilitator</th>
-                <th>Fee</th>
+                <th>Total Cost</th>
                 <th>Status</th>
                 <th>Action</th>
               </>
@@ -147,16 +147,16 @@ const RTable = ({ heading, rows, columns, userType }) => {
                   <td>{item.categoryName}</td>
                   <td>{item.venue}</td>
                   <td>
-                    {FormatDate(item.trainingStartDate)} -{" "}
-                    {FormatDate(item.trainingEndDate)}
+                    {item.trainingStartDate} -{" "}
+                    {item.trainingEndDate}
                   </td>
                   <td>
                     {item.trainingFacilitators.map((fac) => {
                       return fac.fullname;
                     })}
                   </td>
-                  <td>{item.trainingFee}</td>
-                  <td>{StatusColor(item.statusName)}</td>
+                  <td>Php {item.totalTrainingFee}</td>
+                  <td className="text-uppercase">{StatusColor(item.statusName)}</td>
                   <td >
                     <span className="d-flex gap-2 align-items-center">
                     <Link

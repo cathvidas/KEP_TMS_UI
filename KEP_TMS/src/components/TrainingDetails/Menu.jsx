@@ -5,7 +5,6 @@ import React from "react";
 
 export const RequestMenu = ({menuList, action, current}) => {
   
-  console.log(menuList)
   return (
     <>
       <div

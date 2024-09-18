@@ -10,7 +10,7 @@ import Header from "../components/General/Header.jsx";
 import Layout from "../components/General/Layout.jsx";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getTrainingRequestById } from "../services/trainingServices.jsx";
+import { getTrainingRequestApprovers, getTrainingRequestById } from "../services/trainingServices.jsx";
 import { statusCode } from "../api/constants.jsx";
 import {
   DetailItem,
@@ -21,6 +21,7 @@ import { UserList } from "../components/List/UserList.jsx";
 import EmptyState from "../components/Form/EmptyState.jsx";
 import { getUserById } from "../api/UserAccountApi.jsx";
 import ModulesContainer from "../components/TrainingDetails/ModulesContainer.jsx";
+import ExportDemo from "../components/TablePrime.jsx";
 
 const RequestView = () => {
   const [data, setData] = useState({});
@@ -33,7 +34,6 @@ const RequestView = () => {
         const participants = await Promise.all(
           details.trainingParticipants.map(async ({ employeeBadge }) => {
             const username = await getUserById(employeeBadge);
-            console.log(username.data.fullname);
             return {
               id: employeeBadge,
               name: username.data.fullname,
@@ -60,18 +60,29 @@ const RequestView = () => {
         console.error(err);
       }
     };
-    // const getApprovers = async () => {
-    //   try {
-    //     const res = await apiClient.get(`/TrainingRequest/GetTrainingRequestApprovers/${id}`);
-    //     setApprovers(res.data);
-    //   } catch (error) {
-    //     console.error("Error fetching approvers:", error);
-    //   }
-    // }
     getRequest();
-  }, [id]);
+    const getApprovers = async () => {
+      try {
+        const tdata = {
+          userBadge: data.requestorBadge,
+          cost: data.totalTrainingFee,
+          requestType: data.trainingTypeId,
+        };
+        const res = await getTrainingRequestApprovers(tdata);
+        console.log(res.data)
+        setApprovers(res.data);
+      } catch (error) {
+        console.error("Error fetching approvers:", error);
+      }
+    };
+    getApprovers()
+    
+    // const ress= approvers.map((x) =>({
+    //   id: x.employeeBadge,
+    //   name: x.lastname + "," + x.firstname,
+    // }))
+  }, [data.trainingTypeId, data.requestorBadge, data.totalTrainingFee, id]);
 
-  console.log(data);
   const Content = () => {
     const pages = [
       <>
@@ -85,17 +96,6 @@ const RequestView = () => {
         </div>
         <div className="d-flex justify-content-between pe-5">
           <TDOverview formData={data} />
-          {data.statusId == statusCode.FORAPPROVAL && (
-            <>
-              <div className="pe-5 me-5">
-                <Heading value="approvers:" />
-                <UserList
-                  userlist={data.trainingFacilitators}
-                  property={"name"}
-                />
-              </div>
-            </>
-          )}{" "}
         </div>
         <br />
         <TScheduleOverview
@@ -135,9 +135,23 @@ const RequestView = () => {
         <Heading value="training cost" />
         <DetailItem label="Training Fee" value={data.trainingFee} />
         <DetailItem label="Total Training Cost" value={data.totalTrainingFee} />
+        
+        {data.statusId == statusCode.FORAPPROVAL && (
+            <>
+            <br/>
+              <div className="pe-5 me-5">
+                <Heading value="approvers:" />
+                <UserList
+                //  userlist={approvers}
+                  property={"username"}
+                />
+              </div>
+            </>
+          )}{" "}
       </>,
       <>
-      <ModulesContainer/></>,
+      <ModulesContainer/>
+      <ExportDemo/></>,
       <>
         {" "}
         <ExamContainer />
@@ -157,7 +171,7 @@ const RequestView = () => {
               current={currentContent}
             />
           )}
-          <div className="flex-fill">
+          <div className="flex-fill mb-5">
             {pages[currentContent]}
             {/* <div className="float-right">
               <StatusChart data={24} />

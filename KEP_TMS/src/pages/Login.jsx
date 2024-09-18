@@ -8,7 +8,7 @@ import {
   Button,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import logo from "../img/logo.png";
+import logo from "../img/Knowles_Green.png";
 import { useState } from "react";
 import validateLogin from "../utils/LoginValidation";
 import handleUserLogin from "../services/loginServices";

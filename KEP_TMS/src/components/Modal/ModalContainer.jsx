@@ -26,7 +26,8 @@ export const ModalContainer = ({
         <Modal.Header className="border-0" closeButton>
           <Modal.Title className={`h5 ${color}`}>{heading}</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="py-0">{body}</Modal.Body>
+        <Modal.Body className="py-0">{body}
+        </Modal.Body>
         <Modal.Footer className="border-0">
           <Button variant="secondary" onClick={close}>
             Close

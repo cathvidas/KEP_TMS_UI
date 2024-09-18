@@ -3,6 +3,7 @@ import proptype from "prop-types";
 import UserIcon from "./UserIcon";
 import Swal from "sweetalert2";
 import icon from "/src/img/icon.png";
+import icon2 from "/src/img/logo-nobg.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleRight,
@@ -119,7 +120,7 @@ const Sidebar = () => {
           className="fw-bold lh-1 theme-color flex text-decoration-none py-3 px-3 pe-4"
           href="/"
         >
-          <img src={icon} width="43" />
+          <img src={icon2} width="43" />
           {expanded === "true" && (
             <small>
               KNOWLES TRAINING <br /> REQUEST SYSTEM

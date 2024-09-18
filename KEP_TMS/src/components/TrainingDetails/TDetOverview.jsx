@@ -12,11 +12,9 @@ const TDOverview = ({ id , formData}) => {
       const category = await getTrainingCategoryById(formData.categoryId);
       const provider = await getTrainingProviderById(formData.trainingProviderId);
       setOption({ program: program.data.name, category: category.name , provider: provider.name});
-      console.log(program.data.name);
     };
     getData();
   }, []);
-  console.log(+localStorage.getItem("request-type"))
   return (
     <div>
       <Heading value="Details" />
