@@ -21,6 +21,6 @@ const Trainings =()=>{
         
     )
     return(<>
-    <Layout ActionComponent={Content}/></>)
+    <Layout BodyComponent={Content}/></>)
 }
 export default Trainings

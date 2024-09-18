@@ -21,6 +21,6 @@ const ForApproval =()=>{
         
     )
     return(<>
-    <Layout ActionComponent={Content}/></>)
+    <Layout BodyComponent={Content}/></>)
 }
 export default ForApproval

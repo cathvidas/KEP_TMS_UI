@@ -184,7 +184,7 @@ const RequestView = () => {
 
   return (
     <>
-      <Layout ActionComponent={Content} />
+      <Layout BodyComponent={Content} />
     </>
   );
 };

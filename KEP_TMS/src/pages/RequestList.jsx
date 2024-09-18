@@ -33,6 +33,6 @@ const RequestList =()=>{
         </>
       );
     return(<>
-    <Layout ActionComponent={Content}/></>)
+    <Layout BodyComponent={Content}/></>)
 }
 export default RequestList

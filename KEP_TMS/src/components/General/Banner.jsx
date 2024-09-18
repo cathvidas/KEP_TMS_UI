@@ -3,7 +3,7 @@ import { ActionButton } from "./Button";
 import bannerimg from "../../img/banner.png";
 import proptypes from "prop-types";
 
-const Banner = ({ showModal, setShowModal }) => {
+const Banner = ({ setShowModal }) => {
   const username = sessionStorage.getItem("username");
   const fullname = sessionStorage.getItem("fullname");
 
@@ -15,9 +15,6 @@ const Banner = ({ showModal, setShowModal }) => {
     }
   };
 
-  const handleShow = () => {
-    setShowModal(!showModal);
-  };
 
   return (
     <div
@@ -40,7 +37,7 @@ const Banner = ({ showModal, setShowModal }) => {
               &apos;Request Training&apos; to start or &apos;View All
               Requests&apos; to track your progress.
             </p>
-            <ActionButton title="Request Training" onClick={handleShow} />
+            <ActionButton title="Request Training" onClick={setShowModal} />
             <ActionButton
               title="View All Request"
               actionLink="/KEP_TMS/RequestList"

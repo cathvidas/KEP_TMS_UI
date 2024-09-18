@@ -42,6 +42,6 @@ const NewRequest = () => {
     );
   };
 
-  return <Layout ActionComponent={Content} />;
+  return <Layout BodyComponent={Content} />;
 };
 export default NewRequest;

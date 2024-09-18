@@ -57,7 +57,7 @@ programs.then((prog)=>{
   );
   return (
     <>
-      <Layout ActionComponent={Content} />
+      <Layout BodyComponent={Content} />
     </>
   );
 };
