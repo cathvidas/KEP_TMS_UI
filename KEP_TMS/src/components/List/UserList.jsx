@@ -4,63 +4,81 @@ import { Form } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Button } from "primereact/button";
+import { FilterMatchMode } from "primereact/api";
 
-export const UserList = ({ leadingElement, property, userlist, trailingElement, col, handleParticipants, action }) => {
-  const [checked, setChecked] = useState([]);
-  const handleInputChange = (user) => {
-    const isChecked = checked.some((obj)=>obj.id === user.id);
-    if(isChecked){
-      setChecked(checked.filter((obj)=>obj.id!== user.id ));
-    }else{
-      setChecked([...checked, user]);
-    }
-  };
+export const UserList = ({
+  leadingElement,
+  property,
+  userlist,
+  trailingElement,
+  col,
+  handleParticipants,
+  action,
+  filterTemp
+}) => {
+ // const [filters, setFilters] = useState(filterTemp);
+  const [selected, setSelected] = useState(null);
+  
+
+
+  console.log(selected);
   useEffect(()=>{
-    if(handleParticipants){
-      handleParticipants(checked);}
 
-  }, [checked, handleParticipants])
+  })
+  useEffect(() => {
+    if (handleParticipants) {
+      handleParticipants(selected);
+    }
+  }, [selected, handleParticipants]);
+  const actionBodyTemplate = (data) => {
+    return (
+      <Button
+        icon="pi pi-trash"
+        size="small"
+        rounded
+        className="rounded-circle"
+        text
+        severity="danger"
+        onClick={() => action(data.employeeBadge)}
+      />
+    );
+  };
   return (
     <>
       {userlist && (
-        <div className={`group-list    ${col && "row row-cols-1 row-cols-md-" + col}`}>
-          {userlist.map((user, index) => (
-            <div key={index} className={`d-flex align-items-center p-1  ${trailingElement && "theme-hover"} gap-2`}>
-              {trailingElement != null ?(
-                <>
-                  <Form.Label className="cursor-pointer d-flex align-items-center flex-grow-1 my-0 " htmlFor={`label-${index}`}>
-                    {leadingElement && <UserIcon Name={user[property]} />}
-                    <span className={trailingElement ? "mx-2" : ""}>
-                      {user[property]}
-                    </span>
-                  </Form.Label>   
-                  {trailingElement?.action === true &&
-                  <span className="text-danger btn btn-sm" onClick={()=>action(user.id)}><FontAwesomeIcon icon={faX}/></span> } 
-
-
-                  
-{trailingElement?.input === true &&
-                  <input
-                    className="form-check-input ms-auto mt-0"
-                    type="checkbox"
-                    id={`label-${index}`}
-                    onChange={()=>handleInputChange(user)}
-                    checked={
-                        checked.filter((obj)=>obj.id === user.id ).length > 0 ? true : false
-
-                    }
-                  />}
-                </>
-              ) : (<> {leadingElement && 
-              <UserIcon Name={user[property]} />}
-                <span className={trailingElement ? "me-2" : ""}>
-                  {user[property]}
-                </span>
-              </>
-              )}
-            </div>
-          ))}
-        </div>
+        <>
+          <DataTable
+            value={userlist}
+            size="small"
+            stripedRows
+            tableStyle={{ minWidth: "50rem" }}
+            selectionMode={true}
+            selection={trailingElement?.input === true ? selected : false}
+            onSelectionChange={(e) => setSelected(e.value)}
+            filters={filterTemp}
+          >
+            {trailingElement?.input === true && (
+              <Column
+                selectionMode="multiple"
+                headerStyle={{ width: "3rem" }}
+              ></Column>
+            )}
+            <Column field="employeeBadge" header="Code"></Column>
+            <Column field="name" header="Name"></Column>
+            <Column field="departmentName" header="Department"></Column>
+            <Column field="roleName" header="Usertype"></Column>
+            {trailingElement?.action === true && (
+              <Column
+                headerStyle={{ width: "10%", minWidth: "8rem" }}
+                bodyStyle={{ textAlign: "center" }}
+                body={actionBodyTemplate}
+              ></Column>
+            )}
+          </DataTable>
+        </>
       )}
     </>
   );

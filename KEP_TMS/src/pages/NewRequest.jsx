@@ -5,6 +5,7 @@ import { SectionBanner } from "../components/General/Section";
 import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
 import Header from "../components/General/Header";
 import Layout from "../components/General/Layout";
+import { icon } from "@fortawesome/fontawesome-svg-core";
 
 const NewRequest = () => {
   const action = () => (
@@ -24,10 +25,6 @@ const NewRequest = () => {
   const Content = () => {
     return (
       <>
-        <Header
-          title="Training Request"
-          IconComponent={<FontAwesomeIcon icon={faStickyNote} />}
-        />
         <div className="w-100">
           <SectionBanner
             title="Training Requests || Add Request"
@@ -42,6 +39,6 @@ const NewRequest = () => {
     );
   };
 
-  return <Layout BodyComponent={Content} />;
+  return <Layout BodyComponent={Content} header={{title: "Training Request", icon: <FontAwesomeIcon icon={faStickyNote} />}} />;
 };
 export default NewRequest;

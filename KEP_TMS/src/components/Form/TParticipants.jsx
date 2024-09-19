@@ -13,7 +13,43 @@ import proptype from "prop-types";
 import { getAllUsers } from "../../api/UserAccountApi";
 import { getAllDepartments } from "../../api/ComboBoxes";
 import { getAllTrainingProviders } from "../../services/trainingServices";
+import { FilterMatchMode } from "primereact/api";
 const TrainingParticipant = ({ formData, handleResponse }) => {
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  });
+
+  const onGlobalFilterChange = (e) => {
+    const value = e.target?.value;
+    // let _filters = { ...filters };
+
+    // _filters["global"].value = value;
+
+    if(filters.global.value !== value && value !== undefined){
+      setFilters((prev)=>({
+        ...prev, global:{...prev.global, value}
+
+      }))
+    }
+    //setFilters(_filters);
+  };
+
+  console.log(filters)
+
+  useEffect(()=>{
+    
+  })
+
+
+
+
+
+
+
+
+
+
+
   const [data, setFormData] = useState(formData);
   const [showModal, setShowModal] = useState(false);
   const [filter, setFilter] = useState({ name: "", department: "" });
@@ -64,8 +100,8 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
         .sort((a, b) => a.name.localeCompare(b.name));
 
       const availableUsers = activeUsers.filter(
-        (x) => !data.trainingParticipants?.some((y) => x.id === y.id)
-      ).filter((x)=> !data.trainingFacilitators?.some((y)=> x.id === y.id));
+        (x) => !data.trainingParticipants?.some((y) => x.employeeBadge === y.employeeBadge)
+      ).filter((x)=> !data.trainingFacilitators?.some((y)=> x.employeeBadge === y.employeeBadge));
 
       const departments = await getAllDepartments();
       const providers = await getAllTrainingProviders();
@@ -108,12 +144,13 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
   }, [filter, list.users]);
 
   const handleParticipants = (data) => {
+    console.log(data)
     if(participants.trainees!== data && currentSelected === "trainees"){
       setParticipants((prev)=>({...prev, trainees: data }));
     }else if(participants.facilitators!== data && currentSelected === "facilitators"){
       setParticipants((prev)=>({...prev, facilitators: data }));
     }
-    console.log(participants)
+    //console.log(participants)
   };
 
   const checkUser = () => {
@@ -121,7 +158,7 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
     if(currentSelected === "trainees"){
     if (participants?.trainees != null) {
       const newParticipants = participants.trainees.filter(
-        (x) => !data?.trainingParticipants?.some((y) => x.id === y.id)
+        (x) => !data?.trainingParticipants?.some((y) => x.employeeBadge === y.employeeBadge)
       );
 
       setFormData({
@@ -136,7 +173,7 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
       
     if (participants?.facilitators != null) {
       const newParticipants = participants.facilitators.filter(
-        (x) => !data?.trainingFacilitators?.some((y) => x.id === y.id)
+        (x) => !data?.trainingFacilitators?.some((y) => x.employeeBadge === y.employeeBadge)
       );
 
       setFormData({
@@ -150,16 +187,16 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
     
   };
 
-  const removerParticipant = (type, id) => {
+  const removerParticipant = (type, employeeBadge) => {
     setFormData({
       ...data,
-      [type]: data[type].filter((obj) => obj.id !== id),
+      [type]: data[type].filter((obj) => obj.employeeBadge !== employeeBadge),
     });
   };
   const bodyContent = (
     <>
       {" "}
-      <SearchBar handleOnInput={setFilter} options={list.departments} />
+      <SearchBar handleOnInput={onGlobalFilterChange}  options={list.departments} />
       <div
         className="overflow-auto max-vh-100 mt-2"
         style={{ maxHeight: "calc(100vh - 275px)" }}
@@ -170,6 +207,7 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
           trailingElement={{ input: true }}
           property={"name"}
           handleParticipants={handleParticipants}
+          filterTemp={filters}
         />
       </div>
     </>
@@ -273,6 +311,7 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
         id="userlistModal"
         buttonText="Add"
         body={bodyContent}
+        size={"xl"}
       />
     </>
   );

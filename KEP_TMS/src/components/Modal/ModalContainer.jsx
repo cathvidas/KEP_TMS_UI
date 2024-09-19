@@ -9,6 +9,7 @@ export const ModalContainer = ({
   buttonText,
   buttonVariant,
   buttonAction,
+  size
 }) => {
   const background = variantStyle
     ? variantStyle == "primary"
@@ -22,7 +23,7 @@ export const ModalContainer = ({
     : "";
   return (
     <>
-      <Modal show={state} onHide={close}>
+      <Modal show={state} onHide={close} size={size ? size : "md"}>
         <Modal.Header className="border-0" closeButton>
           <Modal.Title className={`h5 ${color}`}>{heading}</Modal.Title>
         </Modal.Header>

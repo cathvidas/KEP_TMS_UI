@@ -13,6 +13,10 @@ import { InputText } from "primereact/inputtext";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { MultiSelect } from "primereact/multiselect";
 import { Tag } from "primereact/tag";
+import { Button } from "primereact/button";
+import { Link, useNavigate } from "react-router-dom";
+import { formatCurrency } from "../../utils/Formatting";
+import getSeverity from "../../services/statusStyle";
 
 const TRequestTable = ({ renderType }) => {
   const [data, setData] = useState([]);
@@ -20,27 +24,29 @@ const TRequestTable = ({ renderType }) => {
     const getTrainingRequests = async () => {
       try {
         var trainingRequests = await getAllTrainingRequests();
-        
+
+        console.log(trainingRequests.data);
         if (renderType === "forapprovall") {
           trainingRequests = await getTrainingRequestByApprover(
             SessionGetUserId()
           );
         }
 
-        console.log(trainingRequests);
         const updatedRequests = await Promise.all(
-          trainingRequests.map(async (request) => {
+          trainingRequests.data.map(async (request) => {
             // Get the list of facilitator IDs
             const facilitatorIds = request.trainingFacilitators.map(
-              ({ facilitorBadge }) => facilitorBadge
+              (element) => {
+                return element.facilitatorBadge;
+              }
             );
+            console.log(facilitatorIds);
             // Fetch details for each facilitator
             const facilitatorsDetails = await Promise.all(
-              facilitatorIds.map(async (employeeBadge) => {
-                const user = await getUserById(employeeBadge);
-                console.log(user);
+              facilitatorIds.map(async (facilitatorBadge) => {
+                const user = await getUserById(facilitatorBadge);
                 return {
-                  employeeBadge,
+                  facilitatorBadge,
                   name: user.data.username,
                   fullname: user.data.lastname + ", " + user.data.firstname,
                 };
@@ -62,7 +68,17 @@ const TRequestTable = ({ renderType }) => {
           setData(userRequests);
         } else {
           setData(updatedRequests);
-          setData((prev =>([...prev, ...updatedRequests, ...updatedRequests, ...updatedRequests])));
+          // setData((prev) => [
+          //   ...prev,
+          //   ...updatedRequests,
+          //   ...updatedRequests,
+          //   ...updatedRequests,
+          //   ...updatedRequests,
+          //   ...updatedRequests,
+          //   ...updatedRequests,
+          //   ...updatedRequests,
+          //   ...updatedRequests,
+          // ]);
         }
       } catch (error) {
         console.error("Error fetching training requests:", error);
@@ -72,33 +88,8 @@ const TRequestTable = ({ renderType }) => {
     getTrainingRequests();
   }, [renderType]);
 
-  console.log(data);
-  const [selectedData, setSelectedData] = useState([]);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-
-    name: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    "country.name": {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    representative: { value: null, matchMode: FilterMatchMode.IN },
-    date: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }],
-    },
-    balance: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
-    },
-    status: {
-      operator: FilterOperator.OR,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
-    },
-    activity: { value: null, matchMode: FilterMatchMode.BETWEEN },
   });
 
   const [globalFilterValue, setGlobalFilterValue] = useState("");
@@ -112,40 +103,27 @@ const TRequestTable = ({ renderType }) => {
     setFilters(_filters);
     setGlobalFilterValue(value);
   };
-
-  const representativeFilterTemplate = (options) => {
+  const navigate = useNavigate();
+  const handleButtonClick = (id) => {
+    navigate(`/KEP_TMS/Request_View/${id}`);
+  };
+  const actionTemplate = (data) => {
     return (
       <React.Fragment>
-        <div className="mb-3 font-bold">Agent Picker</div>
-        <MultiSelect
-          value={options.value}
-          options={[0,1,12,3,334,45,45]}
-          itemTemplate={representativesItemTemplate}
-          onChange={(e) => options.filterCallback(e.value)}
-          optionLabel="name"
-          placeholder="Any"
-          className="p-column-filter"
+        <Button
+          icon="pi pi-eye"
+          severity="success"
+          className="rounded"
+          onClick={() => handleButtonClick(data.id)}
         />
       </React.Fragment>
     );
   };
 
-  const representativesItemTemplate = (option) => {
-    return (
-      <div className="flex align-items-center gap-2">
-        <img
-          alt={option.name}
-          src={`https://primefaces.org/cdn/primereact/images/avatar/${option.image}`}
-          width="32"
-        />
-        <span>{option.name}</span>
-      </div>
-    );
-  };
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2 justify-content-between align-items-center">
-        <h4 className="m-0">Customers</h4>
+        <h6 className="m-0">Recent Trainings</h6>
         <IconField iconPosition="left">
           <InputIcon className="pi pi-search" />
           <InputText
@@ -156,46 +134,109 @@ const TRequestTable = ({ renderType }) => {
         </IconField>
       </div>
     );
-  };    const getSeverity = (status) => {
-    switch (status) {
-        case 'unqualified':
-            return 'danger';
-
-        case 'Approved':
-            return 'success';
-
-        case 'new':
-            return 'info';
-
-        case 'negotiation':
-            return 'warning';
-
-        case 'renewal':
-            return null;
-    }
-};
+  };
   const statusBodyTemplate = (rowData) => {
-    console.log(rowData)
-    return <Tag value={rowData.statusName} severity={getSeverity(rowData.statusName)} />;
+    console.log(rowData);
+    return (
+      <Tag
+        value={rowData.statusName}
+        severity={getSeverity(rowData.statusName)}
+      />
+    );
+  };
+
+const priceBodyTemplate = (product) => {
+    return formatCurrency(product.totalTrainingFee);
 };
+//  const format
   const header = renderHeader();
   return (
     <>
-    <div className="card">
-        <DataTable value={data} stripedRows  size="small"  tableStyle={{ minWidth: '50rem' }} paginator rows={10} dataKey="id" filters={filters} 
-         header={header} emptyMessage="No data found.">
-            <Column field="id" header="No" sortable style={{ width: '5%' }}></Column>
-            <Column field="requestorName" header="Requestor" sortable style={{ width: '15%' }}></Column>
-            <Column field="categoryName" header="Category" sortable style={{ width: '15%' }}></Column>
-            <Column field="trainingProviderName" header="Provider" sortable style={{ width: '15%' }}></Column>
-            <Column field="venue" header="Venue" sortable style={{ width: '15%' }}></Column>
-            <Column field="trainingStartDate" header="Start Date" sortable style={{ width: '15%' }}></Column>
-            <Column field="trainingEndDate" header="End Date" sortable style={{ width: '25%' }}></Column>
-            <Column field="totalTrainingFee" header="Total Fee" sortable style={{ width: '25%' }}></Column>
-            <Column field="statusName" header="Status" sortable style={{ width: '25%' }} body={statusBodyTemplate}></Column>
-            <Column field="quantity" header="Action" sortable style={{ width: '25%' }}></Column>
+      <div className="">
+        <DataTable
+          value={data}
+          stripedRows
+          size="small"
+          tableStyle={{ minWidth: "50rem" }}
+          paginator
+          rows={10}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          dataKey="id"
+          filters={filters}
+          header={header}
+          emptyMessage="No data found."
+          sortMode="multiple"
+        >
+          <Column
+            field="id"
+            header="No"
+            sortable
+            style={{ width: "3%" }}
+          ></Column>
+          <Column
+            field="requestorName"
+            header="Requestor"
+            sortable
+            style={{ width: "10%" }}
+          ></Column>
+          <Column
+            field="trainingProgramName"
+            header="Program"
+            sortable
+            style={{ width: "10%" }}
+          ></Column>
+          <Column
+            field="categoryName"
+            header="Category"
+            sortable
+            style={{ width: "10%" }}
+          ></Column>
+          <Column
+            field="trainingProviderName"
+            header="Provider"
+            sortable
+            style={{ width: "15%" }}
+          ></Column>
+          <Column
+            field="venue"
+            header="Venue"
+            sortable
+            style={{ width: "10%" }}
+          ></Column>
+          <Column
+            field="trainingStartDate"
+            header="Start Date"
+            sortable
+            style={{ width: "15%" }}
+          ></Column>
+          <Column
+            field="trainingEndDate"
+            header="End Date"
+            sortable
+            style={{ width: "15%" }}
+          ></Column>
+          <Column
+            field="totalTrainingFee"
+            header="Total Fee"
+            sortable
+            style={{ width: "15%" }}
+            body={priceBodyTemplate}
+          ></Column>
+          <Column
+            field="statusName"
+            header="Status"
+            sortable
+            style={{ width: "25%" }}
+            body={statusBodyTemplate}
+          ></Column>
+          <Column
+            field="id"
+            header="Action"
+            style={{ width: "25%" }}
+            body={actionTemplate}
+          ></Column>
         </DataTable>
-    </div>
+      </div>
     </>
   );
 };

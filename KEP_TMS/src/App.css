@@ -80,3 +80,15 @@
 .flex-between{
     justify-content: space-between !important;
 }
+
+ul.p-dropdown-items  {
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    background: var(--theme-color);
+    color: #fff;
+}
+
+.p-datatable .p-sortable-column .p-sortable-column-icon{color: #fff;}

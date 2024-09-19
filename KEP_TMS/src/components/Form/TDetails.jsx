@@ -16,6 +16,7 @@ const TrainingDetailsContainer = ({ handleResponse, formData }) => {
 
   useEffect(() => {
     const getOptions = async () => {
+      try{
       const programsOption = await getTrainingPrograms();
       const categoriesOption = await getTrainingCategories();
       setOptions({
@@ -23,11 +24,14 @@ const TrainingDetailsContainer = ({ handleResponse, formData }) => {
           label: name,
           value: id,
         })),
-        categories: categoriesOption.map(({ id, name }) => ({
+        categories: categoriesOption.data.map(({ id, name }) => ({
           label: name,
           value: id,
         })),
       });
+    }catch(error){
+      console.error("Error fetching training options:", error);
+    }
     };
     getOptions();
   }, []);

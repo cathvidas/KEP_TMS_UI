@@ -19,7 +19,7 @@ const SearchBar = ({handleOnInput, options}) => {
 
   return (
     <>
-      <div className="form-group position-relative">
+      <div className="form-group position-relative z-1">
             <span
               className="position-absolute top-50 start-0 translate-middle-y border border-0 text-muted px-3"
               id="basic-addon1"
@@ -34,7 +34,7 @@ const SearchBar = ({handleOnInput, options}) => {
               aria-label="Username"
               aria-describedby="basic-addon1"
               value={filter.name}
-              onInput={(e) =>setFilter({name: e.target.value})}
+              onInput={(e) =>setFilter(e)}
             />
             {options && 
             <div className="position-absolute top-50 end-0 translate-middle-y border border-0 text-muted p-2">
