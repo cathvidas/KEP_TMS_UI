@@ -10,13 +10,17 @@ import proptype from 'prop-types'
 import Select from "react-select";
 import { useEffect, useState } from "react";
 const SearchBar = ({handleOnInput, options}) => {
-  const [filter, setFilter] = useState({});
+  const [filter, setFilter] = useState({value: "", department: ""});
   
   useEffect(()=>{
-    handleOnInput(filter)
-  }, [filter,handleOnInput])
+    handleOnInput(filter.value)
+  }, [filter.value,handleOnInput])
+  
+  useEffect(()=>{
+    setFilter({...filter, value: filter.department})
+  }, [filter.department])
 
-
+console.log(filter)
   return (
     <>
       <div className="form-group position-relative z-1">
@@ -33,8 +37,8 @@ const SearchBar = ({handleOnInput, options}) => {
               placeholder="search employee"
               aria-label="Username"
               aria-describedby="basic-addon1"
-              value={filter.name}
-              onInput={(e) =>setFilter(e)}
+              value={filter.value}
+              onInput={(e) =>setFilter({...filter, value: e.target.value})}
             />
             {options && 
             <div className="position-absolute top-50 end-0 translate-middle-y border border-0 text-muted p-2">
@@ -48,15 +52,15 @@ const SearchBar = ({handleOnInput, options}) => {
   
                 <Dropdown.Menu align="end"  className="overflow-auto" style={{maxHeight: "300px"}}>
                   {options.map((option, index) => (
-                    <span key={index} onClick={()=>setFilter({department: option.name})}>
-                    <Dropdown.Item className={option.name == filter ? "active" : ""} >{option.name}</Dropdown.Item></span>
+                    <span key={index} onClick={()=>setFilter({...filter, department: option.name})}>
+                    <Dropdown.Item className={option.name == filter.department ? "active" : ""} >{option.name}</Dropdown.Item></span>
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
             </div>}
           </div>{
             filter.department && 
-            <div className="bg-success flex justify-content-between bg-opacity-50 mt-2 p-1 rounded text-center text-uppercase px-2">{filter.department} <span className="btn btn-sm text-white" onClick={()=>{setFilter({department: ""})}}><FontAwesomeIcon icon={faX}/></span> </div>
+            <div className="bg-success flex justify-content-between bg-opacity-50 mt-2 p-1 rounded text-center text-uppercase px-2">{filter.department} <span className="btn btn-sm text-white" onClick={()=>{setFilter({...filter, department: ""})}}><FontAwesomeIcon icon={faX}/></span> </div>
    
           }
            </>

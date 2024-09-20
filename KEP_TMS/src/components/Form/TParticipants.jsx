@@ -19,19 +19,14 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
 
-  const onGlobalFilterChange = (e) => {
-    const value = e.target?.value;
-    // let _filters = { ...filters };
-
-    // _filters["global"].value = value;
-
+  const onGlobalFilterChange = (value) => {
+    
     if(filters.global.value !== value && value !== undefined){
       setFilters((prev)=>({
         ...prev, global:{...prev.global, value}
 
       }))
     }
-    //setFilters(_filters);
   };
 
   console.log(filters)
@@ -39,13 +34,6 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
   useEffect(()=>{
     
   })
-
-
-
-
-
-
-
 
 
 
@@ -88,14 +76,16 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
   useEffect(() => {
     const fetchDatas = async () => {
       const user = await getAllUsers();
+      console.log(user)
       const activeUsers = user
         .filter((user) => user.statusName === "Active")
-        .map(({ id, firstname, lastname, employeeBadge, departmentName, roleName }) => ({
+        .map(({ id, firstname, lastname, employeeBadge, departmentName, roleName ,position}) => ({
           id,
           name: `${lastname}, ${firstname}`,
           employeeBadge,
           departmentName,
-          roleName
+          roleName,
+          position
         }))
         .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -125,7 +115,6 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
     };
     fetchDatas();
   }, [data]);
-
   useEffect(() => {
     var filtered = list.users;
     if (filter?.name != null) {
@@ -187,7 +176,8 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
     
   };
 
-  const removerParticipant = (type, employeeBadge) => {
+  const removeParticipant = (type, employeeBadge) => {
+    console.log(type, employeeBadge)
     setFormData({
       ...data,
       [type]: data[type].filter((obj) => obj.employeeBadge !== employeeBadge),
@@ -220,7 +210,7 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
       />
       {data.trainingParticipants?.length > 0 ? (
         <>
-          <span className="d-flex justify-content-between">
+          <span className="d-flex mb-2 justify-content-between">
             <span className="text-muted">
               {data.trainingParticipants.length} participants
             </span>
@@ -236,7 +226,8 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
             trailingElement={{ action: true }}
             col="3"
             property={"name"}
-            action={(e) => removerParticipant("trainingParticipants", e)}
+            action={(e) => removeParticipant("trainingParticipants", e)}
+            scrollHeight={"400px"}
           />
         </>
       ) : (
@@ -253,7 +244,7 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
       />
       {data.trainingFacilitators.length > 0 ? (
         <>
-          <span className="d-flex justify-content-between">
+          <span className="d-flex mb-2 justify-content-between">
             <span className="text-muted">
               {data.trainingFacilitators.length} participants
             </span>
@@ -269,7 +260,7 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
             trailingElement={{ action: true }}
             col="3"
             property={"name"}
-            action={(e) => removerParticipant("trainingFacilitators", e)}
+            action={(e) => removeParticipant("trainingFacilitators", e)}
           />
         </>
       ) : (

@@ -10,11 +10,10 @@ import { getUserById } from "../../api/UserAccountApi";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { MultiSelect } from "primereact/multiselect";
+import { FilterMatchMode } from "primereact/api";
 import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../utils/Formatting";
 import getSeverity from "../../services/statusStyle";
 
@@ -112,7 +111,6 @@ const TRequestTable = ({ renderType }) => {
       <React.Fragment>
         <Button
           icon="pi pi-eye"
-          severity="success"
           className="rounded"
           onClick={() => handleButtonClick(data.id)}
         />
@@ -171,68 +169,68 @@ const priceBodyTemplate = (product) => {
             field="id"
             header="No"
             sortable
-            style={{ width: "3%" }}
+           // style={{ width: "3%" }}
           ></Column>
           <Column
             field="requestorName"
             header="Requestor"
             sortable
-            style={{ width: "10%" }}
+           // style={{ width: "10%" }}
           ></Column>
           <Column
             field="trainingProgramName"
             header="Program"
             sortable
-            style={{ width: "10%" }}
+           // style={{ width: "10%" }}
           ></Column>
           <Column
             field="categoryName"
             header="Category"
             sortable
-            style={{ width: "10%" }}
+            //style={{ width: "10%" }}
           ></Column>
           <Column
             field="trainingProviderName"
             header="Provider"
             sortable
-            style={{ width: "15%" }}
+          //  style={{ width: "15%" }}
           ></Column>
           <Column
             field="venue"
             header="Venue"
             sortable
-            style={{ width: "10%" }}
+         //   style={{ width: "10%" }}
           ></Column>
           <Column
             field="trainingStartDate"
             header="Start Date"
             sortable
-            style={{ width: "15%" }}
+           style={{ width: "8%" }}
           ></Column>
           <Column
             field="trainingEndDate"
             header="End Date"
             sortable
-            style={{ width: "15%" }}
+            style={{ width: "8%" }}
           ></Column>
           <Column
             field="totalTrainingFee"
             header="Total Fee"
             sortable
-            style={{ width: "15%" }}
+            style={{ width: "8%" }}
             body={priceBodyTemplate}
           ></Column>
           <Column
             field="statusName"
             header="Status"
             sortable
-            style={{ width: "25%" }}
+           // style={{ width: "25%" }}
             body={statusBodyTemplate}
           ></Column>
           <Column
             field="id"
             header="Action"
-            style={{ width: "25%" }}
+           // style={{ width: "25%" }}
             body={actionTemplate}
           ></Column>
         </DataTable>
