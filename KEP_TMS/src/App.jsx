@@ -19,7 +19,7 @@ function App() {
         <Route path="/KEP_TMS" element={<Login />} />
         <Route path="/KEP_TMS/Dashboard" element={<Dashboard />} />
         <Route path="/KEP_TMS/Request_View/:id" element={<RequestView />} />
-        <Route path="/KEP_TMS/NewRequest" element={<NewRequest />} />
+        <Route path="/KEP_TMS/NewRequest/:type?" element={<NewRequest />} />
         <Route path="/KEP_TMS/RequestList" element={<RequestList />} />
         <Route path="/KEP_TMS/Trainings" element={<Trainings />} />
         <Route path="/KEP_TMS/ForApproval" element={<ForApproval />} />
