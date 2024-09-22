@@ -6,15 +6,8 @@ import { getTrainingTypeById } from "../../services/MasterListServices";
 const TDOverview = ({ id , formData}) => {
   const [option, setOption] = useState({ program: "", category: ""});
 
-  useEffect(() => {
-    const getData = async () => {
-      const program = await getTrainingProgramById(formData.trainingProgramId);
-      const category = await getTrainingCategoryById(formData.categoryId);
-      const provider = await getTrainingProviderById(formData.trainingProviderId);
-      setOption({ program: program.data.name, category: category.name , provider: provider.name});
-    };
-    getData();
-  }, []);
+
+  console.log(formData)
   return (
     <div>
       <Heading value="Details" />
@@ -24,11 +17,11 @@ const TDOverview = ({ id , formData}) => {
       />
       <DetailItem
         label="Program"
-        value={option.program?? "N/A"}
+        value={formData?.trainingProgramName?? "N/A"}
       />
       <DetailItem
         label="Category"
-        value={option.category ?? "N/A"}
+        value={formData?.categoryName ?? "N/A"}
       />
       <DetailItem
         label="Objective"
@@ -40,7 +33,7 @@ const TDOverview = ({ id , formData}) => {
       />
       <DetailItem
         label="Provider"
-        value={option?.provider ?? "N/A"}
+        value={formData?.trainingProviderName ?? "N/A"}
       />
     </div>
   );

@@ -30,28 +30,22 @@ const RequestView = () => {
   useEffect(() => {
     const getRequest = async () => {
       try {
-        const details = await getTrainingRequestById(id);
+        const details = await getTrainingRequestById(parseInt(id));
         const participants = await Promise.all(
-          details.trainingParticipants.map(async ({ employeeBadge }) => {
-            const username = await getUserById(employeeBadge);
-            return {
-              id: employeeBadge,
-              name: username.data.fullname,
-            };
+          details?.data?.trainingParticipants.map(async ({ employeeBadge }) => {
+            const user = await getUserById(employeeBadge);
+            return user?.data;
           })
         );
 
         const facilitators = await Promise.all(
-          details.trainingFacilitators.map(async ({ facilitatorBadge }) => {
-            const username = await getUserById(facilitatorBadge);
-            return {
-              id: facilitatorBadge,
-              name: username.data.fullname,
-            };
+          details?.data?.trainingFacilitators.map(async ({ facilitatorBadge }) => {
+            const user = await getUserById(facilitatorBadge);
+            return user?.data;
           })
         );
         const updatedDetails = {
-          ...details,
+          ...details.data,
           trainingFacilitators: facilitators,
           trainingParticipants: participants,
         };
