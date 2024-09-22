@@ -29,7 +29,7 @@ useEffect(()=>{
     action(removeEmpBadge);}
 }, [removeEmpBadge])
 
-  console.log(scrollHeight);
+  console.log(userlist);
   useEffect(()=>{
 
   })
@@ -70,7 +70,7 @@ useEffect(()=>{
                 headerStyle={{ width: "3rem" }}
               ></Column>
             )}<Column header="No" body={(_, { rowIndex }) => rowIndex + 1} />
-            <Column field="name" header="Name"></Column>
+            <Column field="fullname" header="Name"></Column>
             <Column field="employeeBadge" header="Employee Id"></Column>
             <Column field="position" header="Position"></Column>
             <Column field="departmentName" header="Department"></Column>

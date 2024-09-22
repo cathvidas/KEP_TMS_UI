@@ -63,31 +63,18 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
   const [currentSelected, setCurrentSelected] = useState("");
   
   const handleShow = (type) => {
-    console.log(type);
     setCurrentSelected(type);
-    console.log(currentSelected);
     setShowModal(true);
   };
   useEffect(() => {
     handleResponse(data);
-    console.log(data);
   }, [data]);
 
   useEffect(() => {
     const fetchDatas = async () => {
       const user = await getAllUsers();
-      console.log(user)
       const activeUsers = user
         .filter((user) => user.statusName === "Active")
-        .map(({ id, firstname, lastname, employeeBadge, departmentName, roleName ,position}) => ({
-          id,
-          name: `${lastname}, ${firstname}`,
-          employeeBadge,
-          departmentName,
-          roleName,
-          position
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name));
 
       const availableUsers = activeUsers.filter(
         (x) => !data.trainingParticipants?.some((y) => x.employeeBadge === y.employeeBadge)
