@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RequestMenu } from "../components/TrainingDetails/Menu";
 import { SectionHeading } from "../components/General/Section.jsx";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faFile, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import TDOverview from "../components/TrainingDetails/TDetOverview.jsx";
 import TScheduleOverview from "../components/TrainingDetails/TSchedOverview.jsx";
 import { GetSchedule } from "../services/getApis.jsx";
@@ -22,6 +22,10 @@ import EmptyState from "../components/Form/EmptyState.jsx";
 import { getUserById } from "../api/UserAccountApi.jsx";
 import ModulesContainer from "../components/TrainingDetails/ModulesContainer.jsx";
 import ExportDemo from "../components/TablePrime.jsx";
+import { icon } from "@fortawesome/fontawesome-svg-core";
+import GeneralTable from "../components/General/GeneralTable.jsx";
+import { extractApproverDetails } from "../services/ExtractData.jsx";
+import ApproverList from "../components/List/ApproversList.jsx";
 
 const RequestView = () => {
   const [data, setData] = useState({});
@@ -55,28 +59,9 @@ const RequestView = () => {
       }
     };
     getRequest();
-    const getApprovers = async () => {
-      try {
-        const tdata = {
-          userBadge: data.requestorBadge,
-          cost: data.totalTrainingFee,
-          requestType: data.trainingTypeId,
-        };
-        const res = await getTrainingRequestApprovers(tdata);
-        console.log(res.data)
-        setApprovers(res.data);
-      } catch (error) {
-        console.error("Error fetching approvers:", error);
-      }
-    };
-    getApprovers()
-    
-    // const ress= approvers.map((x) =>({
-    //   id: x.employeeBadge,
-    //   name: x.lastname + "," + x.firstname,
-    // }))
   }, [data.trainingTypeId, data.requestorBadge, data.totalTrainingFee, id]);
 
+  console.log(data)
   const Content = () => {
     const pages = [
       <>
@@ -130,16 +115,12 @@ const RequestView = () => {
         <DetailItem label="Training Fee" value={data.trainingFee} />
         <DetailItem label="Total Training Cost" value={data.totalTrainingFee} />
         
-        {data.statusId == statusCode.FORAPPROVAL && (
+        {data.statusName == "ForApproval" && (
             <>
             <br/>
               <div className="pe-5 me-5">
                 <Heading value="approvers:" />
-                <UserList
-                //  userlist={approvers}
-                  property={"username"}
-                />
-              </div>
+                <ApproverList datalist={extractApproverDetails(data.approvers)}/>       </div>
             </>
           )}{" "}
       </>,

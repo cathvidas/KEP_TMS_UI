@@ -26,13 +26,13 @@ const NewRequest = () => {
     return (
       <>
         <div className="w-100 p-3">
-          <SectionBanner
+          {/* <SectionBanner
             title="Training Requests || Add Request"
             subtitle={
               "To add a new training request, fill out the form with the course name, desired date, and any special requirements. Click 'Submit' to finalize your request."
             }
             //  ActionComponents={action}
-          />
+          /> */}
           <FormContainer />
         </div>
       </>

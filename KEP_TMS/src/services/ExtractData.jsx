@@ -51,3 +51,20 @@ export const extractTrainingRequests = (data) => {
   );
   return extracted;
 };
+
+export const extractApproverDetails = (data) => {
+  const extracted = data.map(
+    ({
+      employeeBadge,
+      firstname,
+      lastname,
+      email,
+      department,
+    }) => ({
+        EmployeeBadge: employeeBadge,
+        FullName: lastname + ", " + firstname,
+        Email: email,
+        Department: department
+}))
+return extracted;
+}
