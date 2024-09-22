@@ -31,3 +31,33 @@ export const FormatDate = (dateString) => {
     return result;
   };
   
+
+  export const getTotalTime=(startTime, endTime) => {
+    // Split the time strings into hours and minutes
+    const [startHours, startMinutes] = startTime.split(":").map(Number);
+    const [endHours, endMinutes] = endTime.split(":").map(Number);
+
+    // Calculate the total time in minutes
+    const startTotalMinutes = startHours * 60 + startMinutes;
+    const endTotalMinutes = endHours * 60 + endMinutes;
+
+    // Calculate the difference in minutes
+    const difference = endTotalMinutes - startTotalMinutes;
+
+    // Convert the difference to hours and minutes
+    const hours = Math.floor(difference / 60);
+    const minutes = difference % 60;
+
+    // Format and return the total time
+    return difference;
+  }
+
+  export const formatTotalTime = (difference)=>{
+   // Convert the difference to hours and minutes
+   const hours = Math.floor(difference / 60);
+   const minutes = difference % 60;
+   return `${hours > 0 ? hours + (hours < 2 ? " hour" : " hours") : ""} ${
+    hours > 0 && minutes > 0 ? "and" : ""
+  } ${minutes > 0 ? minutes + (minutes < 2 ? " minute" : " minutes"): ""}`;
+
+  }
