@@ -101,7 +101,7 @@ console.log(selectedData)
       {" "}
       <Modal show={visible} onHide={() => setVisible(false)} size={"md"}>
         <Modal.Header className="border-0" closeButton>
-          <Modal.Title className={`h5 text-theme`}>Add Category</Modal.Title>
+          <Modal.Title className={`h5 text-theme`}>{selectedData != null? "Update Category" : "Add Category"}</Modal.Title>
         </Modal.Header>
         <Form
           className={validated && "was-validated"}
