@@ -2,35 +2,52 @@ import { Col, Row } from "react-bootstrap";
 import TrainingScheduleList from "./TScheduleList";
 import { Form } from "react-bootstrap";
 import proptype from "prop-types";
-import { FormFieldItem } from "./FormElements";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { SectionHeading } from "../General/Section";
 import { useEffect, useState } from "react";
-import {TrainingDateValidations, ValidateSchedule } from "../../utils/TrainingDateValidation";
+import {
+  TrainingDateValidations,
+  ValidateSchedule,
+} from "../../utils/TrainingDateValidation";
 import { TrainingDates } from "../../services/insertData";
+import { formatTotalTime, getTotalTime } from "../../utils/FormatDateTime";
 
-const ScheduleContainer = (
-  {
- formData,
-   handleResponse,
-}
-) => {
-
-  const [trainingSchedules, setTrainingSchedules] = useState(formData.trainingDates);
+const ScheduleContainer = ({ formData, handleResponse, errors }) => {
+  const [trainingSchedules, setTrainingSchedules] = useState(
+    formData.trainingDates
+  );
   const [schedData, setSchedData] = useState(TrainingDates);
   const [error, setError] = useState();
-  
-  const handleInputChange=(e)=>{
+  useEffect(() => {
+    setError(errors);
+  }, [errors]);
+  const handleInputChange = (e) => {
     const { name, value, type } = e.target;
-    setSchedData((obj) => ({...obj, [name]: type==="time"? value + ":00": value }));
-    setError(null);
-  }
+    setSchedData((obj) => ({
+      ...obj,
+      [name]: type === "time" ? value + ":00" : value,
+    }));
+  };
 
+  useEffect(()=>{
+    if(schedData.startTime && schedData.endTime){
+    const total =  getTotalTime(schedData.startTime, schedData.endTime)
+    if(total < 1){
+      setError("Start time must be earlier than end time");
+
+      setSchedData({...schedData, totalTime: "" });
+    }else{
+      setError(null)
+      const formatted = formatTotalTime(total)
+      setSchedData({...schedData, totalTime: formatted });
+    }
+    }
+  }, [schedData.startTime, schedData.endTime])
   const handleTrainingSched = () => {
     // First, validate the schedule data
     const validate = ValidateSchedule(schedData);
-  
+
     if (validate !== true) {
       // If validation fails, show the validation error
       setError(validate);
@@ -40,21 +57,20 @@ const ScheduleContainer = (
     } else {
       // If everything is valid, add the new schedule to the list
       setTrainingSchedules((prevSchedules) => [...prevSchedules, schedData]);
-  
+setError("");
       // Clear the form/reset schedData
       setSchedData(TrainingDates);
     }
   };
-  
- 
+
   const removeSechedule = (index) => {
     const updatedSchedules = trainingSchedules.filter((item, i) => i !== index);
     setTrainingSchedules(updatedSchedules);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     handleResponse(trainingSchedules);
-  }, [trainingSchedules, handleResponse])
+  }, [trainingSchedules, handleResponse]);
   return (
     <>
       <Row className="mt-2">
@@ -84,10 +100,10 @@ const ScheduleContainer = (
         /> */}
         <div className="col col-12  flex-column gap-2 mt-3">
           <div className="d-flex justify-content-between align-items-center">
-            <h6>Schedules: </h6>
+            <label className="fw-semibold required form-label">Schedules: </label>
           </div>
           <Row>
-            <Col>
+            <Col className="col-md-12 col-lg-7">
               <TrainingScheduleList
                 schedules={trainingSchedules}
                 onDelete={removeSechedule}
@@ -105,13 +121,15 @@ const ScheduleContainer = (
                     name="date"
                     value={schedData?.date}
                     onChange={handleInputChange}
-                    required
+                    // required
                   />
                 </Col>
               </Row>
               <Row className="mt-2">
                 <Col className="col-md-3 ">
-                  <Form.Label className="fw-semibold m-0">Start Time:</Form.Label>
+                  <Form.Label className="fw-semibold m-0">
+                    Start Time:
+                  </Form.Label>
                 </Col>
                 <Col>
                   <input
@@ -131,13 +149,18 @@ const ScheduleContainer = (
                   <input
                     className="form-control"
                     type="time"
-                     name="endTime"
+                    name="endTime"
                     value={schedData?.endTime}
                     onChange={handleInputChange}
                   />
                 </Col>
               </Row>
-              {error && <span className="text-danger">{error} </span>}
+              {schedData.totalTime && 
+              <>
+              <label className="col-md-3 form-label fw-semi-bold me-1">Total Time:</label>
+              <span className="text-success">{schedData.totalTime}</span>
+              </>}
+              {error && <small className="text-red">{error} </small>}
               <div className="d-flex">
                 <button
                   className="btn mt-2 ms-auto   btn-primary"
@@ -162,5 +185,6 @@ const ScheduleContainer = (
 ScheduleContainer.propTypes = {
   formData: proptype.object,
   handleResponse: proptype.func,
+  errors: proptype.string,
 };
 export default ScheduleContainer;

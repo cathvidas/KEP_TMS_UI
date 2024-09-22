@@ -10,53 +10,70 @@ import {
   getTrainingCategories,
   getTrainingPrograms,
 } from "../../services/trainingServices";
-const TrainingDetailsContainer = ({ handleResponse, formData }) => {
+const TrainingDetailsContainer = ({ handleResponse, formData , error}) => {
   const [details, setDetails] = useState(formData);
   const [options, setOptions] = useState({ programs: [], categories: [] });
-
+  const [errors, setErrors] = useState(error);
+  const [loading, setLoading] = useState(false);
+  useEffect(()=>{
+    setErrors(error);
+  },[error])
+  //Get program and categories options
   useEffect(() => {
     const getOptions = async () => {
-      try{
-      const programsOption = await getTrainingPrograms();
-      const categoriesOption = await getTrainingCategories();
-      setOptions({
-        programs: programsOption.map(({ id, name }) => ({
+      try {
+        setLoading(true);
+        const programsOption = await getTrainingPrograms();
+        const categoriesOption = await getTrainingCategories();
+        const mappedPrograms = programsOption.map(({ id, name }) => ({
           label: name,
           value: id,
-        })),
-        categories: categoriesOption.data.map(({ id, name }) => ({
+        }));
+        const mappedCategories = categoriesOption.data.map(({ id, name }) => ({
           label: name,
           value: id,
-        })),
-      });
-    }catch(error){
-      console.error("Error fetching training options:", error);
-    }
+        }));
+        setOptions({
+          programs: mappedPrograms,
+          categories: mappedCategories,
+        });
+       // setSelectedOption({programs: mappedPrograms[0], categories: mappedCategories[0]});
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching training options:", error);
+      }
     };
     getOptions();
   }, []);
+
+  //Pass data to parent component
   useEffect(() => {
     handleResponse(details);
   }, [details, handleResponse]);
 
+  //Emtpty field validation
   const handleOnChange = (name, value) => {
+    setErrors({ ...errors, [name]: value ? "" : "This field is required." });
     setDetails((obj) => ({ ...obj, [name]: value }));
   };
-
+  
   return (
     <>
-      <Row>
+      <Row className="">
         <SectionHeading
           title="Training Details"
           icon={<FontAwesomeIcon icon={faCircleInfo} />}
         />
         <FormFieldItem
+          required
+          error={errors?.trainingProgramId}
           col="col-6"
           label={"Program"}
           FieldComponent={
             <Select
+            isLoading={loading ? true : false}
               options={options.programs}
-              name="TProgram"
+              name="TProgram"              
               value={options.programs.filter(
                 (x) => x.value === details.trainingProgramId
               )}
@@ -65,11 +82,14 @@ const TrainingDetailsContainer = ({ handleResponse, formData }) => {
           }
         />
         <FormFieldItem
+          required
+          error={errors?.categoryId}
           col="col-6"
           label={"Category"}
           FieldComponent={
             <Select
-              options={options.categories}
+              isLoading={loading ? true : false}
+              options={options.categories}              
               value={options.categories.filter(
                 (x) => x.value === details.categoryId
               )}
@@ -78,6 +98,8 @@ const TrainingDetailsContainer = ({ handleResponse, formData }) => {
           }
         />
         <FormFieldItem
+          required
+          error={errors?.trainingObjectives}
           col="col-12"
           label={"Objective"}
           FieldComponent={
@@ -86,13 +108,13 @@ const TrainingDetailsContainer = ({ handleResponse, formData }) => {
               placeholder="Training objective"
               value={details.trainingObjectives}
               name="trainingObjectives"
-              onChange={(e) => {
-                handleOnChange(e.target.name, e.target.value);
-              }}
+              onChange={(e)=>handleOnChange(e.target.name, e.target.value)}
             ></textarea>
           }
         />
         <FormFieldItem
+          required
+          error={errors?.venue}
           label={"Venue"}
           FieldComponent={
             <input
@@ -100,7 +122,7 @@ const TrainingDetailsContainer = ({ handleResponse, formData }) => {
               className="form-control"
               name="venue"
               placeholder="Venue"
-              value={details.venue}
+              value={details.venue}              
               onChange={(e) => {
                 handleOnChange(e.target.name, e.target.value);
               }}
@@ -112,9 +134,8 @@ const TrainingDetailsContainer = ({ handleResponse, formData }) => {
   );
 };
 TrainingDetailsContainer.propTypes = {
-  onChange: proptype.func,
   handleResponse: proptype.func,
   formData: proptype.object,
-  setFormdata: proptype.func,
+  error: proptype.object,
 };
 export default TrainingDetailsContainer;

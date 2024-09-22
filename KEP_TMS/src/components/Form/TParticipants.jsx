@@ -14,7 +14,7 @@ import { getAllUsers } from "../../api/UserAccountApi";
 import { getAllDepartments } from "../../api/ComboBoxes";
 import { getAllTrainingProviders } from "../../services/trainingServices";
 import { FilterMatchMode } from "primereact/api";
-const TrainingParticipant = ({ formData, handleResponse }) => {
+const TrainingParticipant = ({ formData, handleResponse, errors }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -31,9 +31,6 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
 
   console.log(filters)
 
-  useEffect(()=>{
-    
-  })
 
 
 
@@ -46,8 +43,11 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
     facilitators: [],
     provider: "",
   });
+const [error, setError] = useState({});
+useEffect(()=>{
+    setError(errors);
+}, [errors])
 
-  
   
   const handleClose = () => setShowModal(false);
   const [list, setList] = useState({
@@ -195,12 +195,14 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
         title="Training Participants"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
+      {error?.trainees && <small className="text-red">{error.trainees}</small>}
       {data.trainingParticipants?.length > 0 ? (
         <>
           <span className="d-flex mb-2 justify-content-between">
             <span className="text-muted">
               {data.trainingParticipants.length} participants
             </span>
+            
             <ActionButton
               variant={{ size: "btn-sm" }}
               title="Add Participant"
@@ -229,6 +231,7 @@ const TrainingParticipant = ({ formData, handleResponse }) => {
         title="Training faciltator"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
+      {error?.facilitators && <small className="text-red">{error.facilitators}</small>}
       {data.trainingFacilitators.length > 0 ? (
         <>
           <span className="d-flex mb-2 justify-content-between">

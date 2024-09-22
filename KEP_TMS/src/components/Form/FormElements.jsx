@@ -23,13 +23,14 @@ export const FormStep = ({ step, title, state }) => {
     </>
   );
 };
-export const FormFieldItem = ({ col, label, FieldComponent }) => (
+export const FormFieldItem = ({ col, label, FieldComponent , required, error }) => (
   <>
     <Col className={col ? col : ""}>
       <Form.Group>
         {label &&
-        <Form.Label className="fw-semibold">{label}</Form.Label> }
+        <Form.Label className={`fw-semibold ${required && "required"}`}>{label}</Form.Label> }
         {FieldComponent && FieldComponent}
+        {error &&  <small className="text-red">{error}</small>}
       </Form.Group>
     </Col>
   </>
@@ -40,6 +41,8 @@ FormFieldItem.propTypes = {
   col: proptype.string,
   label: proptype.string,
   FieldComponent: proptype.object,
+  required: proptype.bool,
+  error: proptype.string
 };
 FormStep.propTypes = {
   step: proptype.number,
