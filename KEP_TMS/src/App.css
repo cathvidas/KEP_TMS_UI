@@ -1,6 +1,8 @@
 :root{
     --theme-color: rgb(0,167,111);
 }
+.bg-body
+body {background: #fbfdfc;}
 
 .nav-pills .nav-link.active, .theme-bg, .theme-bg *,
 .theme-btn{
@@ -85,10 +87,85 @@ ul.p-dropdown-items  {
     padding: 0 !important;
     margin-bottom: 0 !important;
 }
-
-.p-datatable .p-datatable-thead > tr > th {
+.sidebar{
+    transition: all .3s;
+}
+.custom-theme.p-datatable .p-datatable-thead > tr > th {
     background: var(--theme-color);
     color: #fff;
 }
 
-.p-datatable .p-sortable-column .p-sortable-column-icon{color: #fff;}
+.custom-theme.p-datatable .p-sortable-column .p-sortable-column-icon{color: #fff;}
+
+
+
+/* SIDEBAR */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background-color: #333;
+    color: #fff;
+    transition: all 0.2s;
+    z-index: 100;
+    width: fit-content;
+}
+.sidebar .nav-item a {
+    padding: 20px 30px !important;
+    width: 100%;
+    text-align: center;
+}
+.sidebar.expanded .nav-item a {
+width: 300px;
+text-align: start;
+}
+    
+      
+      .sidebar.expanded {
+        width: 300px; /* Adjust width for expanded sidebar */
+      }
+      
+      .sidebar.collapsed {
+        width: 80px; /* Adjust width for collapsed sidebar */
+      }
+
+   
+
+      
+/* HEADER */
+
+
+a {
+    color: #fff;
+    text-decoration: none !important;
+}
+.p-menu ul,
+ul.p-list-menu {
+    padding-left: 0!important;
+}
+.p-menu .p-submenu-header {
+    background: transparent;
+}.p-menu{
+    width: fit-content;
+}
+
+.form-label{
+    color: #808080;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: .9rem;
+}
+.form-label.required::after{
+    content: "*";
+    color: red;
+    margin-left: 2px;
+}.p-datatable-tbody tr,
+.p-datatable-tbody td ,
+.p-datatable {
+    user-select: text;
+  }
+  .text-red{
+    color: red;
+  }
