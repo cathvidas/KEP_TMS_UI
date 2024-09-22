@@ -163,15 +163,14 @@ const RequestView = () => {
     };
     return (
       <>
-        <Header title={"Training Detail"} />
-        <div className="d-flex gap-3">
-          {data.statusId === statusCode.APPROVED && (
+        <div className="d-flex">
+          {data.statusName === "Approved" && (
             <RequestMenu
               action={handleChangeContent}
               current={currentContent}
             />
           )}
-          <div className="flex-fill mb-5">
+          <div className="border-start p-3 flex-fill" style={{minHeight: "calc(100vh - 50px)"}}>
             {pages[currentContent]}
             {/* <div className="float-right">
               <StatusChart data={24} />
@@ -184,7 +183,7 @@ const RequestView = () => {
 
   return (
     <>
-      <Layout BodyComponent={Content} />
+      <Layout BodyComponent={Content} header={{title: "Request Detail", icon: <FontAwesomeIcon icon={faFile}/>}} />
     </>
   );
 };

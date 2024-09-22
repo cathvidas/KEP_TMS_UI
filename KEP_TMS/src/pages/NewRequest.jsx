@@ -25,7 +25,7 @@ const NewRequest = () => {
   const Content = () => {
     return (
       <>
-        <div className="w-100">
+        <div className="w-100 p-3">
           <SectionBanner
             title="Training Requests || Add Request"
             subtitle={

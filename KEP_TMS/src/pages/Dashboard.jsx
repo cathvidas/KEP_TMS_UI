@@ -12,10 +12,10 @@ const Dashboard = () => {
 
   const Content = () => {
     return (
-      <>
+      <div className="p-3">
         <Banner  setShowModal={()=>setShowModal(true)} />
         <TRequestTable userType={"user"} />
-      </>
+      </div>
     );
   };
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import RequestModal from "../Modal/RequestType";
-import Sidebar from "./Sidebar";
+import Sidebars from "./Sidebar";
 import proptype from "prop-types";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
@@ -11,9 +11,9 @@ const Layout = ({
   header,
   showMenu,
   showModalAction,
-  returnAction
+  returnAction,
 }) => {
-  const[showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [showmenu, setshowmenu] = useState(true);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
@@ -26,12 +26,13 @@ const Layout = ({
   }, [token, navigate]);
 
   useEffect(() => {
-    if(showModalAction){
-      setShowModal(showModalAction);}
+    if (showModalAction) {
+      setShowModal(showModalAction);
+    }
   }, [showModalAction]);
 
-  useEffect(()=>{
-    if(returnAction != null){
+  useEffect(() => {
+    if (returnAction != null) {
       returnAction(showModal);
     }
   }, [showModal]);
@@ -40,19 +41,18 @@ const Layout = ({
       {showmenu && (
         <>
           <div className="d-flex">
-            <Sidebar />
-            <div className="flex-grow-1  px-3 px-md-4">
-              <Header title={header?.title} IconComponent={header?.icon} setShowModal={setShowModal} />
-              <div className="d-flex gap-3">
-                {showMenu && (
-                  <RequestMenu
-                  // action={handleChangeContent}
-                  // current={currentContent}
-                  />
-                )}
-                <div className="flex-fill mb-5">
-                  {BodyComponent && <BodyComponent />}
-                </div>
+            <Sidebars />
+            <div className="flex-grow-1 d-flex flex-column d-block expand-transition overflow-hidden vh-100">
+              <div className="d-flex">
+                <Header
+                  title={header?.title}
+                  IconComponent={header?.icon}
+                  setShowModal={setShowModal}
+                />
+              </div>
+              <div className="overflow-auto flex-grow-1" style={{background: "#fbfdfc"}}>
+                {BodyComponent && <BodyComponent />}
+                
               </div>
             </div>
           </div>

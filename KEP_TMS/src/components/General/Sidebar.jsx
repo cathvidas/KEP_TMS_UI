@@ -24,11 +24,12 @@ import {
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useState } from "react";
 import { SessionGetRole } from "../../services/sessions";
+import { Sidebar } from 'primereact/sidebar';
 
 const NavItem = ({ item, icon, title, expanded }) => {
   const locations = useLocation();
   const getClassNames = (page) =>
-    `nav-link py-3  rounded-0  ${expanded === "true" && "flex gap-2 px-4"} ${
+    `nav-link p-3  rounded-0  ${
       locations.pathname === page ? "link-light active" : "text-secondary"
     }`;
 
@@ -38,7 +39,7 @@ const NavItem = ({ item, icon, title, expanded }) => {
     </Tooltip>
   );
   return (
-    <li className="nav-item ">
+    <li className="nav-item">
       <OverlayTrigger
         placement="right"
         overlay={expanded !== "true" ? tooltip : <></>}
@@ -46,14 +47,14 @@ const NavItem = ({ item, icon, title, expanded }) => {
         <Link className={getClassNames(item)} to={item} aria-current="page">
           {icon && <>{icon}</>}
           {expanded == "true" && title && (
-            <span className="text-start">{title}</span>
+            <span className="text-start ms-3 ">{title}</span>
           )}
         </Link>
       </OverlayTrigger>
     </li>
   );
 };
-const Sidebar = () => {
+const Sidebars = () => {
   const [expanded, setExpanded] = useState(localStorage.getItem("s-expand"));
   const navigate = useNavigate();
   const toggleSidebar = () => {
@@ -87,14 +88,13 @@ const Sidebar = () => {
       }
     });
   };
-
   return (
+    <>
     <div
-      className="bg-body position-sticky   top-0 min-vh-100 bottom-0 z-1 border-right"
+      className={`bg-body position-sticky  sidebar top-0 min-vh-100 bottom-0 z-1 border-right z-2 ${expanded == "true" ? "expanded": "collapsed"}`}
       style={{
         borderRight:
           "var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)",
-        width: expanded == "true" ? "" : "4.5rem",
         height: "100vh",
       }}
     >
@@ -113,21 +113,20 @@ const Sidebar = () => {
         </Link>
       </div>
       <div
-        className="d-flex flex-column flex-shrink-0 top-0 bottom-0"
-        style={{ width: expanded === "true" ? "" : "4.5rem" }}
+        className="d-flex w-100 flex-column  top-0 bottom-0"
       >
         <Link
-          className="fw-bold lh-1 theme-color flex text-decoration-none py-3 px-3 pe-4"
+          className="fw-bold lh-1 theme-color flex text-decoration-none py-3 px-3 pe-4 d-flex"
           href="/"
         >
           <img src={icon2} width="43" />
           {expanded === "true" && (
-            <small>
+            <small style={{whiteSpace: "nowrap"}}>
               KNOWLES TRAINING <br /> REQUEST SYSTEM
             </small>
           )}
         </Link>
-        <ul className="nav nav-pills flex-column text-center nav-flush mb-auto">
+        <ul className="nav nav-pills flex-column nav-flush w-100 mb-auto">
           <NavItem
             item={"/KEP_TMS/Dashboard"}
             title="Home"
@@ -146,29 +145,30 @@ const Sidebar = () => {
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faClipboardCheck} />}
           />
-          {(SessionGetRole() !== "Trainee" && SessionGetRole !== "Facilitator") && 
-          <>
-          <NavItem
-            item={"/KEP_TMS/ForApproval"}
-            title="For Approval"
-            expanded={expanded}
-            icon={<FontAwesomeIcon icon={faPenToSquare} />}
-          />
-          
-          <NavItem
-            item={"/KEP_TMS/Request_View"}
-            title="For Approval"
-            expanded={expanded}
-            icon={<FontAwesomeIcon icon={faCheckToSlot} />}
-          />
-          <NavItem
-            item="/KEP_TMS/MasterList"
-            title="Master List"
-            expanded={expanded}
-            icon={<FontAwesomeIcon icon={faList} />}
-          />
-          </>
-          }
+          {SessionGetRole() !== "Trainee" &&
+            SessionGetRole !== "Facilitator" && (
+              <>
+                <NavItem
+                  item={"/KEP_TMS/ForApproval"}
+                  title="For Approval"
+                  expanded={expanded}
+                  icon={<FontAwesomeIcon icon={faPenToSquare} />}
+                />
+
+                <NavItem
+                  item={"/KEP_TMS/Request_View"}
+                  title="For Approval"
+                  expanded={expanded}
+                  icon={<FontAwesomeIcon icon={faCheckToSlot} />}
+                />
+                <NavItem
+                  item="/KEP_TMS/MasterList/Facilitators"
+                  title="Master List"
+                  expanded={expanded}
+                  icon={<FontAwesomeIcon icon={faList} />}
+                />
+              </>
+            )}
           <NavItem
             item="/KEP_TMS/CertificatesPage"
             title="Certificates"
@@ -211,7 +211,7 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div></>
   );
 };
 
@@ -222,4 +222,4 @@ NavItem.propTypes = {
   expanded: proptype.string,
 };
 
-export default Sidebar;
+export default Sidebars;

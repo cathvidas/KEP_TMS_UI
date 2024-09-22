@@ -11,10 +11,6 @@ const RequestList =()=>{
     const Content = () => 
       (
         <>
-          <TMS_Header
-            title="Training Request"
-            IconComponent={<FontAwesomeIcon icon={faStickyNote} />}
-          />
           <div className="w-100 overflow-hidden">
             <SectionBanner
               title="Training Requests List"
@@ -33,6 +29,6 @@ const RequestList =()=>{
         </>
       );
     return(<>
-    <Layout BodyComponent={Content}/></>)
+    <Layout BodyComponent={Content} header={{title: "Training Request" , icon: <FontAwesomeIcon icon={faStickyNote} />}}/></>)
 }
 export default RequestList

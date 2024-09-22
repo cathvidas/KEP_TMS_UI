@@ -1,5 +1,6 @@
-import { Button, Modal } from "react-bootstrap";
+import {  Modal } from "react-bootstrap";
 import proptype from "prop-types";
+import { Button } from 'primereact/button';
 export const ModalContainer = ({
   variantStyle,
   state,
@@ -30,16 +31,10 @@ export const ModalContainer = ({
         <Modal.Body className="py-0">{body}
         </Modal.Body>
         <Modal.Footer className="border-0">
-          <Button variant="secondary" onClick={close}>
-            Close
-          </Button>
-          <Button
-            variant={buttonVariant ? buttonVariant : "primary"}
-            className={background + " filter-hover"}
-            onClick={buttonAction}
-          >
-            {buttonText}
-          </Button>
+          
+        <Button label="No" icon="pi pi-times" onClick={close} className="p-button-text rounded" />
+        <Button label="Yes" icon="pi pi-check" onClick={buttonAction} className="rounded"  />
+   
         </Modal.Footer>
       </Modal>
     </>

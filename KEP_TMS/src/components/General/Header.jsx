@@ -8,7 +8,7 @@ const Header = ({ title, IconComponent, showModal, setShowModal }) => {
     setShowModal(!showModal);
   };
   return (
-    <Navbar className="navbar-expand-md d-flex">
+    <Navbar className="header navbar-expand-md d-flex w-100  bg-body z-1 shadow-sm px-4 ">
       <a className="navbar-brand d-flex align-items-center fw-bold" href="#">
         <span
           className="d-flex justify-content-center align-items-center bs-icon"
