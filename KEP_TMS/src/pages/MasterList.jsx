@@ -1,63 +1,178 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Header from "../components/General/Header";
 import Layout from "../components/General/Layout";
+import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
+import { SectionBanner } from "../components/General/Section";
+import MasterListMenu from "../components/General/MasterListMenu";
+import { useParams } from "react-router-dom";
+import { getAllUsers } from "../api/UserAccountApi";
+import { useEffect, useState } from "react";
+import GeneralTable from "../components/General/GeneralTable";
+import { Button } from "primereact/button";
+import ProgramForm from "../components/Form/ModalForms/ProgramForm";
 import {
-  faClipboardList,
-  faInfoCircle,
-} from "@fortawesome/free-solid-svg-icons";
-import {
-  SectionBanner,
-  SectionHeading,
-  SectionTitle,
-} from "../components/General/Section";
-import RTable from "../components/General/Table";
-import { MenuItem, RequestMenu } from "../components/TrainingDetails/Menu";
-import { getTrainingPrograms } from "../services/trainingServices";
+  getAllTrainingRequests,
+  getTrainingCategories,
+  getTrainingPrograms,
+} from "../services/trainingServices";
+import { extractTrainingRequests } from "../services/ExtractData";
+import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
+import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
+import CategoryForm from "../components/Form/ModalForms/CategoryForm";
 
 const MasterList = () => {
-    const tablecolumn = ["Id", "Name", "Description", "Status"];
-    const tabledata = [];
-const programs = getTrainingPrograms();
-programs.then((prog)=>{
-    prog.map((data) =>{
-        var item =[];
-        item.push(data.id)
-        item.push(data.name)
-        item.push(data.description)
-        item.push(data.statusName)
-        tabledata.push(item)
-    })
-})
+  const page = useParams();
+  const [error, setError] = useState();
+  const [data, setData] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selectedData, setSelectedData] = useState({});
+  const [dataType, setDataType] = useState("");
+  const getUsersMasterList = () => {
+    const getUsers = async () => {
+      try {
+        setLoading(true);
+        const users = await getAllUsers();
+        setData(
+          page.type === "Facilitators"
+            ? users.filter((x) => x.roleName === "Facilitator")
+            : page.type === "Users"
+            ? users.filter((x) => x.roleName === "Trainee")
+            : page.type === "Admin"
+            ? users.filter((x) => x.roleName === "Admin")
+            : page.type === "Approvers"
+            ? users.filter((x) => x.roleName === "Approver")
+            : users
+        );
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+      }
+    };
+    getUsers();
+  };
+  const getMasterList = () => {
+    const getList = async () => {
+      try {
+        setLoading(true)
+        const list =
+          page.category === "Programs"
+            ? await getTrainingPrograms()
+            : page.category === "Categories" && (await getTrainingCategories());
+        {
+          list && setData(page.category === "Categories" ? list.data: list);
+        }
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+      }
+    };
+    getList();
+  };
+const getTrainingsMasterList = () =>{
+  const getTrainings = async () => {
+    try {
+      setLoading(true);
+      const trainings = await getAllTrainingRequests();
+      const filtered = 
+        page?.type === "Internal"
+        ? trainings?.data.filter( (x) => x.trainingTypeName === "Internal"):
+        page?.type === "External"
+        ? trainings?.data.filter( (x) => x.trainingTypeName === "External"):
+        trainings.data;
+      setData(extractTrainingRequests(filtered));
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+    }
+  };
+  getTrainings();
+}
+  useEffect(() => {
+    setVisible(false)
+    if (page.category === "Users") {
+      getUsersMasterList();
+    } else if (page.category === "Training") {
+      getTrainingsMasterList();
+    } else {
+      getMasterList();
+    }
+  }, [page]);
 
-
-    const menulist = 
-       [
-        <MenuItem key={""} title="Program" state={true}/>,
-        <MenuItem key={""} title="Requests" />,
-        <MenuItem key={""} title="Reports" />,
-        <MenuItem key={""} title="Settings" />,
-        <MenuItem key={""} title="Help" />,
-      ]
-    
+  const actionButton = () => {
+    return (
+      <div className=" flex flex-wrap justify-content- gap-3">
+        <Button
+          type="button"
+          icon="pi pi-plus"
+          severity="success"
+          className="rounded theme-bg"
+          label={page?.type ?? page?.category}
+          onClick={() => {setVisible(true)
+            setSelectedData(null)
+          }}
+        />
+      </div>
+    );
+  };
+  const handleUpdate = (id) => {
+    const selected = data.find((x) => x.id === id);
+    setSelectedData(selected);
+    setVisible(true);
+  };
+  const SwitchForm =()=>{
+    switch (page.category) {
+      case "Programs":
+        return <ProgramForm handleShow={visible} handleClose={setVisible} selectedData={selectedData} />;
+      case "Categories":
+        return <CategoryForm handleShow={visible} handleClose={setVisible} selectedData={selectedData} />;
+      case "Users":
+        return <></>;
+      case "Training":
+        return <></>;
+      default:
+        return <></>;
+    }
+  }
   const Content = () => (
     <>
-      <Header
-        title="Master List"
-        IconComponent={<FontAwesomeIcon icon={faClipboardList} />}
-      />
-
-      <div className="d-flex gap-3">
-        <RequestMenu menuList={menulist} />
-        <div className="flex-fill">
-          <SectionBanner title="Training Programs" subtitle="List of Training Programs" />
-          <RTable columns={tablecolumn} rows={tabledata} />
+      <div className="d-flex ">
+        <MasterListMenu />
+        <div
+          className="flex-fill overflow-auto border-start p-3"
+          style={{ minHeight: "calc(100vh - 50px)" }}
+        >
+          {loading ? (
+            <>
+              <SkeletonBanner />
+              {/* <SkeletonList /> */}
+              <SkeletonDataTable />
+            </>
+          ) : (
+            <>
+              {" "}
+              <SectionBanner
+                title={page?.type ?? page?.category}
+                subtitle="List of Training Programs"
+                ActionComponents={actionButton}
+              />{" "}
+              <GeneralTable dataTable={data} handleUpdate={handleUpdate} dataType={page?.type?? page?.category} />
+            </>
+          )}
         </div>
       </div>
+
+      {<SwitchForm/>}
     </>
   );
   return (
     <>
-      <Layout BodyComponent={Content} />
+      <Layout
+        BodyComponent={Content}
+        header={{
+          title: "Master List",
+          icon: <FontAwesomeIcon icon={faClipboardList} />,
+        }}
+      />
     </>
   );
 };

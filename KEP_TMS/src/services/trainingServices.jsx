@@ -8,6 +8,15 @@ export const getTrainingPrograms = async () => {
 export const getTrainingProgramById = async (programId) => {
     return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_PROGRAM_BY_ID}?id=${programId}`);
 }
+export const insertTrainingProgram = async (data) =>{
+    return await fetchFromApi(API_ENDPOINTS.INSERT_TRAINING_PROGRAM, "POST", data);
+}
+export const deleteTrainingProgram = async (id) =>{
+    return await fetchFromApi(`${API_ENDPOINTS.DELETE_TRAINING_PROGRAM}?id=${id}`, "DELETE");
+}
+export const updateTrainingProgram = async (data) =>{
+    return await fetchFromApi(API_ENDPOINTS.UPDATE_TRAINING_PROGRAM, "PUT", data);
+}
 
 
 //CATEGORIES
@@ -16,6 +25,15 @@ export const getTrainingCategories = async () => {
 }
 export const getTrainingCategoryById = async (categoryId) => {
     return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_CATEGORY_BY_ID}?id=${categoryId}`);
+}
+export const inserTrainingCategory = async (data)=>{
+    return await fetchFromApi(API_ENDPOINTS.INSERT_TRAINING_CATEGORY, "POST", data);
+}
+export const updateTrainingCategory =async (data)=>{
+    return await fetchFromApi(API_ENDPOINTS.UPDATE_TRAINING_CATEGORY, "PUT", data);
+}
+export const deleteTrainingCategory =async(id) =>{
+    return await fetchFromApi(`${API_ENDPOINTS.DELETE_TRAINING_CATEGORY}?id=${id}`, "DELETE");
 }
 
 
@@ -26,6 +44,8 @@ export const getTrainingProviderById=async(providerId)=>{
 export const getAllTrainingProviders=async()=>{
     return await fetchFromApi(API_ENDPOINTS.GET_TRAINING_PROVIDERS);
 }
+
+
 //REQUESTS
 export const getTrainingRequestById = async (requestId)=>{
     return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_REQUEST_BY_ID}?id=${requestId}`);

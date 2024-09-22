@@ -23,7 +23,7 @@ function App() {
         <Route path="/KEP_TMS/RequestList" element={<RequestList />} />
         <Route path="/KEP_TMS/Trainings" element={<Trainings />} />
         <Route path="/KEP_TMS/ForApproval" element={<ForApproval />} />
-        <Route path="/KEP_TMS/MasterList" element={<MasterList />} />
+        <Route path="/KEP_TMS/MasterList/:category/:type?" element={<MasterList />} />
         <Route path="/KEP_TMS/CertificatesPage" element={<CertificatesPage />} />
         <Route path="/KEP_TMS/AnalyticsPage" element={<AnalyticsPage />} />
         <Route path="*" element={<NotFoundPage />} />
