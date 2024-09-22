@@ -1,21 +1,16 @@
-import { icon } from "@fortawesome/fontawesome-svg-core";
-import Layout from "../components/General/Layout";
-import TRequestTable from "../components/General/TRequestTable";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAward } from "@fortawesome/free-solid-svg-icons";
 
-const CertificatesPage = () => {
-  const content =()=> (
+import Layout from '../components/General/Layout'
+import ScalarMeasurement from '../components/General/ScalarMeasurement';
+const CertificatesPage=() =>{
 
-    <TRequestTable/>
-  )
-  return (
-    <>
-      <Layout 
-      header={{title: "Certificates", icon: <FontAwesomeIcon icon={faAward}/>}}
-      BodyComponent={content
-      }/>
-    </>
-  );
-};
+    const conteneBody =()=> (
+      <><ScalarMeasurement/></>
+    )
+    return (
+      <Layout BodyComponent={conteneBody} header={{title: "Storage"}}/>
+    )
+}
+
 export default CertificatesPage;
+
+        

@@ -6,8 +6,6 @@ import { getTrainingTypeById } from "../../services/MasterListServices";
 const TDOverview = ({ id , formData}) => {
   const [option, setOption] = useState({ program: "", category: ""});
 
-
-  console.log(formData)
   return (
     <div>
       <Heading value="Details" />

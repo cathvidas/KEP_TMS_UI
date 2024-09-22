@@ -33,7 +33,7 @@ const Header = ({ title, IconComponent, showModal, setShowModal }) => {
       >
         <ul className="nav nav-tabs gap-3 border-0">
           <li className="nav-item"></li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <span className="position-relative">
               <input
                 type="search"
@@ -53,7 +53,7 @@ const Header = ({ title, IconComponent, showModal, setShowModal }) => {
                 </svg>
               </span>
             </span>
-          </li>
+          </li> */}
           <li className="nav-item">
             <a
               className="nav-link active p-2 border d-flex align-items-center rounded h-100"

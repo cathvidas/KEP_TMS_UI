@@ -5,7 +5,7 @@ import {
   getAllTrainingRequests,
   getTrainingRequestByApprover,
 } from "../../services/trainingServices";
-import { SessionGetFirstName, SessionGetUserId } from "../../services/sessions";
+import { SessionGetEmployeeId, SessionGetFirstName, SessionGetUserId } from "../../services/sessions";
 import { getUserById } from "../../api/UserAccountApi";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
@@ -24,7 +24,6 @@ const TRequestTable = ({ renderType }) => {
       try {
         var trainingRequests = await getAllTrainingRequests();
 
-        console.log(trainingRequests.data);
         if (renderType === "forapprovall") {
           trainingRequests = await getTrainingRequestByApprover(
             SessionGetUserId()
@@ -62,22 +61,13 @@ const TRequestTable = ({ renderType }) => {
         // Set training requests with updated facilitator information
         if (renderType === "user" || renderType === "Trainee") {
           const userRequests = updatedRequests.filter(
-            (request) => request.requestorName === SessionGetFirstName()
+            (request) => request.createdBy === SessionGetEmployeeId()
           );
+          console.log(updatedRequests);
+          console.log(SessionGetEmployeeId());
           setData(userRequests);
         } else {
           setData(updatedRequests);
-          // setData((prev) => [
-          //   ...prev,
-          //   ...updatedRequests,
-          //   ...updatedRequests,
-          //   ...updatedRequests,
-          //   ...updatedRequests,
-          //   ...updatedRequests,
-          //   ...updatedRequests,
-          //   ...updatedRequests,
-          //   ...updatedRequests,
-          // ]);
         }
       } catch (error) {
         console.error("Error fetching training requests:", error);

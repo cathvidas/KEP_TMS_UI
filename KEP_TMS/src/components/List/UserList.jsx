@@ -29,7 +29,6 @@ useEffect(()=>{
     action(removeEmpBadge);}
 }, [removeEmpBadge])
 
-  console.log(userlist);
   useEffect(()=>{
 
   })
@@ -39,7 +38,6 @@ useEffect(()=>{
     }
   }, [selected, handleParticipants]);
   const actionBodyTemplate = (data) => {
-    console.log(data)
     return (
       <span
         className=" p-0 text-danger"

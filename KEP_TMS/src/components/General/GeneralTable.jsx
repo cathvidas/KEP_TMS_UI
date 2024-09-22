@@ -74,8 +74,8 @@ console.log(dataType)
         className="rounded p-button-text"
         onClick={() =>
           confirmAction({
-            title: "Delete Program",
-            text: "Are you sure you want to delete this program?",
+            title: dataType === "Categories" ? "Delete Category":"Delete Program",
+            text: `Are you sure you want to delete this ${dataType === "Categories" ? "Category?":"Program?"}`,
             confirmButtonText: "Yes, Delete",
             cancelButtonText: "Nope",
             actionFunction: handleDelete,
