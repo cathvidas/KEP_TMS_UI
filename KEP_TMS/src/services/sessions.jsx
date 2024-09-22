@@ -10,6 +10,9 @@ export const SessionGetFirstName = () => {
 export const SessionGetRole = () => {
   return sessionStorage.getItem("role");
 };
+export const SessionGetDepartment = () => {
+  return sessionStorage.getItem("department");
+};
 export const SessionGetUserId = () => {
   const id = sessionStorage.getItem("id");
   console.log(id)
