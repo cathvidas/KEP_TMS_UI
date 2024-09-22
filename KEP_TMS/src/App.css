@@ -1,29 +1,39 @@
-:root{
-    --theme-color: rgb(0,167,111);
+:root {
+    --theme-color: rgb(0, 167, 111);
 }
-.bg-body
-body {background: #fbfdfc;}
 
-.nav-pills .nav-link.active, .theme-bg, .theme-bg *,
-.theme-btn{
+.bg-body body {
+    background: #fbfdfc;
+}
+
+.nav-pills .nav-link.active,
+.theme-bg,
+.theme-bg *,
+.theme-btn {
     background-color: var(--theme-color) !important;
     color: #fff !important;
-    border-color: var(--theme-color)!important;
+    border-color: var(--theme-color) !important;
 }
 
 .theme2-bg {
-    background-color:rgb(0,167,111);
+    background-color: rgb(0, 167, 111);
 }
-.theme-color{
+
+.theme-color {
     color: var(--theme-color) !important;
 }
-.text-theme-hover:hover *{
+
+.text-theme-hover:hover * {
     color: rgb(22, 187, 159) !important;
 }
-.theme-table tr:hover td, .theme-hover:hover, .theme-hover:hover * {
+
+.theme-table tr:hover td,
+.theme-hover:hover,
+.theme-hover:hover * {
     background-color: #dff8ee !important;
     color: var(--theme-color) !important;
 }
+
 .filter-hover:hover {
     filter: brightness(110%);
 }
@@ -32,16 +42,18 @@ body {background: #fbfdfc;}
     background-color: #633bbc !important;
     color: white !important;
 }
-.formStep-success{
+
+.formStep-success {
     background-color: green;
     color: white;
 }
-.theme-secondary{
+
+.theme-secondary {
     background-color: #ffffff75 !important;
     color: var(--theme-color) !important;
 }
 
-.login-bg{
+.login-bg {
     position: absolute;
     height: 65vh;
     background-color: #fff;
@@ -51,11 +63,12 @@ body {background: #fbfdfc;}
 }
 
 
-.login-bg.left{
+.login-bg.left {
     top: -100px;
     left: -100px;
 }
-.login-bg.right{
+
+.login-bg.right {
     bottom: -100px;
     right: -100px;
 }
@@ -64,38 +77,47 @@ body {background: #fbfdfc;}
     border-top: unset !important;
     border-bottom: unset !important;
     border-left: unset !important;
-    border-right: unset !important;/* Change the color or style as needed */
-  }
+    border-right: unset !important;
+    /* Change the color or style as needed */
+}
 
-.cursor-pointer{
+.cursor-pointer {
     cursor: pointer;
 }
+
 .form-check-input:checked {
     background-color: var(--theme-color) !important;
     border-color: var(--theme-color) !important;
 }
-.flex, .flex-between {
+
+.flex,
+.flex-between {
     display: flex !important;
     align-items: center;
     gap: .5rem;
 }
-.flex-between{
+
+.flex-between {
     justify-content: space-between !important;
 }
 
-ul.p-dropdown-items  {
+ul.p-dropdown-items {
     padding: 0 !important;
     margin-bottom: 0 !important;
 }
-.sidebar{
+
+.sidebar {
     transition: all .3s;
 }
-.custom-theme.p-datatable .p-datatable-thead > tr > th {
+
+.custom-theme.p-datatable .p-datatable-thead>tr>th {
     background: var(--theme-color);
     color: #fff;
 }
 
-.custom-theme.p-datatable .p-sortable-column .p-sortable-column-icon{color: #fff;}
+.custom-theme.p-datatable .p-sortable-column .p-sortable-column-icon {
+    color: #fff;
+}
 
 
 
@@ -112,28 +134,32 @@ ul.p-dropdown-items  {
     z-index: 100;
     width: fit-content;
 }
+
 .sidebar .nav-item a {
     padding: 20px 30px !important;
     width: 100%;
     text-align: center;
 }
+
 .sidebar.expanded .nav-item a {
-width: 300px;
-text-align: start;
+    width: 300px;
+    text-align: start;
 }
-    
-      
-      .sidebar.expanded {
-        width: 300px; /* Adjust width for expanded sidebar */
-      }
-      
-      .sidebar.collapsed {
-        width: 80px; /* Adjust width for collapsed sidebar */
-      }
 
-   
 
-      
+.sidebar.expanded {
+    width: 300px;
+    /* Adjust width for expanded sidebar */
+}
+
+.sidebar.collapsed {
+    width: 80px;
+    /* Adjust width for collapsed sidebar */
+}
+
+
+
+
 /* HEADER */
 
 
@@ -141,31 +167,46 @@ a {
     color: #fff;
     text-decoration: none !important;
 }
+
 .p-menu ul,
 ul.p-list-menu {
-    padding-left: 0!important;
+    padding-left: 0 !important;
 }
+
 .p-menu .p-submenu-header {
     background: transparent;
-}.p-menu{
+}
+
+.p-menu {
     width: fit-content;
 }
 
-.form-label{
+.form-label {
     color: #808080;
     text-transform: uppercase;
     font-weight: 500;
     font-size: .9rem;
 }
-.form-label.required::after{
+
+.form-label.required::after {
     content: "*";
     color: red;
     margin-left: 2px;
-}.p-datatable-tbody tr,
-.p-datatable-tbody td ,
+}
+
+.p-datatable-tbody tr,
+.p-datatable-tbody td,
 .p-datatable {
     user-select: text;
-  }
-  .text-red{
+}
+
+.text-red {
     color: red;
-  }
+}
+.p-component ol,.p-component ul {
+    list-style: none;
+    padding: 0;
+}
+.p-stepper-nav{
+    margin-bottom: 0;
+}
