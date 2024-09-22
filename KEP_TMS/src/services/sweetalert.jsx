@@ -1,18 +1,18 @@
 import Swal from "sweetalert2";
 
-export const confirmAction = (title, text, confirmText, cancelText,actionFunction, param) => {
+export const confirmAction = (prop) => {
   Swal.fire({
-    title: title ??"Are you sure?",
-    text: text??"You won't be able to revert this!",
+    title: prop.title ??"Are you sure?",
+    text: prop.text??"You won't be able to revert this!",
     icon: "warning",
     showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: confirmText??"Submit",
-    cancelButtonText: cancelText??"Cancel"
+    confirmButtonColor: prop.confirmButtonColor?? "#3085d6",
+    cancelButtonColor:prop.cancelButtonColor?? "#d33",
+    confirmButtonText: prop.confirmButtonText??"Submit",
+    cancelButtonText: prop.cancelButtonText??"Cancel"
   }).then((result) => {
     if (result.isConfirmed) {
-        actionFunction(param);
+        prop.actionFunction(prop?.param);
       return true;
     }else{
         return false;}
