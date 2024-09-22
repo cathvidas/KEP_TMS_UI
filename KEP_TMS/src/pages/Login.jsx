@@ -18,6 +18,7 @@ const Login = () => {
 
   const [badge, setBadge] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // response variables
 
@@ -28,7 +29,9 @@ const Login = () => {
         employeeId: e.target.badge.value,
         password: e.target.password.value,
       }
+      setLoading(true);
       var res = await handleUserLogin(data);
+      setLoading(false);
       if(res){
       navigate("/KEP_TMS/Dashboard");
       }
@@ -93,7 +96,7 @@ const Login = () => {
                         }}
                         onSubmit={handleLogin}
                       >
-                        <strong>Login</strong>
+                        <strong>{loading === true ? <i className="pi pi-spin pi-spinner"></i> : "Login"}</strong>
                       </Button>
                     </Form.Group>
                     <p className="text-muted m-0">Forgot your password?</p>
