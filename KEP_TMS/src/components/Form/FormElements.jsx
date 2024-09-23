@@ -25,10 +25,10 @@ export const FormStep = ({ step, title, state }) => {
 };
 export const FormFieldItem = ({ col, label, FieldComponent , required, error }) => (
   <>
-    <Col className={col ? col : ""}>
+    <Col className={`${col ? col : ""} mb-3`}>
       <Form.Group>
         {label &&
-        <Form.Label className={`fw-semibold ${required && "required"}`}>{label}</Form.Label> }
+        <Form.Label className={`fw-semibold  ${required && "required"}`}>{label}</Form.Label> }
         {FieldComponent && FieldComponent}
         {error &&  <small className="text-red">{error}</small>}
       </Form.Group>

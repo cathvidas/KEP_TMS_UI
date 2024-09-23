@@ -1,18 +1,18 @@
+import { formatDateOnly, formatDateTime } from "../../utils/Formatting";
 import TrainingScheduleList from "../Form/TScheduleList"
 import { DetailItem, Heading } from "./DetailItem"
 import proptype from "prop-types";
 
 const TScheduleOverview =({schedule, startdate, endDate})=>{
     return(<>
-        <Heading value="DATES AND SCHEDULES" />
         <div className="mb-2 d-flex gap-5">
           <DetailItem
             label="Start Date"
-            value={startdate ? startdate : "N/A"}
+            value={startdate ? formatDateOnly(startdate) : "N/A"}
           />
           <DetailItem
             label="End Date"
-            value={endDate ? endDate : "N/A"}
+            value={endDate ? formatDateOnly(endDate) : "N/A"}
           />
         </div>
         

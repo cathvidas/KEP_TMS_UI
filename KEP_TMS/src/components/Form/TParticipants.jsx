@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FormFieldItem } from "./FormElements";
 import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { UserList } from "../List/UserList";
 import { ModalContainer } from "../Modal/ModalContainer";
@@ -7,18 +6,17 @@ import { useEffect, useState } from "react";
 import EmptyState from "./EmptyState";
 import SearchBar from "./SearchBar";
 import { ActionButton } from "../General/Button";
-import Select from "react-select";
 import { SectionHeading } from "../General/Section";
 import proptype from "prop-types";
 import { getAllUsers } from "../../api/UserAccountApi";
 import { getAllDepartments } from "../../api/ComboBoxes";
-import { getAllTrainingProviders } from "../../services/trainingServices";
+import { getAllTrainingProviders } from "../../api/trainingServices";
 import { FilterMatchMode } from "primereact/api";
 const TrainingParticipant = ({ formData, handleResponse, errors }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-
+console.log(formData)
   const onGlobalFilterChange = (value) => {
     
     if(filters.global.value !== value && value !== undefined){
@@ -28,10 +26,6 @@ const TrainingParticipant = ({ formData, handleResponse, errors }) => {
       }))
     }
   };
-
-  console.log(filters)
-
-
 
 
 
@@ -196,11 +190,11 @@ useEffect(()=>{
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
       {error?.trainees && <small className="text-red">{error.trainees}</small>}
-      {data.trainingParticipants?.length > 0 ? (
+      {data?.trainingParticipants?.length > 0 ? (
         <>
           <span className="d-flex mb-2 justify-content-between">
             <span className="text-muted">
-              {data.trainingParticipants.length} participants
+              {data.trainingParticipants?.length} participants
             </span>
             
             <ActionButton
@@ -236,7 +230,7 @@ useEffect(()=>{
         <>
           <span className="d-flex mb-2 justify-content-between">
             <span className="text-muted">
-              {data.trainingFacilitators.length} participants
+              {data.trainingFacilitators.length} facilitators
             </span>
             <ActionButton
               variant={{ size: "btn-sm" }}
@@ -261,22 +255,6 @@ useEffect(()=>{
       )}
 
       <div className="mt-4"></div>
-      <SectionHeading
-        title="Training Provider"
-        icon={<FontAwesomeIcon icon={faUsers} />}
-      />
-      <FormFieldItem
-        col="col-12"
-        FieldComponent={
-          <Select
-            value={list.providers.filter(
-              (x) => x.value === data.trainingProviderId
-            )}
-            options={list.providers}
-            onChange={(e)=>setFormData((obj) => ({ ...obj, trainingProviderId: e.value }))}
-          />
-        }
-      />
       <ModalContainer
         variantStyle={"primary"}
         state={showModal}
@@ -300,5 +278,9 @@ useEffect(()=>{
 TrainingParticipant.propTypes = {
   formData: proptype.object,
   handleResponse: proptype.func,
+  errors: proptype.oneOfType([proptype.object, proptype.string])
+
+
 };
 export default TrainingParticipant;
+

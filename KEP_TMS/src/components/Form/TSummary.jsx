@@ -9,6 +9,7 @@ import TDOverview from "../TrainingDetails/TDetOverview";
 import TScheduleOverview from "../TrainingDetails/TSchedOverview";
 
 const TrainingSummary = ({ formData, handleResponse }) => {
+  console.log(formData)
   return (
     <>
       <SectionHeading

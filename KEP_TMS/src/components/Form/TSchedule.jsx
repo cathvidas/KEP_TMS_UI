@@ -22,6 +22,9 @@ const ScheduleContainer = ({ formData, handleResponse, errors }) => {
   useEffect(() => {
     setError(errors);
   }, [errors]);
+  useEffect(() => {
+    setTrainingSchedules(formData.trainingDates);
+  }, [formData.trainingDates]);
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
     setSchedData((obj) => ({
@@ -102,16 +105,16 @@ setError("");
           <div className="d-flex justify-content-between align-items-center">
             <label className="fw-semibold required form-label">Schedules: </label>
           </div>
-          <Row>
+          <Row className="g-3">
             <Col className="col-md-12 col-lg-7">
               <TrainingScheduleList
                 schedules={trainingSchedules}
                 onDelete={removeSechedule}
               />
             </Col>
-            <Col className="col-md-5">
+            <Col className="col-12 col-lg-5">
               <Row>
-                <Col className="col-md-3">
+                <Col className="col-12 col-md-3">
                   <Form.Label className="fw-semibold m-0">Date:</Form.Label>
                 </Col>
                 <Col>
@@ -126,7 +129,7 @@ setError("");
                 </Col>
               </Row>
               <Row className="mt-2">
-                <Col className="col-md-3 ">
+                <Col className="col-12 col-md-3 ">
                   <Form.Label className="fw-semibold m-0">
                     Start Time:
                   </Form.Label>
@@ -142,7 +145,7 @@ setError("");
                 </Col>
               </Row>
               <Row className="mt-2">
-                <Col className="col-md-3">
+                <Col className="col-12 col-md-3">
                   <Form.Label className="fw-semibold m-0">End Time:</Form.Label>
                 </Col>
                 <Col>

@@ -8,7 +8,7 @@ import { FilterMatchMode } from "primereact/api";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
-import { deleteTrainingCategory } from "../../services/trainingServices";
+import { deleteTrainingCategory } from "../../api/trainingServices";
 
 const GeneralTable = ({ dataTable, title, handleUpdate , dataType}) => {
   const columns = dataTable.length > 0 ? Object.keys(dataTable[0]) : [];

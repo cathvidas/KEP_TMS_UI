@@ -18,20 +18,17 @@ export const UserList = ({
   handleParticipants,
   action,
   filterTemp,
-  scrollHeight
+  scrollHeight,
 }) => {
- // const [filters, setFilters] = useState(filterTemp);
+  // const [filters, setFilters] = useState(filterTemp);
   const [selected, setSelected] = useState(null);
   const [removeEmpBadge, setRemoveEmpBadge] = useState(null);
+  useEffect(() => {
+    if (action != null) {
+      action(removeEmpBadge);
+    }
+  }, [removeEmpBadge]);
 
-useEffect(()=>{
-  if(action != null){
-    action(removeEmpBadge);}
-}, [removeEmpBadge])
-
-  useEffect(()=>{
-
-  })
   useEffect(() => {
     if (handleParticipants) {
       handleParticipants(selected);
@@ -41,11 +38,14 @@ useEffect(()=>{
     return (
       <span
         className=" p-0 text-danger"
-        onClick={()=>setRemoveEmpBadge(data.employeeBadge)}
-      > <FontAwesomeIcon icon={faTrash}/></span>
-
+        onClick={() => setRemoveEmpBadge(data.employeeBadge)}
+      >
+        {" "}
+        <FontAwesomeIcon icon={faTrash} />
+      </span>
     );
   };
+  
   return (
     <>
       {userlist && (
@@ -60,14 +60,15 @@ useEffect(()=>{
             onSelectionChange={(e) => setSelected(e.value)}
             filters={filterTemp}
             scrollable
-            scrollHeight={scrollHeight?? "60vh"}
+            scrollHeight={scrollHeight ?? "60vh"}
           >
             {trailingElement?.input === true && (
               <Column
                 selectionMode="multiple"
                 headerStyle={{ width: "3rem" }}
               ></Column>
-            )}<Column header="No" body={(_, { rowIndex }) => rowIndex + 1} />
+            )}
+            <Column header="No" body={(_, { rowIndex }) => rowIndex + 1} />
             <Column field="fullname" header="Name"></Column>
             <Column field="employeeBadge" header="Employee Id"></Column>
             <Column field="position" header="Position"></Column>

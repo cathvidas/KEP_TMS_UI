@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import {
   getTrainingCategories,
   getTrainingPrograms,
-} from "../../services/trainingServices";
+} from "../../api/trainingServices";
 const TrainingDetailsContainer = ({ handleResponse, formData , error}) => {
   const [details, setDetails] = useState(formData);
   const [options, setOptions] = useState({ programs: [], categories: [] });
@@ -18,6 +18,9 @@ const TrainingDetailsContainer = ({ handleResponse, formData , error}) => {
   useEffect(()=>{
     setErrors(error);
   },[error])
+  useEffect(()=>{
+    setDetails(formData);
+  },[formData])
   //Get program and categories options
   useEffect(() => {
     const getOptions = async () => {
@@ -53,10 +56,16 @@ const TrainingDetailsContainer = ({ handleResponse, formData , error}) => {
 
   //Emtpty field validation
   const handleOnChange = (name, value) => {
+    console.log(value)
     setErrors({ ...errors, [name]: value ? "" : "This field is required." });
     setDetails((obj) => ({ ...obj, [name]: value }));
   };
   
+  const handleOptionChange = (name, value) => {
+    setErrors({ ...errors, [name["id"]]: value ? "" : "This field is required." });
+    setDetails((obj) => ({ ...obj, [name["id"]]: value }));
+  };
+  console.log(details)
   return (
     <>
       <Row className="">
@@ -75,9 +84,9 @@ const TrainingDetailsContainer = ({ handleResponse, formData , error}) => {
               options={options.programs}
               name="TProgram"              
               value={options.programs.filter(
-                (x) => x.value === details.trainingProgramId
+                (x) => x.value === details.trainingProgram?.id
               )}
-              onChange={(e) => handleOnChange("trainingProgramId", e.value)}
+              onChange={(e) => handleOnChange("trainingProgram", {id: e.value, name: e.label})}
             />
           }
         />
@@ -91,9 +100,9 @@ const TrainingDetailsContainer = ({ handleResponse, formData , error}) => {
               isLoading={loading ? true : false}
               options={options.categories}              
               value={options.categories.filter(
-                (x) => x.value === details.categoryId
+                (x) => x.value === details.trainingCategory?.id
               )}
-              onChange={(e) => handleOnChange("categoryId", e.value)}
+              onChange={(e) => handleOnChange("trainingCategory", {id:e.value, name:e.label})}
             />
           }
         />

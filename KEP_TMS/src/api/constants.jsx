@@ -1,16 +1,29 @@
 export const statusCode = {
-    INACTIVE: 1,
-    ACTIVE: 2,
-    SUBMITTED: 3,
-    FORAPPROVAL: 4,
-    APPROVED: 5,
-    DISAPPROVED: 6,
-    CLOSED: 7
-}
+  INACTIVE: 1,
+  ACTIVE: 2,
+  SUBMITTED: 3,
+  FORAPPROVAL: 4,
+  APPROVED: 5,
+  DISAPPROVED: 6,
+  CLOSED: 7,
+};
 
 export const TrainingType = {
-    INTERNAL: 1,
-    EXTERNAL: 2,
-    INTERNAL_ONLINE:3,
-    EXTERNAL_ONLINE: 4
-}
+  INTERNAL: 1,
+  EXTERNAL: 2,
+  INTERNAL_ONLINE: 3,
+  EXTERNAL_ONLINE: 4,
+};
+export const ActivityType = {
+  REQUEST: 1,
+  EVALUATION: 2,
+  CATEGORY: 3,
+  PROVIDER: 4,
+  EFFECTIVENESS: 5,
+  PERFORMANCE_EVALUATION: 6,
+  PROGRAM: 7,
+  REPORT: 8,
+  USER: 9,
+  ROUTING_ACTIVITY: 10,
+  EXAM: 11,
+};

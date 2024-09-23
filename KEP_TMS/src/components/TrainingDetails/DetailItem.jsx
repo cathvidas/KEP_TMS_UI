@@ -1,7 +1,7 @@
 import proptype from "prop-types";
 export const DetailItem = ({ label, value }) => (
   <p className="m-0 d-flex gap-2">
-    <span className="fw-bold text-muted">{label}: </span>{" "}
+    <span className="fw-bold text-muted form-label">{label}: </span>{" "}
     {value ? value : "N/A"}
   </p>
 );

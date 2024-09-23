@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   getAllTrainingRequests,
   getTrainingRequestByApprover,
-} from "../../services/trainingServices";
+} from "../../api/trainingServices";
 import { SessionGetEmployeeId, SessionGetFirstName, SessionGetUserId } from "../../services/sessions";
 import { getUserById } from "../../api/UserAccountApi";
 import { IconField } from "primereact/iconfield";
@@ -16,6 +16,7 @@ import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../utils/Formatting";
 import getSeverity from "../../services/statusStyle";
+import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 
 const TRequestTable = ({ renderType }) => {
   const [data, setData] = useState([]);
@@ -93,18 +94,39 @@ const TRequestTable = ({ renderType }) => {
     setGlobalFilterValue(value);
   };
   const navigate = useNavigate();
-  const handleButtonClick = (id) => {
-    navigate(`/KEP_TMS/Request_View/${id}`);
+  const handleButtonClick = (id, page) => {
+    navigate(`/KEP_TMS/${page}/${id}`);
   };
   const actionTemplate = (data) => {
     return (
-      <React.Fragment>
-        <Button
-          icon="pi pi-eye"
-          className="rounded"
-          onClick={() => handleButtonClick(data.id)}
-        />
-      </React.Fragment>
+      <div className="d-flex">
+      <Button
+      type="button"
+        icon="pi pi-eye"
+        size="small"
+        severity="success"
+        className="rounded"
+        text
+        onClick={() => handleButtonClick(data.id, "TrainingView")}
+      />
+      <Button
+      type="button"
+        icon="pi pi-pencil"
+        size="small"
+        className="rounded"
+        text
+        onClick={() => handleButtonClick(data.id, "Request/Update")}
+      />
+      <Button
+      type="button"
+        icon="pi pi-trash"
+        size="small"
+        className="rounded"
+        severity="danger"
+        text
+        onClick={() => handleButtonClick(data.id)}
+      />
+      </div>
     );
   };
 
@@ -127,22 +149,21 @@ const TRequestTable = ({ renderType }) => {
     console.log(rowData);
     return (
       <Tag
-        value={rowData.statusName}
-        severity={getSeverity(rowData.statusName)}
+        value={rowData.status}
+        severity={getSeverity(rowData.status)}
       />
     );
   };
 
 const priceBodyTemplate = (product) => {
-    return formatCurrency(product.totalTrainingFee);
+    return formatCurrency(product?.totalFee);
 };
-//  const format
   const header = renderHeader();
   return (
     <>
       <div className="">
         <DataTable
-          value={data}
+          value={mapTRequestToTableData(data)}
           stripedRows
           size="small"
           tableStyle={{ minWidth: "50rem" }}
@@ -157,61 +178,60 @@ const priceBodyTemplate = (product) => {
         >
           <Column
             field="id"
-            header="No"
+            header="Id"
             sortable
-           // style={{ width: "3%" }}
           ></Column>
           <Column
             field="requestorName"
             header="Requestor"
             sortable
-           // style={{ width: "10%" }}
           ></Column>
           <Column
-            field="trainingProgramName"
+            field="type"
+            header="Type"
+            sortable
+          ></Column>
+          <Column
+            field="program"
             header="Program"
             sortable
-           // style={{ width: "10%" }}
           ></Column>
           <Column
-            field="categoryName"
+            field="category"
             header="Category"
             sortable
-            //style={{ width: "10%" }}
           ></Column>
           <Column
-            field="trainingProviderName"
+            field="provider"
             header="Provider"
             sortable
-          //  style={{ width: "15%" }}
           ></Column>
           <Column
             field="venue"
             header="Venue"
             sortable
-         //   style={{ width: "10%" }}
           ></Column>
           <Column
-            field="trainingStartDate"
+            field="startDate"
             header="Start Date"
             sortable
            style={{ width: "8%" }}
           ></Column>
           <Column
-            field="trainingEndDate"
+            field="endDate"
             header="End Date"
             sortable
             style={{ width: "8%" }}
           ></Column>
           <Column
-            field="totalTrainingFee"
+            field="totalFee"
             header="Total Fee"
             sortable
             style={{ width: "8%" }}
             body={priceBodyTemplate}
           ></Column>
           <Column
-            field="statusName"
+            field="status"
             header="Status"
             sortable
            // style={{ width: "25%" }}

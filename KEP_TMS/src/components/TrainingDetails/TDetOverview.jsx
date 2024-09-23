@@ -1,25 +1,20 @@
 import { useEffect, useState } from "react";
 import { DetailItem, Heading } from "./DetailItem";
 import proptype from "prop-types";
-import { getTrainingProgramById, getTrainingCategoryById,getTrainingProviderById } from "../../services/trainingServices";
+import { getTrainingProgramById, getTrainingCategoryById,getTrainingProviderById } from "../../api/trainingServices";
 import { getTrainingTypeById } from "../../services/MasterListServices";
 const TDOverview = ({ id , formData}) => {
   const [option, setOption] = useState({ program: "", category: ""});
-
+console.log(formData)
   return (
     <div>
-      <Heading value="Details" />
-      <DetailItem
-        label="Request Type"
-        value={getTrainingTypeById(formData.trainingTypeId ?? +localStorage.getItem("request-type")) ?? "N/A"}
-      />
       <DetailItem
         label="Program"
-        value={formData?.trainingProgramName?? "N/A"}
+        value={formData?.trainingProgram?.name?? "N/A"}
       />
       <DetailItem
         label="Category"
-        value={formData?.categoryName ?? "N/A"}
+        value={formData?.trainingCategory?.name ?? "N/A"}
       />
       <DetailItem
         label="Objective"
@@ -31,7 +26,7 @@ const TDOverview = ({ id , formData}) => {
       />
       <DetailItem
         label="Provider"
-        value={formData?.trainingProviderName ?? "N/A"}
+        value={formData?.trainingProvider?.name ?? "N/A"}
       />
     </div>
   );

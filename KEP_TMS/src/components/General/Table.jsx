@@ -7,7 +7,7 @@ import {
   approveTrainingRequest,
   getAllTrainingRequests,
   getTrainingRequestByApprover,
-} from "../../services/trainingServices.jsx";
+} from "../../api/trainingServices.jsx";
 import {
   SessionGetEmployeeId,
   SessionGetFirstName,
@@ -162,7 +162,7 @@ const RTable = ({ heading, rows, columns, userType }) => {
                     <Link
                       type="button"
                       className="btn theme-bg btn-sm"
-                      to={`/KEP_TMS/Request_View/${item.id}`}
+                      to={`/KEP_TMS//TrainingView/${item.id}`}
                     >
                       View
                     </Link>

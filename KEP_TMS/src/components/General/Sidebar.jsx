@@ -156,7 +156,7 @@ const Sidebars = () => {
                 />
 
                 <NavItem
-                  item={"/KEP_TMS/Request_View"}
+                  item={"/KEP_TMS//TrainingView"}
                   title="For Approval"
                   expanded={expanded}
                   icon={<FontAwesomeIcon icon={faCheckToSlot} />}

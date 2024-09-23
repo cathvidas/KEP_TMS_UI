@@ -13,7 +13,7 @@ import {
   getAllTrainingRequests,
   getTrainingCategories,
   getTrainingPrograms,
-} from "../services/trainingServices";
+} from "../api/trainingServices";
 import { extractTrainingRequests } from "../services/ExtractData";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";

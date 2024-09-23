@@ -1,10 +1,10 @@
 import Dashboard from "./pages/Dashboard";
 import "./App.css";
 import { Navigate, Route, Routes } from "react-router-dom";
-import RequestView from "./pages/Request_View";
+import RequestView from "./pages//TrainingView";
 import { NotFoundPage } from "./pages/Error";
 import Login from "./pages/Login";
-import NewRequest from "./pages/NewRequest";
+import NewRequest from "./pages/Request";
 import RequestList from "./pages/RequestList";
 import Trainings from "./pages/Trainings";
 import ForApproval from "./pages/ForApproval";
@@ -18,8 +18,8 @@ function App() {
         <Route path="/" element={<Navigate to="/KEP_TMS" />} />
         <Route path="/KEP_TMS" element={<Login />} />
         <Route path="/KEP_TMS/Dashboard" element={<Dashboard />} />
-        <Route path="/KEP_TMS/Request_View/:id" element={<RequestView />} />
-        <Route path="/KEP_TMS/NewRequest/:type?" element={<NewRequest />} />
+        <Route path="/KEP_TMS/TrainingView/:id/:page?" element={<RequestView />} />
+        <Route path="/KEP_TMS/Request/:type?/:id?" element={<NewRequest />} />
         <Route path="/KEP_TMS/RequestList" element={<RequestList />} />
         <Route path="/KEP_TMS/Trainings" element={<Trainings />} />
         <Route path="/KEP_TMS/ForApproval" element={<ForApproval />} />

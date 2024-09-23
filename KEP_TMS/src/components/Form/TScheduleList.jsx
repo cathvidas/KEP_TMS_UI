@@ -7,6 +7,7 @@ import sortSchedules from "../../utils/SortSchedule";
 import { DataTable } from "primereact/datatable";
 import React from "react";
 import { Column } from "primereact/column";
+import { formatDateOnly } from "../../utils/Formatting";
 
 const TrainingScheduleList = ({schedules, onDelete}) => {
    schedules && sortSchedules(schedules)
@@ -37,13 +38,14 @@ const calculateTotalHours = ()=>{
               value={schedules}
               size="small"
               scrollable
-              scrollHeight="flex"
-              
               stripedRows
-              dataKey={"id"}
+              //dataKey={(_, rowIndex.)}
               rows={10}
             >
-              <Column field="date" header="Date"></Column>
+              <Column field="date" header="Date"
+              body={
+                (rowData) => <span>{formatDateOnly(rowData.date)}</span>
+              }></Column>
               <Column
                 field="startTime"
                 header="Start Time"
@@ -64,7 +66,8 @@ const calculateTotalHours = ()=>{
                   </span>
                 )}
               ></Column>
-              <Column header="Action" body={actionBodyComponent}></Column>
+              {onDelete && 
+              <Column header="Action" body={actionBodyComponent}></Column>}
             </DataTable>
             <label className="fw-semibold form-label">Total Hours:     <span className="ms-3">{formatTotalTime(calculateTotalHours())}</span></label>
         

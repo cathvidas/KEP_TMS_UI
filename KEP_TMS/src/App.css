@@ -5,7 +5,10 @@
 .bg-body body {
     background: #fbfdfc;
 }
-
+table{
+    font-size: 0.9rem;
+    line-height: 1.2rem;
+}
 .nav-pills .nav-link.active,
 .theme-bg,
 .theme-bg *,

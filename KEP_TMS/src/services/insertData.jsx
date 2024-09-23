@@ -2,11 +2,11 @@ import { TrainingType } from "../api/constants";
 import { SessionGetEmployeeId } from "./sessions";
 
 export const TrainingRequest =  {
-  requestorId: SessionGetEmployeeId()??0,
-  categoryId: 0,
-  trainingProgramId: 0,
+  requestorBadge: SessionGetEmployeeId()??0,
+  trainingCategory: {},
+  trainingProgram: {},
   trainingProviderId: 0,
-  trainingTypeId: parseInt(localStorage.getItem("request-type")) ??  0,
+  trainingType:{id: parseInt(localStorage.getItem("request-type")) ??  0},
   trainingObjectives: "",
   trainingStartDate: "",
   trainingEndDate: "",
@@ -21,9 +21,6 @@ export const TrainingRequest =  {
   trainingFacilitators: [],
   createdBy: null,
   
-  programOption: "",
-  categoryOption: "",
-  providerOption: "",
 };
 
 export const TrainingParticipants = () => ({

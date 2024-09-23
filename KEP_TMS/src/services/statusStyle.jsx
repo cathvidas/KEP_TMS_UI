@@ -1,5 +1,5 @@
 const getSeverity = (status) => {
-    status = status.toUpperCase();
+    status = status?.toUpperCase();
     switch (status) {
         case 'FORAPPROVAL':
             return 'success';

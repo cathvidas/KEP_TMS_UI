@@ -1,5 +1,5 @@
-import { API_ENDPOINTS } from "../api/apiEndpoints"
-import fetchFromApi from "../api/apiUtils";
+import { API_ENDPOINTS } from "./apiEndpoints"
+import fetchFromApi from "./apiUtils";
 
 //PROGRAM
 export const getTrainingPrograms = async () => {
@@ -60,6 +60,9 @@ export const insertTrainingRequest = async (trainingRequest) => {
 export const approveTrainingRequest = async (formatData) => {
     return await fetchFromApi(API_ENDPOINTS.APPROVE_TRAINING_REQUEST, "POST", formatData);
 }
+export const updateTrainingRequest = async (data)=>{
+    return await fetchFromApi(API_ENDPOINTS.UPDATE_TRAINING_REQUEST, "PUT", data);
+}
 
 
 //PARTICIPANTS
@@ -100,4 +103,10 @@ export const getTrainingRequestByApprover = async (approverId) => {
 
 export const getTrainingRequestApprovers = async (data) => {
     return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_REQUEST_APPROVERS}?userBadge=${data.userBadge}&cost=${data.cost}&requestType=${data.requestType}`);
+}
+
+
+// SERVICES
+export const getRoutingActivity = async (transactId, activityIn) =>{
+    return await fetchFromApi(`${API_ENDPOINTS.GET_ROUTING_ACTIVITY}?transactId=${transactId}&activityIn=${activityIn}`);
 }

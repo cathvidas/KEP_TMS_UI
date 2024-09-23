@@ -13,7 +13,7 @@ import { Calendar } from "primereact/calendar";
 import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Tag } from "primereact/tag";
-import { getAllTrainingRequests } from "../services/trainingServices";
+import { getAllTrainingRequests } from "../api/trainingServices";
 
 export default function CustomersDemo() {
   const [customers, setCustomers] = useState([]);
