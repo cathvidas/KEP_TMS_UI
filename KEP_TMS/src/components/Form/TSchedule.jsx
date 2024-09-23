@@ -22,9 +22,11 @@ const ScheduleContainer = ({ formData, handleResponse, errors }) => {
   useEffect(() => {
     setError(errors);
   }, [errors]);
+
   useEffect(() => {
-    setTrainingSchedules(formData.trainingDates);
-  }, [formData.trainingDates]);
+    handleResponse(trainingSchedules);
+  }, [trainingSchedules]);
+
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
     setSchedData((obj) => ({
@@ -33,20 +35,20 @@ const ScheduleContainer = ({ formData, handleResponse, errors }) => {
     }));
   };
 
-  useEffect(()=>{
-    if(schedData.startTime && schedData.endTime){
-    const total =  getTotalTime(schedData.startTime, schedData.endTime)
-    if(total < 1){
-      setError("Start time must be earlier than end time");
+  useEffect(() => {
+    if (schedData.startTime && schedData.endTime) {
+      const total = getTotalTime(schedData.startTime, schedData.endTime);
+      if (total < 1) {
+        setError("Start time must be earlier than end time");
 
-      setSchedData({...schedData, totalTime: "" });
-    }else{
-      setError(null)
-      const formatted = formatTotalTime(total)
-      setSchedData({...schedData, totalTime: formatted });
+        setSchedData({ ...schedData, totalTime: "" });
+      } else {
+        setError(null);
+        const formatted = formatTotalTime(total);
+        setSchedData({ ...schedData, totalTime: formatted });
+      }
     }
-    }
-  }, [schedData.startTime, schedData.endTime])
+  }, [schedData.startTime, schedData.endTime]);
   const handleTrainingSched = () => {
     // First, validate the schedule data
     const validate = ValidateSchedule(schedData);
@@ -60,20 +62,19 @@ const ScheduleContainer = ({ formData, handleResponse, errors }) => {
     } else {
       // If everything is valid, add the new schedule to the list
       setTrainingSchedules((prevSchedules) => [...prevSchedules, schedData]);
-setError("");
+      setError("");
       // Clear the form/reset schedData
       setSchedData(TrainingDates);
     }
   };
 
-  const removeSechedule = (index) => {
+  const removeSchedule = (index) => {
+    console.log(index);
     const updatedSchedules = trainingSchedules.filter((item, i) => i !== index);
+    console.log(updatedSchedules);
     setTrainingSchedules(updatedSchedules);
   };
 
-  useEffect(() => {
-    handleResponse(trainingSchedules);
-  }, [trainingSchedules, handleResponse]);
   return (
     <>
       <Row className="mt-2">
@@ -103,13 +104,15 @@ setError("");
         /> */}
         <div className="col col-12  flex-column gap-2 mt-3">
           <div className="d-flex justify-content-between align-items-center">
-            <label className="fw-semibold required form-label">Schedules: </label>
+            <label className="fw-semibold required form-label">
+              Schedules:{" "}
+            </label>
           </div>
           <Row className="g-3">
             <Col className="col-md-12 col-lg-7">
               <TrainingScheduleList
                 schedules={trainingSchedules}
-                onDelete={removeSechedule}
+                onDelete={removeSchedule}
               />
             </Col>
             <Col className="col-12 col-lg-5">
@@ -158,11 +161,14 @@ setError("");
                   />
                 </Col>
               </Row>
-              {schedData.totalTime && 
-              <>
-              <label className="col-md-3 form-label fw-semi-bold me-1">Total Time:</label>
-              <span className="text-success">{schedData.totalTime}</span>
-              </>}
+              {schedData.totalTime && (
+                <>
+                  <label className="col-md-3 form-label fw-semi-bold me-1">
+                    Total Time:
+                  </label>
+                  <span className="text-success">{schedData.totalTime}</span>
+                </>
+              )}
               {error && <small className="text-red">{error} </small>}
               <div className="d-flex">
                 <button
@@ -191,3 +197,4 @@ ScheduleContainer.propTypes = {
   errors: proptype.string,
 };
 export default ScheduleContainer;
+  

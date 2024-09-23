@@ -61,11 +61,6 @@ const TrainingDetailsContainer = ({ handleResponse, formData , error}) => {
     setDetails((obj) => ({ ...obj, [name]: value }));
   };
   
-  const handleOptionChange = (name, value) => {
-    setErrors({ ...errors, [name["id"]]: value ? "" : "This field is required." });
-    setDetails((obj) => ({ ...obj, [name["id"]]: value }));
-  };
-  console.log(details)
   return (
     <>
       <Row className="">

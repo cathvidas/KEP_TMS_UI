@@ -4,14 +4,11 @@ import Layout from "../components/General/Layout"
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons"
 import { SectionBanner, SectionTitle } from "../components/General/Section"
 import RTable from "../components/General/Table"
+import { icon } from "@fortawesome/fontawesome-svg-core"
 
 const ForApproval =()=>{
     const Content =() =>(<>
     
-    <Header
-        title="For Approvals"
-        IconComponent={<FontAwesomeIcon icon={faClipboardList}/>}
-      />
       <SectionBanner title="For Approvals" subtitle="List of Trainings waiting for Approval"/>
       <SectionTitle
         title={"Recent Trainings"}
@@ -21,6 +18,6 @@ const ForApproval =()=>{
         
     )
     return(<>
-    <Layout BodyComponent={Content}/></>)
+    <Layout BodyComponent={Content} header={{ title:"For Approvals", icon: <i className="pi pi-pen-to-square"></i>}}/></>)
 }
 export default ForApproval

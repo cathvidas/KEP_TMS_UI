@@ -110,3 +110,9 @@ export const getTrainingRequestApprovers = async (data) => {
 export const getRoutingActivity = async (transactId, activityIn) =>{
     return await fetchFromApi(`${API_ENDPOINTS.GET_ROUTING_ACTIVITY}?transactId=${transactId}&activityIn=${activityIn}`);
 }
+
+
+//FILE UPLOADS
+export const uploadFile = async (data) => {
+    return await fetchFromApi(API_ENDPOINTS.UPLOAD_FILE, "POST", data, {'Content-Type': 'multipart/form-data'});
+}

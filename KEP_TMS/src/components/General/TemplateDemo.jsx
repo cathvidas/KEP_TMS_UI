@@ -147,7 +147,7 @@ export default function TemplateDemo() {
     className:
       "custom-cancel-btn p-button-danger p-button-rounded p-button-outlined",
   };
-
+//console.log(fileUploadRef)
   return (
     <div>
       <Toast ref={toast}></Toast>

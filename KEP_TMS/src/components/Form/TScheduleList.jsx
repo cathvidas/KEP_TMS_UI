@@ -5,14 +5,17 @@ import proptype from 'prop-types'
 import { Button } from "primereact/button";
 import sortSchedules from "../../utils/SortSchedule";
 import { DataTable } from "primereact/datatable";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Column } from "primereact/column";
 import { formatDateOnly } from "../../utils/Formatting";
 
 const TrainingScheduleList = ({schedules, onDelete}) => {
-   schedules && sortSchedules(schedules)
+  const [schedData, setSchedData] = useState([]);
+  useEffect(()=>{
+    setSchedData(schedules);
+  }, [schedules])
 const calculateTotalHours = ()=>{
-  return schedules.reduce((total, schedule) => {
+  return schedules?.reduce((total, schedule) => {
     const totalTime = getTotalTime(schedule.startTime, schedule.endTime);
     return total + totalTime;
   }, 0);
@@ -31,11 +34,11 @@ const calculateTotalHours = ()=>{
 
   return (
     <>
-      {schedules && schedules.length > 0 ? (
+      {schedData && schedData?.length > 0 ? (
         <>
           <div className=" overflowX-auto" style={{ overflowX: "auto" }}>
             <DataTable
-              value={schedules}
+              value={schedData}
               size="small"
               scrollable
               stripedRows

@@ -1,13 +1,14 @@
 import apiClient from "../api/apiClient";
 
-const fetchFromApi = async (endpoint, method = "GET", data = null) => {
+const fetchFromApi = async (endpoint, method = "GET", data = null,  header = null) => {
+
     console.log(endpoint, method, data);
     try{
         const config ={
             method,
             url: endpoint,
             data,
-            headers: {
+            headers: header != null ? header :{
                 'Content-Type': 'application/json',
             },
         }

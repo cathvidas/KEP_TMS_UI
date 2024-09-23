@@ -101,7 +101,6 @@ export const FormContainer = () => {
           schedules: "Please add schedules",
         }));
       }
-      console.log(details);
 
       // Set errors for details
       if (hasErrors) {
@@ -155,7 +154,6 @@ export const FormContainer = () => {
 
   //Get request data if param is UPDATE
   useEffect(() => {
-    console.log(trainingType, requestId);
     if (trainingType.toUpperCase() === "UPDATE" && requestId) {
       const getRequest = async () => {
         try {

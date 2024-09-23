@@ -3,10 +3,12 @@ import Layout from "../components/General/Layout"
 import TemplateDemo from "../components/General/TemplateDemo"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faGear } from "@fortawesome/free-solid-svg-icons"
+import CustomersDemo from "../components/TablePrime"
 
 const content =()=>{
     return(
         <><TemplateDemo/>
+        <CustomersDemo/>
         </>
     )
 }
