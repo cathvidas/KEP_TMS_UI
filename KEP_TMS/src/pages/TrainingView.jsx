@@ -83,7 +83,7 @@ const RequestView = () => {
     };
     return (
       <>
-        <div className={`d-flex w-100`}>
+        <div className={`row g-0`}>
           {mappedData.status?.id === statusCode.APPROVED && (
             <RequestMenu
               action={handleChangeContent}
@@ -91,11 +91,10 @@ const RequestView = () => {
             />
           )}
           <div
-            className={`${mappedData.status?.id === statusCode.APPROVED  && "border-start" } p-3 pb-5 flex-grow-1`}
+            className={`${mappedData.status?.id === statusCode.APPROVED  && "border-start" } p-3 pb-5 col`}
             style={{ minHeight: "calc(100vh - 50px)" }}
           >
-            {pages[currentContent]}
-          </div>
+            {pages[currentContent]}</div>
         </div>
       </>
     );

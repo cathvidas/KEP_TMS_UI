@@ -8,18 +8,13 @@ import { DataTable } from "primereact/datatable";
 import React, { useEffect, useState } from "react";
 import { Column } from "primereact/column";
 import { formatDateOnly } from "../../utils/Formatting";
+import calculateTotalHours from "../../services/calculateTotalHours";
 
 const TrainingScheduleList = ({schedules, onDelete}) => {
   const [schedData, setSchedData] = useState([]);
   useEffect(()=>{
     setSchedData(schedules);
   }, [schedules])
-const calculateTotalHours = ()=>{
-  return schedules?.reduce((total, schedule) => {
-    const totalTime = getTotalTime(schedule.startTime, schedule.endTime);
-    return total + totalTime;
-  }, 0);
-}
   const actionBodyComponent = (rowData, rowIndex) => (
     <div className="d-flex">
       <Button
@@ -42,6 +37,8 @@ const calculateTotalHours = ()=>{
               size="small"
               scrollable
               stripedRows
+              
+           // tableStyle={{ minWidth: "30rem" }}
               //dataKey={(_, rowIndex.)}
               rows={10}
             >
@@ -72,7 +69,7 @@ const calculateTotalHours = ()=>{
               {onDelete && 
               <Column header="Action" body={actionBodyComponent}></Column>}
             </DataTable>
-            <label className="fw-semibold form-label">Total Hours:     <span className="ms-3">{formatTotalTime(calculateTotalHours())}</span></label>
+            <label className="fw-semibold form-label">Total Hours:     <span className="ms-3">{formatTotalTime(calculateTotalHours(schedules))}</span></label>
         
           </div>
         </>

@@ -45,7 +45,7 @@ export const RequestMenu = ({menuList, action, current}) => {
   ];
 
   return (
-    <div className="p-3 position-sticky top-0" style={{height: "fit-content"}}
+    <div className="p-3 position-sticky top-0 col-1 d-none d-md-block " style={{height: "fit-content", minWidth: "200px"}}
     >
       <div className="d-flex gap-1 px-3 mb-1 border-bottom pb-2 align-items-center">
         <FontAwesomeIcon icon={faBars} />

@@ -1,5 +1,7 @@
 :root {
     --theme-color: rgb(0, 167, 111);
+    --theme-bg-light: #f8f9fa;
+    --theme-bg-light2: #e5e5e5;
 }
 
 .bg-body body {
@@ -17,7 +19,12 @@ table{
     color: #fff !important;
     border-color: var(--theme-color) !important;
 }
-
+.theme-bg-light {
+    background-color: var(--theme-bg-light);
+}
+.theme-bg-light2 {
+    background-color: var(--theme-bg-light2);
+}
 .theme2-bg {
     background-color: rgb(0, 167, 111);
 }

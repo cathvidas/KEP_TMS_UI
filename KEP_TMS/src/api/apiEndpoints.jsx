@@ -42,7 +42,7 @@ INSERT_TRAINING_REQUEST: "/TrainingRequest/CreateTrainingRequest",
 GET_TRAINING_REQUESTS: "/TrainingRequest/GetAllTrainingRequests",
 GET_TRAINING_REQUEST_BY_ID: "/TrainingRequest/GetTrainingRequestById",
 UPDATE_TRAINING_REQUEST: "/TrainingRequest/UpdateTrainingRequest",
-GET_TRAINING_REQUEST_BY_APPROVER_iD: "Services/GetAssignedRequests",
+GET_TRAINING_REQUEST_BY_APPROVER: "Services/GetAssignedRequests",
 APPROVE_TRAINING_REQUEST: "/Services/ApproveRequest",
 GET_TRAINING_REQUEST_APPROVERS: "/Services/GetApprovers",
 
@@ -62,6 +62,7 @@ GET_ROUTING: "Services/routing",
 //FILE UPLOADS
 // UPLOAD_FILE: "/FileUpload",
 UPLOAD_FILE: "/Users/getUploadedParticipants",
+EXPORT_DATA: "/Services/ExportData",
 
 
 

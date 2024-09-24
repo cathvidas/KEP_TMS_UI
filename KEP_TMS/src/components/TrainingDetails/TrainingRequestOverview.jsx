@@ -13,21 +13,27 @@ import proptype from "prop-types"
 import { faCalendar, faInfoCircle, faUsers } from "@fortawesome/free-solid-svg-icons"
 import { statusCode } from "../../api/constants"
 import { mapUserListAsync } from "../../services/DataMapping/UserListData"
+import { Col, Row } from "react-bootstrap"
+import TrainingScheduleList from "../Form/TScheduleList"
+import { useNavigate } from "react-router-dom"
 
 const TrainingRequestOverview = ({data, requestor})=>{
+  const navigate = useNavigate();
     return(
         
-      <div className="card p-3 overflo-hidden w-100">
+      <div className="card theme-bg-light p-3 overflo-hidden w-100">
       {data?.status?.id !== statusCode.APPROVED && 
         <div>
           <h3 className="text-center theme-color">
             New {data?.trainingType?.name} Training Request
+          <span className="ms-3 text-secondary h6 btn border-0" title="Edit Request" onClick={()=>navigate("/KEP_TMS/Request/Update/" + data.id)}><i className="pi pi-pencil"></i> Edit</span>
           </h3>
-          <div className="h6 d-flex gap-5 pb-4 justify-content-around border-bottom">
+          <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
             <span> Requestor: {requestor.fullname}</span>
             <span> Badge No: {requestor.employeeBadge}</span>
             <span> Department: {requestor.departmentName}</span>
             <span> Date: {formatDateTime(data.createdDate)}</span>
+            <span>Status: {StatusColor(data.status?.name, "p-2 px-3 ")}</span>
           </div>
         </div>}
         <div className="flex justify-content-between">
@@ -35,44 +41,22 @@ const TrainingRequestOverview = ({data, requestor})=>{
           title="Details"
           icon={<FontAwesomeIcon icon={faInfoCircle} />}
         />
-          {StatusColor(data.status?.name, "p-2 px-3 ")}
         </div>
-        <div className="d-flex justify-content-between pe-5">
-          <TDOverview formData={data} />
-        </div>
-        <DetailItem
-          label="Training Fee"
-          value={formatCurrency(data.trainingFee)}
-        />
-        <DetailItem
-          label="Total Training Cost"
-          value={formatCurrency(data.totalTrainingFee)}
-        />
-        <DetailItem
-          label="Discounted Rate"
-          value={formatCurrency(data.discountedRate)}
-        />
-        <DetailItem
-          label="Cut-off Date"
-          value={formatDateOnly(data.cutOffDate)}
-        />
+        <TDOverview data={data} />
         <br />
         <SectionHeading
-          title="Dates and schedules"
+          title="Training Schedules"
           icon={<FontAwesomeIcon icon={faCalendar} />}
         />
-        <TScheduleOverview
-          endDate={data.trainingEndDate}
-          startdate={data.trainingStartDate}
-          schedule={data.trainingDates}
-        />
+        <TrainingScheduleList schedules={data.trainingDates} />
+
         <br />
         <SectionHeading
           title="Participants"
           icon={<FontAwesomeIcon icon={faUsers} />}
         />
         {data.trainingParticipants?.length > 0 ? (
-          <>
+          <div className="w-100 overflow-hidden">
             <small className="text-muted">
               {data.trainingParticipants.length} participants{" "}
             </small>
@@ -82,7 +66,7 @@ const TrainingRequestOverview = ({data, requestor})=>{
               userlist={data.trainingParticipants}
               property={"name"}
             />
-          </>
+          </div>
         ) : (
           <EmptyState placeholder="No participants added" />
         )}
@@ -103,7 +87,7 @@ const TrainingRequestOverview = ({data, requestor})=>{
         {data.status?.name == "ForApproval" && (
           <>
             <br />
-            <div className="pe-5 me-5">
+            <div className="">
         <SectionHeading
           title="Approvers"
           icon={<FontAwesomeIcon icon={faUsers} />}

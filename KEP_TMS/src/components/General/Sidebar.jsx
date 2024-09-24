@@ -145,8 +145,6 @@ const Sidebars = () => {
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faClipboardCheck} />}
           />
-          {SessionGetRole() !== "Trainee" &&
-            SessionGetRole !== "Facilitator" && (
               <>
                 <NavItem
                   item={"/KEP_TMS/ForApproval"}
@@ -168,7 +166,6 @@ const Sidebars = () => {
                   icon={<FontAwesomeIcon icon={faList} />}
                 />
               </>
-            )}
           <NavItem
             item="/KEP_TMS/CertificatesPage"
             title="Certificates"

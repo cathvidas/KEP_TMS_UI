@@ -1,6 +1,6 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   getAllTrainingRequests,
   getTrainingRequestByApprover,
@@ -130,10 +130,14 @@ const TRequestTable = ({ renderType }) => {
     );
   };
 
+  const datatable = useRef(null);
+  const exportCSV = (selectionOnly) => {
+    datatable.current.exportCSV({ selectionOnly });
+};
   const renderHeader = () => {
     return (
-      <div className="flex flex-wrap gap-2 justify-content-between align-items-center">
-        <h6 className="m-0">Recent Trainings</h6>
+      <div className="flex flex-wrap gap-2  align-items-center">
+        <h6 className="m-0 me-auto">Recent Trainings</h6>
         <IconField iconPosition="left">
           <InputIcon className="pi pi-search" />
           <InputText
@@ -142,6 +146,7 @@ const TRequestTable = ({ renderType }) => {
             placeholder="Keyword Search"
           />
         </IconField>
+        <Button icon="pi pi-download" text className="rounded" onClick={()=> exportCSV(false)}/>
       </div>
     );
   };
@@ -154,7 +159,6 @@ const TRequestTable = ({ renderType }) => {
       />
     );
   };
-
 const priceBodyTemplate = (product) => {
     return formatCurrency(product?.totalFee);
 };
@@ -163,6 +167,7 @@ const priceBodyTemplate = (product) => {
     <>
       <div className="">
         <DataTable
+        ref={datatable}
           value={mapTRequestToTableData(data)}
           stripedRows
           size="small"

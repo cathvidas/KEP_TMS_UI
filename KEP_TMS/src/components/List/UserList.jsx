@@ -54,12 +54,12 @@ export const UserList = ({
             value={userlist}
             size="small"
             stripedRows
-            tableStyle={{ minWidth: "50rem" }}
+         //   tableStyle={{ minWidth: "30rem" }}
             selectionMode={true}
             selection={trailingElement?.input === true ? selected : false}
             onSelectionChange={(e) => setSelected(e.value)}
             filters={filterTemp}
-            scrollable
+            scrollable showGridlines 
             scrollHeight={scrollHeight ?? "60vh"}
           >
             {trailingElement?.input === true && (

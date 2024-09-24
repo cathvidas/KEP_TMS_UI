@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faUsers } from "@fortawesome/free-solid-svg-icons";
 import proptype from "prop-types";
 import { UserList } from "../List/UserList";
 import EmptyState from "./EmptyState";
@@ -7,6 +7,7 @@ import { SectionHeading } from "../General/Section";
 import { DetailItem, Heading } from "../TrainingDetails/DetailItem";
 import TDOverview from "../TrainingDetails/TDetOverview";
 import TScheduleOverview from "../TrainingDetails/TSchedOverview";
+import TrainingScheduleList from "./TScheduleList";
 
 const TrainingSummary = ({ formData, handleResponse }) => {
   console.log(formData)
@@ -16,11 +17,14 @@ const TrainingSummary = ({ formData, handleResponse }) => {
         title="Training Summary"
         icon={<FontAwesomeIcon icon={faInfoCircle} />}
       />
-      <TDOverview formData={formData} />
+      <TDOverview data={formData} />
       <br />
-      <TScheduleOverview schedule={formData.trainingDates} />
+      <TrainingScheduleList schedules={formData.trainingDates} />
       <br />
-      <Heading value="participants" />
+      <SectionHeading
+        title="Training Participants"
+        icon={<FontAwesomeIcon icon={faUsers} />}
+      />
       {formData.trainingParticipants.length > 0 ? (
         <>
           <small className="text-muted">
@@ -37,7 +41,10 @@ const TrainingSummary = ({ formData, handleResponse }) => {
         <EmptyState placeholder="No participants added" />
       )}
       <br />
-      <Heading value="facilitator" />
+      <SectionHeading
+        title="Training Facilitator/s"
+        icon={<FontAwesomeIcon icon={faUsers} />}
+      />
       {formData.trainingFacilitators.length > 0 ? (
         <UserList
           leadingElement={true}
@@ -48,9 +55,6 @@ const TrainingSummary = ({ formData, handleResponse }) => {
         <EmptyState placeholder="No facilitator added" />
       )}
       <br />
-      <Heading value="training cost" />
-      <DetailItem label="Training Fee" value={formData.trainingFee} />
-      <DetailItem label="Total Training Cost" value={formData.totalTrainingFee} />
     </>
   );
 };

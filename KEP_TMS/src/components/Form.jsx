@@ -64,15 +64,17 @@ export const FormContainer = () => {
           actionFailed("Error", response.message);
         }
       }else{
-        const updateData = {...formmatedData, createdBy: SessionGetEmployeeId()}
+        const updateData = {...formmatedData, requestorBadge: SessionGetEmployeeId()}
+        console.log(updateData)
       const response = await insertTrainingRequest(updateData);
+      console.group(response)
       if (response.isSuccess === true) {
         actionSuccessful(
           "Success",
           "training request successfully submitted, please wait for approval"
         );
         setTimeout(() => {
-          navigate("/KEP_TMS/RequestList");
+          navigate("/KEP_TMS/TrainingView/" + response?.data?.id);
         }, 2500);
       } else {
         actionFailed("Error", response.message);

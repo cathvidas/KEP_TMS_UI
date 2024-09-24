@@ -9,7 +9,10 @@ const ApproverList = ({datalist, routing})=>{
 
   const getStatus =(employeeBadge)=>{
     const status = routing.filter(x=>x.assignedTo === employeeBadge);
-    return getStatusById(status[0]?.statusId);
+    if(status){
+      return getStatusById(status[0]?.statusId);}else{
+        return "Pending";
+      }
   }
 console.log(getStatus("HR002"))
   const statusTemplate = (rowData)=> (
@@ -26,6 +29,7 @@ console.log(getStatus("HR002"))
               stripedRows
               dataKey={"id"}
               rows={10}
+            //  tableStyle={{ minWidth: "30rem" }}
             ><Column header="No" body={(_, { rowIndex }) => rowIndex + 1} />
               <Column field="fullname" header="Name"></Column>
               <Column

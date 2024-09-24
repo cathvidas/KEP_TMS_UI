@@ -16,8 +16,8 @@ const getStatusById = (id) => {
       : id === statusCode.CLOSED
       ? "Closed"
       : id === statusCode.FORAPPROVAL
-      ? "ForApproval"
-      : "Unknown";
+      ? "ForApproval": 
+      "Pending";
   return status;
 };
 

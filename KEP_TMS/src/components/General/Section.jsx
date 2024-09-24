@@ -2,10 +2,10 @@ import proptype from "prop-types";
 import { Link } from "react-router-dom";
 export const SectionHeading = ({ title, icon }) => (
   <>
-    <h5 className="my-2 text-uppercase theme-color">
+    <h6 className="my-2 text-uppercase theme-color">
       {icon && icon}
       &nbsp;{title}
-    </h5>
+    </h6>
   </>
 );
 export const SectionTitle = ({ title, Action }) => {

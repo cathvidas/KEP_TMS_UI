@@ -1,4 +1,5 @@
 const StatusColor = (status, style) => {
+  console.log(status, style)
   const className =
     status === "Submitted"
       ? "bg-secondary"
@@ -10,7 +11,9 @@ const StatusColor = (status, style) => {
       ? "bg-danger"
       : status === "Closed"
       ? "bg-success"
-      : "bg-default";
+      : status === "Pending"
+      ? "bg-secondary text-dark"
+      : "bg-default text-dark";
 
   return (<>
   <span className={`badge ${style} ${className}`}>{status === "ForApproval" ? "For Approval" : status} </span>

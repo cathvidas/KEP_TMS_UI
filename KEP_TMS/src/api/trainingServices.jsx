@@ -98,7 +98,7 @@ export const getTrainingReports = async (programId) => {
 
 // APPROVER
 export const getTrainingRequestByApprover = async (approverId) => {
-    return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_REQUESTS_BY_APPROVER}?approverId=${approverId}`);
+    return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_REQUEST_BY_APPROVER}?assignedTo=${approverId}`);
 }
 
 export const getTrainingRequestApprovers = async (data) => {
@@ -115,4 +115,7 @@ export const getRoutingActivity = async (transactId, activityIn) =>{
 //FILE UPLOADS
 export const uploadFile = async (data) => {
     return await fetchFromApi(API_ENDPOINTS.UPLOAD_FILE, "POST", data, {'Content-Type': 'multipart/form-data'});
+}
+export const exportData = async (data) => {
+    return await fetchFromApi(API_ENDPOINTS.EXPORT_DATA, "POST", data);
 }

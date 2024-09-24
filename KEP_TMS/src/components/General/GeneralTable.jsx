@@ -3,7 +3,7 @@ import { DataTable } from "primereact/datatable";
 import proptype from "prop-types";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FilterMatchMode } from "primereact/api";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
@@ -26,10 +26,20 @@ console.log(dataType)
     setFilters(_filters);
     setGlobalFilterValue(value);
   };
+  const handleExport =()=>{
+
+  } 
+  const dt = useRef(null);
+  const exportCSV = (selectionOnly) => {
+    dt.current.exportCSV({ selectionOnly });
+};
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2 justify-content-between align-items-center">
         <h6 className="m-0">Recent Trainings</h6>
+        
+        <Button type="button" icon="pi pi-file" rounded onClick={() => exportCSV(false)} data-pr-tooltip="CSV" />
+        <Button type="button" icon="pi pi-pencil" text onClick={handleExport} />
         <IconField iconPosition="left">
           <InputIcon className="pi pi-search" />
           <InputText
@@ -88,6 +98,7 @@ console.log(dataType)
     <>
       <div className=" w-100 overflowX-auto" style={{ overflowX: "auto" }}>
         <DataTable
+        ref={dt}
           header={renderHeader}
           filters={filters}
           value={dataTable}

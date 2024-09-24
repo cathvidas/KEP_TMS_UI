@@ -1,5 +1,7 @@
+import { getUserById } from "../../api/UserAccountApi";
+
 export const mapTRequestToTableData = (data)=>{
-    const mappedData = data.map((item)=>({
+    const mappedData = data.map(item=>({
         id: item.id,
         requestorName: item?.requestorName,
         requestorId: item?.requestorBadge,
@@ -17,3 +19,35 @@ export const mapTRequestToTableData = (data)=>{
     }))
     return mappedData
 }
+
+export const mapForApprovalRequestToTableData =  (data) => {
+  const result = data.map(
+    ({ auditTrail, routingActivity, trainingRequest }) => {
+        const value = mapTrainingRequestDetails(trainingRequest);
+        const currentApprover= routingActivity.assignedTo;
+        return {...value, currentApprover: currentApprover}
+    }
+  );
+  return result
+};
+
+export const mapTrainingRequestDetails = (data)=>{
+    const user = {
+        id: data.id,
+        requestorName: data?.requestorName,
+        requestorId: data?.requestorBadge,
+        status: data?.status?.name,
+        program: data.trainingProgram?.name,
+        type: data?.trainingType?.name,
+        objectives: data?.trainingObjectives,
+        venue: data?.venue,
+        category: data?.trainingCategory?.name,
+        provider: data?.trainingProvider?.name,
+        startDate: data.trainingStartDate,
+        endDate: data.trainingEndDate,
+        totalFee: data?.totalTrainingFee,
+
+    }
+    return user;
+}
+
