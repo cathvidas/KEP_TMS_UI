@@ -3,7 +3,7 @@ import { SessionGetEmployeeId, SessionGetUserId } from "./sessions";
 export const InsertFormattedTrainingRequestData = (formData)=>{
 console.log(formData)
     if(!formData.trainingDates) throw new Error("Training dates are required");
-    if(!formData.requestorBadge) throw new Error("Requestor ID is required");
+  //  if(!formData.requestorBadge) throw new Error("Requestor ID is required");
     if(!formData.trainingProgram?.id) throw new Error("Training Program is required");
     if(!formData.trainingCategory?.id) throw new Error("Category is required");
     if(!formData.trainingType?.id) throw new Error("Training Type ID is required");

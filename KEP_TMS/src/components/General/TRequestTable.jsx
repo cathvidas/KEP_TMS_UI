@@ -1,31 +1,37 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getAllTrainingRequests,
+  getCurrentRoutingActivity,
   getTrainingRequestByApprover,
 } from "../../api/trainingServices";
-import { SessionGetEmployeeId, SessionGetFirstName, SessionGetUserId } from "../../services/sessions";
+import {
+  SessionGetEmployeeId,
+  SessionGetRole,
+  SessionGetUserId,
+} from "../../services/sessions";
 import { getUserById } from "../../api/UserAccountApi";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
 import { FilterMatchMode } from "primereact/api";
-import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
-import { formatCurrency } from "../../utils/Formatting";
-import getSeverity from "../../services/statusStyle";
+import { formatCurrency, formatDateOnly } from "../../utils/Formatting";
 import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
+import StatusColor from "./StatusColor";
+import proptype from "prop-types";
+import { ActivityType } from "../../api/constants";
 
-const TRequestTable = ({ renderType }) => {
+const TRequestTable = ({ filterType }) => {
   const [data, setData] = useState([]);
   useEffect(() => {
     const getTrainingRequests = async () => {
       try {
         var trainingRequests = await getAllTrainingRequests();
 
-        if (renderType === "forapprovall") {
+        if (filterType === "forapprovall") {
           trainingRequests = await getTrainingRequestByApprover(
             SessionGetUserId()
           );
@@ -39,7 +45,6 @@ const TRequestTable = ({ renderType }) => {
                 return element.facilitatorBadge;
               }
             );
-            console.log(facilitatorIds);
             // Fetch details for each facilitator
             const facilitatorsDetails = await Promise.all(
               facilitatorIds.map(async (facilitatorBadge) => {
@@ -51,21 +56,27 @@ const TRequestTable = ({ renderType }) => {
                 };
               })
             );
-
+            const approver = await getCurrentRoutingActivity(request.id, ActivityType.REQUEST)
+            const user = await getUserById(approver.assignedTo)
+            const routing ={
+              approverUsername: user.data.username,
+              approverFullName: user.data.lastname + ", " + user.data.firstname,
+              statusId: approver.statusId,
+              approverId: user.data.employeeBadge
+            }
             return {
               ...request,
-              trainingFacilitators: facilitatorsDetails, // Replace with detailed facilitator information
+              trainingFacilitators: facilitatorsDetails, 
+              routing: routing// Replace with detailed facilitator information
             };
           })
         );
 
         // Set training requests with updated facilitator information
-        if (renderType === "user" || renderType === "Trainee") {
+        if (filterType === "UserRole" && (SessionGetRole() !== "Admin" && SessionGetRole() !== "SuperAdmin")) {
           const userRequests = updatedRequests.filter(
-            (request) => request.createdBy === SessionGetEmployeeId()
+            (request) => request.requestorBadge === SessionGetEmployeeId()
           );
-          console.log(updatedRequests);
-          console.log(SessionGetEmployeeId());
           setData(userRequests);
         } else {
           setData(updatedRequests);
@@ -76,7 +87,7 @@ const TRequestTable = ({ renderType }) => {
     };
 
     getTrainingRequests();
-  }, [renderType]);
+  }, [filterType]);
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -100,24 +111,24 @@ const TRequestTable = ({ renderType }) => {
   const actionTemplate = (data) => {
     return (
       <div className="d-flex">
-      <Button
-      type="button"
-        icon="pi pi-eye"
-        size="small"
-        severity="success"
-        className="rounded"
-        text
-        onClick={() => handleButtonClick(data.id, "TrainingView")}
-      />
-      <Button
-      type="button"
-        icon="pi pi-pencil"
-        size="small"
-        className="rounded"
-        text
-        onClick={() => handleButtonClick(data.id, "Request/Update")}
-      />
-      <Button
+        <Button
+          type="button"
+          icon="pi pi-eye"
+          size="small"
+          severity="success"
+          className="rounded"
+          text
+          onClick={() => handleButtonClick(data.id, "TrainingView")}
+        />
+        <Button
+          type="button"
+          icon="pi pi-pencil"
+          size="small"
+          className="rounded"
+          text
+          onClick={() => handleButtonClick(data.id, "Request/Update")}
+        />
+        {/* <Button
       type="button"
         icon="pi pi-trash"
         size="small"
@@ -125,7 +136,7 @@ const TRequestTable = ({ renderType }) => {
         severity="danger"
         text
         onClick={() => handleButtonClick(data.id)}
-      />
+      /> */}
       </div>
     );
   };
@@ -133,11 +144,11 @@ const TRequestTable = ({ renderType }) => {
   const datatable = useRef(null);
   const exportCSV = (selectionOnly) => {
     datatable.current.exportCSV({ selectionOnly });
-};
+  };
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2  align-items-center">
-        <h6 className="m-0 me-auto">Recent Trainings</h6>
+        <h6 className="m-0 me-auto">Recent Requests</h6>
         <IconField iconPosition="left">
           <InputIcon className="pi pi-search" />
           <InputText
@@ -146,111 +157,94 @@ const TRequestTable = ({ renderType }) => {
             placeholder="Keyword Search"
           />
         </IconField>
-        <Button icon="pi pi-download" text className="rounded" onClick={()=> exportCSV(false)}/>
+        <Button
+          icon="pi pi-download"
+          text
+          className="rounded"
+          onClick={() => exportCSV(false)}
+        />
       </div>
     );
   };
-  const statusBodyTemplate = (rowData) => {
-    console.log(rowData);
-    return (
-      <Tag
-        value={rowData.status}
-        severity={getSeverity(rowData.status)}
-      />
-    );
-  };
-const priceBodyTemplate = (product) => {
-    return formatCurrency(product?.totalFee);
-};
   const header = renderHeader();
   return (
     <>
       <div className="">
-        <DataTable
-        ref={datatable}
-          value={mapTRequestToTableData(data)}
-          stripedRows
-          size="small"
-          tableStyle={{ minWidth: "50rem" }}
-          paginator
-          rows={10}
-          rowsPerPageOptions={[5, 10, 25, 50]}
-          dataKey="id"
-          filters={filters}
-          header={header}
-          emptyMessage="No data found."
-          sortMode="multiple"
-        >
-          <Column
-            field="id"
-            header="Id"
-            sortable
-          ></Column>
-          <Column
-            field="requestorName"
-            header="Requestor"
-            sortable
-          ></Column>
-          <Column
-            field="type"
-            header="Type"
-            sortable
-          ></Column>
-          <Column
-            field="program"
-            header="Program"
-            sortable
-          ></Column>
-          <Column
-            field="category"
-            header="Category"
-            sortable
-          ></Column>
-          <Column
-            field="provider"
-            header="Provider"
-            sortable
-          ></Column>
-          <Column
-            field="venue"
-            header="Venue"
-            sortable
-          ></Column>
-          <Column
-            field="startDate"
-            header="Start Date"
-            sortable
-           style={{ width: "8%" }}
-          ></Column>
-          <Column
-            field="endDate"
-            header="End Date"
-            sortable
-            style={{ width: "8%" }}
-          ></Column>
-          <Column
-            field="totalFee"
-            header="Total Fee"
-            sortable
-            style={{ width: "8%" }}
-            body={priceBodyTemplate}
-          ></Column>
-          <Column
-            field="status"
-            header="Status"
-            sortable
-           // style={{ width: "25%" }}
-            body={statusBodyTemplate}
-          ></Column>
-          <Column
-            field="id"
-            header="Action"
-           // style={{ width: "25%" }}
-            body={actionTemplate}
-          ></Column>
-        </DataTable>
+        {data?.length > 0 ? (
+          <DataTable
+            ref={datatable}
+            value={mapTRequestToTableData(data)}
+            stripedRows
+            size="small"
+            tableStyle={{ minWidth: "50rem" }}
+            paginator
+            rows={10}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            dataKey="id"
+            filters={filters}
+            header={header}
+            emptyMessage="No data found."
+            sortMode="multiple"
+          >
+            <Column field="id" header="Id" sortable></Column>
+
+            <Column field="requestorBadge" header="BadgeNo" sortable></Column>
+            <Column field="requestorName" header="Requestor" sortable></Column>
+            <Column field="type" header="Type" sortable></Column>
+            <Column field="program" header="Program" sortable></Column>
+            <Column field="category" header="Category" sortable></Column>
+            <Column field="provider" header="Provider" sortable></Column>
+            <Column field="venue" header="Venue" sortable></Column>
+            <Column
+              field="startDate"
+              header="Start Date"
+              sortable
+              style={{ width: "8%" }}
+              body={(rowData) => {
+                return formatDateOnly(rowData.startDate);
+              }}
+            ></Column>
+            <Column
+              field="endDate"
+              header="End Date"
+              sortable
+              style={{ width: "8%" }}
+              body={(rowData) => {
+                return formatDateOnly(rowData.endDate);
+              }}
+            ></Column>
+            <Column
+              field="totalFee"
+              header="Total Fee"
+              sortable
+              style={{ width: "8%" }}
+              body={(product) => {
+                return formatCurrency(product?.totalFee);
+              }}
+            ></Column>
+            <Column
+              field="approverFullName"
+              header="Approver"
+              sortable
+            ></Column>
+            <Column
+              field="status"
+              header="Status"
+              sortable
+              body={(rowData) => {
+                return StatusColor(rowData.status);
+              }}
+            ></Column>
+            <Column field="id" header="Action" body={actionTemplate}></Column>
+          </DataTable>
+        ) : (
+          "No recent requests"
+        )}
       </div>
     </>
   );
+};
+TRequestTable.propTypes = {
+  filterType: proptype.string,
 };
 export default TRequestTable;

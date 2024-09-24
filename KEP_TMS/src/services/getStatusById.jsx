@@ -1,7 +1,6 @@
 import { statusCode } from "../api/constants";
 
 const getStatusById = (id) => {
-    console.log(id)
   const status =
     id === statusCode.ACTIVE
       ? "Active"

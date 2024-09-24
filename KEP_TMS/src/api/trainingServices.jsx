@@ -54,7 +54,6 @@ export const getAllTrainingRequests = async () => {
     return await fetchFromApi(API_ENDPOINTS.GET_TRAINING_REQUESTS);
 }
 export const insertTrainingRequest = async (trainingRequest) => {
-    console.log(trainingRequest)
     return await fetchFromApi(API_ENDPOINTS.INSERT_TRAINING_REQUEST, "POST", trainingRequest);
 }
 export const approveTrainingRequest = async (formatData) => {
@@ -109,6 +108,10 @@ export const getTrainingRequestApprovers = async (data) => {
 // SERVICES
 export const getRoutingActivity = async (transactId, activityIn) =>{
     return await fetchFromApi(`${API_ENDPOINTS.GET_ROUTING_ACTIVITY}?transactId=${transactId}&activityIn=${activityIn}`);
+}
+
+export const getCurrentRoutingActivity = async (transactId, activityIn) =>{
+    return await fetchFromApi(`${API_ENDPOINTS.GET_CURRENT_ROUTING}?transactId=${transactId}&activityIn=${activityIn}`);
 }
 
 

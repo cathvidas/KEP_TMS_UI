@@ -1,27 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RequestMenu } from "../components/TrainingDetails/Menu.jsx";
-import { SectionHeading } from "../components/General/Section.jsx";
 import { faFile, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import TDOverview from "../components/TrainingDetails/TDetOverview.jsx";
-import TScheduleOverview from "../components/TrainingDetails/TSchedOverview.jsx";
 import ExamContainer from "../components/Exam/ExamContainer.jsx";
 import Layout from "../components/General/Layout.jsx";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getRoutingActivity, getTrainingRequestById } from "../api/trainingServices.jsx";
 import {
-  DetailItem,
-  Heading,
-} from "../components/TrainingDetails/DetailItem.jsx";
-import StatusColor from "../components/General/StatusColor.jsx";
-import { UserList } from "../components/List/UserList.jsx";
-import EmptyState from "../components/Form/EmptyState.jsx";
+  getRoutingActivity,
+  getTrainingRequestById,
+} from "../api/trainingServices.jsx";
 import { getUserById } from "../api/UserAccountApi.jsx";
 import ModulesContainer from "../components/TrainingDetails/ModulesContainer.jsx";
 import ExportDemo from "../components/TablePrime.jsx";
-import { extractApproverDetails } from "../services/ExtractData.jsx";
-import ApproverList from "../components/List/ApproversList.jsx";
-import { formatCurrency, formatDateTime } from "../utils/Formatting.jsx";
 import { ActivityType, statusCode } from "../api/constants.jsx";
 import TrainingRequestOverview from "../components/TrainingDetails/TrainingRequestOverview.jsx";
 import { mapUserListAsync } from "../services/DataMapping/UserListData.jsx";
@@ -31,6 +21,7 @@ const RequestView = () => {
   const [data, setData] = useState({});
   const { id } = useParams();
   const [requestor, setRequestor] = useState({});
+  const [approved, setApproved] = useState(false);
   useEffect(() => {
     const getRequest = async () => {
       try {
@@ -50,7 +41,10 @@ const RequestView = () => {
         );
         const requestor = await getUserById(details.data.requestorBadge);
         setRequestor(requestor?.data);
-        const routing = await getRoutingActivity(details.data.id, ActivityType.REQUEST);
+        const routing = await getRoutingActivity(
+          details.data.id,
+          ActivityType.REQUEST
+        );
         const updatedDetails = {
           ...details.data,
           trainingFacilitators: facilitators,
@@ -59,15 +53,31 @@ const RequestView = () => {
           routing: routing,
         };
         setMappedData(updatedDetails);
-
       } catch (err) {
         console.error(err);
       }
     };
     getRequest();
   }, [id]);
+
+  const checkIfThereISTillApprovers = () => {
+    const availableApprovers = mappedData.approvers?.filter(
+      (x) => !mappedData.routing?.some((y) => x.employeeBadge === y.assignedTo)
+    );
+    return availableApprovers;
+  };
+
+  useEffect(() => {
+    const app = checkIfThereISTillApprovers();
+    if (app?.lenght === 0) {
+      setApproved(true);
+    }
+  }, [mappedData]);
   const Content = () => {
-    const pages = [<><TrainingRequestOverview data={mappedData} requestor={requestor}/></>,
+    const pages = [
+      <>
+        <TrainingRequestOverview data={mappedData} requestor={requestor} />
+      </>,
       <>
         <ModulesContainer />
         <ExportDemo />
@@ -91,10 +101,13 @@ const RequestView = () => {
             />
           )}
           <div
-            className={`${mappedData.status?.id === statusCode.APPROVED  && "border-start" } p-3 pb-5 col`}
+            className={`${
+              mappedData.status?.id === statusCode.APPROVED && "border-start"
+            } p-3 pb-5 col`}
             style={{ minHeight: "calc(100vh - 50px)" }}
           >
-            {pages[currentContent]}</div>
+            {pages[currentContent]}
+          </div>
         </div>
       </>
     );

@@ -4,7 +4,7 @@ export const mapTRequestToTableData = (data)=>{
     const mappedData = data.map(item=>({
         id: item.id,
         requestorName: item?.requestorName,
-        requestorId: item?.requestorBadge,
+        requestorBadge: item?.requestorBadge,
         status: item?.status?.name,
         program: item.trainingProgram?.name,
         type: item?.trainingType?.name,
@@ -15,6 +15,9 @@ export const mapTRequestToTableData = (data)=>{
         startDate: item.trainingStartDate,
         endDate: item.trainingEndDate,
         totalFee: item?.totalTrainingFee,
+        approverId: item?.routing.approverId,
+        approverFullName: item?.routing.approverFullName,
+        approverUsername: item?.routing.approverUsername,
 
     }))
     return mappedData

@@ -1,18 +1,17 @@
 const StatusColor = (status, style) => {
-  console.log(status, style)
   const className =
     status === "Submitted"
-      ? "bg-secondary"
+      ? "bg-info"
       : status === "ForApproval"
       ? "bg-primary"
       : status === "Approved"
-      ? "bg-warning"
+      ? "bg-success"
       : status === "Disapproved"
       ? "bg-danger"
       : status === "Closed"
-      ? "bg-success"
+      ? "bg-secondary"
       : status === "Pending"
-      ? "bg-secondary text-dark"
+      ? "bg-warning text-dark"
       : "bg-default text-dark";
 
   return (<>

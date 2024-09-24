@@ -56,7 +56,6 @@ const TrainingDetailsContainer = ({ handleResponse, formData , error}) => {
 
   //Emtpty field validation
   const handleOnChange = (name, value) => {
-    console.log(value)
     setErrors({ ...errors, [name]: value ? "" : "This field is required." });
     setDetails((obj) => ({ ...obj, [name]: value }));
   };

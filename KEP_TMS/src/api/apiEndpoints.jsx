@@ -56,7 +56,7 @@ GET_TRAINING_REQUEST_APPROVERS: "/Services/GetApprovers",
 //comboboxes
 GET_DEPARTMENTS : "Comboboxes/GetDepartments",
 GET_ROUTING_ACTIVITY: "Services/GetRoutingActivity",
-GET_ROUTING: "Services/routing",
+GET_CURRENT_ROUTING: "Services/routing",
 
 
 //FILE UPLOADS

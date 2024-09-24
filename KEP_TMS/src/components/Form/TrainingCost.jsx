@@ -29,7 +29,7 @@ const TrainingCost = ({formData, handleResponse}) => {
       const cutOffDate = date.toLocaleDateString('en-CA') ;
       setFormData((prev)=>({...prev, cutOffDate: cutOffDate}))}
       else{
-      setFormData((prev)=>({...prev, cutOffDate: ""}))
+      setFormData((prev)=>({...prev, cutOffDate: "", discountedRate: 0}))
       }
       
     }, [withEarlyRate])
@@ -52,6 +52,14 @@ const TrainingCost = ({formData, handleResponse}) => {
       console.log(totalCost, cost)
       setFormData((prev)=>({...prev, trainingFee: cost, totalTrainingFee: totalCost}))
   }, [cost, totalCost])
+
+  useEffect(()=>{
+if(formData.discountedRate > 0){
+  setWithEarlyRate(true)
+}else{
+  setWithEarlyRate(false)
+}
+  },[formData])
 
   return (
     <>
@@ -117,6 +125,7 @@ const TrainingCost = ({formData, handleResponse}) => {
                     type="radio"
                     name="flexRadioDefault"
                     id="flexRadioDefault1"
+                    checked={withEarlyRate}
                     onChange={()=>setWithEarlyRate(true)}
                   />
                   <label
@@ -132,7 +141,7 @@ const TrainingCost = ({formData, handleResponse}) => {
                     type="radio"
                     name="flexRadioDefault"
                     id="flexRadioDefault2"
-                    defaultChecked
+                    checked={!withEarlyRate}
                     onChange={()=>setWithEarlyRate(false)}
                   />
                   <label
@@ -145,7 +154,7 @@ const TrainingCost = ({formData, handleResponse}) => {
               </div>
             }
           />
-          {withEarlyRate && 
+          {withEarlyRate  && 
           <Row>
           <FormFieldItem
             label={"Discounted rate"}
@@ -153,7 +162,9 @@ const TrainingCost = ({formData, handleResponse}) => {
             FieldComponent={
               <input className="form-control" 
               type="number"
-              onChange={(e)=>setFormData((prev)=>({...prev, discountedRate: e.target.value}))}
+              min="0"
+              value={data.discountedRate}
+              onChange={(e)=>setFormData((prev)=>({...prev, discountedRate: parseFloat(e.target.value)}))}
               />
             }
           />

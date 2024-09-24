@@ -7,9 +7,10 @@ export const confirmAction = (prop) => {
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: prop.confirmButtonColor?? "#3085d6",
-    cancelButtonColor:prop.cancelButtonColor?? "#d33",
+    cancelButtonColor:prop.cancelButtonColor?? "#dcdcdc",
     confirmButtonText: prop.confirmButtonText??"Submit",
-    cancelButtonText: prop.cancelButtonText??"Cancel"
+    cancelButtonText: prop.cancelButtonText??"Cancel",
+    reverseButtons: true
   }).then((result) => {
     if (result.isConfirmed) {
         prop.actionFunction(prop?.param);
