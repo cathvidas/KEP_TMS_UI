@@ -3,7 +3,7 @@ import { DetailItem } from "./DetailItem";
 import proptype from "prop-types";
 import { formatCurrency, formatDateOnly } from "../../utils/Formatting";
 import TScheduleOverview from "./TSchedOverview";
-import TrainingScheduleList from "../Form/TScheduleList";
+import TrainingScheduleList from "../trainingRequestFormComponents/TrainingScheduleList";
 import { formatTotalTime } from "../../utils/FormatDateTime";
 import calculateTotalHours from "../../services/calculateTotalHours";
 const TDOverview = ({ data }) => {

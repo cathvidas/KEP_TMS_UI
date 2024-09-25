@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllUsers } from "../api/UserAccountApi";
+import { getAllUsersApi } from "../api/userApi";
 import { UserList } from "../components/List/UserList";
 
 export const SearchUser = ( usersList, search ) => {

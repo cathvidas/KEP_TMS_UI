@@ -4,11 +4,11 @@ import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import { SectionBanner } from "../components/General/Section";
 import MasterListMenu from "../components/General/MasterListMenu";
 import { useParams } from "react-router-dom";
-import { getAllUsers } from "../api/UserAccountApi";
+import { getAllUsersApi } from "../api/userApi";
 import { useEffect, useState } from "react";
 import GeneralTable from "../components/General/GeneralTable";
 import { Button } from "primereact/button";
-import ProgramForm from "../components/Form/ModalForms/ProgramForm";
+import ProgramForm from "../components/forms/ModalForms/ProgramForm";
 import {
   getAllTrainingRequests,
   getTrainingCategories,
@@ -17,7 +17,7 @@ import {
 import { extractTrainingRequests } from "../services/ExtractData";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
-import CategoryForm from "../components/Form/ModalForms/CategoryForm";
+import CategoryForm from "../components/forms/ModalForms/CategoryForm";
 
 const MasterList = () => {
   const page = useParams();
@@ -31,7 +31,7 @@ const MasterList = () => {
     const getUsers = async () => {
       try {
         setLoading(true);
-        const users = await getAllUsers();
+        const users = await getAllUsersApi();
         setData(
           page.type === "Facilitators"
             ? users.filter((x) => x.roleName === "Facilitator")

@@ -10,7 +10,7 @@ import { mapForApprovalRequestToTableData } from "../services/DataMapping/Traini
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { formatCurrency, formatDateOnly } from "../utils/Formatting";
-import { getUserById } from "../api/UserAccountApi";
+import { getUserApi } from "../api/userApi";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
@@ -31,8 +31,8 @@ const ForApproval = () => {
         const mappedData = mapForApprovalRequestToTableData(res);
         const updated = await Promise.all(
           mappedData.map(async (x) => {
-            const user = await getUserById(x.requestorId);
-            // const approver = await getUserById(x.currentApprover);
+            const user = await getUserApi(x.requestorId);
+            // const approver = await getUserApi(x.currentApprover);
             return { ...x, requestorName: user.data.fullname };
           })
         );

@@ -10,7 +10,7 @@ import { getAllTrainingProviders } from "../../api/trainingServices";
 import { mapProviderListToOptionFormat } from "../../services/DataMapping/ProviderData";
 import { FormatDate } from "../../utils/FormatDateTime";
 
-const TrainingCost = ({formData, handleResponse}) => {  
+const TrainingCostForm = ({formData, handleResponse}) => {  
   const [data, setFormData] = useState(formData);
     const [cost , setCost] = useState(data.trainingFee);
     const [totalCost , setTotalCost] = useState(0);
@@ -184,8 +184,8 @@ if(formData.discountedRate > 0){
     </>
   );
 };
-TrainingCost.propTypes={
+TrainingCostForm.propTypes={
  formData: proptype.object.isRequired,
  handleResponse: proptype.func,
 }
-export default TrainingCost;
+export default TrainingCostForm;

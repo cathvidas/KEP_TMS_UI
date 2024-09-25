@@ -30,40 +30,32 @@ export const API_ENDPOINTS = {
   //Users
   GET_USERS: "/Users/GetAllUsers",
   GET_USER_BY_ID: "/Users/GetUserById",
-  INSERT_USER: "/Users/CreateUser",
   UPDATE_USER: "/Users/UpdateUser",
   DELETE_USER: "/Users/DeleteUser",
-  GET_USER_BY_POSITION_ID : "/Users/GetUserByPositionId",
+  GET_USER_BY_POSITION_ID: "/Users/GetUserByPositionId",
   USER_LOGIN: "/Users/Login",
+  CREATE_USER: "Users/CreateUser",
 
-//Training Requests
-
-INSERT_TRAINING_REQUEST: "/TrainingRequest/CreateTrainingRequest",
-GET_TRAINING_REQUESTS: "/TrainingRequest/GetAllTrainingRequests",
-GET_TRAINING_REQUEST_BY_ID: "/TrainingRequest/GetTrainingRequestById",
-UPDATE_TRAINING_REQUEST: "/TrainingRequest/UpdateTrainingRequest",
-GET_TRAINING_REQUEST_BY_APPROVER: "Services/GetAssignedRequests",
-APPROVE_TRAINING_REQUEST: "/Services/ApproveRequest",
-GET_TRAINING_REQUEST_APPROVERS: "/Services/GetApprovers",
-
+  //Training Requests
+  INSERT_TRAINING_REQUEST: "/TrainingRequest/CreateTrainingRequest",
+  GET_TRAINING_REQUESTS: "/TrainingRequest/GetAllTrainingRequests",
+  GET_TRAINING_REQUEST_BY_ID: "/TrainingRequest/GetTrainingRequestById",
+  UPDATE_TRAINING_REQUEST: "/TrainingRequest/UpdateTrainingRequest",
+  GET_TRAINING_REQUEST_BY_APPROVER: "Services/GetAssignedRequests",
+  APPROVE_TRAINING_REQUEST: "/Services/ApproveRequest",
+  GET_TRAINING_REQUEST_APPROVERS: "/Services/GetApprovers",
 
   GET_TRAINING_TYPES: "/TrainingType/GetAllTrainingTypes",
-  GET_TRAINING_EFFECTIVENESSES:
-    "/TrainingEffectiveness/GetAllTrainingEffectivenesses",
+  GET_TRAINING_EFFECTIVENESSES:"/TrainingEffectiveness/GetAllTrainingEffectivenesses",
   GET_TRAINING_EVALUATIONS: "/TrainingEvaluation/GetAllTrainingEvaluations",
   GET_TRAINING_PARTICIPANTS: "/TrainingRequest/GetAllTrainingParticipants",
 
-//comboboxes
-GET_DEPARTMENTS : "Comboboxes/GetDepartments",
-GET_ROUTING_ACTIVITY: "Services/GetRoutingActivity",
-GET_CURRENT_ROUTING: "Services/routing",
+  //comboboxes
+  GET_DEPARTMENTS: "Comboboxes/GetDepartments",
+  GET_ROUTING_ACTIVITY: "Services/GetRoutingActivity",
+  GET_CURRENT_ROUTING: "Services/routing",
 
-
-//FILE UPLOADS
-// UPLOAD_FILE: "/FileUpload",
-UPLOAD_FILE: "/Users/getUploadedParticipants",
-EXPORT_DATA: "/Services/ExportData",
-
-
-
+  //FILE UPLOADS
+  UPLOAD_FILE: "/Users/getUploadedParticipants",
+  EXPORT_DATA: "/Services/ExportData",
 };

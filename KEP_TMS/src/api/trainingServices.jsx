@@ -1,5 +1,5 @@
 import { API_ENDPOINTS } from "./apiEndpoints"
-import fetchFromApi from "./apiUtils";
+import fetchFromApi from "./apiUtil";
 
 //PROGRAM
 export const getTrainingPrograms = async () => {

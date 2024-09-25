@@ -1,5 +1,5 @@
 import { API_ENDPOINTS } from "../api/apiEndpoints";
-import fetchFromApi from "../api/apiUtils";
+import fetchFromApi from "../api/apiUtil";
 import { TrainingType } from "../api/constants";
 
 export const getTrainingTypeById = (typeId) => {

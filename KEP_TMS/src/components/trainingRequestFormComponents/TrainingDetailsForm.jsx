@@ -10,7 +10,7 @@ import {
   getTrainingCategories,
   getTrainingPrograms,
 } from "../../api/trainingServices";
-const TrainingDetailsContainer = ({ handleResponse, formData , error}) => {
+const TrainingDetailsForm = ({ handleResponse, formData , error}) => {
   const [details, setDetails] = useState(formData);
   const [options, setOptions] = useState({ programs: [], categories: [] });
   const [errors, setErrors] = useState(error);
@@ -136,9 +136,9 @@ const TrainingDetailsContainer = ({ handleResponse, formData , error}) => {
     </>
   );
 };
-TrainingDetailsContainer.propTypes = {
+TrainingDetailsForm.propTypes = {
   handleResponse: proptype.func,
   formData: proptype.object,
   error: proptype.object,
 };
-export default TrainingDetailsContainer;
+export default TrainingDetailsForm;

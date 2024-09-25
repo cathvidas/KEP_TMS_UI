@@ -3,16 +3,16 @@ import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { UserList } from "../List/UserList";
 import { ModalContainer } from "../Modal/ModalContainer";
 import { useEffect, useState } from "react";
-import EmptyState from "./EmptyState";
 import SearchBar from "./SearchBar";
 import { ActionButton } from "../General/Button";
 import { SectionHeading } from "../General/Section";
 import proptype from "prop-types";
-import { getAllUsers } from "../../api/UserAccountApi";
+import { getAllUsersApi } from "../../api/userApi";
 import { getAllDepartments } from "../../api/ComboBoxes";
 import { getAllTrainingProviders } from "../../api/trainingServices";
 import { FilterMatchMode } from "primereact/api";
-const TrainingParticipant = ({ formData, handleResponse, errors }) => {
+import EmptyState from "./EmptyState";
+const TrainingParticipantsForm = ({ formData, handleResponse, errors }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -66,7 +66,7 @@ useEffect(()=>{
 
   useEffect(() => {
     const fetchDatas = async () => {
-      const user = await getAllUsers();
+      const user = await getAllUsersApi();
       const activeUsers = user
         .filter((user) => user.statusName === "Active")
 
@@ -275,12 +275,12 @@ useEffect(()=>{
     </>
   );
 };
-TrainingParticipant.propTypes = {
+TrainingParticipantsForm.propTypes = {
   formData: proptype.object,
   handleResponse: proptype.func,
   errors: proptype.oneOfType([proptype.object, proptype.string])
 
 
 };
-export default TrainingParticipant;
+export default TrainingParticipantsForm;
 

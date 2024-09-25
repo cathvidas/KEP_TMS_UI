@@ -1,6 +1,4 @@
 import proptype from "prop-types";
-import { Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
 const EmptyState = ({ placeholder, action }) => {
   return (
     <>

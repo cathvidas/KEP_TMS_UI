@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import EmptyState from "../Form/EmptyState"
+import EmptyState from "../trainingRequestFormComponents/EmptyState"
 import { SectionHeading } from "../General/Section"
 import { faNoteSticky } from "@fortawesome/free-solid-svg-icons"
 import { ModalContainer } from "../Modal/ModalContainer"
 import { useState } from "react"
-import { FormFieldItem } from "../Form/FormElements"
+import { FormFieldItem } from "../trainingRequestFormComponents/FormElements"
 
 const ModulesContainer = () =>{
     const [showModal, setShowModal] = useState(false)

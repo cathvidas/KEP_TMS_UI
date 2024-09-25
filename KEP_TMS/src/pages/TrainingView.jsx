@@ -9,7 +9,7 @@ import {
   getRoutingActivity,
   getTrainingRequestById,
 } from "../api/trainingServices.jsx";
-import { getUserById } from "../api/UserAccountApi.jsx";
+import { getUserApi } from "../api/userApi.jsx";
 import ModulesContainer from "../components/TrainingDetails/ModulesContainer.jsx";
 import ExportDemo from "../components/TablePrime.jsx";
 import { ActivityType, statusCode } from "../api/constants.jsx";
@@ -39,7 +39,7 @@ const RequestView = () => {
           details?.data?.approvers,
           "employeeBadge"
         );
-        const requestor = await getUserById(details.data.requestorBadge);
+        const requestor = await getUserApi(details.data.requestorBadge);
         setRequestor(requestor?.data);
         const routing = await getRoutingActivity(
           details.data.id,

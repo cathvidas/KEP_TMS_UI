@@ -6,7 +6,7 @@ import { getRoutingActivity } from "../../api/trainingServices";
 import proptype from "prop-types";
 import getStatusById from "../../services/getStatusById";
 import { Button } from "primereact/button";
-import EmailForm from "../Form/ModalForms/EmailForm";
+import EmailForm from "../forms/ModalForms/EmailForm";
 import { useState } from "react";
   const ApproverList = ({ datalist, routing }) => {
     const [visible, setVisible] = useState(false);

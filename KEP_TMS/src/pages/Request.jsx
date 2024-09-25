@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ActionButton } from "../components/General/Button";
-import { FormContainer } from "../components/Form";
+import { TrainingRequestForm } from "../components/forms/TrainingRequestForm";
 import { SectionBanner } from "../components/General/Section";
 import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
 import Header from "../components/General/Header";
@@ -33,7 +33,7 @@ const NewRequest = () => {
             }
             //  ActionComponents={action}
           /> */}
-          <FormContainer />
+          <TrainingRequestForm />
         </div>
       </>
     );

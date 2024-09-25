@@ -2,12 +2,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faUsers } from "@fortawesome/free-solid-svg-icons";
 import proptype from "prop-types";
 import { UserList } from "../List/UserList";
-import EmptyState from "./EmptyState";
+import EmptyState from "../trainingRequestFormComponents/EmptyState";
 import { SectionHeading } from "../General/Section";
 import { DetailItem, Heading } from "../TrainingDetails/DetailItem";
 import TDOverview from "../TrainingDetails/TDetOverview";
 import TScheduleOverview from "../TrainingDetails/TSchedOverview";
-import TrainingScheduleList from "./TScheduleList";
+import TrainingScheduleList from "../trainingRequestFormComponents/TrainingScheduleList";
 
 const TrainingSummary = ({ formData, handleResponse }) => {
   console.log(formData)

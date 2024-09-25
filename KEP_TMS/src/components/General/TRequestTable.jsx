@@ -11,7 +11,7 @@ import {
   SessionGetRole,
   SessionGetUserId,
 } from "../../services/sessions";
-import { getUserById } from "../../api/UserAccountApi";
+import { getUserApi } from "../../api/userApi";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
@@ -43,7 +43,7 @@ const TRequestTable = ({ filterType }) => {
             // Fetch details for each facilitator
             const facilitatorsDetails = await Promise.all(
               facilitatorIds.map(async (facilitatorBadge) => {
-                const user = await getUserById(facilitatorBadge);
+                const user = await getUserApi(facilitatorBadge);
                 return {
                   facilitatorBadge,
                   name: user.data.username,
@@ -52,7 +52,7 @@ const TRequestTable = ({ filterType }) => {
               })
             );
             const approver = await getCurrentRoutingActivity(request.id, ActivityType.REQUEST)
-            const user = await getUserById(approver.assignedTo)
+            const user = await getUserApi(approver.assignedTo)
             const routing ={
               approverUsername: user.data.username,
               approverFullName: user.data.lastname + ", " + user.data.firstname,

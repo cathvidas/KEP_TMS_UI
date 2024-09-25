@@ -1,5 +1,5 @@
 import { Col, Row } from "react-bootstrap";
-import TrainingScheduleList from "./TScheduleList";
+import TrainingScheduleList from "./TrainingScheduleList";
 import { Form } from "react-bootstrap";
 import proptype from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +13,7 @@ import {
 import { TrainingDates } from "../../services/insertData";
 import { formatTotalTime, getTotalTime } from "../../utils/FormatDateTime";
 
-const ScheduleContainer = ({ formData, handleResponse, errors }) => {
+const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
   const [trainingSchedules, setTrainingSchedules] = useState(
     formData.trainingDates
   );
@@ -191,10 +191,10 @@ const ScheduleContainer = ({ formData, handleResponse, errors }) => {
     </>
   );
 };
-ScheduleContainer.propTypes = {
+TrainingScheduleForm.propTypes = {
   formData: proptype.object,
   handleResponse: proptype.func,
   errors: proptype.string,
 };
-export default ScheduleContainer;
+export default TrainingScheduleForm;
   

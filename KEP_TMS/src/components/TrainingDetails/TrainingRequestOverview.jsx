@@ -6,7 +6,7 @@ import {
   formatDateTime,
 } from "../../utils/Formatting";
 import { UserList } from "../List/UserList";
-import EmptyState from "../Form/EmptyState";
+import EmptyState from "../trainingRequestFormComponents/EmptyState";
 import ApproverList from "../List/ApproversList";
 import proptype from "prop-types";
 import {
@@ -15,7 +15,7 @@ import {
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { statusCode } from "../../api/constants";
-import TrainingScheduleList from "../Form/TScheduleList";
+import TrainingScheduleList from "../trainingRequestFormComponents/trainingScheduleList";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 // import { useHistory } from "react-router-dom";

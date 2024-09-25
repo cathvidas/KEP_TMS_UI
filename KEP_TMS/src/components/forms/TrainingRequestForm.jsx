@@ -1,36 +1,36 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Card, Form } from "react-bootstrap";
-import TrainingDetailsContainer from "./Form/TDetails";
-import ScheduleContainer from "./Form/TSchedule";
-import TrainingParticipant from "./Form/TParticipants";
-import TrainingCost from "./Form/TrainingCost";
-import TrainingSummary from "./Form/TSummary";
-import { TrainingRequest } from "../services/insertData";
+import TrainingDetailsForm from "../trainingRequestFormComponents/TrainingDetailsForm";
+import TrainingScheduleForm from "../trainingRequestFormComponents/TrainingScheduleForm";
+import TrainingCostForm from "../trainingRequestFormComponents/TrainingCostForm";
+import TrainingSummary from "./TSummary";
+import { TrainingRequest } from "../../services/insertData";
 import {
   getTrainingRequestById,
   insertTrainingRequest,
   updateTrainingRequest,
-} from "../api/trainingServices";
+} from "../../api/trainingServices";
 import {
   actionFailed,
   actionSuccessful,
   confirmAction,
-} from "../services/sweetalert";
-import { InsertFormattedTrainingRequestData } from "../services/formatData";
+} from "../../services/sweetalert";
+import { InsertFormattedTrainingRequestData } from "../../services/formatData";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   SessionGetDepartment,
   SessionGetEmployeeId,
   SessionGetUserName,
-} from "../services/sessions";
+} from "../../services/sessions";
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
 import { Button } from "primereact/button";
-import validateTrainingDetails from "../services/inputValidation/validateTrainingDetails";
-import { mapUserListAsync } from "../services/DataMapping/UserListData";
-import { formatDateTime } from "../utils/Formatting";
-import { TrainingType } from "../api/constants";
-export const FormContainer = () => {
+import validateTrainingDetails from "../../services/inputValidation/validateTrainingDetails";
+import { mapUserListAsync } from "../../services/DataMapping/UserListData";
+import { formatDateTime } from "../../utils/Formatting";
+import { TrainingType } from "../../api/constants";
+import TrainingParticipantsForm from "../trainingRequestFormComponents/TrainingParticipantsForm";
+export const TrainingRequestForm = () => {
 const trainingType = useParams().type;
   const requestId = useParams().id;
   var details = {};
@@ -243,12 +243,12 @@ const trainingType = useParams().type;
               style={{ flexBasis: "50rem" }}
             >
               <StepperPanel header="Details">
-                <TrainingDetailsContainer
+                <TrainingDetailsForm
                   handleResponse={handleResponse}
                   formData={formData}
                   error={errors?.details}
                 />
-                <ScheduleContainer
+                <TrainingScheduleForm
                   formData={formData}
                   handleResponse={handleTrainingDates}
                   errors={errors?.schedules}
@@ -256,7 +256,7 @@ const trainingType = useParams().type;
                 {<StepperButton next={true} index={0} />}
               </StepperPanel>
               <StepperPanel header="Participants">
-                <TrainingParticipant
+                <TrainingParticipantsForm
                   formData={formData}
                   handleResponse={handleResponse}
                   errors={errors?.participants}
@@ -264,7 +264,7 @@ const trainingType = useParams().type;
                 {<StepperButton back={true} next={true} index={1} />}
               </StepperPanel>
               <StepperPanel header="Cost">
-                <TrainingCost
+                <TrainingCostForm
                   formData={formData}
                   handleResponse={handleResponse}
                 />

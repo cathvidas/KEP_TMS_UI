@@ -14,7 +14,7 @@ import {
   SessionGetUserId,
   SessionGetUserName,
 } from "../../services/sessions.jsx";
-import { getUserById } from "../../api/UserAccountApi.jsx";
+import { getUserApi } from "../../api/userApi.jsx";
 import StatusColor from "./StatusColor.jsx";
 import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert.jsx";
 import { TrainingRequestApproval } from "../../services/insertData.jsx";
@@ -43,7 +43,7 @@ const RTable = ({ heading, rows, columns, userType }) => {
             // Fetch details for each facilitator
             const facilitatorsDetails = await Promise.all(
               facilitatorIds.map(async (employeeBadge) => {
-                const user = await getUserById(employeeBadge);
+                const user = await getUserApi(employeeBadge);
                 console.log(user);
                 return {
                   employeeBadge,

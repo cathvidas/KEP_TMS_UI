@@ -1,5 +1,5 @@
 import { formatDateOnly, formatDateTime } from "../../utils/Formatting";
-import TrainingScheduleList from "../Form/TScheduleList"
+import TrainingScheduleList from "../trainingRequestFormComponents/TrainingScheduleList"
 import { DetailItem, Heading } from "./DetailItem"
 import proptype from "prop-types";
 

@@ -1,6 +1,6 @@
 
 import { Toast } from "../components/SweetToast";
-import { checkUserCredentials } from "../api/UserAccountApi";
+import { checkUserCredentials } from "../api/userApi";
 import { SessionSetReference } from "./sessions";
 
 const handleUserLogin = async (data) => {

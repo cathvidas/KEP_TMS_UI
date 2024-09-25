@@ -1,4 +1,4 @@
-import { getUserById } from "../../api/UserAccountApi";
+import { getUserApi } from "../../api/userApi";
 
 export const mapUserListAsync = (users, property)=>{
     console.log(users, property)
@@ -6,7 +6,7 @@ export const mapUserListAsync = (users, property)=>{
         try{ 
             const participants = await Promise.all(
               users.map(async  element => {
-                const user = await getUserById(element[property]);
+                const user = await getUserApi(element[property]);
                 return user?.data;
               })
             );

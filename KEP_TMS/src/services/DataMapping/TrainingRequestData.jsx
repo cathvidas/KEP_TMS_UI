@@ -1,4 +1,4 @@
-import { getUserById } from "../../api/UserAccountApi";
+import { getUserApi } from "../../api/userApi";
 
 export const mapTRequestToTableData = (data)=>{
     const mappedData = data.map(item=>({
