@@ -1,47 +1,49 @@
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button } from "primereact/button";
 import { Menu } from "primereact/menu";
 import { Toast } from "primereact/toast";
 import proptype, { func } from "prop-types";
 import React, { useRef } from "react";
-import { useRouteError } from "react-router-dom";
+import { useNavigate, useRouteError } from "react-router-dom";
 
-export const RequestMenu = ({menuList, action, current}) => {
+export const RequestMenu = ({menuList, action, current, reqId}) => {
+  const navigate = useNavigate()
   const items = [
       {
-          label: 'Details',
+          label: 'Content',
           items: [
               {
                   label: 'Overview',
-                  icon: 'pi pi-plus'
-              },
-              {
-                  label: 'Trainees',
-                  icon: 'pi pi-search'
+                  icon: 'pi pi-info-circle',
+                  command: () => navigate(`/KEP_TMS/TrainingView/${reqId}`),
+                  
               },
               {
                   label: 'Modules',
-                  icon: 'pi pi-search'
+                  icon: 'pi pi-folder',
+                  command: () => navigate(`/KEP_TMS/TrainingView/${reqId}/Modules`),
               },
               {
                   label: 'Questionnaire',
-                  icon: 'pi pi-search'
+                  icon: 'pi pi-list-check',
+                  command: () => navigate(`/KEP_TMS/TrainingView/${reqId}/Exams`),
               }
           ]
       },
-      {
-          label: 'Profile',
-          items: [
-              {
-                  label: 'Settings',
-                  icon: 'pi pi-cog'
-              },
-              {
-                  label: 'Logout',
-                  icon: 'pi pi-sign-out'
-              }
-          ]
-      }
+      // {
+      //     label: 'Profile',
+      //     items: [
+      //         {
+      //             label: 'Settings',
+      //             icon: 'pi pi-cog'
+      //         },
+      //         {
+      //             label: 'Logout',
+      //             icon: 'pi pi-sign-out'
+      //         }
+      //     ]
+      // }
   ];
 
   return (
@@ -54,6 +56,7 @@ export const RequestMenu = ({menuList, action, current}) => {
       </div>
       <div className="">
         <Menu model={items} className="border-0" style={{background: "rgb(251, 253, 252)"}} />
+        <Button label="Publish" size="small" severity="info" className="rounded py-1 ms-3"/>
       </div>
     </div>
   );

@@ -18,6 +18,7 @@ export const mapTRequestToTableData = (data)=>{
         approverId: item?.routing.approverId,
         approverFullName: item?.routing.approverFullName,
         approverUsername: item?.routing.approverUsername,
+        approverPosition: item?.routing.approverPosition,
 
     }))
     return mappedData

@@ -24,32 +24,31 @@ const Banner = ({ setShowModal }) => {
           "linear-gradient(0deg, rgba(91,228,155,0.2), rgba(0,167,111,0.2) 99%)",
       }}
     >
-      <Row className="gy-4 gy-md-0 w-100">
+      <Row className="gy-4  gy-md-0 w-100">
         <Col className="d-md-flex align-items-md-center col-md-8">
-          <div className="p-5">
-            <h2 className="fw-bold" style={{ color: "rgb(0,75,80)" }}>
-              Welcome back
-              <br />
-              {displayName()}
-            </h2>
+          <div className="px-5">
+            <h3 className="fw-bold" style={{ color: "rgb(0,75,80)" }}>
+              Welcome back  {displayName()}
+            </h3>
             <p className="my-3">
-              Enhance your skills with our training programs. Click
-              &apos;Request Training&apos; to start or &apos;View All
-              Requests&apos; to track your progress.
+               Click
+              &apos;Request Training&apos; to request new training or &apos;View All
+              Requests&apos; to track your training request progress.
             </p>
-            <ActionButton title="Request Training" onClick={setShowModal} />
+            <ActionButton title="Request Training" onClick={setShowModal} 
+              variant={{size: "btn-xl" }} />
             <ActionButton
               title="View All Request"
               actionLink="/KEP_TMS/RequestList"
-              variant={{ theme: "secondary" }}
+              variant={{ theme: "secondary",size: "btn-xl" }}
             />
           </div>
         </Col>
         <Col className="col-md-4 d-flex align-items-center justify-content-center">
-          <div className="m-xl-5 ">
+          <div className="m-xl-4 ">
             <img
               className="rounded img-fluid fit-cover"
-              style={{ minHeight: "150px", maxHeight: "200px" }}
+              style={{ minHeight: "100px", maxHeight: "150px" }}
               src={bannerimg}
             />
           </div>

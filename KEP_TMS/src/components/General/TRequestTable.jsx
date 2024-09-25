@@ -29,13 +29,8 @@ const TRequestTable = ({ filterType }) => {
   useEffect(() => {
     const getTrainingRequests = async () => {
       try {
-        var trainingRequests = await getAllTrainingRequests();
+        let trainingRequests = await getAllTrainingRequests();
 
-        if (filterType === "forapprovall") {
-          trainingRequests = await getTrainingRequestByApprover(
-            SessionGetUserId()
-          );
-        }
 
         const updatedRequests = await Promise.all(
           trainingRequests.data.map(async (request) => {
@@ -62,8 +57,15 @@ const TRequestTable = ({ filterType }) => {
               approverUsername: user.data.username,
               approverFullName: user.data.lastname + ", " + user.data.firstname,
               statusId: approver.statusId,
-              approverId: user.data.employeeBadge
+              approverId: user.data.employeeBadge,
+              approverPosition: user.data.position
             }
+            
+        // if (filterType === "forApproval") {
+        //   const res = 
+        //   trainingRequests = res
+        // //  console.log(trainingRequests)
+        // }
             return {
               ...request,
               trainingFacilitators: facilitatorsDetails, 
@@ -71,7 +73,7 @@ const TRequestTable = ({ filterType }) => {
             };
           })
         );
-
+console.log(updatedRequests)
         // Set training requests with updated facilitator information
         if (filterType === "UserRole" && (SessionGetRole() !== "Admin" && SessionGetRole() !== "SuperAdmin")) {
           const userRequests = updatedRequests.filter(
@@ -140,6 +142,16 @@ const TRequestTable = ({ filterType }) => {
       </div>
     );
   };
+  const approverColumnTemplate =(rowData)=> {
+    return(<>
+    <div >
+    <span> {StatusColor(rowData.status, "p-1", {fontSize: "0.55rem"}, false)}</span>
+      <span> {rowData.status == "ForApproval"? "For "+ rowData.approverPosition + " Approval": rowData.status}</span><br />
+      <b> - {rowData.approverFullName}</b>
+    </div>
+    </>)
+
+  }
 
   const datatable = useRef(null);
   const exportCSV = (selectionOnly) => {
@@ -223,18 +235,20 @@ const TRequestTable = ({ filterType }) => {
               }}
             ></Column>
             <Column
-              field="approverFullName"
-              header="Approver"
-              sortable
+              field="approverPosition"
+              header="Current Approver"
+              sortable 
+              style={{ minWidth: '12rem' }} 
+              body={approverColumnTemplate}
             ></Column>
-            <Column
+            {/* <Column
               field="status"
               header="Status"
               sortable
               body={(rowData) => {
                 return StatusColor(rowData.status);
               }}
-            ></Column>
+            ></Column> */}
             <Column field="id" header="Action" body={actionTemplate}></Column>
           </DataTable>
         ) : (

@@ -23,6 +23,7 @@ import { actionFailed, actionSuccessful, confirmAction } from "../services/sweet
 
 const ForApproval = () => {
   const [request, setRequest] = useState([]);
+  const [trigger, setTrigger] = useState(0);
   useEffect(() => {
     const getRequest = async () => {
       try {
@@ -41,7 +42,7 @@ const ForApproval = () => {
       }
     };
     getRequest();
-  }, []);
+  }, [trigger]);
 
   const dateStartTemplate = (rowData) => {
     return <div>{formatDateOnly(rowData.startDate)}</div>;
@@ -112,10 +113,10 @@ const ForApproval = () => {
       actionFailed("Error Approving Training Request", error);
     }
     setInterval(() => {
-      window.location.reload();
-    }, 2500);
+      setTrigger(trigger+1)
+    }, 2000);
   };
-
+console.log(trigger)
   const actionTemplate = (data) => {
     return (
       <div className="d-flex">
@@ -218,7 +219,7 @@ const ForApproval = () => {
           field="status"
           header="Current Status"
           body={(rowData) => {
-            return StatusColor(rowData.status);
+            return StatusColor(rowData.status,"",{},true);
           }}
         ></Column>
         <Column field="id" header="Action" body={actionTemplate}></Column>

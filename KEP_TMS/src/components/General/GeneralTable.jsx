@@ -37,9 +37,9 @@ console.log(dataType)
     return (
       <div className="flex flex-wrap gap-2 justify-content-between align-items-center">
         <h6 className="m-0">Recent Trainings</h6>
-        
+{/*         
         <Button type="button" icon="pi pi-file" rounded onClick={() => exportCSV(false)} data-pr-tooltip="CSV" />
-        <Button type="button" icon="pi pi-pencil" text onClick={handleExport} />
+        <Button type="button" icon="pi pi-pencil" text onClick={handleExport} /> */}
         <IconField iconPosition="left">
           <InputIcon className="pi pi-search" />
           <InputText

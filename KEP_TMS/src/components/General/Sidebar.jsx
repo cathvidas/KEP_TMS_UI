@@ -153,12 +153,12 @@ const Sidebars = () => {
                   icon={<FontAwesomeIcon icon={faPenToSquare} />}
                 />
 
-                <NavItem
+                {/* <NavItem
                   item={"/KEP_TMS//TrainingView"}
                   title="For Approval"
                   expanded={expanded}
                   icon={<FontAwesomeIcon icon={faCheckToSlot} />}
-                />
+                /> */}
                 <NavItem
                   item="/KEP_TMS/MasterList/Facilitators"
                   title="Master List"

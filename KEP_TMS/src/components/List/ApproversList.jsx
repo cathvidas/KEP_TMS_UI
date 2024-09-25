@@ -31,7 +31,7 @@ import { useState } from "react";
     </div>
   );
   const statusTemplate = (rowData) =>
-    StatusColor(getStatus(rowData.employeeBadge), "p-2 px-3 ");
+    StatusColor(getStatus(rowData.employeeBadge), "p-2 px-3 ", {}, true);
 
   return (
     <>

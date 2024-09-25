@@ -29,7 +29,8 @@ export default function CustomersDemo() {
           setLoading(true);
           const response = await uploadFile(formData);
           if (response.isSuccess) {
-            setUsers(response.data);
+            setUsers(response.data.users);
+            console.log(response)
             if(response.message === ""){
               setSuccess("Successfully retrieved users.")
             }else{

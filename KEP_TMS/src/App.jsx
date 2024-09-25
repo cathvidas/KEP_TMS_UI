@@ -11,6 +11,7 @@ import ForApproval from "./pages/ForApproval";
 import MasterList from "./pages/MasterList";
 import CertificatesPage from "./pages/CertificatesPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
+import ApproveRequestPage from "./pages/ApproveRequest";
 function App() {
   return (
     <>
@@ -26,6 +27,7 @@ function App() {
         <Route path="/KEP_TMS/MasterList/:category/:type?" element={<MasterList />} />
         <Route path="/KEP_TMS/CertificatesPage" element={<CertificatesPage />} />
         <Route path="/KEP_TMS/AnalyticsPage" element={<AnalyticsPage />} />
+        <Route path="/KEP_TMS/ApproveRequest/:id" element={<ApproveRequestPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

@@ -19,7 +19,7 @@ import { mapUserListAsync } from "../services/DataMapping/UserListData.jsx";
 const RequestView = () => {
   const [mappedData, setMappedData] = useState({});
   const [data, setData] = useState({});
-  const { id } = useParams();
+  const { id, page } = useParams();
   const [requestor, setRequestor] = useState({});
   const [approved, setApproved] = useState(false);
   useEffect(() => {
@@ -87,17 +87,24 @@ const RequestView = () => {
         <ExamContainer />
       </>,
     ];
-    const [currentContent, setCurrentContent] = useState(0);
-    const handleChangeContent = (i) => {
-      setCurrentContent(i);
-    };
+    const [currentContent, setCurrentContent] = useState();
+    useEffect(()=>{
+      if(page === "Modules"){
+        setCurrentContent(1)
+      }else if(page === "Exams"){
+        setCurrentContent(2)
+      }else{
+        setCurrentContent(0)
+      }
+    },[page])
+    console.log(id, page)
     return (
       <>
         <div className={`row g-0`}>
           {mappedData.status?.id === statusCode.APPROVED && (
             <RequestMenu
-              action={handleChangeContent}
               current={currentContent}
+              reqId={mappedData.id}
             />
           )}
           <div
