@@ -29,8 +29,9 @@ import { Button } from "primereact/button";
 import validateTrainingDetails from "../services/inputValidation/validateTrainingDetails";
 import { mapUserListAsync } from "../services/DataMapping/UserListData";
 import { formatDateTime } from "../utils/Formatting";
+import { TrainingType } from "../api/constants";
 export const FormContainer = () => {
-  const trainingType = useParams().type;
+const trainingType = useParams().type;
   const requestId = useParams().id;
   var details = {};
   var trainingSchedules = { trainingDates: [] };
@@ -42,6 +43,15 @@ export const FormContainer = () => {
     },
     [details]
   );
+
+  const getTrainingTypeId = ()=>{
+    if(trainingType === "Internal"){
+      return TrainingType.INTERNAL;
+    }
+    if(trainingType === "External"){
+      return TrainingType.EXTERNAL;
+    }
+  }
   const handleTrainingDates = useCallback((data) => {
     details.trainingDates = data;
     trainingSchedules.trainingDates = data;
@@ -64,7 +74,7 @@ export const FormContainer = () => {
           actionFailed("Error", response.message);
         }
       }else{
-        const updateData = {...formmatedData, requestorBadge: SessionGetEmployeeId()}
+        const updateData = {...formmatedData, requestorBadge: SessionGetEmployeeId(), trainingType: {id: getTrainingTypeId()}}
         console.log(updateData)
       const response = await insertTrainingRequest(updateData);
       console.group(response)

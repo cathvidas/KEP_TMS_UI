@@ -112,7 +112,7 @@ const ForApproval = () => {
       actionFailed("Error Approving Training Request", error);
     }
     setInterval(() => {
-    navigate(`/KEP_TMS/TrainingView/${data.id}`);
+      window.location.reload();
     }, 2500);
   };
 
@@ -139,7 +139,7 @@ const ForApproval = () => {
               confirmButtonText: "Approve",
               cancelButtonText: "No",
               actionFunction: handleApproveRequest,
-              param: { id: data.id, statusId: statusCode.APPROVED },
+              param: { id: data.id, statusId: statusCode.FORAPPROVAL },
             })
           }
           size="small"
