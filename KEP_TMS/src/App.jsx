@@ -1,7 +1,7 @@
 import Dashboard from "./pages/Dashboard";
 import "./App.css";
 import { Navigate, Route, Routes } from "react-router-dom";
-import TrainingPage from "./pages/TrainingPage";
+import TrainingRequestPage from "./pages/RequestPage";
 import { NotFoundPage } from "./pages/Error";
 import Login from "./pages/Login";
 import NewRequest from "./pages/Request";
@@ -12,6 +12,7 @@ import MasterList from "./pages/MasterList";
 import CertificatesPage from "./pages/CertificatesPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import ApproveRequestPage from "./pages/ApproveRequest";
+import TrainingPage from "./pages/TrainingPage";
 function App() {
   return (
     <>
@@ -19,7 +20,7 @@ function App() {
         <Route path="/" element={<Navigate to="/KEP_TMS" />} />
         <Route path="/KEP_TMS" element={<Login />} />
         <Route path="/KEP_TMS/Dashboard" element={<Dashboard />} />
-        <Route path="/KEP_TMS/TrainingRequest/:id/:page?" element={<TrainingPage />} />
+        <Route path="/KEP_TMS/TrainingRequest/:id/:page?" element={<TrainingRequestPage />} />
         <Route path="/KEP_TMS/Request/:type?/:id?" element={<NewRequest />} />
         <Route path="/KEP_TMS/RequestList" element={<RequestList />} />
         <Route path="/KEP_TMS/Trainings" element={<Trainings />} />
@@ -28,6 +29,7 @@ function App() {
         <Route path="/KEP_TMS/CertificatesPage" element={<CertificatesPage />} />
         <Route path="/KEP_TMS/AnalyticsPage" element={<AnalyticsPage />} />
         <Route path="/KEP_TMS/ApproveRequest/:id" element={<ApproveRequestPage />} />
+        <Route path="/KEP_TMS/Training/:id?" element={<TrainingPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

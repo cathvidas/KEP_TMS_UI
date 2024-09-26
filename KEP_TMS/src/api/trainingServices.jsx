@@ -107,6 +107,7 @@ export const getTrainingRequestApprovers = async (data) => {
 
 // SERVICES
 export const getRoutingActivity = async (transactId, activityIn) =>{
+    console.log(transactId,activityIn)
     return await fetchFromApi(`${API_ENDPOINTS.GET_ROUTING_ACTIVITY}?transactId=${transactId}&activityIn=${activityIn}`);
 }
 

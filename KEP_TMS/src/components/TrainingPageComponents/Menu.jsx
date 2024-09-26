@@ -6,6 +6,7 @@ import { Toast } from "primereact/toast";
 import proptype, { func } from "prop-types";
 import React, { useRef } from "react";
 import { useNavigate, useRouteError } from "react-router-dom";
+import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 
 export const RequestMenu = ({menuList, action, current, reqId}) => {
   const navigate = useNavigate()
@@ -31,21 +32,11 @@ export const RequestMenu = ({menuList, action, current, reqId}) => {
               }
           ]
       },
-      // {
-      //     label: 'Profile',
-      //     items: [
-      //         {
-      //             label: 'Settings',
-      //             icon: 'pi pi-cog'
-      //         },
-      //         {
-      //             label: 'Logout',
-      //             icon: 'pi pi-sign-out'
-      //         }
-      //     ]
-      // }
   ];
+const handlePublish = () => {
+  actionSuccessful("ahsd")
 
+}
   return (
     <div className="p-3 position-sticky top-0 col-1 d-none d-md-block " style={{height: "fit-content", minWidth: "200px"}}
     >
@@ -56,7 +47,13 @@ export const RequestMenu = ({menuList, action, current, reqId}) => {
       </div>
       <div className="">
         <Menu model={items} className="border-0" style={{background: "rgb(251, 253, 252)"}} />
-        <Button label="Publish" size="small" severity="info" className="rounded py-1 ms-3"/>
+        <Button label="Publish" size="small" severity="info" className="rounded py-1 ms-3" onClick={()=>confirmAction({
+          title: "Publish Training Request",
+          message: "Are you sure you want to publish this training request?",
+          confirmButtonText: "Publish",
+          onConfirm: handlePublish,
+          onReject: () => {},
+        })}/>
       </div>
     </div>
   );

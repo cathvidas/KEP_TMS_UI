@@ -1,15 +1,13 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import getSeverity from "../../services/statusStyle";
 import StatusColor from "../General/StatusColor";
-import { getRoutingActivity } from "../../api/trainingServices";
 import proptype from "prop-types";
 import getStatusById from "../../services/getStatusById";
 import { Button } from "primereact/button";
 import EmailForm from "../forms/ModalForms/EmailForm";
 import { useState } from "react";
-  const ApproverList = ({ datalist, routing }) => {
-    const [visible, setVisible] = useState(false);
+const ApproverList = ({ datalist, routing }) => {
+  const [visible, setVisible] = useState(false);
   const getStatus = (employeeBadge) => {
     const status = routing.filter((x) => x.assignedTo === employeeBadge);
     if (status) {
@@ -18,7 +16,6 @@ import { useState } from "react";
       return "Pending";
     }
   };
-  console.log(visible)
   const actionBodyTemplate = (rowData) => (
     <div>
       <Button
@@ -26,7 +23,7 @@ import { useState } from "react";
         icon="pi pi-envelope"
         text
         disabled={getStatus(rowData.employeeBadge) == "Pending" ? true : false}
-        onClick={()=>setVisible(true)}
+        onClick={() => setVisible(true)}
       />
     </div>
   );
@@ -43,7 +40,6 @@ import { useState } from "react";
         stripedRows
         dataKey={"id"}
         rows={10}
-        //  tableStyle={{ minWidth: "30rem" }}
       >
         <Column header="No" body={(_, { rowIndex }) => rowIndex + 1} />
         <Column field="fullname" header="Name"></Column>
@@ -52,9 +48,8 @@ import { useState } from "react";
         <Column header="Approved Date" body={"N/A"}></Column>
         <Column header="Status" body={statusTemplate}></Column>
         <Column header="Action" body={actionBodyTemplate}></Column>
-        {/* <Column header="Action" body={actionBodyComponent}></Column> */}
       </DataTable>
-      <EmailForm handleShow={visible} handleClose={()=>setVisible(false)} />
+      <EmailForm handleShow={visible} handleClose={() => setVisible(false)} />
     </>
   );
 };

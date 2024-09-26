@@ -90,7 +90,7 @@ console.log(selectedData)
         text: selectedData != null? "Are you sure you want to update this program?": "Are you sure you want to add this program?",
         confirmButtonText: "Yes",
         cancelButtonText: "No",
-        actionFunction: submitForm,
+        onConfirm: submitForm,
       });
     } else {
       setValidated(true);

@@ -88,7 +88,7 @@ console.log(dataType)
             text: `Are you sure you want to delete this ${dataType === "Categories" ? "Category?":"Program?"}`,
             confirmButtonText: "Yes, Delete",
             cancelButtonText: "Nope",
-            actionFunction: handleDelete,
+            onConfirm: handleDelete,
             param: rowData.id,
           })}
       />

@@ -215,7 +215,7 @@ const trainingType = useParams().type;
             iconPos="right"
             severity="success"
             onClick={() =>
-              confirmAction({ actionFunction: handleFormSubmission })
+              confirmAction({ onConfirm: handleFormSubmission })
             }
           />
         )}

@@ -77,29 +77,15 @@ const ExamSection = () => {
       </Button>
     </>
   );
+  const question = SampleExamQuestionaire();
   var list = [1, 2, 3, 4, 5, 6];
   return (
-    <div className="exam-container">   <SectionHeading
-    title="Modules"
-    icon={<i className="pi pi-question-circle"></i>}
-  />
-      {/* <SectionHeading
-        title="Exam"
-        icon={<FontAwesomeIcon icon={faQuestion} />}
+    <div className="exam-container">
+      {" "}
+      <SectionHeading
+        title="Questionnaire"
+        icon={<i className="pi pi-question-circle"></i>}
       />
-      <h5>Questionnaire</h5>
-      <ExamItem
-        itemNo={`Question ${index + 1}`}
-        question={currentQuestion.question}
-        options={randoMizeOptions(currentQuestion.options)}
-        answer={currentQuestion.answer}
-        onAnswer={handleAnswer}
-      />
-
-      <Button className="btn-sm mt-3" onClick={() => setShowModal(true)}>
-        Add Item
-      </Button> */}
-      
       <span className="d-flex mb-2 justify-content-between">
         <span className="text-muted">{list.length} modules</span>
 
@@ -113,31 +99,45 @@ const ExamSection = () => {
         />
       </span>
       <Row className="row-cols-lg-2 g-2 row-cols-1">
-        {list.map((x) => {
+        {question.map((x, index) => {
           return (
             <Col key={x}>
               <div className="shadow-sm overflow-hidden card">
                 <div className="theme-bg-light p-2 px-3 d-flex align-items-center justify-content-between">
-                <small className="text-muted fw-bold text-uppercase">
-                  Introduction
-                </small>
-                <ButtonGroup>
-                <Button type="button" text size="small" icon="pi pi-pencil" severity="secondary" className="p-0 rounded"/>
-                <Button type="button" text size="small" severity="danger" icon="pi pi-trash" className="p-0 rounded"/>
-                </ButtonGroup> </div>
-                <div className="px-4 ">
-                  <Button
-                    type="button"
-                    icon="pi pi-link"
-                    text
-                    label="FileName"
-                  />
-                  <Button
-                    type="button"
-                    icon="pi pi-link"
-                    text
-                    label="FileName"
-                  />
+                  <small className="text-muted fw-bold text-uppercase">
+                    Question #{index + 1}
+                  </small>
+                  <ButtonGroup>
+                    <Button
+                      type="button"
+                      text
+                      size="small"
+                      icon="pi pi-pencil"
+                      severity="secondary"
+                      className="p-0 rounded"
+                      style={{width: "1.5rem"}}
+                    />
+                    <Button
+                      type="button"
+                      text
+                      size="small"
+                      severity="danger"
+                      icon="pi pi-trash"
+                      className="p-0 rounded"
+                      style={{width: "1.5rem"}}
+                    />
+                  </ButtonGroup>{" "}
+                </div>
+                <div className="px-3 py-2">
+                  <p className="m-0">{x.question}</p>
+                  {x.options.map((x) => {
+                    return (
+                      <div key={index} className="form-check">
+                        <input className="form-check-input" type="checkbox" disabled />
+                        <label className="">{x}</label>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </Col>
@@ -149,12 +149,10 @@ const ExamSection = () => {
         placeholder="No Questions added yet, please click to add"
         action={() => setShowModal(true)}
       />
-
       <ModalContainer
         variantStyle={"primary"}
         state={showModal}
         close={() => setShowModal(false)}
-        // buttonAction={""}
         heading="Add Questionaire"
         id="userlistModal"
         buttonText="Add"
