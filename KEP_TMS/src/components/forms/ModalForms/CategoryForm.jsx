@@ -90,7 +90,7 @@ console.log(selectedData)
         text: selectedData != null? "Are you sure you want to update this category?": "Are you sure you want to add this category?",
         confirmButtonText: "Yes",
         cancelButtonText: "No",
-        actionFunction: submitForm,
+        onConfirm: submitForm,
       });
     } else {
       setValidated(true);

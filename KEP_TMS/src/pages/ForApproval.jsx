@@ -127,7 +127,7 @@ console.log(trigger)
           severity="success"
           className="rounded"
           text
-          onClick={() => navigate(`/KEP_TMS/trainingView/${data.id}`)}
+          onClick={() => navigate(`/KEP_TMS/TrainingRequest/${data.id}`)}
         />
         <Button
           type="button"
@@ -139,7 +139,7 @@ console.log(trigger)
               text: `Are you sure you want to approve this request?`,
               confirmButtonText: "Approve",
               cancelButtonText: "No",
-              actionFunction: handleApproveRequest,
+              onConfirm: handleApproveRequest,
               param: { id: data.id, statusId: statusCode.FORAPPROVAL },
             })
           }
@@ -162,7 +162,7 @@ console.log(trigger)
               confirmButtonText: "Disapproved",
               cancelButtonText: "No",
               confirmButtonColor: "#d33",
-              actionFunction: handleApproveRequest,
+              onConfirm: handleApproveRequest,
               param: { id: data.id, statusId: statusCode.DISAPPROVED },
             })
           }

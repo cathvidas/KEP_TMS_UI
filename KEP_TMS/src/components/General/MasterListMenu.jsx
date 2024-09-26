@@ -1,8 +1,8 @@
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu } from "primereact/menu";
-import proptype, { func } from "prop-types";
-import { useNavigate, useRouteError } from "react-router-dom";
+import proptype from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 const MasterListMenu = () => {
   const navigate = useNavigate();

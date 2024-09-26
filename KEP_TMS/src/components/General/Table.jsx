@@ -162,7 +162,7 @@ const RTable = ({ heading, rows, columns, userType }) => {
                     <Link
                       type="button"
                       className="btn theme-bg btn-sm"
-                      to={`/KEP_TMS//TrainingView/${item.id}`}
+                      to={`/KEP_TMS//TrainingRequest/${item.id}`}
                     >
                       View
                     </Link>

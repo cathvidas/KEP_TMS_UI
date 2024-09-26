@@ -13,7 +13,7 @@ export const confirmAction = (prop) => {
     reverseButtons: true
   }).then((result) => {
     if (result.isConfirmed) {
-        prop.actionFunction(prop?.param);
+        prop.onConfirm(prop?.param);
       return true;
     }else{
         return false;}

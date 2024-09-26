@@ -1,12 +1,10 @@
 import { Col, Row } from "react-bootstrap";
-import { DetailItem } from "./DetailItem";
+import DetailItem from "./DetailItem";
 import proptype from "prop-types";
 import { formatCurrency, formatDateOnly } from "../../utils/Formatting";
-import TScheduleOverview from "./TSchedOverview";
-import TrainingScheduleList from "../trainingRequestFormComponents/TrainingScheduleList";
 import { formatTotalTime } from "../../utils/FormatDateTime";
 import calculateTotalHours from "../../services/calculateTotalHours";
-const TDOverview = ({ data }) => {
+const DetailsOverview = ({ data }) => {
   console.log(data);
   return (
     <div>
@@ -85,8 +83,8 @@ const TDOverview = ({ data }) => {
     </div>
   );
 };
-TDOverview.propTypes = {
+DetailsOverview.propTypes = {
   id: proptype.number,
   data: proptype.object,
 };
-export default TDOverview;
+export default DetailsOverview;

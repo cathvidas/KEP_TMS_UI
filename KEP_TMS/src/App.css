@@ -48,15 +48,6 @@ table{
     filter: brightness(110%);
 }
 
-.formStep-active {
-    background-color: #633bbc !important;
-    color: white !important;
-}
-
-.formStep-success {
-    background-color: green;
-    color: white;
-}
 
 .theme-secondary {
     background-color: #ffffff75 !important;

@@ -1,2 +1,0 @@
-
-    "TmsTestDb": "Server=LAPTOP-LTEEC13L\\SQLEXPRESS;Database=kep_tms_testdb;User ID=LAPTOP-LTEEC13L\\Manuelito Vidas;Password=;Encrypt=True;Trusted_Connection=True;TrustServerCertificate=True"
