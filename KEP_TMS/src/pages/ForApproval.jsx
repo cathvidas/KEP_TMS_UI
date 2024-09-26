@@ -127,7 +127,7 @@ console.log(trigger)
           severity="success"
           className="rounded"
           text
-          onClick={() => navigate(`/KEP_TMS/trainingView/${data.id}`)}
+          onClick={() => navigate(`/KEP_TMS/TrainingRequest/${data.id}`)}
         />
         <Button
           type="button"

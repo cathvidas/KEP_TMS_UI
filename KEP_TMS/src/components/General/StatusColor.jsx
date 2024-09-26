@@ -1,4 +1,4 @@
-const StatusColor = (status, style) => {
+const StatusColor = (status, style,customStyle, showStatus) => {
   const className =
     status === "Submitted"
       ? "bg-info"
@@ -15,7 +15,7 @@ const StatusColor = (status, style) => {
       : "bg-default text-dark";
 
   return (<>
-  <span className={`badge ${style} ${className}`}>{status === "ForApproval" ? "For Approval" : status} </span>
+  <span className={`badge ${style} ${className}`} style={customStyle} >{showStatus ? status === "ForApproval" ? "For Approval" : status : ""} </span>
   </>);
 };
 export default StatusColor

@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { RequestMenu } from "../components/TrainingDetails/Menu.jsx";
-import { faFile, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import ExamContainer from "../components/Exam/ExamContainer.jsx";
+import { RequestMenu } from "../components/TrainingPageComponents/Menu.jsx";
+import { faFile } from "@fortawesome/free-solid-svg-icons";
 import Layout from "../components/General/Layout.jsx";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -10,13 +9,13 @@ import {
   getTrainingRequestById,
 } from "../api/trainingServices.jsx";
 import { getUserApi } from "../api/userApi.jsx";
-import ModulesContainer from "../components/TrainingDetails/ModulesContainer.jsx";
-import ExportDemo from "../components/TablePrime.jsx";
 import { ActivityType, statusCode } from "../api/constants.jsx";
-import TrainingRequestOverview from "../components/TrainingDetails/TrainingRequestOverview.jsx";
 import { mapUserListAsync } from "../services/DataMapping/UserListData.jsx";
+import OverviewSection from "./RequestPageSection/OverviewSection.jsx";
+import ModuleSection from "./RequestPageSection/ModuleSection.jsx";
+import ExamSection from "./RequestPageSection/ExamSection.jsx";
 
-const RequestView = () => {
+const TrainingPage = () => {
   const [mappedData, setMappedData] = useState({});
   const [data, setData] = useState({});
   const { id, page } = useParams();
@@ -76,15 +75,13 @@ const RequestView = () => {
   const Content = () => {
     const pages = [
       <>
-        <TrainingRequestOverview data={mappedData} requestor={requestor} />
+        <OverviewSection data={mappedData} requestor={requestor} />
       </>,
       <>
-        <ModulesContainer />
-        <ExportDemo />
+        <ModuleSection />
       </>,
       <>
-        {" "}
-        <ExamContainer />
+        <ExamSection/>
       </>,
     ];
     const [currentContent, setCurrentContent] = useState();
@@ -132,4 +129,4 @@ const RequestView = () => {
     </>
   );
 };
-export default RequestView;
+export default TrainingPage;

@@ -120,7 +120,7 @@ console.log(updatedRequests)
           severity="success"
           className="rounded"
           text
-          onClick={() => handleButtonClick(data.id, "TrainingView")}
+          onClick={() => handleButtonClick(data.id, "TrainingRequest")}
         />
         <Button
           type="button"

@@ -68,7 +68,7 @@ const trainingType = useParams().type;
             "training request successfully submitted, please wait for approval"
           );
           setTimeout(() => {
-            navigate("/KEP_TMS/TrainingView/" + formmatedData.id);
+            navigate("/KEP_TMS/TrainingRequest/" + formmatedData.id);
           }, 2500);
         } else {
           actionFailed("Error", response.message);
@@ -84,7 +84,7 @@ const trainingType = useParams().type;
           "training request successfully submitted, please wait for approval"
         );
         setTimeout(() => {
-          navigate("/KEP_TMS/TrainingView/" + response?.data?.id);
+          navigate("/KEP_TMS/TrainingRequest/" + response?.data?.id);
         }, 2500);
       } else {
         actionFailed("Error", response.message);

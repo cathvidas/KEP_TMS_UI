@@ -16,18 +16,18 @@ export const RequestMenu = ({menuList, action, current, reqId}) => {
               {
                   label: 'Overview',
                   icon: 'pi pi-info-circle',
-                  command: () => navigate(`/KEP_TMS/TrainingView/${reqId}`),
+                  command: () => navigate(`/KEP_TMS/TrainingRequest/${reqId}`),
                   
               },
               {
                   label: 'Modules',
                   icon: 'pi pi-folder',
-                  command: () => navigate(`/KEP_TMS/TrainingView/${reqId}/Modules`),
+                  command: () => navigate(`/KEP_TMS/TrainingRequest/${reqId}/Modules`),
               },
               {
                   label: 'Questionnaire',
                   icon: 'pi pi-list-check',
-                  command: () => navigate(`/KEP_TMS/TrainingView/${reqId}/Exams`),
+                  command: () => navigate(`/KEP_TMS/TrainingRequest/${reqId}/Exams`),
               }
           ]
       },

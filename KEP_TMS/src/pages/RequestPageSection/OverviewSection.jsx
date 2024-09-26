@@ -1,26 +1,25 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SectionHeading } from "../General/Section";
-import StatusColor from "../General/StatusColor";
-import TDOverview from "./TDetOverview";
 import {
   formatDateTime,
 } from "../../utils/Formatting";
-import { UserList } from "../List/UserList";
-import EmptyState from "../trainingRequestFormComponents/EmptyState";
-import ApproverList from "../List/ApproversList";
 import proptype from "prop-types";
 import {
   faCalendar,
   faInfoCircle,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
-import { statusCode } from "../../api/constants";
-import TrainingScheduleList from "../trainingRequestFormComponents/trainingScheduleList";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
+import { SectionHeading } from "../../components/General/Section";
+import ApproverList from "../../components/List/ApproversList";
+import StatusColor from "../../components/General/StatusColor";
+import DetailsOverview from "../../components/TrainingPageComponents/DetailsOverview";
+import TrainingScheduleList from "../../components/trainingRequestFormComponents/TrainingScheduleList";
+import { UserList } from "../../components/List/UserList";
+import EmptyState from "../../components/trainingRequestFormComponents/EmptyState";
 // import { useHistory } from "react-router-dom";
 
-const TrainingRequestOverview = ({ data, requestor }) => {
+const OverviewSection = ({ data, requestor }) => {
   const navigate = useNavigate();
   // const history = useHistory()
   return (
@@ -54,7 +53,7 @@ const TrainingRequestOverview = ({ data, requestor }) => {
           icon={<FontAwesomeIcon icon={faInfoCircle} />}
         />
       </div>
-      <TDOverview data={data} />
+      <DetailsOverview data={data} />
       <br />
       <SectionHeading
         title="Training Schedules"
@@ -108,8 +107,8 @@ const TrainingRequestOverview = ({ data, requestor }) => {
     </div>
   );
 };
-TrainingRequestOverview.propTypes = {
+OverviewSection.propTypes = {
   data: proptype.object,
   requestor: proptype.object,
 };
-export default TrainingRequestOverview;
+export default OverviewSection;

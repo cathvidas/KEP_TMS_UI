@@ -4,9 +4,7 @@ import proptype from "prop-types";
 import { UserList } from "../List/UserList";
 import EmptyState from "../trainingRequestFormComponents/EmptyState";
 import { SectionHeading } from "../General/Section";
-import { DetailItem, Heading } from "../TrainingDetails/DetailItem";
-import TDOverview from "../TrainingDetails/TDetOverview";
-import TScheduleOverview from "../TrainingDetails/TSchedOverview";
+import DetailsOverview from "../TrainingPageComponents/DetailsOverview";
 import TrainingScheduleList from "../trainingRequestFormComponents/TrainingScheduleList";
 
 const TrainingSummary = ({ formData, handleResponse }) => {
@@ -17,7 +15,7 @@ const TrainingSummary = ({ formData, handleResponse }) => {
         title="Training Summary"
         icon={<FontAwesomeIcon icon={faInfoCircle} />}
       />
-      <TDOverview data={formData} />
+      <DetailsOverview data={formData} />
       <br />
       <TrainingScheduleList schedules={formData.trainingDates} />
       <br />

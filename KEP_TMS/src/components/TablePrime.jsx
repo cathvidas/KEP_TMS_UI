@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { formatDateTime } from "../utils/Formatting";
+import { useEffect, useState } from "react";
 import { uploadFile } from "../api/trainingServices";
+import { formatDateTime } from "../utils/Formatting";
 import { Button } from "react-bootstrap";
 
-export default function CustomersDemo() {
+
+const ExamSection=()=> {
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -86,3 +87,4 @@ export default function CustomersDemo() {
     </div>
   );
 }
+export default ExamSection;

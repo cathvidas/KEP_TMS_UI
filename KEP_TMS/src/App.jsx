@@ -1,7 +1,7 @@
 import Dashboard from "./pages/Dashboard";
 import "./App.css";
 import { Navigate, Route, Routes } from "react-router-dom";
-import RequestView from "./pages//TrainingView";
+import TrainingPage from "./pages/TrainingPage";
 import { NotFoundPage } from "./pages/Error";
 import Login from "./pages/Login";
 import NewRequest from "./pages/Request";
@@ -19,7 +19,7 @@ function App() {
         <Route path="/" element={<Navigate to="/KEP_TMS" />} />
         <Route path="/KEP_TMS" element={<Login />} />
         <Route path="/KEP_TMS/Dashboard" element={<Dashboard />} />
-        <Route path="/KEP_TMS/TrainingView/:id/:page?" element={<RequestView />} />
+        <Route path="/KEP_TMS/TrainingRequest/:id/:page?" element={<TrainingPage />} />
         <Route path="/KEP_TMS/Request/:type?/:id?" element={<NewRequest />} />
         <Route path="/KEP_TMS/RequestList" element={<RequestList />} />
         <Route path="/KEP_TMS/Trainings" element={<Trainings />} />
