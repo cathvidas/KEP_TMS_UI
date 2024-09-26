@@ -23,6 +23,7 @@ import { mapTRequestToTableData } from "../../services/DataMapping/TrainingReque
 import StatusColor from "./StatusColor";
 import proptype from "prop-types";
 import { ActivityType } from "../../api/constants";
+import ExportBtn from "./ExportBtn";
 
 const TRequestTable = ({ filterType }) => {
   const [data, setData] = useState([]);
@@ -30,7 +31,6 @@ const TRequestTable = ({ filterType }) => {
     const getTrainingRequests = async () => {
       try {
         let trainingRequests = await getAllTrainingRequests();
-
 
         const updatedRequests = await Promise.all(
           trainingRequests.data.map(async (request) => {
@@ -51,31 +51,38 @@ const TRequestTable = ({ filterType }) => {
                 };
               })
             );
-            const approver = await getCurrentRoutingActivity(request.id, ActivityType.REQUEST)
-            const user = await getUserApi(approver.assignedTo)
-            const routing ={
+            const approver = await getCurrentRoutingActivity(
+              request.id,
+              ActivityType.REQUEST
+            );
+            const user = await getUserApi(approver.assignedTo);
+            const routing = {
               approverUsername: user.data.username,
               approverFullName: user.data.lastname + ", " + user.data.firstname,
               statusId: approver.statusId,
               approverId: user.data.employeeBadge,
-              approverPosition: user.data.position
-            }
-            
-        // if (filterType === "forApproval") {
-        //   const res = 
-        //   trainingRequests = res
-        // //  console.log(trainingRequests)
-        // }
+              approverPosition: user.data.position,
+            };
+
+            // if (filterType === "forApproval") {
+            //   const res =
+            //   trainingRequests = res
+            // //  console.log(trainingRequests)
+            // }
             return {
               ...request,
-              trainingFacilitators: facilitatorsDetails, 
-              routing: routing// Replace with detailed facilitator information
+              trainingFacilitators: facilitatorsDetails,
+              routing: routing, // Replace with detailed facilitator information
             };
           })
         );
-console.log(updatedRequests)
+        console.log(updatedRequests);
         // Set training requests with updated facilitator information
-        if (filterType === "UserRole" && (SessionGetRole() !== "Admin" && SessionGetRole() !== "SuperAdmin")) {
+        if (
+          filterType === "UserRole" &&
+          SessionGetRole() !== "Admin" &&
+          SessionGetRole() !== "SuperAdmin"
+        ) {
           const userRequests = updatedRequests.filter(
             (request) => request.requestorBadge === SessionGetEmployeeId()
           );
@@ -142,21 +149,27 @@ console.log(updatedRequests)
       </div>
     );
   };
-  const approverColumnTemplate =(rowData)=> {
-    return(<>
-    <div >
-    <span> {StatusColor(rowData.status, "p-1", {fontSize: "0.55rem"}, false)}</span>
-      <span> {rowData.status == "ForApproval"? "For "+ rowData.approverPosition + " Approval": rowData.status}</span><br />
-      <b> - {rowData.approverFullName}</b>
-    </div>
-    </>)
-
-  }
-
-  const datatable = useRef(null);
-  const exportCSV = (selectionOnly) => {
-    datatable.current.exportCSV({ selectionOnly });
+  const approverColumnTemplate = (rowData) => {
+    return (
+      <>
+        <div>
+          <span>
+            {" "}
+            {StatusColor(rowData.status, "p-1", { fontSize: "0.55rem" }, false)}
+          </span>
+          <span>
+            {" "}
+            {rowData.status == "ForApproval"
+              ? "For " + rowData.approverPosition + " Approval"
+              : rowData.status}
+          </span>
+          <br />
+          <b> - {rowData.approverFullName}</b>
+        </div>
+      </>
+    );
   };
+
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2  align-items-center">
@@ -169,12 +182,8 @@ console.log(updatedRequests)
             placeholder="Keyword Search"
           />
         </IconField>
-        <Button
-          icon="pi pi-download"
-          text
-          className="rounded"
-          onClick={() => exportCSV(false)}
-        />
+
+        <ExportBtn data={data} />
       </div>
     );
   };
@@ -184,7 +193,6 @@ console.log(updatedRequests)
       <div className="">
         {data?.length > 0 ? (
           <DataTable
-            ref={datatable}
             value={mapTRequestToTableData(data)}
             stripedRows
             size="small"
@@ -237,8 +245,8 @@ console.log(updatedRequests)
             <Column
               field="approverPosition"
               header="Current Approver"
-              sortable 
-              style={{ minWidth: '12rem' }} 
+              sortable
+              style={{ minWidth: "12rem" }}
               body={approverColumnTemplate}
             ></Column>
             {/* <Column
