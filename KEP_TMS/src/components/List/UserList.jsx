@@ -1,24 +1,17 @@
 import proptype from "prop-types";
-import UserIcon from "../General/UserIcon";
-import { Form } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faX } from "@fortawesome/free-solid-svg-icons";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Button } from "react-bootstrap";
-import { FilterMatchMode } from "primereact/api";
+import { Button } from "primereact/button";
 
 export const UserList = ({
-  leadingElement,
-  property,
   userlist,
   trailingElement,
-  col,
   handleParticipants,
   action,
   filterTemp,
   scrollHeight,
+  column
 }) => {
   // const [filters, setFilters] = useState(filterTemp);
   const [selected, setSelected] = useState(null);
@@ -36,13 +29,14 @@ export const UserList = ({
   }, [selected, handleParticipants]);
   const actionBodyTemplate = (data) => {
     return (
-      <span
-        className=" p-0 text-danger"
-        onClick={() => setRemoveEmpBadge(data.employeeBadge)}
-      >
-        {" "}
-        <FontAwesomeIcon icon={faTrash} />
-      </span>
+      <Button severity="danger" icon="pi pi-trash" text onClick={() => setRemoveEmpBadge(data.employeeBadge)}/>
+      // <span
+      //   className=" p-0 text-danger"
+      //   onClick={() => setRemoveEmpBadge(data.employeeBadge)}
+      // >
+      //   {" "}
+      //   <FontAwesomeIcon icon={faTrash} />
+      // </span>
     );
   };
   
@@ -81,6 +75,7 @@ export const UserList = ({
                 body={actionBodyTemplate}
               ></Column>
             )}
+            {column && column}
           </DataTable>
         </>
       )}

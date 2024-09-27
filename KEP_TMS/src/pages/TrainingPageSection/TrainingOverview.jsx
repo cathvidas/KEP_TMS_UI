@@ -68,7 +68,7 @@ const TrainingOverview = ({ data }) => {
           title="Approvers"
           icon={<FontAwesomeIcon icon={faUsers} />}
         />
-        <ApproverList datalist={data?.approvers} routing={data?.routing} />
+        <ApproverList datalist={data?.approvers ?? []} routing={data?.routing ?? []} />
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ const OverviewSection = ({ data }) => {
   const navigate = useNavigate();
   // const history = useHistory()
   return (
-    <div className="card theme-bg-light p-3 overflo-hidden w-100">
+    <div className="card p-3 overflo-hidden w-100">
       <div>
         <h3 className="text-center theme-color m-0">
           New {data?.trainingType?.name} Training Request

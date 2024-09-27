@@ -7,8 +7,6 @@ export const ModalContainer = ({
   close,
   heading,
   body,
-  buttonText,
-  buttonVariant,
   buttonAction,
   size
 }) => {

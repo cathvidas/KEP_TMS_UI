@@ -20,7 +20,7 @@ table{
     border-color: var(--theme-color) !important;
 }
 .theme-bg-light {
-    background-color: var(--theme-bg-light);
+    background-color: var(--theme-bg-light) !important;
 }
 .theme-bg-light2 {
     background-color: var(--theme-bg-light2);
@@ -165,7 +165,7 @@ ul.p-dropdown-items {
 
 
 a {
-    color: #fff;
+    color: unset !important;
     text-decoration: none !important;
 }
 
@@ -210,4 +210,17 @@ ul.p-list-menu {
 }
 .p-stepper-nav{
     margin-bottom: 0;
+}
+.custom-tab.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link ,
+.custom-tab .p-unselectable-text.p-tabview-selected.p-highlight{
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+}
+.custom-tab .p-tabview-nav{
+    margin-bottom: unset;
+}
+/* Form Field */
+.no-focus {
+    outline: none;
+    border-color: #ccc;
 }

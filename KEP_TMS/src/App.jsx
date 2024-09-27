@@ -29,7 +29,7 @@ function App() {
         <Route path="/KEP_TMS/CertificatesPage" element={<CertificatesPage />} />
         <Route path="/KEP_TMS/AnalyticsPage" element={<AnalyticsPage />} />
         <Route path="/KEP_TMS/ApproveRequest/:id" element={<ApproveRequestPage />} />
-        <Route path="/KEP_TMS/Training/:id?" element={<TrainingPage />} />
+        <Route path="/KEP_TMS/Training/:id/:page?" element={<TrainingPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

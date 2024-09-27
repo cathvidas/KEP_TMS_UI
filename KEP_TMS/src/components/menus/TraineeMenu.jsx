@@ -1,13 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "primereact/button";
-import { Menu } from "primereact/menu";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MenuContainer from "./MenuContainer";
-
-const TraineeMenu = () =>{ 
-    const param = useParams();
-    const reqId = parseInt(param.int)
-    console.log(reqId)
+import proptype from "prop-types"
+const TraineeMenu = ({reqId}) =>{ 
     const navigate = useNavigate()
     const items = [
         {
@@ -32,12 +26,12 @@ const TraineeMenu = () =>{
                 {
                     label: 'Participants',
                     icon: 'pi pi-users',
-                    command: () => navigate(`/KEP_TMS/Training/${reqId}/Exams`),
+                    command: () => navigate(`/KEP_TMS/Training/${reqId}/Participants`),
                 },
                 {
                     label: 'Reports',
                     icon: 'pi pi-address-book',
-                    command: () => navigate(`/KEP_TMS/Training/${reqId}/Exams`),
+                    command: () => navigate(`/KEP_TMS/Training/${reqId}/Report`),
                 },
                 {
                     label: 'Summary',
@@ -47,7 +41,7 @@ const TraineeMenu = () =>{
                 {
                     label: 'Pendings',
                     icon: 'pi pi-bookmark',
-                    command: () => navigate(`/KEP_TMS/Training/${reqId}/Exams`),
+                    command: () => navigate(`/KEP_TMS/Training/${reqId}/Pendings`),
                 }
             ]
         },
@@ -57,5 +51,8 @@ const TraineeMenu = () =>{
         <MenuContainer itemList={items}/>
         </>
         )
+}
+TraineeMenu.propTypes = {
+    reqId: proptype.number.isRequired
 }
 export default TraineeMenu;

@@ -9,6 +9,7 @@ import OverviewSection from "./RequestPageSection/OverviewSection.jsx";
 import ModuleSection from "./RequestPageSection/ModuleSection.jsx";
 import ExamSection from "./RequestPageSection/ExamSection.jsx";
 import trainingRequestHook from "../hooks/trainingRequestHook.jsx";
+import TraineeReportView from "./TrainingPageSection/TraineeReportView.jsx";
 
 const TrainingRequestPage = () => {
   const { id, page } = useParams();
@@ -28,6 +29,9 @@ const TrainingRequestPage = () => {
       <>
         <ExamSection />
       </>,
+      <>
+      <TraineeReportView/>
+      </>
     ];
     const [currentContent, setCurrentContent] = useState();
     useEffect(() => {
@@ -35,7 +39,10 @@ const TrainingRequestPage = () => {
         setCurrentContent(1);
       } else if (page === "Exams") {
         setCurrentContent(2);
-      } else {
+      } else if (page === "Report"){
+        setCurrentContent(3)
+      }
+       else {
         setCurrentContent(0);
       }
     }, [page]);
