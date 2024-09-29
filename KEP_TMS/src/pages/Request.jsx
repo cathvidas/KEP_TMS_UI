@@ -8,31 +8,10 @@ import Layout from "../components/General/Layout";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 
 const NewRequest = () => {
-  const action = () => (
-    <>
-      <ActionButton
-        title="Request Training"
-        toggle={{ Item: "modal", Target: "#TRtype" }}
-        variant={{ size: "btn-sm" }}
-      />
-      <ActionButton
-        title="View All Request"
-        actionLink="/KEP_TMS/Request"
-        variant={{ theme: "secondary", size: "btn-sm" }}
-      />
-    </>
-  );
   const Content = () => {
     return (
       <>
         <div className="w-100 p-3">
-          {/* <SectionBanner
-            title="Training Requests || Add Request"
-            subtitle={
-              "To add a new training request, fill out the form with the course name, desired date, and any special requirements. Click 'Submit' to finalize your request."
-            }
-            //  ActionComponents={action}
-          /> */}
           <TrainingRequestForm />
         </div>
       </>

@@ -16,18 +16,14 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-console.log(formData)
   const onGlobalFilterChange = (value) => {
-    
-    if(filters.global.value !== value && value !== undefined){
-      setFilters((prev)=>({
-        ...prev, global:{...prev.global, value}
-
-      }))
+    if (filters.global.value !== value && value !== undefined) {
+      setFilters((prev) => ({
+        ...prev,
+        global: { ...prev.global, value },
+      }));
     }
   };
-
-
 
   const [data, setFormData] = useState(formData);
   const [showModal, setShowModal] = useState(false);
@@ -37,12 +33,11 @@ console.log(formData)
     facilitators: [],
     provider: "",
   });
-const [error, setError] = useState({});
-useEffect(()=>{
+  const [error, setError] = useState({});
+  useEffect(() => {
     setError(errors);
-}, [errors])
+  }, [errors]);
 
-  
   const handleClose = () => setShowModal(false);
   const [list, setList] = useState({
     users: [],
@@ -55,7 +50,7 @@ useEffect(()=>{
     providers: [],
   });
   const [currentSelected, setCurrentSelected] = useState("");
-  
+
   const handleShow = (type) => {
     setCurrentSelected(type);
     setShowModal(true);
@@ -67,12 +62,21 @@ useEffect(()=>{
   useEffect(() => {
     const fetchDatas = async () => {
       const user = await getAllUsersApi();
-      const activeUsers = user
-        .filter((user) => user.statusName === "Active")
+      const activeUsers = user.filter((user) => user.statusName === "Active");
 
-      const availableUsers = activeUsers.filter(
-        (x) => !data.trainingParticipants?.some((y) => x.employeeBadge === y.employeeBadge)
-      ).filter((x)=> !data.trainingFacilitators?.some((y)=> x.employeeBadge === y.employeeBadge));
+      const availableUsers = activeUsers
+        .filter(
+          (x) =>
+            !data.trainingParticipants?.some(
+              (y) => x.employeeBadge === y.employeeBadge
+            )
+        )
+        .filter(
+          (x) =>
+            !data.trainingFacilitators?.some(
+              (y) => x.employeeBadge === y.employeeBadge
+            )
+        );
 
       const departments = await getAllDepartments();
       const providers = await getAllTrainingProviders();
@@ -114,51 +118,55 @@ useEffect(()=>{
   }, [filter, list.users]);
 
   const handleParticipants = (data) => {
-    console.log(data)
-    if(participants.trainees!== data && currentSelected === "trainees"){
-      setParticipants((prev)=>({...prev, trainees: data }));
-    }else if(participants.facilitators!== data && currentSelected === "facilitators"){
-      setParticipants((prev)=>({...prev, facilitators: data }));
+    if (participants.trainees !== data && currentSelected === "trainees") {
+      setParticipants((prev) => ({ ...prev, trainees: data }));
+    } else if (
+      participants.facilitators !== data &&
+      currentSelected === "facilitators"
+    ) {
+      setParticipants((prev) => ({ ...prev, facilitators: data }));
     }
-    //console.log(participants)
   };
 
   const checkUser = () => {
-    console.log(currentSelected)
-    if(currentSelected === "trainees"){
-    if (participants?.trainees != null) {
-      const newParticipants = participants.trainees.filter(
-        (x) => !data?.trainingParticipants?.some((y) => x.employeeBadge === y.employeeBadge)
-      );
+    if (currentSelected === "trainees") {
+      if (participants?.trainees != null) {
+        const newParticipants = participants.trainees.filter(
+          (x) =>
+            !data?.trainingParticipants?.some(
+              (y) => x.employeeBadge === y.employeeBadge
+            )
+        );
 
-      setFormData({
-        ...data,
-        trainingParticipants: [
-          ...data.trainingParticipants,
-          ...newParticipants,
-        ],
-      });
-    }}
-    else if(currentSelected === "facilitators"){
-      
-    if (participants?.facilitators != null) {
-      const newParticipants = participants.facilitators.filter(
-        (x) => !data?.trainingFacilitators?.some((y) => x.employeeBadge === y.employeeBadge)
-      );
+        setFormData({
+          ...data,
+          trainingParticipants: [
+            ...data.trainingParticipants,
+            ...newParticipants,
+          ],
+        });
+      }
+    } else if (currentSelected === "facilitators") {
+      if (participants?.facilitators != null) {
+        const newParticipants = participants.facilitators.filter(
+          (x) =>
+            !data?.trainingFacilitators?.some(
+              (y) => x.employeeBadge === y.employeeBadge
+            )
+        );
 
-      setFormData({
-        ...data,
-        trainingFacilitators: [
-          ...data.trainingFacilitators,
-          ...newParticipants,
-        ],
-      });
-    }}
-    
+        setFormData({
+          ...data,
+          trainingFacilitators: [
+            ...data.trainingFacilitators,
+            ...newParticipants,
+          ],
+        });
+      }
+    }
   };
 
   const removeParticipant = (type, employeeBadge) => {
-    console.log(type, employeeBadge)
     setFormData({
       ...data,
       [type]: data[type].filter((obj) => obj.employeeBadge !== employeeBadge),
@@ -167,14 +175,21 @@ useEffect(()=>{
   const bodyContent = (
     <>
       {" "}
-      <SearchBar handleOnInput={onGlobalFilterChange}  options={list.departments} />
+      <SearchBar
+        handleOnInput={onGlobalFilterChange}
+        options={list.departments}
+      />
       <div
         className="overflow-auto max-vh-100 mt-2"
         style={{ maxHeight: "calc(100vh - 275px)" }}
       >
         <UserList
           leadingElement={true}
-          userlist={currentSelected === "facilitators" ? filteredList.users.filter((x)=> x.roleName === "Facilitator") :filteredList.users}
+          userlist={
+            currentSelected === "facilitators"
+              ? filteredList.users.filter((x) => x.roleName === "Facilitator")
+              : filteredList.users
+          }
           trailingElement={{ input: true }}
           property={"name"}
           handleParticipants={handleParticipants}
@@ -196,7 +211,7 @@ useEffect(()=>{
             <span className="text-muted">
               {data.trainingParticipants?.length} participants
             </span>
-            
+
             <ActionButton
               variant={{ size: "btn-sm" }}
               title="Add Participant"
@@ -216,7 +231,7 @@ useEffect(()=>{
       ) : (
         <EmptyState
           placeholder="No participants added yet, please click to add."
-          action={()=>handleShow("trainees")}
+          action={() => handleShow("trainees")}
         />
       )}
 
@@ -225,7 +240,9 @@ useEffect(()=>{
         title="Training faciltator"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
-      {error?.facilitators && <small className="text-red">{error.facilitators}</small>}
+      {error?.facilitators && (
+        <small className="text-red">{error.facilitators}</small>
+      )}
       {data.trainingFacilitators.length > 0 ? (
         <>
           <span className="d-flex mb-2 justify-content-between">
@@ -235,7 +252,7 @@ useEffect(()=>{
             <ActionButton
               variant={{ size: "btn-sm" }}
               title="Add Participant"
-              onClick={()=>handleShow("facilitators")}
+              onClick={() => handleShow("facilitators")}
             />
           </span>
           <UserList
@@ -250,7 +267,7 @@ useEffect(()=>{
       ) : (
         <EmptyState
           placeholder="Click to add facilitator."
-          action={()=>handleShow("facilitators")}
+          action={() => handleShow("facilitators")}
         />
       )}
 
@@ -278,9 +295,6 @@ useEffect(()=>{
 TrainingParticipantsForm.propTypes = {
   formData: proptype.object,
   handleResponse: proptype.func,
-  errors: proptype.oneOfType([proptype.object, proptype.string])
-
-
+  errors: proptype.oneOfType([proptype.object, proptype.string]),
 };
 export default TrainingParticipantsForm;
-

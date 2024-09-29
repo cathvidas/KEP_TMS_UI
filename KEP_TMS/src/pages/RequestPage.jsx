@@ -24,7 +24,7 @@ const TrainingRequestPage = () => {
         <OverviewSection data={data}/>
       </>,
       <>
-        <ModuleSection />
+        <ModuleSection data={data}/>
       </>,
       <>
         <ExamSection />

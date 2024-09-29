@@ -54,7 +54,7 @@ const TrainingCostForm = ({formData, handleResponse}) => {
   }, [cost, totalCost])
 
   useEffect(()=>{
-if(formData.discountedRate > 0){
+if(formData.discountedRate > 0 || formData.cutOffDate != null){
   setWithEarlyRate(true)
 }else{
   setWithEarlyRate(false)

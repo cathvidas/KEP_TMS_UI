@@ -75,9 +75,7 @@ const trainingType = useParams().type;
         }
       }else{
         const updateData = {...formmatedData, requestorBadge: SessionGetEmployeeId(), trainingType: {id: getTrainingTypeId()}}
-        console.log(updateData)
       const response = await insertTrainingRequest(updateData);
-      console.group(response)
       if (response.isSuccess === true) {
         actionSuccessful(
           "Success",
@@ -170,6 +168,7 @@ const trainingType = useParams().type;
       const getRequest = async () => {
         try {
           const res = await getTrainingRequestById(requestId);
+          console.log(res)
          const participants = await mapUserListAsync(res?.data?.trainingParticipants, "employeeBadge")
          const facilitators = await mapUserListAsync(res?.data.trainingFacilitators, "facilitatorBadge")
           if (res.data != null) {

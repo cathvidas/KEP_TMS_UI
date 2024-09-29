@@ -58,4 +58,11 @@ export const API_ENDPOINTS = {
   //FILE UPLOADS
   UPLOAD_FILE: "/Users/getUploadedParticipants",
   EXPORT_DATA: "/Services/ExportData",
+
+  //Training Modules
+  GET_TRAINING_MODULES: "/TrainingModule/GetAllTrainingModules",
+  GET_TRAINING_MODULE_BY_ID: "/TrainingModule/GetTrainingModuleById",
+  CREATE_TRAINING_MODULE: "/TrainingModule/CreateTrainingModule",
+  DELETE_TRAINING_MODULE: "/TrainingModule/DeleteTrainingModule",
+  UPDATE_TRAINING_MODULE: "/TrainingModule/UpdateTrainingModule",
 };

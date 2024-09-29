@@ -32,7 +32,7 @@ console.log(formData)
         trainingFee: formData.trainingFee,
         discountedRate: formData.discountedRate,
         // cutOffDate: new Date(),
-        trainingDates: formData.trainingDates,
+        trainingDates: formData?.trainingDates?.map(({startTime, endTime, date})=>({startTime, endTime, date})),
         trainingFacilitators:formData.trainingFacilitators ? formData.trainingFacilitators.map(({employeeBadge}) =>({
             FacilitorBadge:employeeBadge
         })):[],

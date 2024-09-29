@@ -1,5 +1,5 @@
 import proptype from "prop-types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
@@ -16,35 +16,32 @@ export const UserList = ({
   // const [filters, setFilters] = useState(filterTemp);
   const [selected, setSelected] = useState(null);
   const [removeEmpBadge, setRemoveEmpBadge] = useState(null);
+  const [filteredData, setFilteredData] = useState(null);
   useEffect(() => {
     if (action != null) {
       action(removeEmpBadge);
     }
   }, [removeEmpBadge]);
 
+  useEffect(()=>{
+    setSelected([]);
+  }, [filterTemp])
   useEffect(() => {
     if (handleParticipants) {
-      handleParticipants(selected);
+      handleParticipants(selected)
     }
   }, [selected, handleParticipants]);
   const actionBodyTemplate = (data) => {
     return (
-      <Button severity="danger" icon="pi pi-trash" text onClick={() => setRemoveEmpBadge(data.employeeBadge)}/>
-      // <span
-      //   className=" p-0 text-danger"
-      //   onClick={() => setRemoveEmpBadge(data.employeeBadge)}
-      // >
-      //   {" "}
-      //   <FontAwesomeIcon icon={faTrash} />
-      // </span>
+      <Button type="button" severity="danger" icon="pi pi-trash" text onClick={() => setRemoveEmpBadge(data.employeeBadge)}/>
     );
   };
-  
+  // console.log(selected)
   return (
     <>
       {userlist && (
         <>
-          <DataTable
+          <DataTable 
             value={userlist}
             size="small"
             stripedRows
@@ -54,7 +51,7 @@ export const UserList = ({
             onSelectionChange={(e) => setSelected(e.value)}
             filters={filterTemp}
             scrollable showGridlines 
-            scrollHeight={scrollHeight ?? "60vh"}
+            scrollHeight={scrollHeight ?? "60vh"} 
           >
             {trailingElement?.input === true && (
               <Column

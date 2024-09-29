@@ -17,6 +17,7 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
   const [trainingSchedules, setTrainingSchedules] = useState(
     formData.trainingDates
   );
+  
   const [schedData, setSchedData] = useState(TrainingDates);
   const [error, setError] = useState();
   useEffect(() => {
@@ -26,6 +27,10 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
   useEffect(() => {
     handleResponse(trainingSchedules);
   }, [trainingSchedules]);
+
+  useEffect(() => {
+    setTrainingSchedules(formData.trainingDates);
+  }, [formData.trainingDates]);
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
@@ -75,6 +80,7 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
     setTrainingSchedules(updatedSchedules);
   };
 
+  console.log(trainingSchedules)
   return (
     <>
       <Row className="mt-2">

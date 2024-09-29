@@ -200,7 +200,9 @@ ul.p-list-menu {
 .p-datatable {
     user-select: text;
 }
-
+.p-datatable-thead{
+    z-index: 0 !important;
+}
 .text-red {
     color: red;
 }

@@ -8,23 +8,33 @@ import { ModalContainer } from "../../components/Modal/ModalContainer";
 import { Col, Row } from "react-bootstrap";
 import { Button } from "primereact/button";
 import { ButtonGroup } from 'primereact/buttongroup';
+import UploadModuleForm from "../../components/forms/UploadModuleForm";
+import proptype from "prop-types";
 
-const ModuleSection = () => {
+const ModuleSection = ({data}) => {
   const [showModal, setShowModal] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [showForm, setShowForm] = useState(false);
   const ModalContent = (
     <>
-      <FormFieldItem
-        label={"Title"}
-        FieldComponent={
-          <input type="text" className="form-control" placeholder="Title" />
-        }
-      />
+    <FormFieldItem
+      label={"Title"}
+      FieldComponent={
+        <input type="text" className="form-control" placeholder="Title" />
+      }
+    />
+    <FormFieldItem
+      label={"Content"}
+      FieldComponent={
+        <textarea type="text" className="form-control" placeholder="Description or Content"  rows={3}></textarea>
+      }
+    />
       <br />
       <FormFieldItem
         label={"Attachment"}
         FieldComponent={
           <>
-            <input type="file" className="form-control" />
+            <input type="file" className="form-control" multiple />
           </>
         }
       />
@@ -86,18 +96,12 @@ const ModuleSection = () => {
         placeholder="No modules added yet, please click to add"
         action={() => setShowModal(true)}
       />
-
-      <ModalContainer
-        variantStyle={"primary"}
-        state={showModal}
-        close={() => setShowModal(false)}
-        // buttonAction={""}
-        heading="Add module"
-        id="userlistModal"
-        buttonText="Add"
-        body={ModalContent}
-      />
+  <UploadModuleForm showForm={showForm} reqId={data?.id}/>
     </>
   );
+};
+
+ModuleSection.propTypes = {
+  data: proptype.object,
 };
 export default ModuleSection;

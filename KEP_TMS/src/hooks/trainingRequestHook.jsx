@@ -14,6 +14,7 @@ const trainingRequestHook = {
             try {
               setLoading(true);
               const response = await trainingRequestService.getTrainingRequest(id);
+              console.log(response)
               const participants = await userMapping.mapUserIdList(
                 response.trainingParticipants,
                 "employeeBadge"
