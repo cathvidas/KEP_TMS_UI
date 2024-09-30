@@ -1,4 +1,4 @@
-import {  Modal } from "react-bootstrap";
+import {  Modal, ModalFooter } from "react-bootstrap";
 import proptype from "prop-types";
 import { Button } from 'primereact/button';
 export const ModalContainer = ({
@@ -8,7 +8,8 @@ export const ModalContainer = ({
   heading,
   body,
   buttonAction,
-  size
+  size,
+  modalFooter
 }) => {
   const background = variantStyle
     ? variantStyle == "primary"

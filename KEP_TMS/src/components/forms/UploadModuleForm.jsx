@@ -31,7 +31,7 @@ const UploadModuleForm = ({ showForm, reqId }) => {
       data.append("RequestId", reqId)
       data.append('Name', details.Name); // Append other fields
       data.append('Description', details.Description);
-      handleResponseAsync(moduleService.createModule(data))
+      handleResponseAsync(()=>moduleService.createModule(data))
     }
     
   };

@@ -27,7 +27,7 @@ const TrainingRequestPage = () => {
         <ModuleSection data={data}/>
       </>,
       <>
-        <ExamSection />
+        <ExamSection data={data}/>
       </>,
       <>
       <TraineeReportView/>
