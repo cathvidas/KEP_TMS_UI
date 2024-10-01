@@ -3,10 +3,10 @@ import { FormFieldItem } from "../trainingRequestFormComponents/FormElements";
 import { Button } from "primereact/button";
 import { useState } from "react";
 import proptype from "prop-types";
-import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
+import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import moduleService from "../../services/moduleService";
-const UploadModuleForm = ({ showForm, reqId }) => {
+const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
   const [files, setFiles] = useState([]);
   const [details, setDetails] = useState({ Name: "", Description: "" });
   const [errors, setErrors] = useState({});
@@ -32,6 +32,7 @@ const UploadModuleForm = ({ showForm, reqId }) => {
       data.append('Name', details.Name); // Append other fields
       data.append('Description', details.Description);
       handleResponseAsync(()=>moduleService.createModule(data))
+      handleRefresh();
     }
     
   };
@@ -56,7 +57,7 @@ const UploadModuleForm = ({ showForm, reqId }) => {
       <Card>
         <Card.Header className="d-flex align-items-center justify-content-between">
           <h5 className="m-0">Upload Module</h5>
-          <Button icon="pi pi-times" type="button" text />
+          <Button icon="pi pi-times" type="button" text onClick={setShowForm}/>
         </Card.Header>
         <CardBody>
           <Form>
@@ -139,7 +140,10 @@ const UploadModuleForm = ({ showForm, reqId }) => {
               <Button
                 variant="primary"
                 className="rounded"
+                size="small"
+                icon="pi pi-save"
                 type="button"
+                label="Save"
                 onClick={() =>
                   confirmAction({
                     title: "Upload Module",
@@ -149,9 +153,7 @@ const UploadModuleForm = ({ showForm, reqId }) => {
                     // onCancel: () => setFiles([])
                   })
                 }
-              >
-                Save
-              </Button>
+                />
             </div>
           </Form>
         </CardBody>
@@ -162,6 +164,7 @@ const UploadModuleForm = ({ showForm, reqId }) => {
 
 UploadModuleForm.propTypes = {
   reqId: proptype.number.isRequired,
-  showForm: proptype.boolean,
+  setShowForm: proptype.func,
+  handleRefresh: proptype.func,
 };
 export default UploadModuleForm;

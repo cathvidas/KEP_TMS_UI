@@ -62,7 +62,16 @@ export const API_ENDPOINTS = {
   //Training Modules
   GET_TRAINING_MODULES: "/TrainingModule/GetAllTrainingModules",
   GET_TRAINING_MODULE_BY_ID: "/TrainingModule/GetTrainingModuleById",
+  GET_MODULES_BY_REQUEST_ID: "/TrainingModule/GetTrainingModulesByRequestId",
   CREATE_TRAINING_MODULE: "/TrainingModule/CreateTrainingModule",
   DELETE_TRAINING_MODULE: "/TrainingModule/DeleteTrainingModule",
   UPDATE_TRAINING_MODULE: "/TrainingModule/UpdateTrainingModule",
+
+  //Training Exam
+  GET_TRAINING_EXAMS: "/Exam/GetAllExams",
+  GET_TRAINING_EXAM_BY_ID: "/Exam/GetExamById",
+  GET_EXAM_BY_REQUEST_ID: "/Exam/GetExamByRequestId",
+  CREATE_TRAINING_EXAM: "/Exam/CreateExam",
+  DELETE_TRAINING_EXAM: "/Exam/DeleteTrainingExam",
+  UPDATE_EXAM_QUESTION: "/Exam/UpdateExamQuestion",
 };
