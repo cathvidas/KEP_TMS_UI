@@ -14,7 +14,7 @@ import {
   getTrainingCategories,
   getTrainingPrograms,
 } from "../api/trainingServices";
-import { extractTrainingRequests } from "../services/ExtractData";
+import { extractTrainingRequests } from "../mappings/ExtractTrainingRequestData";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
 import CategoryForm from "../components/forms/ModalForms/CategoryForm";

@@ -1,5 +1,4 @@
 import { Dropdown } from "react-bootstrap";
-import { GetDepartments } from "../../services/getApis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSearch,
@@ -7,7 +6,6 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons";
 import proptype from 'prop-types'
-import Select from "react-select";
 import { useEffect, useState } from "react";
 const SearchBar = ({handleOnInput, options}) => {
   const [filter, setFilter] = useState({value: "", department: ""});

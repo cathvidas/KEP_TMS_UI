@@ -8,7 +8,7 @@ import { DataTable } from "primereact/datatable";
 import React, { useEffect, useState } from "react";
 import { Column } from "primereact/column";
 import { formatDateOnly } from "../../utils/Formatting";
-import calculateTotalHours from "../../services/calculateTotalHours";
+import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
 
 const TrainingScheduleList = ({schedules, onDelete}) => {
   const [schedData, setSchedData] = useState([]);

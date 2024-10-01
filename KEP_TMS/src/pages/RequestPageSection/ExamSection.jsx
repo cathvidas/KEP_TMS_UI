@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { SampleExamQuestionaire } from "../../services/getApis";
 import { FormFieldItem } from "../../components/trainingRequestFormComponents/FormElements";
 import { Col, Modal, Row } from "react-bootstrap";
 import { SectionHeading } from "../../components/General/Section";
@@ -9,16 +8,11 @@ import { Button } from "primereact/button";
 import TrainingExamForm from "../../components/forms/TrainingExamForm";
 import proptype from "prop-types";
 import { SessionGetEmployeeId } from "../../services/sessions";
-import { actionSuccessful, confirmAction } from "../../services/sweetalert";
+import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import examService from "../../services/examService";
 import examHook from "../../hooks/examHook";
 import SkeletonList from "../../components/Skeleton/SkeletonList"
-import { fas } from "@fortawesome/free-solid-svg-icons";
-const RandomizeExam = () => {
-  const exam = SampleExamQuestionaire().sort(() => Math.random() - 0.5);
-  return exam;
-};
 
 const ExamSection = ({ data }) => {
   const [examData, setExamData] = useState({});

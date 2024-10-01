@@ -30,7 +30,7 @@ const Dashboard = () => {
         </>: <>
         <Banner  setShowModal={()=>setShowModal(true)} />
           
-        <Row className="mt-4">
+        <Row className="mt-4 g-2 ">
             {values.map((item, index) => (
               <Col  key={index}>
                 <Card className="shadow-sm p-3 btn" style={{background: item.color1 + "1c", borderColor: item.color1}} onClick={()=>navigate(`/KEP_TMS/RequestList/${item?.status}`)}>

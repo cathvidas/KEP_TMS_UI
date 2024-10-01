@@ -2,10 +2,13 @@ import { Col, Row } from "react-bootstrap";
 import { ActionButton } from "./Button";
 import bannerimg from "../../img/banner.png";
 import proptypes from "prop-types";
+import { Button } from "primereact/button";
+import { useNavigate } from "react-router-dom";
 
 const Banner = ({ setShowModal }) => {
   const username = sessionStorage.getItem("username");
   const fullname = sessionStorage.getItem("fullname");
+  const navigate = useNavigate();
 
   const displayName = () => {
     if (username) {
@@ -18,7 +21,7 @@ const Banner = ({ setShowModal }) => {
 
   return (
     <div
-      className="rounded-3 mb-3 card shadow-sm"
+      className="rounded-3 py-3 mb-3 card shadow-sm"
       style={{
         background:
           "linear-gradient(0deg, rgba(91,228,155,0.2), rgba(0,167,111,0.2) 99%)",
@@ -26,7 +29,7 @@ const Banner = ({ setShowModal }) => {
       }}
     >
       <Row className="gy-4  gy-md-0 w-100 ">
-        <Col className="d-md-flex align-items-md-center col-md-8">
+        <Col className="d-md-flex align-items-md-center col-12 col-md-8">
           <div className="px-5">
             <h3 className="fw-bold" style={{ color: "rgb(0,75,80)" }}>
               Welcome back  {displayName()}
@@ -36,23 +39,25 @@ const Banner = ({ setShowModal }) => {
               &apos;Request Training&apos; to request new training or &apos;View All
               Requests&apos; to track your training request progress.
             </p>
-            <ActionButton title="Request Training" onClick={setShowModal} 
+            <div className="flex gap-2 flex-wrap">
+            <Button type="button" className="theme-bg rounded py-1" label="Request Training" onClick={()=>setShowModal(true)} 
               variant={{size: "btn-xl" }} />
-            <ActionButton
-              title="View All Request"
-              actionLink="/KEP_TMS/RequestList"
+            <Button
+            type="button"
+              label="View All Request"
+              className="theme-secondary rounded py-1"
+              style={{borderColor: "transparent"}}
+              onClick={()=>navigate("/KEP_TMS/RequestList")}
               variant={{ theme: "secondary",size: "btn-xl" }}
             />
-          </div>
+          </div></div>
         </Col>
-        <Col className="col-md-4 d-flex align-items-center justify-content-center">
-          <div className="m-xl-4 ">
+        <Col className="col-md-4 d-flex align-items-center justify-content-center d-none d-md-bloack">
             <img
               className="rounded img-fluid fit-cover"
               style={{ minHeight: "100px", maxHeight: "150px" }}
               src={bannerimg}
             />
-          </div>
         </Col>
       </Row>
     </div>

@@ -1,4 +1,4 @@
-import { statusCode } from "../api/constants";
+import { statusCode } from "../../api/constants";
 
 const getStatusById = (id) => {
   const status =

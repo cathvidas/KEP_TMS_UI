@@ -3,7 +3,7 @@ import DetailItem from "./DetailItem";
 import proptype from "prop-types";
 import { formatCurrency, formatDateOnly } from "../../utils/Formatting";
 import { formatTotalTime } from "../../utils/FormatDateTime";
-import calculateTotalHours from "../../services/calculateTotalHours";
+import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
 const DetailsOverview = ({ data }) => {
   console.log(data);
   return (

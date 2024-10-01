@@ -2,7 +2,7 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import StatusColor from "../General/StatusColor";
 import proptype from "prop-types";
-import getStatusById from "../../services/getStatusById";
+import getStatusById from "../../utils/status/getStatusById";
 import { Button } from "primereact/button";
 import EmailForm from "../forms/ModalForms/EmailForm";
 import { useState } from "react";

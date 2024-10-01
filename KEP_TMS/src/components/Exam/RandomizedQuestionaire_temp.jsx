@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { SampleExamQuestionaire } from "../../services/getApis";
 import { ExamItem } from "./ExamItem";
 import { SectionHeading } from "../General/Section";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +8,8 @@ import { Button } from "react-bootstrap";
 import { FormFieldItem } from "../trainingRequestFormComponents/FormElements";
 
 const RandomizeExam = () => {
-  const exam = SampleExamQuestionaire().sort(() => Math.random() - 0.5);
+  // const exam = SampleExamQuestionaire().sort(() => Math.random() - 0.5);
+  const exam = [];
   return exam;
 };
 const randoMizeOptions = (options) => {
