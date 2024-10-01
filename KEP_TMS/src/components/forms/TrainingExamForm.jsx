@@ -1,15 +1,23 @@
 import proptype from "prop-types";
 import { useEffect, useState } from "react";
-import { Card, CardBody, Form } from "react-bootstrap";
+import { Form, Modal } from "react-bootstrap";
 import { Button } from "primereact/button";
 import { FormFieldItem } from "../trainingRequestFormComponents/FormElements";
 import ErrorTemplate from "../General/ErrorTemplate";
-const TrainingExamForm = ({ reqId, handleOnChange, showForm }) => {
-  const [option, setOption] = useState("");
-  const [questions, setQuestions] = useState([]);
+const TrainingExamForm = ({
+  handleOnChange,
+  defaultData,
+  setDefaultData,
+  formDetail,
+  setFormDetail
+
+}) => {
+  const [option, setOption] = useState({ content: "", isCorrect: false });
   const [details, setDetails] = useState({ content: "", answerOptions: [] });
   const [errors, setErrors] = useState({});
-
+  useEffect(() => {
+    setDetails(defaultData?.defaultData);
+  }, [defaultData]);
   const handleRemoveOption = (index) => {
     const updatedFiles = { ...details };
     updatedFiles?.answerOptions.splice(index, 1);
@@ -29,9 +37,7 @@ const TrainingExamForm = ({ reqId, handleOnChange, showForm }) => {
       formErrors.option = "Please add at least four (4) options";
       validForm = false;
     }
-    const answer = details?.answerOptions?.filter(
-      (o, i) => i === details?.answer
-    );
+    const answer = details?.answerOptions?.filter((x) => x.isCorrect === true);
     if (answer?.length === 0 && validForm) {
       formErrors.answer = "Please select the correct answer.";
       validForm = false;
@@ -40,46 +46,61 @@ const TrainingExamForm = ({ reqId, handleOnChange, showForm }) => {
       setErrors(formErrors);
     } else {
       setErrors({});
-      const itemOptions = details?.answerOptions?.map((x, i) => ({
-        content: x,
-        isCorrect: i === details?.answer ? true : false,
-      }));
-      saveToLocalStorage(
-        { content: details.content, answerOptions: itemOptions });
-      setDetails({});
-      setOption("");
+
+      const oldData = JSON.parse(localStorage.getItem("examDetails"));
+      const examQuestions = oldData?.examQuestion ?? [];
+      if(formDetail?.buttonFunction != null){
+        formDetail.buttonFunction(details);
+      }else{
+      if (defaultData?.index != null) {
+        examQuestions[defaultData?.index] = { ...examQuestions[defaultData?.index], ...details };
+      } else {
+        examQuestions?.push(details);
+      }
+      localStorage.setItem(
+        "examDetails",
+        JSON.stringify({ ...oldData, examQuestion: examQuestions })
+      );}
+      handleOnChange();
+      setDetails({ content: "", answerOptions: [] });
+      setOption({ content: "", isCorrect: false });
+      setFormDetail({...formDetail, showForm: false});
+      setDefaultData();
     }
   };
 
-  const saveToLocalStorage = (e) =>{
-    const oldData = JSON.parse(localStorage.getItem("examDetails"));
-    const examQuestions = oldData?.examQuestion ?? [];
-    examQuestions?.push(e);
-    localStorage.setItem("examDetails", JSON.stringify({...oldData, examQuestion: examQuestions}));
-    handleOnChange();
-  }
   const handleAddOption = () => {
-    if (option) {
-        const newOptions = details?.answerOptions ?? [];
-        newOptions.push(option)
+    if (option?.content) {
+      const newOptions = details?.answerOptions ?? [];
+      newOptions.push(option);
       setDetails({
         ...details,
         answerOptions: newOptions,
       });
-      setOption("");
+      setOption({ content: "", isCorrect: false });
       setErrors({ ...errors, option: "" });
     } else {
       setErrors({ ...errors, option: "Please input an option" });
     }
   };
+  const setCorrectAnswer = (index) => {
+    const updatedData = details?.answerOptions?.map((item, i) => {
+      if (i === index) {
+        return { ...item, isCorrect: true };
+      } else {
+        return { ...item, isCorrect: false };
+      }
+    });
+    setDetails({ ...details, answerOptions: updatedData });
+  };
   return (
     <>
-      <div className="mb-3 border rounded overflow-hidden">
-        <div className="theme-bg-light theme-color p-2 px-3 flex justify-content-between">
-          <h5 className="m-0">Add Item</h5>
-          <Button icon="pi pi-times" type="button" text onClick={showForm}/>
-        </div>
-        <CardBody>
+      <Modal show={formDetail?.showModal} onHide={() => {setFormDetail({...formDetail, showModal: false}); setDefaultData()
+      }}>
+        <Modal.Header className="border-0" closeButton>
+          <Modal.Title className={`h5 theme-color`}>{`${defaultData ? "Update" : "Add"} Item`} </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="py-0">
           <Form>
             {errors?.common && errors.common}
             <FormFieldItem
@@ -100,6 +121,7 @@ const TrainingExamForm = ({ reqId, handleOnChange, showForm }) => {
             />
             <FormFieldItem
               label={"Options"}
+              required
               FieldComponent={
                 <>
                   {details?.answerOptions?.map((x, index) => {
@@ -108,15 +130,10 @@ const TrainingExamForm = ({ reqId, handleOnChange, showForm }) => {
                         <input
                           className="form-check-input"
                           type="checkbox"
-                          checked={index === details.answer}
-                          onChange={() =>
-                            setDetails({
-                              ...details,
-                              answer: index,
-                            })
-                          }
+                          checked={x?.isCorrect}
+                          onChange={() => setCorrectAnswer(index)}
                         />
-                        <label className="">{x}</label>
+                        <label className="">{x?.content}</label>
                         <Button
                           type="button"
                           icon="pi pi-times"
@@ -132,9 +149,11 @@ const TrainingExamForm = ({ reqId, handleOnChange, showForm }) => {
                   <input
                     type="text"
                     className="form-control"
-                    value={option}
-                    onChange={(e) => setOption(e.target.value)}
-                    placeholder={`Option ${details?.answerOptions?.length + 1}`}
+                    value={option.content}
+                    onChange={(e) =>
+                      setOption({ content: e.target.value, isCorrect: false })
+                    }
+                    placeholder={`Option ${details?.answerOptions?.length ? details?.answerOptions?.length + 1 : 1}`}
                   />
                   {errors?.option && <ErrorTemplate message={errors.option} />}
                   <Button
@@ -149,24 +168,35 @@ const TrainingExamForm = ({ reqId, handleOnChange, showForm }) => {
                 </>
               }
             />
-            <div className="text-end">
-              <Button
-                variant="primary"
-                className="rounded"
-                type="button"
-                onClick={validateForm}
-              >
-                Save
-              </Button>
-            </div>
           </Form>
-        </CardBody>
-      </div>
+        </Modal.Body>
+        <Modal.Footer className="border-0">
+          <Button
+            type="button"
+            label="Cancel"
+            onClick={() => {setFormDetail({...formDetail, showModal: false});  setDefaultData()}}
+            className="p-button-text rounded"
+          />
+          <Button
+            type="button"
+            label="Save"
+            icon="pi pi-save"
+            onClick={validateForm}
+            className="rounded"
+          />
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };
 TrainingExamForm.propTypes = {
   reqId: proptype.number.isRequired,
   showForm: proptype.bool,
+  handleOnChange: proptype.func,
+  defaultData: proptype.object,
+  setShowForm: proptype.func,
+  setDefaultData: proptype.func,
+  formDetail: proptype.object,
+  setFormDetail: proptype.func
 };
 export default TrainingExamForm;
