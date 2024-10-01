@@ -1,16 +1,11 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getAllTrainingRequests,
   getCurrentRoutingActivity,
-  getTrainingRequestByApprover,
 } from "../../api/trainingServices";
-import {
-  SessionGetEmployeeId,
-  SessionGetRole,
-  SessionGetUserId,
-} from "../../services/sessions";
+import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import { getUserApi } from "../../api/userApi";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
@@ -24,9 +19,12 @@ import StatusColor from "./StatusColor";
 import proptype from "prop-types";
 import { ActivityType } from "../../api/constants";
 import ExportBtn from "./ExportBtn";
+import SkeletonBanner from "../Skeleton/SkeletonBanner";
+import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 
 const TRequestTable = ({ filterType }) => {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const getTrainingRequests = async () => {
       try {
@@ -93,6 +91,7 @@ const TRequestTable = ({ filterType }) => {
       } catch (error) {
         console.error("Error fetching training requests:", error);
       }
+      setLoading(false);
     };
 
     getTrainingRequests();
@@ -190,66 +189,73 @@ const TRequestTable = ({ filterType }) => {
   const header = renderHeader();
   return (
     <>
-      <div className="">
-        {data?.length > 0 ? (
-          <DataTable
-            value={mapTRequestToTableData(data)}
-            stripedRows
-            size="small"
-            tableStyle={{ minWidth: "50rem" }}
-            paginator
-            rows={10}
-            rowsPerPageOptions={[5, 10, 25, 50]}
-            dataKey="id"
-            filters={filters}
-            header={header}
-            emptyMessage="No data found."
-            sortMode="multiple"
-          >
-            <Column field="id" header="Id" sortable></Column>
+      {loading ? (
+        <SkeletonDataTable />
+      ) : (
+        <div className="">
+          {data?.length > 0 ? (
+            <DataTable
+              value={mapTRequestToTableData(data)}
+              stripedRows
+              size="small"
+              tableStyle={{ minWidth: "50rem" }}
+              paginator
+              rows={10}
+              rowsPerPageOptions={[5, 10, 25, 50]}
+              dataKey="id"
+              filters={filters}
+              header={header}
+              emptyMessage="No data found."
+              sortMode="multiple"
+            >
+              <Column field="id" header="Id" sortable></Column>
 
-            <Column field="requestorBadge" header="BadgeNo" sortable></Column>
-            <Column field="requestorName" header="Requestor" sortable></Column>
-            <Column field="type" header="Type" sortable></Column>
-            <Column field="program" header="Program" sortable></Column>
-            <Column field="category" header="Category" sortable></Column>
-            <Column field="provider" header="Provider" sortable></Column>
-            <Column field="venue" header="Venue" sortable></Column>
-            <Column
-              field="startDate"
-              header="Start Date"
-              sortable
-              style={{ width: "8%" }}
-              body={(rowData) => {
-                return formatDateOnly(rowData.startDate);
-              }}
-            ></Column>
-            <Column
-              field="endDate"
-              header="End Date"
-              sortable
-              style={{ width: "8%" }}
-              body={(rowData) => {
-                return formatDateOnly(rowData.endDate);
-              }}
-            ></Column>
-            <Column
-              field="totalFee"
-              header="Total Fee"
-              sortable
-              style={{ width: "8%" }}
-              body={(product) => {
-                return formatCurrency(product?.totalFee);
-              }}
-            ></Column>
-            <Column
-              field="approverPosition"
-              header="Current Approver"
-              sortable
-              style={{ minWidth: "12rem" }}
-              body={approverColumnTemplate}
-            ></Column>
-            {/* <Column
+              <Column field="requestorBadge" header="BadgeNo" sortable></Column>
+              <Column
+                field="requestorName"
+                header="Requestor"
+                sortable
+              ></Column>
+              <Column field="type" header="Type" sortable></Column>
+              <Column field="program" header="Program" sortable></Column>
+              <Column field="category" header="Category" sortable></Column>
+              <Column field="provider" header="Provider" sortable></Column>
+              <Column field="venue" header="Venue" sortable></Column>
+              <Column
+                field="startDate"
+                header="Start Date"
+                sortable
+                style={{ width: "8%" }}
+                body={(rowData) => {
+                  return formatDateOnly(rowData.startDate);
+                }}
+              ></Column>
+              <Column
+                field="endDate"
+                header="End Date"
+                sortable
+                style={{ width: "8%" }}
+                body={(rowData) => {
+                  return formatDateOnly(rowData.endDate);
+                }}
+              ></Column>
+              <Column
+                field="totalFee"
+                header="Total Fee"
+                sortable
+                style={{ width: "8%" }}
+                body={(product) => {
+                  return formatCurrency(product?.totalFee);
+                }}
+              ></Column>
+              <Column
+                field="approverPosition"
+                header="Current Approver"
+                sortable
+                style={{ minWidth: "12rem" }}
+                body={approverColumnTemplate}
+              ></Column>
+              {/* <Column
               field="status"
               header="Status"
               sortable
@@ -257,12 +263,13 @@ const TRequestTable = ({ filterType }) => {
                 return StatusColor(rowData.status);
               }}
             ></Column> */}
-            <Column field="id" header="Action" body={actionTemplate}></Column>
-          </DataTable>
-        ) : (
-          "No recent requests"
-        )}
-      </div>
+              <Column field="id" header="Action" body={actionTemplate}></Column>
+            </DataTable>
+          ) : (
+            "No recent requests"
+          )}
+        </div>
+      )}
     </>
   );
 };
