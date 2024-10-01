@@ -1,4 +1,4 @@
-import { getAllTrainingRequestsApi, getCurrentRoutingActivityApi, getTrainingRequestApi, getTrainingRequestsByRequestorApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
+import { approveTrainingRequestApi, getAllTrainingRequestsApi, getCurrentRoutingActivityApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestsByRequestorApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
 
 const trainingRequestService = {
   getAllTrainingRequests: async () => {
@@ -21,5 +21,13 @@ const trainingRequestService = {
     const response = await getCurrentRoutingActivityApi(transactId, activityIn);
     return response;
   },
+  approveTrainingRequest: async (data) =>{
+    const response = await approveTrainingRequestApi(data);
+    return response;
+  },
+  getTrainingRequestByApprover: async (id)=>{
+    const response = await getTrainingRequestByApproverApi(id);
+    return response;
+  }
 };
 export default trainingRequestService;

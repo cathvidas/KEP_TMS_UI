@@ -1,27 +1,29 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Banner from "../components/General/Banner";
 import { faHouse } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Layout from "../components/General/Layout";
-import TRequestTable from "../components/General/TRequestTable";
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
-import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import { Card, Col, Row } from "react-bootstrap";
 import trainingRequestHook from "../hooks/trainingRequestHook";
-import { SessionGetEmployeeId } from "../services/sessions";
 import { useNavigate } from "react-router-dom";
+import { SessionGetEmployeeId } from "../services/sessions";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const {data, error, loading} = trainingRequestHook.useStatusCount();
-  console.log(data)
+  const approval = trainingRequestHook.useAssignedApprovalTrainingRequest(SessionGetEmployeeId());
+  console.log(approval)
+
   const values = [
-    { label: 'Pending', color1: '#fbbf24', color2: '#fbbf24', value: data.pending, icon: 'pi pi-list-check', status: 'Pending' },
+    ...(approval?.data?.length > 0 ? [{ label: 'For Approvals', color1: '#ff6b6b', color2: '#ff6b6b', value: approval?.data?.length, icon: 'pi pi-user-edit', status: 'Approver' }] : []),
+    { label: 'Pending', color1: '#fbbf24', color2: '#fbbf24', value: data.pending, icon: 'pi pi-list-check', status: 'ForApproval' },
     { label: 'Approved', color1: '#34d399', color2: '#31bf77', value: data.approved, icon: 'pi pi-check-circle', status: 'Approved' },
-    { label: 'On Going', color1: '#60a5fa', color2: '#60a5fa', value: data.ongoing ?? 0, icon: 'pi pi-clock', status: 'Published' },
-    { label: 'Closed', color1: '#c084fc', color2: '#c084fc', value: data.closed, icon: 'pi pi-bookmark', status: 'Closed' }
+    { label: 'On Going', color1: '#60a5fa', color2: '#60a5fa', value: data.published ?? 0, icon: 'pi pi-clock', status: 'Published' },
+    { label: 'Closed', color1: '#c084fc', color2: '#c084fc', value: data.closed, icon: 'pi pi-bookmark', status: 'Closed' },
 ];
+
   const Content = () => {
     return (
       <div className="p-3">
@@ -33,7 +35,7 @@ const Dashboard = () => {
         <Row className="mt-4 g-2 ">
             {values.map((item, index) => (
               <Col  key={index}>
-                <Card className="shadow-sm p-3 btn" style={{background: item.color1 + "1c", borderColor: item.color1}} onClick={()=>navigate(`/KEP_TMS/RequestList/${item?.status}`)}>
+                <Card className="shadow-sm p-3 btn" style={{background: item.color1 + "1c", borderColor: item.color1}} onClick={()=>navigate(`/KEP_TMS/${item.status=== "Approver"? "ForApproval":`RequestList/${item?.status}` }`)}>
                     <div className="flex justify-content-between gap-5">
                         <div className="flex flex-column gap-1">
                             <span className="text-secondary h5">{item.label}</span>

@@ -122,7 +122,9 @@ ul.p-dropdown-items {
 .custom-theme.p-datatable .p-sortable-column .p-sortable-column-icon {
     color: #fff;
 }
-
+.custom-dropdown-toggle::after{
+    display: none !important;
+}
 
 
 /* SIDEBAR */

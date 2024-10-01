@@ -7,6 +7,10 @@ import proptype, { func } from "prop-types";
 import React, { useRef } from "react";
 import { useNavigate, useRouteError } from "react-router-dom";
 import { actionSuccessful, confirmAction } from "../../services/sweetalert";
+import { SessionGetEmployeeId } from "../../services/sessions";
+import { statusCode } from "../../api/constants";
+import handleResponseAsync from "../../services/handleResponseAsync";
+import trainingRequestService from "../../services/trainingRequestService";
 
 export const RequestMenu = ({menuList, action, current, reqId}) => {
   const navigate = useNavigate()
@@ -34,7 +38,21 @@ export const RequestMenu = ({menuList, action, current, reqId}) => {
       },
   ];
 const handlePublish = () => {
-  actionSuccessful("ahsd")
+  const data = {requestId: reqId,
+    employeeBadge: SessionGetEmployeeId(),
+    statusId: statusCode.PUBLISHED,
+    updatedBy: SessionGetEmployeeId()
+  }
+  confirmAction({title: "Publish Training Request", text: "Are you sure you want to publish this training request?", 
+    onConfirm: ()=>{
+      handleResponseAsync(
+        ()=>trainingRequestService.approveTrainingRequest(data),
+        (e)=>actionSuccessful("Training request published successfully",e.message),
+        (error)=>console.error("Error publishing training request: ", error)
+      )
+    }
+  })
+  // actionSuccessful("ahsd")
 
 }
   return (
@@ -47,13 +65,7 @@ const handlePublish = () => {
       </div>
       <div className="">
         <Menu model={items} className="border-0" style={{background: "rgb(251, 253, 252)"}} />
-        <Button label="Publish" size="small" severity="info" className="rounded py-1 ms-3" onClick={()=>confirmAction({
-          title: "Publish Training Request",
-          message: "Are you sure you want to publish this training request?",
-          confirmButtonText: "Publish",
-          onConfirm: handlePublish,
-          onReject: () => {},
-        })}/>
+        <Button label="Publish" size="small" severity="info" className="rounded py-1 ms-3" onClick={handlePublish}/>
       </div>
     </div>
   );

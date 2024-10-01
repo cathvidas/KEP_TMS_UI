@@ -177,11 +177,6 @@ console.log(trigger)
         title="For Approvals"
         subtitle="List of Trainings waiting for Approval"
       />
-      <SectionTitle
-        title={"Recent Trainings"}
-        Action={{ Link: "#i", Text: "View All" }}
-      />
-
       <DataTable
         ref={datatable}
         header={header}

@@ -22,3 +22,6 @@ export const updateTrainingRequestApi = async (data)=>{
 export const getCurrentRoutingActivityApi = async (transactId, activityIn) =>{
     return await fetchFromApi(`${API_ENDPOINTS.GET_CURRENT_ROUTING}?transactId=${transactId}&activityIn=${activityIn}`);
 }
+export const getTrainingRequestByApproverApi = async (id) =>{
+    return await fetchFromApi(`Services/GetAssignedRequests?assignedTo=${id}`);
+}
