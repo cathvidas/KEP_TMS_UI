@@ -4,7 +4,10 @@ import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
 import Layout from "../components/General/Layout";
 import ScalarMeasurement from "../components/General/ScalarMeasurement";
 import TRequestTable from "../components/General/TRequestTable";
+import trainingRequestHook from "../hooks/trainingRequestHook";
 const RequestList =()=>{
+  const {data, error, loading } = trainingRequestHook.useAllTrainingRequests();
+  console.log(data)
     const Content = () => 
       (
         <>
@@ -16,7 +19,7 @@ const RequestList =()=>{
               }
             />
             <ScalarMeasurement/>
-            <TRequestTable userType={"user"} />
+            <TRequestTable userType={"user"} data={data} />
           </div>
         </>
       );

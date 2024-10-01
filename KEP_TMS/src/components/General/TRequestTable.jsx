@@ -1,12 +1,6 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { useEffect, useState } from "react";
-import {
-  getAllTrainingRequests,
-  getCurrentRoutingActivity,
-} from "../../api/trainingServices";
-import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
-import { getUserApi } from "../../api/userApi";
+import { useState } from "react";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
@@ -17,85 +11,10 @@ import { formatCurrency, formatDateOnly } from "../../utils/Formatting";
 import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 import StatusColor from "./StatusColor";
 import proptype from "prop-types";
-import { ActivityType } from "../../api/constants";
 import ExportBtn from "./ExportBtn";
-import SkeletonBanner from "../Skeleton/SkeletonBanner";
-import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 
-const TRequestTable = ({ filterType }) => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const getTrainingRequests = async () => {
-      try {
-        let trainingRequests = await getAllTrainingRequests();
-
-        const updatedRequests = await Promise.all(
-          trainingRequests.data.map(async (request) => {
-            // Get the list of facilitator IDs
-            const facilitatorIds = request.trainingFacilitators.map(
-              (element) => {
-                return element.facilitatorBadge;
-              }
-            );
-            // Fetch details for each facilitator
-            const facilitatorsDetails = await Promise.all(
-              facilitatorIds.map(async (facilitatorBadge) => {
-                const user = await getUserApi(facilitatorBadge);
-                return {
-                  facilitatorBadge,
-                  name: user.data.username,
-                  fullname: user.data.lastname + ", " + user.data.firstname,
-                };
-              })
-            );
-            const approver = await getCurrentRoutingActivity(
-              request.id,
-              ActivityType.REQUEST
-            );
-            const user = await getUserApi(approver.assignedTo);
-            const routing = {
-              approverUsername: user.data.username,
-              approverFullName: user.data.lastname + ", " + user.data.firstname,
-              statusId: approver.statusId,
-              approverId: user.data.employeeBadge,
-              approverPosition: user.data.position,
-            };
-
-            // if (filterType === "forApproval") {
-            //   const res =
-            //   trainingRequests = res
-            // //  console.log(trainingRequests)
-            // }
-            return {
-              ...request,
-              trainingFacilitators: facilitatorsDetails,
-              routing: routing, // Replace with detailed facilitator information
-            };
-          })
-        );
-        console.log(updatedRequests);
-        // Set training requests with updated facilitator information
-        if (
-          filterType === "UserRole" &&
-          SessionGetRole() !== "Admin" &&
-          SessionGetRole() !== "SuperAdmin"
-        ) {
-          const userRequests = updatedRequests.filter(
-            (request) => request.requestorBadge === SessionGetEmployeeId()
-          );
-          setData(userRequests);
-        } else {
-          setData(updatedRequests);
-        }
-      } catch (error) {
-        console.error("Error fetching training requests:", error);
-      }
-      setLoading(false);
-    };
-
-    getTrainingRequests();
-  }, [filterType]);
+const TRequestTable = ({ data, filterType }) => {
+  // const [data, setData] = useState([]);
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -189,9 +108,7 @@ const TRequestTable = ({ filterType }) => {
   const header = renderHeader();
   return (
     <>
-      {loading ? (
-        <SkeletonDataTable />
-      ) : (
+    
         <div className="">
           {data?.length > 0 ? (
             <DataTable
@@ -269,11 +186,11 @@ const TRequestTable = ({ filterType }) => {
             "No recent requests"
           )}
         </div>
-      )}
     </>
   );
 };
 TRequestTable.propTypes = {
   filterType: proptype.string,
+  data: proptype.array
 };
 export default TRequestTable;

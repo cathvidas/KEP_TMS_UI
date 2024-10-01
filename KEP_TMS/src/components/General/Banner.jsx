@@ -18,13 +18,14 @@ const Banner = ({ setShowModal }) => {
 
   return (
     <div
-      className="rounded-3 mb-3"
+      className="rounded-3 mb-3 card shadow-sm"
       style={{
         background:
           "linear-gradient(0deg, rgba(91,228,155,0.2), rgba(0,167,111,0.2) 99%)",
+          borderColor: "var(--theme-color)"
       }}
     >
-      <Row className="gy-4  gy-md-0 w-100">
+      <Row className="gy-4  gy-md-0 w-100 ">
         <Col className="d-md-flex align-items-md-center col-md-8">
           <div className="px-5">
             <h3 className="fw-bold" style={{ color: "rgb(0,75,80)" }}>

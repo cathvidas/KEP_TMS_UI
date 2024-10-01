@@ -2,29 +2,21 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import proptype from "prop-types";
 import UserIcon from "./UserIcon";
 import Swal from "sweetalert2";
-import icon from "/src/img/icon.png";
 import icon2 from "/src/img/logo-nobg.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faAngleLeft,
   faAngleRight,
   faAward,
   faBarChart,
-  faCheckToSlot,
-  faClapperboard,
-  faClinicMedical,
   faClipboardCheck,
   faClipboardList,
-  faGear,
   faHouse,
   faList,
   faPenToSquare,
-  faReceipt,
-  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useState } from "react";
-import { SessionGetRole } from "../../services/sessions";
-import { Sidebar } from 'primereact/sidebar';
 
 const NavItem = ({ item, icon, title, expanded }) => {
   const locations = useLocation();
@@ -102,15 +94,14 @@ const Sidebars = () => {
         className="d-flex position-absolute top-0 z-3 mt-3 bg-body"
         style={{ right: "-12px" }}
       >
-        <Link
+        <div
           className="p-2 p-0 border d-flex justify-content-center rounded"
-          href="#"
           style={{ color: "var(--bs-secondary)" }}
           onClick={toggleSidebar}
-        >
-          <FontAwesomeIcon icon={faAngleRight} />
-          <i className="icon ion-ios-arrow-forward"></i>
-        </Link>
+        >{expanded == "true" ? 
+          <FontAwesomeIcon icon={faAngleLeft} />:
+          <FontAwesomeIcon icon={faAngleRight} />}
+        </div>
       </div>
       <div
         className="d-flex w-100 flex-column  top-0 bottom-0"

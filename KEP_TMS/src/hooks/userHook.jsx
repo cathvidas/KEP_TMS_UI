@@ -1,5 +1,8 @@
+import userService from "../services/userService";
+
 const userHook = {
-    useUser: () => {
+    useAllUsers: () => {
+        const response = await userService.getAllUsers();
         
     }
 }
