@@ -1,10 +1,9 @@
-import { craeteModuleApi } from "../api/moduleApi";
+import { createModuleApi, getModulesByRequestIdApi } from "../api/moduleApi";
 
 const moduleService = {
-    getModules: async () => {
-        const response = await fetch('http://localhost:3000/modules');
-        const data = await response.json();
-        return data;
+    getModulesByRequestId: async (id) => {
+        const response = await getModulesByRequestIdApi(id);
+        return response.data;
     },
     getModule: async (id) => {
         const response = await fetch(`http://localhost:3000/modules/${id}`);
@@ -12,7 +11,7 @@ const moduleService = {
         return data;
     },
     createModule: async (module) => {
-        const response = await craeteModuleApi(module);
+        const response = await createModuleApi(module);
         return response.data
     }
 }
