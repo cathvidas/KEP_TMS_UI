@@ -8,142 +8,254 @@ import { ButtonGroup } from "primereact/buttongroup";
 import { Button } from "primereact/button";
 import TrainingExamForm from "../../components/forms/TrainingExamForm";
 import proptype from "prop-types";
-import { ModalContainer } from "../../components/Modal/ModalContainer";
-
+import { SessionGetEmployeeId } from "../../services/sessions";
+import { actionSuccessful, confirmAction } from "../../services/sweetalert";
+import handleResponseAsync from "../../services/handleResponseAsync";
+import examService from "../../services/examService";
+import examHook from "../../hooks/examHook";
+import SkeletonList from "../../components/Skeleton/SkeletonList"
+import { fas } from "@fortawesome/free-solid-svg-icons";
 const RandomizeExam = () => {
   const exam = SampleExamQuestionaire().sort(() => Math.random() - 0.5);
   return exam;
 };
-const ExamSection = ({ data }) => {
-  const [showForm, setShowForm] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [examData, setExamData] = useState({});
 
+const ExamSection = ({ data }) => {
+  const [examData, setExamData] = useState({});
+  const [examList, setExamList] = useState([]);
+  const [examTitle, setExamTitle] = useState("");
+  const [modalDetail, setModalDetail] = useState({showModal: false, buttonFunction: null});
+  const [formDetail, setFormDetail] = useState({showModal: false, buttonFunction: null});
+  const [defaultData, setDefaultData] = useState(null);
+  const { exams, error, loading } = examHook.useExamByRequestId(data.id);
+  const [isLocal, setIsLocal] = useState(true);
   useEffect(() => {
     refreshData();
-  }, []);
+  }, [exams]);
+  
   const refreshData = () => {
-    const details = JSON?.parse(localStorage.getItem("examDetails"));
-    setExamData(details);
+    if(exams?.length > 0) {
+      setExamList(exams);
+      setIsLocal(false)
+    }else{
+      setIsLocal(true)
+      const details = JSON?.parse(localStorage.getItem("examDetails"));
+      let updatedList = [];
+      if(details){
+       updatedList = [details];}
+       setExamList(updatedList);
+      setModalDetail({...modalDetail, buttonFunction: saveInitialDetail})
+
+    }
   };
   const saveInitialDetail = () => {
-    if (examData != null) {
-      localStorage.setItem("examDetails", JSON.stringify(examData));
-      setShowModal(false);
-      setShowForm(true);
+    if (examTitle != null) {
+      const data = { ...examData, title: examTitle };
+      localStorage.setItem("examDetails", JSON.stringify(data));
+      setFormDetail({...formDetail, showModal: true})
       refreshData();
     }
   };
-  console.log(examData);
+  const removeInitialDetail = () =>{
+    localStorage.removeItem("examDetails");
+    refreshData();
+  }
+  const removeExamQuestion = (index) => {
+    const examQuestions = examData?.examQuestion ?? [];
+    examQuestions?.splice(index, 1);
+    localStorage.setItem(
+      "examDetails",
+      JSON.stringify({ ...examData, examQuestion: examQuestions })
+    );
+    refreshData();
+  };
+  const uploadExam = (index) => {
+    const savedData = JSON.parse(localStorage.getItem("examDetails"));
+    const updatedData = {
+      ...savedData,
+      trainingRequestId: data.id,
+      createdBy: SessionGetEmployeeId(),
+    };
+    confirmAction({
+      title: "Upload Exam",
+      text: "Are you sure you want to upload this exam?",
+      onConfirm: () => {
+        handleResponseAsync(() => examService.createExam(updatedData), (e)=>{
+          setInterval(() => {
+            localStorage.removeItem("examDetails");
+            refreshData();
+          }, 1000);
+        }
+        );
+      },
+    });
+  };
+  const updateExamQuestion = (data)=>{
+    console.log(data)
+  }
   return (
     <>
-      <SectionHeading
-        title="Questionnaire"
-        icon={<i className="pi pi-question-circle"></i>}
-      />
-      <div className="rounded shadow-sm card border overflow-hidden">
-        <h4 className="theme-bg2 p-2 px-3">{examData?.title}</h4>
-        {showForm && (
-          <div className="p-3">
-          <TrainingExamForm
-            reqId={data?.id}
-            handleOnChange={refreshData}
-            showForm={() => setShowForm(false)}
+      {loading ? (
+        <SkeletonList />
+      ) : (
+        <>
+          <SectionHeading
+            title="Questionnaire"
+            icon={<i className="pi pi-question-circle"></i>}
           />
-          </div>
-        )}
-        {examData?.title ? (
-          <>
-            <span className="flex  px-3 justify-content-between">
-              <span className="text-muted">
-                {`${examData?.examQuestion?.length} items`}{" "}
-              </span>
-              {!showForm && (
-                <Button
-                  type="button"
-                  icon="pi pi-plus"
-                  size="small"
-                  className="theme-btn rounded py-1"
-                  label="Add new item"
-                  onClick={() => setShowForm(true)}
-                />
-              )}
-            </span>
-            <Row className="row-cols-lg-2  p-3 g-2 row-cols-1">
-              {examData?.examQuestion?.map((x, index) => {
-                return (
-                  <Col key={`item-${index}`}>
-                    <div className="overflow-hidden border rounded">
-                      <div className="theme-bg-light p-2 px-3 d-flex align-items-center justify-content-between">
-                        <small className="text-muted fw-bold text-uppercase">
-                          Question #{index + 1}
-                        </small>
-                        <ButtonGroup>
-                          <Button
-                            type="button"
-                            text
-                            size="small"
-                            icon="pi pi-pencil"
-                            severity="secondary"
-                            className="p-0 rounded"
-                            style={{ width: "1.5rem" }}
-                          />
-                          <Button
-                            type="button"
-                            text
-                            size="small"
-                            severity="danger"
-                            icon="pi pi-trash"
-                            className="p-0 rounded"
-                            style={{ width: "1.5rem" }}
-                          />
-                        </ButtonGroup>{" "}
-                      </div>
-                      <div className="px-3 py-2">
-                        <p className="m-0">{x.content}</p>
-                        {x?.answerOptions?.map((y, i) => {
+          {examList?.length > 0 ? (
+            examList?.map((item, index) => {
+              return (
+                <div
+                  key={item}
+                  className="rounded shadow-sm card border overflow-hidden"
+                >
+                  <h4 className="theme-bg2 p-2 px-3">{item?.title}</h4>
+                  {item?.examQuestion?.length > 0 ? (
+                    <>
+                      <span className="flex  px-3 justify-content-between">
+                        <span className="text-muted">
+                          {`${item?.examQuestion?.length} items`}{" "}
+                        </span>
+                        <Button
+                          type="button"
+                          icon="pi pi-plus"
+                          size="small"
+                          className="theme-btn rounded py-1"
+                          label="Add question"
+                          onClick={() => setFormDetail({...formDetail, showModal: true})}
+                        />
+                      </span>
+                      <Row className="row-cols-lg-2  p-3 g-2 row-cols-1">
+                        {item?.examQuestion?.map((x, index) => {
                           return (
-                            <div key={i} className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                checked={y.isCorrect}
-                                disabled
-                              />
-                              <label className="">{y.content}</label>
-                            </div>
+                            <Col key={`item-${index}`}>
+                              <div className="overflow-hidden border rounded">
+                                <div className="theme-bg-light p-2 px-3 d-flex align-items-center justify-content-between">
+                                  <small className="text-muted fw-bold text-uppercase">
+                                    Question #{index + 1}
+                                  </small>
+                                  <ButtonGroup>
+                                    <Button
+                                      type="button"
+                                      text
+                                      size="small"
+                                      icon="pi pi-pencil"
+                                      severity="secondary"
+                                      className="p-0 rounded"
+                                      style={{ width: "1.5rem" }}
+                                      onClick={() => {
+                                        setFormDetail({...formDetail, showForm: true, buttonFunction: updateExamQuestion});
+                                        setDefaultData({
+                                          index: index,
+                                          defaultData: x,
+                                        });
+                                      }}
+                                    />
+                                    <Button
+                                      type="button"
+                                      text
+                                      size="small"
+                                      severity="danger"
+                                      icon="pi pi-trash"
+                                      className="p-0 rounded"
+                                      style={{ width: "1.5rem" }}
+                                      onClick={() => removeExamQuestion(index)}
+                                    />
+                                  </ButtonGroup>{" "}
+                                </div>
+                                <div className="px-3 py-2">
+                                  <p className="m-0">{x.content}</p>
+                                  {x?.answerOptions?.map((y, i) => {
+                                    return (
+                                      <div key={i} className="form-check">
+                                        <input
+                                          className="form-check-input"
+                                          type="checkbox"
+                                          checked={y.isCorrect}
+                                          disabled
+                                        />
+                                        <label className="">{y.content}</label>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            </Col>
                           );
                         })}
-                      </div>
-                    </div>
-                  </Col>
-                );
-              })}
-            </Row>
-            <div className="text-end p-3 border-top">
-              <Button 
-              icon="pi pi-trash"
-              label="Delete"
-              severity="danger"
-              className="rounded"
-              />
-              <Button 
-              icon="pi pi-upload"
-              label="Upload Exam"
-              className="rounded ms-2"
-              />
-            </div>
-          </>
-        ) : (
-          <EmptyState
-            placeholder="No Questions added yet, please click to add"
-            action={() => setShowModal(true)}
-          />
-        )}
-      </div>
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+                      </Row>
+                    </>
+                  ) : (
+                      <EmptyState
+                        placeholder="No Questions added yet, please click to add"
+                        action={() => setFormDetail({...formDetail, showModal: true})}
+                      />
+                    
+                  )}
+                  <div className="text-end p-3 border-top">
+                    <Button
+                      icon="pi pi-trash"
+                      label="Delete"
+                      severity="danger"
+                      className="rounded py-1"
+                      type="button"
+                      onClick={()=>removeInitialDetail()}
+                    />
+                    <Button
+                      icon="pi pi-pen-to-square"
+                      label="Upload Exam"
+                      className="rounded ms-2 py-1"
+                      type="button"
+                      onClick={uploadExam}
+                      // onClick={() => {
+                      //   setModalDetail({
+                      //     ...modalDetail,
+                      //     showModal: true,
+                      //     buttonFunction: "",
+                      //     modalTitle: "Edit Exam Title",
+                      //   });
+                      //   setExamTitle(item.title);
+                      // }}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <EmptyState
+              placeholder="No Exam added yet, please click to Add."
+              action={() =>
+                setModalDetail({
+                  ...modalDetail,
+                  showModal: true,
+                  buttonFunction: saveInitialDetail,
+                  modalTitle: "Add Exam Title",
+                })
+              }
+            />
+          )}
+
+        </>
+      )}
+
+      <TrainingExamForm
+        reqId={data?.id}
+        handleOnChange={refreshData}
+        defaultData={defaultData}
+        setDefaultData={() => setDefaultData(null)}
+        formDetail={formDetail}
+        setFormDetail={(e)=>setFormDetail(e)}
+      />
+
+      <Modal
+        show={modalDetail.showModal}
+        onHide={() => setModalDetail({ ...modalDetail, showModal: false })}
+      >
         <Modal.Header className="border-0" closeButton>
-          <Modal.Title className={`h5 theme-color`}>Add Exam</Modal.Title>
+          <Modal.Title className={`h5 theme-color`}>
+            {modalDetail.modalTitle}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body className="py-0">
           <FormFieldItem
@@ -154,10 +266,8 @@ const ExamSection = ({ data }) => {
                   type="text"
                   className="form-control"
                   placeholder="Title"
-                  value={examData.title}
-                  onChange={(e) =>
-                    setExamData({ ...examData, title: e.target.value })
-                  }
+                  value={examTitle}
+                  onChange={(e) => setExamTitle(e.target.value)}
                 />
               </>
             }
@@ -167,14 +277,16 @@ const ExamSection = ({ data }) => {
           <Button
             type="button"
             label="Cancel"
-            onClick={() => setShowModal(false)}
+            onClick={() => setModalDetail({ ...modalDetail, showModal: false })}
             className="p-button-text rounded"
           />
           <Button
             type="button"
             label="Save"
             icon="pi pi-save"
-            onClick={saveInitialDetail}
+            onClick={()=>{
+              saveInitialDetail();
+              setModalDetail({...modalDetail, showModal: false});}}
             className="rounded"
           />
         </Modal.Footer>

@@ -10,6 +10,7 @@ import ModuleSection from "./RequestPageSection/ModuleSection.jsx";
 import ExamSection from "./RequestPageSection/ExamSection.jsx";
 import trainingRequestHook from "../hooks/trainingRequestHook.jsx";
 import TraineeReportView from "./TrainingPageSection/TraineeReportView.jsx";
+import SkeletonList from "../components/Skeleton/SkeletonList.jsx";
 
 const TrainingRequestPage = () => {
   const { id, page } = useParams();
@@ -17,7 +18,6 @@ const TrainingRequestPage = () => {
     parseInt(id)
   );
 
-  console.log(data);
   const Content = () => {
     const pages = [
       <>
@@ -46,7 +46,6 @@ const TrainingRequestPage = () => {
         setCurrentContent(0);
       }
     }, [page]);
-    console.log(id, page);
     return (
       <>
         <div className={`row g-0`}>
@@ -59,7 +58,7 @@ const TrainingRequestPage = () => {
             } p-3 pb-5 col`}
             style={{ minHeight: "calc(100vh - 50px)" }}
           >
-            {loading ? "loaod" : pages[currentContent]}
+            {loading ? <SkeletonList/> : pages[currentContent]}
           </div>
         </div>
       </>
