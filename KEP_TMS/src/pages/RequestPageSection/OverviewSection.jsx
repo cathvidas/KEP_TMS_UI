@@ -37,7 +37,7 @@ const OverviewSection = ({ data }) => {
         </h3>
         <h6 className="text-muted text-center mb-3">Request ID: {data.id}</h6>
         <div className="position-absolute end-0 top-0 ">
-          <Button type="button" onClick={()=>history.back()} label="back" icon="pi pi-arrow-right" text />
+          <Button type="button" onClick={()=>history.back()}  icon="pi pi-times" text />
         </div>
         <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
           <span> Requestor: {data.requestor.fullname}</span>
