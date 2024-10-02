@@ -15,7 +15,7 @@ import ExportBtn from "./ExportBtn";
 import { Dropdown } from "react-bootstrap";
 import { statusCode } from "../../api/constants";
 
-const TRequestTable = ({ data, filter, headingTitle, handleActionFilter }) => {
+const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEdit = true }) => {
   // const [data, setData] = useState([]);
 
   const [filters, setFilters] = useState({
@@ -49,6 +49,7 @@ const TRequestTable = ({ data, filter, headingTitle, handleActionFilter }) => {
           text
           onClick={() => handleButtonClick(data.id, data.status == "Published" ? "Training":"TrainingRequest")}
         />
+        {allowEdit && 
         <Button
           type="button"
           icon="pi pi-pencil"
@@ -56,7 +57,7 @@ const TRequestTable = ({ data, filter, headingTitle, handleActionFilter }) => {
           className="rounded"
           text
           onClick={() => handleButtonClick(data.id, "Request/Update")}
-        />
+        />}
         {/* <Button
       type="button"
         icon="pi pi-trash"
@@ -114,6 +115,7 @@ const TRequestTable = ({ data, filter, headingTitle, handleActionFilter }) => {
           <h6 className="m-0">
             {headingTitle ? headingTitle : "Training Request List"}
           </h6>
+          {filter && 
           <div className="position-relative">
             <Dropdown>
               <Dropdown.Toggle
@@ -145,7 +147,7 @@ const TRequestTable = ({ data, filter, headingTitle, handleActionFilter }) => {
                 ))}
               </Dropdown.Menu>
             </Dropdown>
-          </div>
+          </div>}
         </span>
         <IconField iconPosition="left">
           <InputIcon className="pi pi-search" />
@@ -216,7 +218,7 @@ const TRequestTable = ({ data, filter, headingTitle, handleActionFilter }) => {
             ></Column>
             <Column
               field="approverPosition"
-              header="Current Approver"
+              header="Current Status"
               sortable
               style={{ minWidth: "12rem" }}
               body={approverColumnTemplate}

@@ -13,6 +13,8 @@ import {
   faClipboardList,
   faHouse,
   faList,
+  faListAlt,
+  faListCheck,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
@@ -126,15 +128,21 @@ const Sidebars = () => {
           />
           <NavItem
             item={"/KEP_TMS/RequestList"}
-            title="Request List"
+            title="Training Requests"
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faClipboardList} />}
           />
           <NavItem
             item="/KEP_TMS/Trainings"
-            title="Training List"
+            title="Assigned Trainings"
             expanded={expanded}
             icon={<FontAwesomeIcon icon={faClipboardCheck} />}
+          />
+          <NavItem
+            item="/KEP_TMS/AssignedTrainings"
+            title="Facilitated Trainings"
+            expanded={expanded}
+            icon={<FontAwesomeIcon icon={faListCheck} />}
           />
               <>
                 <NavItem

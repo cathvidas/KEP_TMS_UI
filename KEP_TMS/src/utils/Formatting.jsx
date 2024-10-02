@@ -10,12 +10,12 @@ export const formatCurrency = (value) => {
 };
 
 export const formatDateTime = (value) => {
-    const date = new Date(value);
-    return date.toLocaleString("en-US", { timeZone: "America/New_York" })
+    const date = value ? new Date(value): new Date();
+    return date.toLocaleString("en-US")
 }
 export const formatDateOnly = (value) => {
     const date = new Date(value);
-    return date.toLocaleDateString("en-US", { timeZone: "America/New_York" })
+    return date.toLocaleDateString("en-US")
 }
 export const formatDateString = (value) => {
     const date = new Date(value);

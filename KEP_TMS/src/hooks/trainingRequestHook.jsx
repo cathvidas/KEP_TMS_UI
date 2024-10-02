@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import trainingRequestService from "../services/trainingRequestService";
 import userMapping from "../mappings/userMapping";
 import userService from "../services/userService";
-import { getCurrentRoutingActivity, getRoutingActivity } from "../api/trainingServices";
+import { getRoutingActivity } from "../api/trainingServices";
 import countStatus from "../utils/countStatus";
 import handleResponseAsync from "../services/handleResponseAsync";
 import { ActivityType } from "../api/constants";
@@ -56,46 +56,49 @@ const trainingRequestHook = {
     };
   },
 
-  useAllTrainingRequests: () => {
+  useAllTrainingRequests: (id) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const fetchData = async () => {
-        try {
-          const trainingRequests =
-            await trainingRequestService.getAllTrainingRequests();
-          const updatedRequests = await Promise.all(
-            trainingRequests.data.map(async (request) => {
-              const facilitators = await userMapping.mapUserIdList(
-                request.trainingFacilitators,
-                "facilitatorBadge"
-              );
-              const approver =
-                await trainingRequestService.getCurrentRoutingActivity(
-                  request.id,
-                  ActivityType.REQUEST
+        handleResponseAsync(
+          () =>
+            id
+              ? trainingRequestService.getTrainingRequestsByRequestor(id)
+              : trainingRequestService.getAllTrainingRequests(),
+          async (e) => {
+            const updatedRequests = await Promise.all(
+              e?.data.map(async (request) => {
+                const facilitators = await userMapping.mapUserIdList(
+                  request.trainingFacilitators,
+                  "facilitatorBadge"
                 );
-              const user = await userService.getUserById(approver.assignedTo);
-              const routing = {
-                approverUsername: user.username,
-                approverFullName: user.lastname + ", " + user.firstname,
-                statusId: approver.statusId,
-                approverId: user.employeeBadge,
-                approverPosition: user.position,
-              };
+                const approver =
+                  await trainingRequestService.getCurrentRoutingActivity(
+                    request.id,
+                    ActivityType.REQUEST
+                  );
+                const user = await userService.getUserById(approver.assignedTo);
+                const routing = {
+                  approverUsername: user.username,
+                  approverFullName: user.lastname + ", " + user.firstname,
+                  statusId: approver.statusId,
+                  approverId: user.employeeBadge,
+                  approverPosition: user.position,
+                };
 
-              return {
-                ...request,
-                trainingFacilitators: facilitators,
-                routing: routing, // Replace with detailed facilitator information
-              };
-            })
-          );
-          setData(updatedRequests);
-        } catch (error) {
-          setError(error);
-        }
+                return {
+                  ...request,
+                  trainingFacilitators: facilitators,
+                  routing: routing, // Replace with detailed facilitator information
+                };
+              })
+            );
+            setData(updatedRequests);
+          },
+          (e) => setError(e)
+        );
         setLoading(false);
       };
       fetchData();
@@ -113,11 +116,12 @@ const trainingRequestHook = {
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
-          () =>
-            id
-              ? trainingRequestService.getTrainingRequestsByRequestor(id)
-              : trainingRequestService.getAllTrainingRequests(),
-          (e) => setData(countStatus(e.data)),
+          () =>trainingRequestService.getAllTrainingRequests(),
+          (e) => {
+            const userRequest = id != null? e?.data?.filter((x)=>x.requestorBadge === id): e.data;
+            setData(countStatus(e.data,userRequest))
+          },
+          // (e) => setData(countStatus(e.data)),
           (e) => setError(e)
         );
         setLoading(false);
@@ -153,6 +157,54 @@ const trainingRequestHook = {
       loading,
     }
   },
+  useParticipantTrainings: (id, role)=>{
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+        handleResponseAsync(
+          () => trainingRequestService.getTrainingRequestByParticipant(id, role),
+          async (e) => {
+            const updatedRequests = await Promise.all(
+              e.map(async (request) => {
+                const facilitators = await userMapping.mapUserIdList(
+                  request.trainingFacilitators,
+                  "facilitatorBadge"
+                );
+                const approver =
+                  await trainingRequestService.getCurrentRoutingActivity(
+                    request.id,
+                    ActivityType.REQUEST
+                  );
+                const user = await userService.getUserById(approver.assignedTo);
+                const routing = {
+                  approverUsername: user.username,
+                  approverFullName: user.lastname + ", " + user.firstname,
+                  statusId: approver.statusId,
+                  approverId: user.employeeBadge,
+                  approverPosition: user.position,
+                };
+
+                return {
+                  ...request,
+                  trainingFacilitators: facilitators,
+                  routing: routing, // Replace with detailed facilitator information
+                };
+              })
+            );
+            setData(updatedRequests);
+          },
+          (e) => setError(e)
+        );
+        setLoading(false);
+      };
+      fetchData();
+    }, []);
+    return{
+      data, error, loading
+    }
+  }
 };
 
 export default trainingRequestHook;

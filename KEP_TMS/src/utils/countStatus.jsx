@@ -1,6 +1,7 @@
 import { statusCode } from "../api/constants";
+import { SessionGetEmployeeId } from "../services/sessions";
 
-const countStatus = (data) => {
+const countStatus = (data, userRequest) => {
   let count = {
     total: 0,
     pending: 0,
@@ -9,10 +10,12 @@ const countStatus = (data) => {
     cancelled: 0,
     closed: 0,
     published: 0,
-    forApproval: 0
+    forApproval: 0,
+    ongoing: 0,
+    trainerAction: 0,
   };
 
-  data.forEach((item) => {
+  userRequest.forEach((item) => {
     count.total++;
     // if()
     if (item?.status?.id === statusCode.APPROVED) {
@@ -24,7 +27,31 @@ const countStatus = (data) => {
     } else if (item.status.id === statusCode.PUBLISHED) {
       count.published++;
     }
+  });  
+  console.log(data)
+  data.forEach((item) => {  
+    let isParticipant = false;
+    let isFacilitator = false;
+    item?.trainingParticipants?.map((x) => {
+      if (x?.employeeBadge === SessionGetEmployeeId()) {
+        isParticipant = true;
+      }
+      
+    });
+    item?.trainingFacilitators?.map((x) => {
+      if (x?.facilitatorBadge === SessionGetEmployeeId()) {
+        isFacilitator = true;
+      }
+      
+    });
+    if(isParticipant && item?.status?.id === statusCode.PUBLISHED){
+      count.ongoing++;
+    }
+    if(isFacilitator && (item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.PUBLISHED)){
+      count.trainerAction++;
+    }
   });
+  console.log(count.trainerAction)
   return count;
 };
 export default countStatus;

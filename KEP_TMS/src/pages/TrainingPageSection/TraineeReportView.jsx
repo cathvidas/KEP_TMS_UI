@@ -8,7 +8,10 @@ import { Card } from "react-bootstrap";
 import EvaluationForm from "../../components/forms/EvaluationForm";
 import proptype from "prop-types"
 import EffectivenessForm from "../../components/forms/EffectivenessForm";
+import { SessionGetEmployeeId } from "../../services/sessions";
+import userHook from "../../hooks/userHook";
 const TraineeReportView = ({data}) => {
+  const userData = userHook.useUserById(SessionGetEmployeeId());
   const stepperRef = useRef();
   const StepperButton = (button) => {
     return (
@@ -47,15 +50,15 @@ const TraineeReportView = ({data}) => {
           // headerPosition="bottom"
         >
         <StepperPanel header="Training Effectiveness Form">
-          <EffectivenessForm/>
+          <EffectivenessForm data={data} userData={userData}/>
           {<StepperButton back={true} next={true} index={2} />}
         </StepperPanel>
           <StepperPanel header="Training Report Form">
-            <TrainingReportForm data={data}/>
+            <TrainingReportForm data={data} userData={userData}/>
             {<StepperButton next={true} index={0} />}
           </StepperPanel>
           <StepperPanel header="Evaluation Form">
-            <EvaluationForm data={data}/>
+            <EvaluationForm data={data} userData={userData}/>
             {<StepperButton back={true} next={true} index={1} />}
           </StepperPanel>
         </Stepper>

@@ -1,7 +1,16 @@
 import { Card, Col, Form, Row, Table } from "react-bootstrap";
 import AutoCompleteField from "./common/AutoCompleteField";
+import proptype from "prop-types"
+import { formatDateOnly } from "../../utils/Formatting";
 
-const EffectivenessForm = () => {
+const EffectivenessForm = ({data, userData}) => {
+  const getFacilitators = () => {
+    let facilitators = "";
+    data?.trainingFacilitators?.map((x) => {
+      facilitators += `${x.fullname}  `;
+    });
+    return facilitators;
+  };
   return (
     <>
       <Card.Body className="border-top ">
@@ -13,31 +22,31 @@ const EffectivenessForm = () => {
           <Row>
             <AutoCompleteField
               label="Name of Employee"
-              value=""
+              value={userData?.data?.fullname} 
               className="col-6"
             />
-            <AutoCompleteField label="Badge no" value="" />
-            <AutoCompleteField label="Position" value="" className="col-6" />
-            <AutoCompleteField label="Department" value="" />
+            <AutoCompleteField label="Badge No" value={userData?.data?.employeeBadge}  />
+            <AutoCompleteField label="Position" value={userData?.data?.position} className="col-6" />
+            <AutoCompleteField label="Department" value={userData?.data?.departmentName}/>
             <AutoCompleteField
               label="Training / Program"
-              value=""
+              value={data?.trainingProgram?.name}
               className="col-12"
             />
             <AutoCompleteField
               label="Facilitator/s"
-              value=""
+              value={getFacilitators()}
               className="col-12"
             />
             <AutoCompleteField
               label="Training Date/s"
-              value=""
+              value={`${formatDateOnly(data?.trainingStartDate)} - ${formatDateOnly(data?.trainingEndDate)}`}
               className="col-6"
             />
-            <AutoCompleteField label="Total Training Hours" value="" />
+            <AutoCompleteField label="Total Training Hours" value={data?.durationInHours} />
             <AutoCompleteField
               label="Training Category"
-              value=""
+              value={data?.trainingCategory?.name}
               className="col-12"
             />
           </Row>
@@ -204,5 +213,9 @@ const EffectivenessForm = () => {
       </Card.Body>
     </>
   );
+};
+EffectivenessForm.propTypes = {
+  data: proptype.object,
+  userData: proptype.object,
 };
 export default EffectivenessForm;

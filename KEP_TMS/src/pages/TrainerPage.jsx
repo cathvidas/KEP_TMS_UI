@@ -5,18 +5,18 @@ import trainingRequestHook from "../hooks/trainingRequestHook"
 import { SessionGetEmployeeId } from "../services/sessions"
 
 
-const Trainings =()=>{
-  const {data, error, loading} = trainingRequestHook.useParticipantTrainings(SessionGetEmployeeId());
+const TrainerPage =()=>{
+  const {data, error, loading} = trainingRequestHook.useParticipantTrainings(SessionGetEmployeeId(),'trainer');
   console.log(data)
     const Content =() =>(<div className="p-3">
    
-      <SectionBanner title="Trainings" subtitle="List of Trainings"/>
+      <SectionBanner title="Assigned Trainings" subtitle="List of Trainings Assigned to you"/>
 
       <TRequestTable data={data} headingTitle="Training List" allowEdit={false}/>
       </div>
         
     )
     return(<>
-    <Layout BodyComponent={Content} header={{title: "Trainings" , icon: <i className="pi pi-clipboard"></i>}}/></>)
+    <Layout BodyComponent={Content} header={{title: "TrainerPage" , icon: <i className="pi pi-clipboard"></i>}}/></>)
 }
-export default Trainings
+export default TrainerPage

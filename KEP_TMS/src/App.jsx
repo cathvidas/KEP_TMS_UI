@@ -13,6 +13,7 @@ import CertificatesPage from "./pages/CertificatesPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import ApproveRequestPage from "./pages/ApproveRequest";
 import TrainingPage from "./pages/TrainingPage";
+import TrainerPage from "./pages/TrainerPage";
 function App() {
   return (
     <>
@@ -24,6 +25,7 @@ function App() {
         <Route path="/KEP_TMS/Request/:type?/:id?" element={<NewRequest />} />
         <Route path="/KEP_TMS/RequestList/:type?" element={<RequestList />} />
         <Route path="/KEP_TMS/Trainings" element={<Trainings />} />
+        <Route path="/KEP_TMS/AssignedTrainings" element={<TrainerPage />} />
         <Route path="/KEP_TMS/ForApproval" element={<ForApproval />} />
         <Route path="/KEP_TMS/MasterList/:category/:type?" element={<MasterList />} />
         <Route path="/KEP_TMS/CertificatesPage" element={<CertificatesPage />} />

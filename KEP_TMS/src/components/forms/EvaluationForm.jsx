@@ -5,7 +5,15 @@ import RatioRateField from "./common/RadioRateField";
 import { TabPanel, TabView } from "primereact/tabview";
 import proptype from "prop-types"
 import { Rating } from "primereact/rating";
-const EvaluationForm = ({data}) => {
+import { formatDateTime } from "../../utils/Formatting";
+const EvaluationForm = ({data, userData}) => {
+  const getFacilitators = () => {
+    let facilitators = "";
+    data?.trainingFacilitators?.map((x) => {
+      facilitators += `${x.fullname}  `;
+    });
+    return facilitators;
+  };
   return (
     <Card.Body className="border-top">
       <div className="text-center  pb-3 mb-3 ">
@@ -16,16 +24,16 @@ const EvaluationForm = ({data}) => {
         <Row>
           <AutoCompleteField
             label="Program Title"
-            value=""
+            value={data?.trainingProgram?.name}
             className="col-12"
           />
           <AutoCompleteField
             label="Facilitator/s"
-            value=""
+            value={getFacilitators()}
             className="col-12"
           />
-          <AutoCompleteField label="Date/Time" value="" />
-          <AutoCompleteField label="Venue" value="" />
+          <AutoCompleteField label="Date/Time" value={formatDateTime()} />
+          <AutoCompleteField label="Venue" value={data?.venue} />
         </Row>
         <br />
         <Row>
@@ -153,6 +161,6 @@ const EvaluationForm = ({data}) => {
 
 EvaluationForm.propTypes = {
     data: proptype.object,
-  
+    userData: proptype.object,
 };
 export default EvaluationForm;

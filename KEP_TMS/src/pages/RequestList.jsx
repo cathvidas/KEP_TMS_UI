@@ -7,9 +7,11 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import getStatusCode from "../utils/status/getStatusCode";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
+import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 const RequestList = () => {
   const { type } = useParams();
-  const { data, error, loading } = trainingRequestHook.useAllTrainingRequests();
+  const { data, error, loading } = SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin"
+      ? trainingRequestHook.useAllTrainingRequests() : trainingRequestHook.useAllTrainingRequests(SessionGetEmployeeId());
   const [requests, setRequests] = useState();
   const [filter, setFilter] = useState({label: type, value: getStatusCode(type)});
   useEffect(() => {

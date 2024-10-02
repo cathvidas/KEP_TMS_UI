@@ -1,8 +1,12 @@
 import { Card, Col, Form, Row } from "react-bootstrap";
 import { FormFieldItem } from "./../trainingRequestFormComponents/FormElements";
 import AutoCompleteField from "./common/AutoCompleteField";
+import proptype from "prop-types"
+import { formatDateOnly } from "../../utils/Formatting";
 
-const TrainingReportForm = ({data}) => {
+const TrainingReportForm = ({data, userData}) => {
+  console.log(userData)
+  console.log(data)
   return (
       <Card.Body className="border-top">
         <div className="text-center  pb-3 mb-3">
@@ -13,14 +17,14 @@ const TrainingReportForm = ({data}) => {
         </div>
         <Form>
           <Row>
-              <AutoCompleteField label="Name" value="" className="col-6" />
-              <AutoCompleteField label="BadgeNo" value="" />
-              <AutoCompleteField label="Position" value=""className="col-6" />
-              <AutoCompleteField label="Department" value="" />
-              <AutoCompleteField label="Training Program Attended" value="" className="col-12"/>
-              <AutoCompleteField label="Training Provider" value=""className="col-12" />
-              <AutoCompleteField label="Training Duration" value="" className="col-6"/>
-              <AutoCompleteField label="Total Training Hours" value="" />
+              <AutoCompleteField label="Name" value={userData?.data?.fullname} className="col-6" />
+              <AutoCompleteField label="BadgeNo" value={userData?.data?.employeeBadge}  />
+              <AutoCompleteField label="Position" value={userData?.data?.position} className="col-6" />
+              <AutoCompleteField label="Department" value={userData?.data?.departmentName}  />
+              <AutoCompleteField label="Training Program Attended" value={data?.trainingProgram?.name}  className="col-12"/>
+              <AutoCompleteField label="Training Provider" value={data?.trainingProvider?.name} className="col-12" />
+              <AutoCompleteField label="Training Duration" value={`${formatDateOnly(data?.trainingStartDate)} - ${formatDateOnly(data?.trainingEndDate)}`}  className="col-6"/>
+              <AutoCompleteField label="Total Training Hours" value={data?.durationInHours}  />
           </Row>
           <br />
           <Row>
@@ -65,5 +69,8 @@ const TrainingReportForm = ({data}) => {
   );
 };
 
-TrainingReportForm.propTypes = {};
+TrainingReportForm.propTypes = {
+  data: proptype.object,
+  userData: proptype.object,
+};
 export default TrainingReportForm;

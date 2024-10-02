@@ -6,7 +6,7 @@ const AutoCompleteField = ({ label, value, className}) => {
     <Col className={`d-flex gap-2 align-items-end ${className}`}>
       <label className="form-label m-0">{label}:</label>
       <span className="flex-grow-1 border-0 border-bottom"
-      > {value}</span>
+      > {value?? "N/A"}</span>
 
     </Col>
   );
