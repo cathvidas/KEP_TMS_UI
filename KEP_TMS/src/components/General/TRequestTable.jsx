@@ -16,7 +16,7 @@ import { Dropdown } from "react-bootstrap";
 import { statusCode } from "../../api/constants";
 
 const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEdit = true }) => {
-  // const [data, setData] = useState([]);
+console.log(data)
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },

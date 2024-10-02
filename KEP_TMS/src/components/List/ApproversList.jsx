@@ -9,35 +9,19 @@ import { useState } from "react";
 const ApproverList = ({ datalist, routing }) => {
   console.log(routing)
   const [visible, setVisible] = useState(false);
-  // const getStatus = (employeeBadge) => {
-  //   const status = routing.filter((x) => x.assignedTo === employeeBadge);
-  //    const others = datalist.filter((x)=>  !routing.some((y) => y.assignedTo === x.employeeBadge));
-  //    const pending = status.filter((x)=> x.statusId === 4);
-  //    console.log(pending)
-  //   if (status) {
-  //     return getStatusById(status[0]?.statusId);
-  //   }else if(!pending && others){
-  //     return getStatusById(4)
-  //   } 
-  //   else {
-  //     return "Pending";
-  //   }
-  // };
   const getStatus = (employeeBadge) => {
     const status = routing.filter((x) => x.assignedTo === employeeBadge); // Get status for this employee
-    const others = datalist.filter((x) => !routing.some((y) => y.assignedTo === x.employeeBadge)); // Get others who are not assigned
-    const pending = status.find((x) => x.statusId === 4); // Check if any status is 'Pending'
+    const others = datalist.filter((x) => !routing.some((y) => y.assignedTo === x.employeeBadge)); 
   
-    console.log(pending);
   
     if (status.length > 0 && status[0]?.statusId) {
-      // If we found a status for the employee
       return getStatusById(status[0]?.statusId);
-    } else if (!pending && others.length > 0) {
-      // If no pending status and there are unassigned others
-      return getStatusById(4); // Assuming 4 means "Pending"
-    } else {
-      return "Pending"; // Default if no conditions matched
+    } 
+    else {
+      if(datalist.length != routing.length && employeeBadge === others[0].employeeBadge){
+        return "ForApproval"
+      }else{
+        return "Pending";} // Default if no conditions matched
     }
   };
   const actionBodyTemplate = (rowData) => (
