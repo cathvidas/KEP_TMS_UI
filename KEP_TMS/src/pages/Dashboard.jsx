@@ -37,7 +37,7 @@ const Dashboard = () => {
       ...(data?.trainerAction > 0
         ? [
             {
-              label: "Facilitated Trainings",
+              label: "Facilitation Assignments",
               color1: "#ff6bbd",
               color2: "#ff6b6b",
               value: data?.trainerAction,
