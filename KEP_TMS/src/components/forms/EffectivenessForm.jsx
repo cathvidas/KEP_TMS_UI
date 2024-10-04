@@ -37,7 +37,7 @@ const EffectivenessForm = ({ data, userData }) => {
     totalTrainingHours: data?.durationInHours,
     evaluationDate: formatDateOnly(new Date(), "dash"),
     annotation: "string",
-    evaluatorId: 0,
+    evaluatorId: SessionGetEmployeeId(),
     performanceCharacteristics: performanceCharacteristics,
     projectPerformanceEvaluation: projectPerformanceEvaluation,
     createdBy: SessionGetEmployeeId(),
@@ -51,7 +51,7 @@ const EffectivenessForm = ({ data, userData }) => {
     }; // Update the content of the first element
     setPerformanceCharacteristics(updatedCharacteristics);
   };
-  console.log(getFormData);
+  
   const handlePerfEvaluationOnChange = (e, index) => {
     const { name, value } = e.target;
     const updatedEvaluation = [...projectPerformanceEvaluation]; // Create a copy of the array
@@ -208,7 +208,7 @@ const EffectivenessForm = ({ data, userData }) => {
             />
             <AutoCompleteField
               label="Total Training Hours"
-              value={data?.durationInHours}
+              value={data?.durationInHours?.toString()}
             />
             <AutoCompleteField
               label="Training Category"

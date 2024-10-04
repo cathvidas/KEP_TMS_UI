@@ -2,8 +2,8 @@ import Swal from "sweetalert2";
 
 export const confirmAction = (prop) => {
   Swal.fire({
-    title: prop.title ??"Are you sure?",
-    text: prop.text??"You won't be able to revert this!",
+    title: prop.title ??"Confirm Submission?",
+    text: prop.text??"Are you sure you want to submit this form?",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: prop.confirmButtonColor?? "#3085d6",

@@ -6,7 +6,15 @@ import { TabPanel, TabView } from "primereact/tabview";
 import proptype from "prop-types"
 import { Rating } from "primereact/rating";
 import { formatDateTime } from "../../utils/Formatting";
+import { useState } from "react";
+import { SessionGetEmployeeId } from "../../services/sessions";
+import evaluationConstant from "../../services/constants/evaluationConstant";
 const EvaluationForm = ({data, userData}) => {
+  const [formData, setFormData] = useState();
+  const [contentMethodology, setContentMethodology] = useState(evaluationConstant.contentMethodology);
+  const [programLogisticsRating, setProgramLogisticsRating] = useState(evaluationConstant.programLogisticsRating);
+  const [facilitatorRating, setFacilitatorRating] = useState(evaluationConstant.facilitatorRating);
+  const [overallRating, setOverallRating] = useState(evaluationConstant.overallRating);
   const getFacilitators = () => {
     let facilitators = "";
     data?.trainingFacilitators?.map((x) => {
@@ -14,6 +22,21 @@ const EvaluationForm = ({data, userData}) => {
     });
     return facilitators;
   };
+  const getFormData ={
+    id: 0,
+    trainingRequestId: data.id,
+    traineeBadge: SessionGetEmployeeId(),
+    contentMethodology: contentMethodology,
+    programLogisticsRating: programLogisticsRating,
+    overallRating: overallRating,
+    annotation: "string",
+    facilitatorRating: facilitatorRating,
+    createdBy: SessionGetEmployeeId()
+  }
+  const handleOnChange = (e, field, setField) => {
+    const { name, value } = e.target;
+    setField({...field, [name]: value});
+  }
   return (
     <Card.Body className="border-top">
       <div className="text-center  pb-3 mb-3 ">
