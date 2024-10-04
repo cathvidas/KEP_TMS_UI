@@ -51,7 +51,7 @@ const TraineeReportView = ({data}) => {
         >
         <StepperPanel header="Training Effectiveness Form">
           <EffectivenessForm data={data} userData={userData}/>
-          {<StepperButton back={true} next={true} index={2} />}
+          {/* {<StepperButton back={true} next={true} index={2} />} */}
         </StepperPanel>
           <StepperPanel header="Training Report Form">
             <TrainingReportForm data={data} userData={userData}/>

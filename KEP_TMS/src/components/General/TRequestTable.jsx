@@ -241,5 +241,8 @@ console.log(data)
 TRequestTable.propTypes = {
   filter: proptype.object,
   data: proptype.array,
+  headingTitle: proptype.string,
+  handleActionFilter: proptype.func,
+  allowEdit: proptype.bool,
 };
 export default TRequestTable;
