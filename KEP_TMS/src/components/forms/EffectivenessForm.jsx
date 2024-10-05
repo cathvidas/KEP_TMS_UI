@@ -14,6 +14,8 @@ import {
   projectPerformanceEvaluationArray,
 } from "../../services/constants/effectivenessConstant";
 import { SessionGetEmployeeId } from "../../services/sessions";
+import { confirmDialog } from "primereact/confirmdialog";
+import effectivenessHook from "../../hooks/effectivenessHook";
 const EffectivenessForm = ({ data, userData }) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
@@ -22,6 +24,8 @@ const EffectivenessForm = ({ data, userData }) => {
   );
   const [projectPerformanceEvaluation, setProjectPerformanceEvaluation] =
     useState(projectPerformanceEvaluationArray);
+    // const effectivenessData = effectivenessHook.useEffectivenessById()
+    // console.log(data,userData)
   const numItems = [0, 1, 2];
   const getFacilitators = () => {
     let facilitators = "";
@@ -37,7 +41,7 @@ const EffectivenessForm = ({ data, userData }) => {
     totalTrainingHours: data?.durationInHours,
     evaluationDate: formatDateOnly(new Date(), "dash"),
     annotation: "string",
-    evaluatorId: SessionGetEmployeeId(),
+    EvaluatorBadge:userData?.data?.superiorBadge,
     performanceCharacteristics: performanceCharacteristics,
     projectPerformanceEvaluation: projectPerformanceEvaluation,
     createdBy: SessionGetEmployeeId(),

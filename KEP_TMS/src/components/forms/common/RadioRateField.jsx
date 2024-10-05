@@ -2,12 +2,11 @@ import { Rating } from "primereact/rating";
 import { useState } from "react";
 import proptype from "prop-types"
 import { Col, Row } from "react-bootstrap";
-const RatioRateField =({sequenceNo, label, onChange, defvalue, disabled=false, required=false})=>{
-    const [value, setValue] = useState(null);
+const RatioRateField =({sequenceNo, label, onChange, value, disabled=false, required=false})=>{
     return(
         <div className="d-flex align-items-center justify-content-between mb-1">
             <p className="m-0">{label}</p>
-            <Rating value={value} onChange={(e) => setValue(e.value)} cancel={false} />
+            <Rating value={value} onChange={(e) => onChange(e.value)} cancel={false} />
         </div>
     )
 

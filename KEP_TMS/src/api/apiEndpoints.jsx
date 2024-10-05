@@ -20,13 +20,6 @@ export const API_ENDPOINTS = {
   DELETE_TRAINING_PROVIDER: "/TrainingProvider/DeleteTrainingProvider",
   UPDATE_TRAINING_PROVIDER: "/TrainingProvider/UpdateTrainingProvider",
 
-  //Training Report
-  GET_TRAINING_REPORTS: "/TrainingReport/GetAllTrainingReports",
-  INSERT_TRAINING_REPORT: "/TrainingReport/InsertTrainingReport",
-  GET_TRAINING_REPORT_BY_ID: "/TrainingReport/GetTrainingReportById",
-  UPDATE_TRAINING_REPORT: "/TrainingReport/UpdateTrainingReport",
-  DELETE_TRAINING_REPORT: "/TrainingReport/DeleteTrainingReport",
-
   //Users
   GET_USERS: "/Users/GetAllUsers",
   GET_USER_BY_ID: "/Users/GetUserById",

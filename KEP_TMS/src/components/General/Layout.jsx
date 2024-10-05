@@ -21,7 +21,7 @@ const Layout = ({
     if (token != null) {
       setshowmenu(true);
     } else {
-      navigate("*");
+      navigate("/KEP_TMS");
     }
   }, [token, navigate]);
 

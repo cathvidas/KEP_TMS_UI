@@ -1,18 +1,24 @@
 import { Rating } from "primereact/rating";
 import { useState } from "react";
 import proptype from "prop-types"
-const RateFieldItem =({sequenceNo, label, onChange, defvalue, disabled=false, required=false})=>{
-    const [value, setValue] = useState(null);
-    return(
-        <div className="d-flex align-items-center justify-content-between">
-            <p><b>{sequenceNo}.</b> {label}</p>
-            <Rating value={value} onChange={(e) => setValue(e.value)} cancel={false} />
+import ErrorTemplate from "../../General/ErrorTemplate";
+const RateFieldItem = ({ sequenceNo, label, onChange, value, error,disabled = false, required = false }) => {
+    return (
+        <>
+        <div className="d-flex gap-2 align-items-center justify-content-between">
+            <p className="m-0">
+                {sequenceNo && 
+                <b>{sequenceNo}. </b>}
+                {label}</p>
+            <Rating value={value} onChange={(e) => onChange(e.value)} cancel={false} />
         </div>
+        {error && <ErrorTemplate message={error}/>}
+        </>
     )
 
 }
 
-RateFieldItem.propTypes={
+RateFieldItem.propTypes = {
     sequenceNo: proptype.string,
     label: proptype.string,
     onChange: proptype.func,

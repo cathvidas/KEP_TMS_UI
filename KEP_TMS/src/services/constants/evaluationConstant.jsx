@@ -1,7 +1,7 @@
 const evaluationConstant ={
     id: 0,
     trainingRequestId: 0,
-    traineeBadge: "string",
+    traineeBadge: "",
     contentMethodology: {
       id: 0,
       cmOne: 0,
@@ -9,8 +9,8 @@ const evaluationConstant ={
       cmThree: 0,
       cmFour: 0,
       cmFive: 0,
-      cmSix: "string",
-      cmSeven: "string"
+      cmSix: "",
+      cmSeven: ""
     },
     programLogisticsRating: {
       id: 0,
@@ -19,11 +19,11 @@ const evaluationConstant ={
       plrThree: 0
     },
     overallRating: 0,
-    annotation: "string",
+    annotation: "",
     facilitatorRating: [
       {
         id: 0,
-        facilitatorBadge: "string",
+        facilitatorBadge: "",
         trainingEvaluationId: 0,
         frOne: 0,
         frTwo: 0,
@@ -34,6 +34,6 @@ const evaluationConstant ={
         frAverage: 0
       }
     ],
-    createdBy: "string"
+    createdBy: ""
   }
   export default evaluationConstant;

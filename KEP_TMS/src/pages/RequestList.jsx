@@ -24,7 +24,6 @@ const RequestList = () => {
       setRequests(data);
     }
   }, [filter.value, type, data]);
-  console.log(data);
   const Content = () => (
     <>
       <div className="p-3">

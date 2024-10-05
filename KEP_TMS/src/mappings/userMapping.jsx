@@ -7,7 +7,7 @@ const userMapping = {
         const users = await Promise.all(
           data.map(async (user) => {
             const userDetail = await userService.getUserById(user[property]);
-            return userDetail;
+            return {...user, ...userDetail};
           })
         );
         return users;
