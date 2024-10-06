@@ -144,7 +144,6 @@ const getTrainingsMasterList = () =>{
           {loading ? (
             <>
               <SkeletonBanner />
-              {/* <SkeletonList /> */}
               <SkeletonDataTable />
             </>
           ) : (

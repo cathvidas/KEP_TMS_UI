@@ -1,18 +1,17 @@
-import { API_ENDPOINTS } from "./apiEndpoints"
 import fetchFromApi from "./apiUtil";
 
 export const getAllProgramsApi = async () => {
-    return await fetchFromApi(API_ENDPOINTS.GET__PROGRAMS);
+    return await fetchFromApi("/TrainingProgram/GetAllTrainingPrograms");
 }
 export const getProgramApi = async (programId) => {
-    return await fetchFromApi(`${API_ENDPOINTS.GET__PROGRAM_BY_ID}?id=${programId}`);
+    return await fetchFromApi(`"/TrainingProgram/GetTrainingProgramById"?id=${programId}`);
 }
 export const createProgramApi = async (data) =>{
-    return await fetchFromApi(API_ENDPOINTS.INSERT__PROGRAM, "POST", data);
+    return await fetchFromApi("/TrainingProgram/CreateTrainingProgram", "POST", data);
 }
 export const deleteProgramApi = async (id) =>{
-    return await fetchFromApi(`${API_ENDPOINTS.DELETE__PROGRAM}?id=${id}`, "DELETE");
+    return await fetchFromApi(`/TrainingProgram/DeleteTrainingProgram?id=${id}`, "DELETE");
 }
 export const updateProgramApi = async (data) =>{
-    return await fetchFromApi(API_ENDPOINTS.UPDATE__PROGRAM, "PUT", data);
+    return await fetchFromApi("/TrainingProgram/UpdateTrainingProgram", "PUT", data);
 }

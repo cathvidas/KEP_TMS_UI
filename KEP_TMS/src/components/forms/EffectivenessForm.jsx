@@ -19,6 +19,7 @@ import effectivenessHook from "../../hooks/effectivenessHook";
 const EffectivenessForm = ({ data, userData }) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
+  const [annotation, setAnnotation] = useState("");
   const [performanceCharacteristics, setPerformanceCharacteristics] = useState(
     performanceCharacteristicsArray
   );
@@ -40,7 +41,7 @@ const EffectivenessForm = ({ data, userData }) => {
     trainingTypeId: data?.trainingType?.id,
     totalTrainingHours: data?.durationInHours,
     evaluationDate: formatDateOnly(new Date(), "dash"),
-    annotation: "string",
+    annotation: annotation,
     EvaluatorBadge:userData?.data?.superiorBadge,
     performanceCharacteristics: performanceCharacteristics,
     projectPerformanceEvaluation: projectPerformanceEvaluation,
