@@ -155,12 +155,10 @@ ul.p-dropdown-items {
 
 .sidebar.expanded {
     width: 300px;
-    /* Adjust width for expanded sidebar */
 }
 
 .sidebar.collapsed {
     width: 80px;
-    /* Adjust width for collapsed sidebar */
 }
 
 
@@ -225,6 +223,10 @@ ul.p-list-menu {
 }
 .custom-tab .p-tabview-nav{
     margin-bottom: unset;
+}
+.custom.p-menuitem-link.active{
+    background-color: var(--theme-color-light);
+    color: black !important;
 }
 /* Form Field */
 .no-focus {

@@ -53,7 +53,7 @@ const trainingRequestService = {
       if (isParticipant) {
         if (role === "trainer" && item?.status?.id === statusCode.APPROVED) {
           request.push(item);
-        } else if (item?.status?.id === statusCode.PUBLISHED) {
+        } else {
           request.push(item);
         }
       }

@@ -17,7 +17,6 @@ const TrainingRequestPage = () => {
   const { data, error, loading } = trainingRequestHook.useTrainingRequest(
     parseInt(id)
   );
-
   const Content = () => {
     const pages = [
       <>

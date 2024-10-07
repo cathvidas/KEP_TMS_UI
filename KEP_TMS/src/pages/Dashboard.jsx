@@ -50,7 +50,7 @@ const Dashboard = () => {
           label: "Assigned Trainings",
           color1: "#60c8fa",
           color2: "#60a5fa",
-          value: data.ongoing ?? 0,
+          value: data.assignedTraining ?? 0,
           icon: "pi pi-clock",
           status: "Training",
         },

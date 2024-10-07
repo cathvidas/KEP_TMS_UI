@@ -2,7 +2,7 @@ import { Card, Col, Form, Row, Table } from "react-bootstrap";
 import AutoCompleteField from "./common/AutoCompleteField";
 import proptype from "prop-types";
 import { formatDateOnly } from "../../utils/Formatting";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Rating } from "primereact/rating";
 import { confirmAction } from "../../services/sweetalert";
 import { Button } from "primereact/button";
@@ -14,7 +14,6 @@ import {
   projectPerformanceEvaluationArray,
 } from "../../services/constants/effectivenessConstant";
 import { SessionGetEmployeeId } from "../../services/sessions";
-import { confirmDialog } from "primereact/confirmdialog";
 import effectivenessHook from "../../hooks/effectivenessHook";
 const EffectivenessForm = ({ data, userData }) => {
   const [isAfter, setIsAfter] = useState(false);
@@ -23,6 +22,15 @@ const EffectivenessForm = ({ data, userData }) => {
   const [performanceCharacteristics, setPerformanceCharacteristics] = useState(
     performanceCharacteristicsArray
   );
+  const getEffectiveness = ()=>{
+    const result = data?.trainingParticipants?.find((item) => item.employeeBadge === userData?.data?.employeeBadge);
+   
+    return result?.effectivenessId;
+  }
+  const effectiveness = effectivenessHook.useEffectivenessById(getEffectiveness()??0)
+  
+  
+  console.log(effectiveness)
   const [projectPerformanceEvaluation, setProjectPerformanceEvaluation] =
     useState(projectPerformanceEvaluationArray);
     // const effectivenessData = effectivenessHook.useEffectivenessById()
@@ -35,12 +43,16 @@ const EffectivenessForm = ({ data, userData }) => {
     });
     return facilitators;
   };
+  useEffect(()=>{
+
+  },[data, userData])
   const getFormData = {
     employeeBadge: userData?.data?.employeeBadge,
     trainingProgramId: data?.trainingProgram?.id,
     trainingTypeId: data?.trainingType?.id,
     totalTrainingHours: data?.durationInHours,
     evaluationDate: formatDateOnly(new Date(), "dash"),
+    trainingRequestId: data.id,
     annotation: annotation,
     EvaluatorBadge:userData?.data?.superiorBadge,
     performanceCharacteristics: performanceCharacteristics,
@@ -94,7 +106,7 @@ const EffectivenessForm = ({ data, userData }) => {
       formErrors.evaluationDate = "Evaluation Date is required";
       validForm = false;
     }
-    if (!getFormData.annotation) {
+    if (!getFormData.annotation && isAfter) {
       formErrors.annotation = "Annotation is required";
       validForm = false;
     }
@@ -417,6 +429,7 @@ const EffectivenessForm = ({ data, userData }) => {
               disabled={!isAfter}
             ></textarea>
           </Form.Group>
+          {data?.trainingParticipants?.some(x=>x.employeeBadge === SessionGetEmployeeId()) && 
           <div className="text-end mt-3">
             <Button
               type="button"
@@ -439,7 +452,7 @@ const EffectivenessForm = ({ data, userData }) => {
               severity="success"
               onClick={handleSubmit}
             />
-          </div>
+          </div>}
         </Form>
       </Card.Body>
     </>

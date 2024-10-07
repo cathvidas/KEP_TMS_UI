@@ -6,7 +6,8 @@ import getStatusById from "../../utils/status/getStatusById";
 import { Button } from "primereact/button";
 import EmailForm from "../forms/ModalForms/EmailForm";
 import { useState } from "react";
-const ApproverList = ({ datalist, routing }) => {
+import { statusCode } from "../../api/constants";
+const ApproverList = ({ datalist, routing, requestStatus }) => {
   console.log(routing)
   const [visible, setVisible] = useState(false);
   const getStatus = (employeeBadge) => {
@@ -14,14 +15,15 @@ const ApproverList = ({ datalist, routing }) => {
     const others = datalist.filter((x) => !routing.some((y) => y.assignedTo === x.employeeBadge)); 
   
   
-    if (status.length > 0 && status[0]?.statusId) {
+    if (status.length > 0 && status[0]?.statusId && requestStatus !== statusCode.SUBMITTED) {
       return getStatusById(status[0]?.statusId);
     } 
     else {
-      if(datalist.length != routing.length && employeeBadge === others[0].employeeBadge){
-        return "ForApproval"
-      }else{
-        return "Pending";} // Default if no conditions matched
+      // if(datalist.length != routing.length && employeeBadge === others[0].employeeBadge){
+      //   return "ForApproval"
+      // }else{
+        return "Pending";
+      // } // Default if no conditions matched
     }
   };
   const actionBodyTemplate = (rowData) => (

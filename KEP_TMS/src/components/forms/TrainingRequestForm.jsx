@@ -28,8 +28,10 @@ import { Button } from "primereact/button";
 import validateTrainingDetails from "../../services/inputValidation/validateTrainingDetails";
 import { mapUserListAsync } from "../../services/DataMapping/UserListData";
 import { formatDateTime } from "../../utils/Formatting";
-import { TrainingType } from "../../api/constants";
+import { statusCode, TrainingType } from "../../api/constants";
 import TrainingParticipantsForm from "../trainingRequestFormComponents/TrainingParticipantsForm";
+import { getTotalTime } from "../../utils/FormatDateTime";
+import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
 export const TrainingRequestForm = () => {
 const trainingType = useParams().type;
   const requestId = useParams().id;
@@ -58,9 +60,13 @@ const trainingType = useParams().type;
   });
   const handleFormSubmission = async () => {
     try {
-      const formmatedData = InsertFormattedTrainingRequestData(formData);
-      if(trainingType.toUpperCase() === "UPDATE" && requestId ){
-        const updateData = {...formmatedData, updatedBy: SessionGetEmployeeId()}
+      const formmatedData = { ...InsertFormattedTrainingRequestData(formData) };
+
+      if (trainingType.toUpperCase() === "UPDATE" && requestId) {
+        const updateData = {
+          ...formmatedData,
+          updatedBy: SessionGetEmployeeId(),
+        };
         const response = await updateTrainingRequest(updateData);
         if (response.isSuccess === true) {
           actionSuccessful(
@@ -73,20 +79,28 @@ const trainingType = useParams().type;
         } else {
           actionFailed("Error", response.message);
         }
-      }else{
-        const updateData = {...formmatedData, requestorBadge: SessionGetEmployeeId(), trainingType: {id: getTrainingTypeId()}}
-      const response = await insertTrainingRequest(updateData);
-      if (response.isSuccess === true) {
-        actionSuccessful(
-          "Success",
-          "training request successfully submitted, please wait for approval"
-        );
-        setTimeout(() => {
-          navigate("/KEP_TMS/TrainingRequest/" + response?.data?.id);
-        }, 2500);
       } else {
-        actionFailed("Error", response.message);
-      }}
+        const updateData = {
+          ...formmatedData,
+          requestorBadge: SessionGetEmployeeId(),
+          trainingTypeId: getTrainingTypeId(),
+          statusId: calculateTotalHours(formmatedData?.trainingDates) > 960
+          ? statusCode.SUBMITTED
+          : statusCode.FORAPPROVAL,
+        };
+        const response = await insertTrainingRequest(updateData);
+        if (response.isSuccess === true) {
+          actionSuccessful(
+            "Success",
+            "training request successfully submitted, please wait for approval"
+          );
+          setTimeout(() => {
+            navigate("/KEP_TMS/TrainingRequest/" + response?.data?.id);
+          }, 2500);
+        } else {
+          actionFailed("Error", response.message);
+        }
+      }
     } catch (error) {
       actionFailed("Error", error);
     }

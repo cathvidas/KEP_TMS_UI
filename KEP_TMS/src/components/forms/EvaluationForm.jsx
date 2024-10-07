@@ -88,7 +88,7 @@ const EvaluationForm = ({ data, userData }) => {
     
     let faciList = []
     data?.trainingFacilitators.map((faci, index)=>{
-      if (facilitatorRating[index].frOne === 0) {
+      if (facilitatorRating[index]?.frOne === 0) {
         faciList.push(faci.fullname)
       }
     })
@@ -253,25 +253,25 @@ const EvaluationForm = ({ data, userData }) => {
               <TabPanel header={faci?.fullname} className="active" key={faci?.id}>
                 <div>
                   <RateFieldItem label="Clarity of Presentation (delivery, platform skills, etc.)"
-                    value={facilitatorRating[index].frOne}
+                    value={facilitatorRating[index]?.frOne}
                     onChange={(e) => handlefacilitatorRating(e, "frOne", index)} />
                   <RateFieldItem label="Mastery of subject matter"
-                    value={facilitatorRating[index].frTwo}
+                    value={facilitatorRating[index]?.frTwo}
                     onChange={(e) => handlefacilitatorRating(e, "frTwo", index)} />
                   <RateFieldItem label="Managing discussions"
-                    value={facilitatorRating[index].frThree}
+                    value={facilitatorRating[index]?.frThree}
                     onChange={(e) => handlefacilitatorRating(e, "frThree", index)} />
                   <RateFieldItem label="Motivates learning"
-                    value={facilitatorRating[index].frFour}
+                    value={facilitatorRating[index]?.frFour}
                     onChange={(e) => handlefacilitatorRating(e, "frFour", index)} />
                   <RateFieldItem label="Motivates learning"
-                    value={facilitatorRating[index].frFive}
+                    value={facilitatorRating[index]?.frFive}
                     onChange={(e) => handlefacilitatorRating(e, "frFive", index)} />
                   <RateFieldItem label="Balanced theory w/ real life applications/examples"
-                    value={facilitatorRating[index].frSix}
+                    value={facilitatorRating[index]?.frSix}
                     onChange={(e) => handlefacilitatorRating(e, "frSix", index)} />
                   <RateFieldItem label="Clear & well organized lectures/activities (time management) 5"
-                    value={facilitatorRating[index].frAverage}
+                    value={facilitatorRating[index]?.frAverage}
                     onChange={(e) => handlefacilitatorRating(e, "frAverage", index)} />
                 </div>
               </TabPanel>)
@@ -302,6 +302,7 @@ const EvaluationForm = ({ data, userData }) => {
         </Form.Group>
       </Form>
       <footer className="text-center mt-3 text-muted">Thank you for your time</footer>
+      {data?.trainingParticipants?.some(x=>x.employeeBadge === SessionGetEmployeeId()) && 
       <div className="text-end mt-3">
         <Button
           type="button"
@@ -327,7 +328,7 @@ const EvaluationForm = ({ data, userData }) => {
           severity="success"
           onClick={handleSubmit}
         />
-      </div>
+      </div>}
     </Card.Body>
   );
 };

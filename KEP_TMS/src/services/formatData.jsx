@@ -34,7 +34,7 @@ console.log(formData)
         // cutOffDate: new Date(),
         trainingDates: formData?.trainingDates?.map(({startTime, endTime, date})=>({startTime, endTime, date})),
         trainingFacilitators:formData.trainingFacilitators ? formData.trainingFacilitators.map(({employeeBadge}) =>({
-            FacilitorBadge:employeeBadge
+            FacilitatorBadge:employeeBadge
         })):[],
         statusId:formData?.status?.id,
         createdBy: SessionGetEmployeeId()

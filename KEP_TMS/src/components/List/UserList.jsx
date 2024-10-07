@@ -1,8 +1,10 @@
 import proptype from "prop-types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import StatusColor from "../General/StatusColor";
+import getStatusById from "../../utils/status/getStatusById";
 
 export const UserList = ({
   userlist,
@@ -11,12 +13,13 @@ export const UserList = ({
   action,
   filterTemp,
   scrollHeight,
-  column
+  column,
+  allowEffectiveness = false,
+  sortable= false
 }) => {
   // const [filters, setFilters] = useState(filterTemp);
   const [selected, setSelected] = useState(null);
   const [removeEmpBadge, setRemoveEmpBadge] = useState(null);
-  const [filteredData, setFilteredData] = useState(null);
   useEffect(() => {
     if (action != null) {
       action(removeEmpBadge);
@@ -36,7 +39,9 @@ export const UserList = ({
       <Button type="button" severity="danger" icon="pi pi-trash" text onClick={() => setRemoveEmpBadge(data.employeeBadge)}/>
     );
   };
-  // console.log(selected)
+  const effectivenessTemplate =(rowData)=>  StatusColor(rowData.effectivenessId != null ? getStatusById(rowData.effectivenessId): "Pending", "p-2 px-3 ", {}, true)
+
+  
   return (
     <>
       {userlist && (
@@ -59,12 +64,13 @@ export const UserList = ({
                 headerStyle={{ width: "3rem" }}
               ></Column>
             )}
-            <Column header="No" body={(_, { rowIndex }) => rowIndex + 1} />
-            <Column field="fullname" header="Name"></Column>
-            <Column field="employeeBadge" header="Employee Id"></Column>
-            <Column field="position" header="Position"></Column>
-            <Column field="departmentName" header="Department"></Column>
-            {/* <Column field="roleName" header="Usertype"></Column> */}
+            <Column header="No" body={(_, { rowIndex }) => rowIndex + 1}  sortable={sortable}/>
+            <Column field="fullname" header="Name" sortable={sortable}></Column>
+            <Column field="employeeBadge" header="Employee Id" sortable={sortable}></Column>
+            <Column field="position" header="Position" sortable={sortable}></Column>
+            <Column field="departmentName" header="Department" sortable={sortable}></Column>
+            {allowEffectiveness && 
+            <Column field="effectivenessId" header="Effectiveness Report" body={effectivenessTemplate} sortable={sortable}></Column>}
             {trailingElement?.action === true && (
               <Column
                 headerStyle={{ width: "10%", minWidth: "8rem" }}
@@ -88,4 +94,9 @@ UserList.propTypes = {
   handleParticipants: proptype.func,
   property: proptype.string,
   action: proptype.func,
+  filterTemp: proptype.object,
+  scrollHeight: proptype.string,
+  column: proptype.object,
+  allowEffectiveness: proptype.bool,
+  sortable: proptype.bool
 };

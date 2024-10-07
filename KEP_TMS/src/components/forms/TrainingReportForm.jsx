@@ -167,7 +167,7 @@ const TrainingReportForm = ({ data, userData }) => {
 
             </div>
           </Col>
-        </Row>
+        </Row>          {data?.trainingParticipants?.some(x=>x.employeeBadge === SessionGetEmployeeId()) && 
         <div className="text-end mt-3">
           <Button
             type="button"
@@ -187,7 +187,7 @@ const TrainingReportForm = ({ data, userData }) => {
             severity="success"
             onClick={handleSubmit}
           />
-        </div>
+        </div>}
       </Form>
     </Card.Body>
   );

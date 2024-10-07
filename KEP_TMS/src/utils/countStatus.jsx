@@ -13,6 +13,7 @@ const countStatus = (data, userRequest) => {
     forApproval: 0,
     ongoing: 0,
     trainerAction: 0,
+    assignedTraining: 0,
   };
 
   userRequest.forEach((item) => {
@@ -50,8 +51,10 @@ const countStatus = (data, userRequest) => {
     if(isFacilitator && (item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.PUBLISHED)){
       count.trainerAction++;
     }
+    if(isParticipant){
+      count.assignedTraining++;
+    }
   });
-  console.log(count.trainerAction)
   return count;
 };
 export default countStatus;

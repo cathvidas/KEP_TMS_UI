@@ -31,6 +31,9 @@ const ParticipantsView = ({ data }) => {
         userlist={data}
         handleParticipants={""}
         trailingElement={{ action: true }}
+        allowEffectiveness
+        scrollHeight={"100%"}
+        sortable
       />
     </>
   );

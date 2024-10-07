@@ -14,6 +14,7 @@ import proptype from "prop-types";
 import ExportBtn from "./ExportBtn";
 import { Dropdown } from "react-bootstrap";
 import { statusCode } from "../../api/constants";
+import countData from "../../utils/countData";
 
 const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEdit = true }) => {
 console.log(data)
@@ -47,7 +48,7 @@ console.log(data)
           severity="success"
           className="rounded"
           text
-          onClick={() => handleButtonClick(data.id, data.status == "Published" ? "Training":"TrainingRequest")}
+          onClick={() => handleButtonClick(data.id, data.status == "Published" || data.status == "Submitted" ? "Training":"TrainingRequest")}
         />
         {allowEdit && 
         <Button
@@ -84,15 +85,19 @@ console.log(data)
               ? "For " + rowData.approverPosition + " Approval"
               : rowData.status == "Approved"
               ? "Awaiting Trainer Action"
+              : rowData.status == "Submitted"
+              ? "Awaiting for trainee effectiveness"
               : rowData.status}
           </span>
           <br />
           <b>
             {
+              rowData.status == "Submitted"
+              ?`${countData(rowData.trainingParticipants, "effectivenessId", 4)}/${rowData.totalParticipants} submitted`:
               rowData.status == "Published"
               ? "": 
             `- ${rowData.status == "Approved"
-              ? rowData?.facilitatorName
+              ? rowData?.facilitatorName  
               : rowData.approverFullName}`}
           </b>
         </div>
@@ -181,7 +186,6 @@ console.log(data)
             sortMode="multiple"
           >
             <Column field="id" header="Id" sortable></Column>
-
             <Column field="requestorBadge" header="BadgeNo" sortable></Column>
             <Column field="requestorName" header="Requestor" sortable></Column>
             <Column field="type" header="Type" sortable></Column>

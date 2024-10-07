@@ -6,11 +6,12 @@ import { Button } from "primereact/button";
 import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import { Card } from "react-bootstrap";
 import EvaluationForm from "../../components/forms/EvaluationForm";
-import proptype from "prop-types"
+import proptype from "prop-types";
 import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import userHook from "../../hooks/userHook";
-const TraineeReportView = ({data}) => {
+import { statusCode } from "../../api/constants";
+const TraineeReportView = ({ data }) => {
   const userData = userHook.useUserById(SessionGetEmployeeId());
   const stepperRef = useRef();
   const StepperButton = (button) => {
@@ -49,24 +50,25 @@ const TraineeReportView = ({data}) => {
           orientation="horizontal"
           // headerPosition="bottom"
         >
-        <StepperPanel header="Training Effectiveness Form">
-          <EffectivenessForm data={data} userData={userData}/>
-          {/* {<StepperButton back={true} next={true} index={2} />} */}
-        </StepperPanel>
+          <StepperPanel header="Training Effectiveness Form">
+            <EffectivenessForm data={data} userData={userData} />
+            {/* {<StepperButton back={true} next={true} index={2} />} */}
+          </StepperPanel>
+          {data.status.id === statusCode.APPROVED &&<>
           <StepperPanel header="Training Report Form">
-            <TrainingReportForm data={data} userData={userData}/>
-            {<StepperButton next={true} index={0} />}
+            <TrainingReportForm data={data} userData={userData} />
+            {/* {<StepperButton next={true} index={0} />} */}
           </StepperPanel>
           <StepperPanel header="Evaluation Form">
-            <EvaluationForm data={data} userData={userData}/>
-            {<StepperButton back={true} next={true} index={1} />}
-          </StepperPanel>
+            <EvaluationForm data={data} userData={userData} />
+            {/* {<StepperButton back={true} next={true} index={1} />} */}
+          </StepperPanel></>}
         </Stepper>
       </Card>
     </div>
   );
 };
 TraineeReportView.propTypes = {
-  data: proptype.object
-}
+  data: proptype.object,
+};
 export default TraineeReportView;

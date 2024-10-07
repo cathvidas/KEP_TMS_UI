@@ -17,6 +17,7 @@ import TrainingScheduleList from "../../components/trainingRequestFormComponents
 import { UserList } from "../../components/List/UserList";
 import EmptyState from "../../components/trainingRequestFormComponents/EmptyState";
 import DetailsOverview from "../../components/TrainingPageComponents/DetailsOverview";
+import { statusCode } from "../../api/constants";
 // import { useHistory } from "react-router-dom";
 
 const OverviewSection = ({ data }) => {
@@ -76,6 +77,7 @@ const OverviewSection = ({ data }) => {
             col="3"
             userlist={data.trainingParticipants}
             property={"name"}
+            allowEffectiveness
           />
         </div>
       ) : (
@@ -97,12 +99,13 @@ const OverviewSection = ({ data }) => {
       )}
 
       <br />
+  
       <div className="">
         <SectionHeading
           title="Approvers"
           icon={<FontAwesomeIcon icon={faUsers} />}
         />
-        <ApproverList datalist={data.approvers} routing={data.routing} />
+        <ApproverList datalist={data.approvers} routing={data.routing} requestStatus={data.status.id}/>
       </div>
     </div>
   );
