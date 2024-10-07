@@ -84,7 +84,7 @@ const trainingType = useParams().type;
           ...formmatedData,
           requestorBadge: SessionGetEmployeeId(),
           trainingTypeId: getTrainingTypeId(),
-          statusId: calculateTotalHours(formmatedData?.trainingDates) > 960
+          statusId: calculateTotalHours(formmatedData?.trainingDates) >= 960
           ? statusCode.SUBMITTED
           : statusCode.FORAPPROVAL,
         };
