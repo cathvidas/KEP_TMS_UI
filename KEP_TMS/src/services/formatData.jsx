@@ -6,7 +6,7 @@ console.log(formData)
   //  if(!formData.requestorBadge) throw new Error("Requestor ID is required");
     if(!formData.trainingProgram?.id) throw new Error("Training Program is required");
     if(!formData.trainingCategory?.id) throw new Error("Category is required");
-    if(!formData.trainingType?.id) throw new Error("Training Type ID is required");
+    // if(!formData.trainingType?.id) throw new Error("Training Type ID is required");
     if(!formData.trainingFacilitators) throw new Error("Training facilitators are required");
     if(!formData.trainingObjectives) throw new Error("Training objectives are required");
     if(!formData.venue) throw new Error("Venue is required");
@@ -20,7 +20,7 @@ console.log(formData)
         categoryId: formData.trainingCategory?.id,
         trainingProgramId: formData.trainingProgram?.id,
         trainingProviderId: formData.trainingProvider?.id,
-        trainingTypeId: formData.trainingType?.id,
+        // trainingTypeId: formData.trainingType?.id,
         trainingObjectives: formData.trainingObjectives,
         venue: formData.venue,
         trainingParticipants: formData.trainingParticipants? formData.trainingParticipants.map(({employeeBadge})=>({
