@@ -14,7 +14,7 @@ const ApproverList = ({ datalist, routing, requestStatus }) => {
     const status = routing.filter((x) => x.assignedTo === employeeBadge); // Get status for this employee
     const others = datalist.filter((x) => !routing.some((y) => y.assignedTo === x.employeeBadge)); 
   
-  
+  console.log(requestStatus, status)
     if (status.length > 0 && status[0]?.statusId && requestStatus !== statusCode.SUBMITTED) {
       return getStatusById(status[0]?.statusId);
     } 
@@ -38,7 +38,7 @@ const ApproverList = ({ datalist, routing, requestStatus }) => {
     </div>
   );
   const statusTemplate = (rowData) =>
-    StatusColor(getStatus(rowData.employeeBadge), "p-2 px-3 ", {}, true);
+    StatusColor({status:getStatus(rowData.employeeBadge), class:"p-2 px-3 ", showStatus: true});
 
   return (
     <>
