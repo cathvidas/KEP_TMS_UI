@@ -9,8 +9,12 @@ const moduleHook = {
         const [loading, setLoading] = useState(true);
         useEffect(()=>{
            const getRequest = async ()=>{
-            handleResponseAsync(()=>moduleService.getModulesByRequestId(id), (e)=>setModules(e),(e)=> setError(e));
-            setLoading(false);
+            handleResponseAsync(
+              () => moduleService.getModulesByRequestId(id),
+              (e) => setModules(e),
+              (e) => setError(e),
+              ()=>setLoading(false)
+            );
            }
            getRequest();
         },[])

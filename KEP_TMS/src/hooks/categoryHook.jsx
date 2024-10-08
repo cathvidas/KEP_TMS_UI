@@ -12,9 +12,9 @@ const categoryHook = {
         handleResponseAsync(
          () => categoryService.getAllCategories(),
           (e) => setData(e),
-          (e) => setError(e)
+          (e) => setError(e),
+          ()=>setLoading(false)
         );
-        setLoading(false);
       };
       getPrograms();
     }, []);
@@ -29,9 +29,9 @@ const categoryHook = {
         handleResponseAsync(
           () => categoryService.getCategoryById(id),
           (e) => setData(e),
-          (e) => setError(e)
+          (e) => setError(e),
+          ()=>setLoading(false)
         );
-        setLoading(false);
       };
       getProgram();
     }, [id]);

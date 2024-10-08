@@ -9,12 +9,16 @@ const effectivenessHook = {
         const [loading, setLoading] = useState(true);
 
         useEffect(() => {
-            const getRequest = async () => {
-                handleResponseAsync(() => effectivenessService.getEffectivenessById(id), (e) => setData(e), (e) => setError(e));
-                setLoading(false);
-            }
-            getRequest();
-        }, [id])
+          const getRequest = async () => {
+            handleResponseAsync(
+              () => effectivenessService.getEffectivenessById(id),
+              (e) => setData(e),
+              (e) => setError(e),
+              ()=>setLoading(false)
+            );
+          };
+          getRequest();
+        }, [id]);
         return {
             data, error, loading
         }
@@ -28,9 +32,9 @@ const effectivenessHook = {
               handleResponseAsync(
                 () => assignee ? effectivenessService.getEffectivenessById(assignee): effectivenessService.getAllEffectiveness(),
                 (e) => setData(e),
-                (e) => setError(e)
+                (e) => setError(e),
+                ()=>setLoading(false)
               );
-              setLoading(false);
             };
             getRequests();
         })

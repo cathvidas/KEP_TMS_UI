@@ -8,10 +8,14 @@ const examHook = {
         const [error, setError] = useState(null);
         const [loading, setLoading] = useState(true);
         useEffect(()=>{
-           const getRequest = async ()=>{
-            handleResponseAsync(()=>examService.getExamByRequestId(id), (e)=>setExams(e),(e)=> setError(e));
-            setLoading(false);
-           }
+           const getRequest = async () => {
+             handleResponseAsync(
+               () => examService.getExamByRequestId(id),
+               (e) => setExams(e),
+               (e) => setError(e),
+               ()=>setLoading(false)
+             );
+           };
            getRequest();
         },[])
         return {

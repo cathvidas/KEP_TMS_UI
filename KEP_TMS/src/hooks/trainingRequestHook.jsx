@@ -146,9 +146,9 @@ const trainingRequestHook = {
         handleResponseAsync(
           ()=>trainingRequestService.getTrainingRequestByApprover(id),
           (e)=>setData(e),
-          (e)=>setError(e)
+          (e)=>setError(e),
+          ()=>setLoading(false)
         )
-        setLoading(false)
       };
       fetchData();
     },[]);

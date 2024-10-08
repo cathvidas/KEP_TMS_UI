@@ -11,12 +11,10 @@ const userHook = {
       const fetchData = async () => {
         handleResponseAsync(
           () => userService.getUserById(id),
-          async (e) => {
-            setData(e);
-          },
-          (e) => setError(e)
+          (e) => setData(e),
+          (e) => setError(e),
+          ()=>setLoading(false)
         );
-        setLoading(false);
       };
       fetchData();
     }, [id]);
@@ -37,20 +35,21 @@ const userHook = {
       useEffect(()=>{
         const fetchRegisteredUsers = async ()=>{
           handleResponseAsync(
-            ()=>userService.getAllUsers(),
-            (e)=>{
+            () => userService.getAllUsers(),
+            (e) => {
               setData(e);
-              e?.map(user=>{
-                if(user?.roleName === "Admin"){
-                  setAdmins(admins=>[...admins, user])
+              e?.map((user) => {
+                if (user?.roleName === "Admin") {
+                  setAdmins((admins) => [...admins, user]);
                 }
-                if(user?.roleName === "Facilitator"){
-                  setFacilitators(facilitators=>[...facilitators, user])
+                if (user?.roleName === "Facilitator") {
+                  setFacilitators((facilitators) => [...facilitators, user]);
                 }
-              })
-            }
-          )
-          setLoading(false)
+              });
+            },
+            (e)=>setError(e),
+            ()=>setLoading(false)
+          );
         }
         fetchRegisteredUsers();
       }, [])
