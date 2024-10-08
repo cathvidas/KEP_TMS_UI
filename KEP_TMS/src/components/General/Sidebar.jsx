@@ -165,7 +165,7 @@ const Sidebars = () => {
               SessionGetRole() === "SuperAdmin") && (
                 <>
                   <NavItem
-                    item="/KEP_TMS/MasterList/Facilitators"
+                    item="/KEP_TMS/MasterList"
                     title="Master List"
                     expanded={expanded}
                     icon={<i className="pi pi-list"></i>}

@@ -61,6 +61,9 @@ const ProgramListSection = ({}) => {
     header: "Created",
     body: (rowData) => formatDateOnly(rowData.createdDate),
   }, {
+    field: "statusName",
+    header: "Status",
+  }, {
     field:"",
     header: "Action",
     body: actionTemplate
@@ -121,6 +124,8 @@ const ProgramListSection = ({}) => {
               <p>{selectedData?.name}</p>
               <h6>Description: </h6>
               <p>{selectedData?.description}</p>
+              <h6>Status: </h6>
+              <p>{selectedData?.statusName}</p>
               <h6 className="m-0">Created: </h6>
               <p>
                 {formatDateOnly(selectedData?.createdDate)} by{" "}

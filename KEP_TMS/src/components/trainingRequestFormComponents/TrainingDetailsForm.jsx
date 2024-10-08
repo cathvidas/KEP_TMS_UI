@@ -6,33 +6,26 @@ import Select from "react-select";
 import { SectionHeading } from "../General/Section";
 import proptype from "prop-types";
 import { useEffect, useState } from "react";
-import {
-  getTrainingCategories,
-  getTrainingPrograms,
-} from "../../api/trainingServices";
+import programHook from "../../hooks/programHook";
+import categoryHook from "../../hooks/categoryHook";
 const TrainingDetailsForm = ({ handleResponse, formData , error}) => {
   const [details, setDetails] = useState(formData);
   const [options, setOptions] = useState({ programs: [], categories: [] });
   const [errors, setErrors] = useState(error);
-  const [loading, setLoading] = useState(false);
+  const programs = programHook.useAllPrograms();
+  const categories = categoryHook.useAllCategories();
   useEffect(()=>{
     setErrors(error);
   },[error])
   useEffect(()=>{
     setDetails(formData);
   },[formData])
-  //Get program and categories options
   useEffect(() => {
-    const getOptions = async () => {
-      try {
-        setLoading(true);
-        const programsOption = await getTrainingPrograms();
-        const categoriesOption = await getTrainingCategories();
-        const mappedPrograms = programsOption.map(({ id, name }) => ({
+        const mappedPrograms = programs?.data?.map(({ id, name }) => ({
           label: name,
           value: id,
         }));
-        const mappedCategories = categoriesOption.data.map(({ id, name }) => ({
+        const mappedCategories = categories?.data.map(({ id, name }) => ({
           label: name,
           value: id,
         }));
@@ -40,16 +33,8 @@ const TrainingDetailsForm = ({ handleResponse, formData , error}) => {
           programs: mappedPrograms,
           categories: mappedCategories,
         });
-       // setSelectedOption({programs: mappedPrograms[0], categories: mappedCategories[0]});
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching training options:", error);
-      }
-    };
-    getOptions();
-  }, []);
+  }, [programs, categories]);
 
-  //Pass data to parent component
   useEffect(() => {
     handleResponse(details);
   }, [details, handleResponse]);
@@ -74,7 +59,7 @@ const TrainingDetailsForm = ({ handleResponse, formData , error}) => {
           label={"Program"}
           FieldComponent={
             <Select
-            isLoading={loading ? true : false}
+            isLoading={programs?.loading ? true : false}
               options={options.programs}
               name="TProgram"              
               value={options.programs.filter(
@@ -91,7 +76,7 @@ const TrainingDetailsForm = ({ handleResponse, formData , error}) => {
           label={"Category"}
           FieldComponent={
             <Select
-              isLoading={loading ? true : false}
+              isLoading={categories?.loading ? true : false}
               options={options.categories}              
               value={options.categories.filter(
                 (x) => x.value === details.trainingCategory?.id

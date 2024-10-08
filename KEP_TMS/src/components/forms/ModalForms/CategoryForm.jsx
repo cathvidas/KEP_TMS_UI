@@ -8,8 +8,9 @@ import { SessionGetEmployeeId } from "../../../services/sessions";
 import { useNavigate } from "react-router-dom";
 import Select from 'react-select'
 import { statusCode } from "../../../api/constants";
+import handleResponseAsync from "../../../services/handleResponseAsync";
+import categoryService from "../../../services/categoryService";
 const CategoryForm = ({ handleShow, handleClose, selectedData }) => {
-  const [visible, setVisible] = useState(handleShow);
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [validated, setValidated] = useState(false);
@@ -17,14 +18,7 @@ const CategoryForm = ({ handleShow, handleClose, selectedData }) => {
     { label: "Active", value: statusCode.ACTIVE },
     { label: "Inactive", value: statusCode.INACTIVE },
   ])
-  const navigate = useNavigate();
-console.log(selectedData)
-  useEffect(() => {
-    if (handleClose != null) {
-      handleClose(visible);
-    }
-  }, [visible]);
-
+console.log(formData, selectedData)
   const handleOnChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -47,13 +41,12 @@ console.log(selectedData)
   }, [formData]);
   useEffect(() => {
     if (selectedData != null) {
-      const status = options.find((option) => option.label === selectedData?.statusName);
+      const status = options.find((option) => option.label === selectedData?.status);
       const updatedData = {...selectedData, statusId:status?.value}
       setFormData(updatedData);
     }
   }, [selectedData]);
   const submitForm = async () => {
-    try {
       const data = selectedData != null ? {
         id: formData.id,
         name: formData.name,
@@ -66,21 +59,15 @@ console.log(selectedData)
         createdBy: SessionGetEmployeeId(),
         statusId: statusCode.ACTIVE,
       };
-      console.log(data)
-      const res = selectedData!= null? await updateTrainingCategory(data): await inserTrainingCategory(data);
-      if (res) {
-        handleClose(false);
-        actionSuccessful(res.message);
-
-        setInterval(() => {
-            window.location.reload()
-        }, 2500);
-      } else {
-        setErrors({ value: res.message });
-      }
-    } catch (error) {
-      setErrors({ value: error.message });
-    }
+      handleResponseAsync(
+        ()=>selectedData!=null ?categoryService.updateCategory(data): categoryService.createCategory(data),
+        (e)=>{actionSuccessful(`Success!`,e.message);
+          setTimeout(()=>{
+            window.location.reload();
+          }, 2500)
+        },
+        (error)=>setErrors({ value: error.message })
+      )
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -99,7 +86,7 @@ console.log(selectedData)
   return (
     <>
       {" "}
-      <Modal show={visible} onHide={() => setVisible(false)} size={"md"}>
+      <Modal show={handleShow} onHide={handleClose} size={"md"}>
         <Modal.Header className="border-0" closeButton>
           <Modal.Title className={`h5 text-theme`}>{selectedData != null? "Update Category" : "Add Category"}</Modal.Title>
         </Modal.Header>
@@ -169,7 +156,7 @@ console.log(selectedData)
             <Button
               label="No"
               icon="pi pi-times"
-              onClick={() => setVisible(false)}
+              onClick={handleClose}
               className="p-button-text rounded"
             />
             <Button
@@ -184,7 +171,7 @@ console.log(selectedData)
     </>
   );
 };
-CategoryForm.propType = {
+CategoryForm.propTypes = {
   handleShow: proptype.bool.isRequired,
   handleClose: proptype.func,
   selectedData: proptype.object,

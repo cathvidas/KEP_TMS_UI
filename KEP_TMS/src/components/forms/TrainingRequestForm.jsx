@@ -30,7 +30,6 @@ import { mapUserListAsync } from "../../services/DataMapping/UserListData";
 import { formatDateTime } from "../../utils/Formatting";
 import { statusCode, TrainingType } from "../../api/constants";
 import TrainingParticipantsForm from "../trainingRequestFormComponents/TrainingParticipantsForm";
-import { getTotalTime } from "../../utils/FormatDateTime";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
 export const TrainingRequestForm = () => {
 const trainingType = useParams().type;

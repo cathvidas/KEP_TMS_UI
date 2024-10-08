@@ -17,6 +17,7 @@ import handleResponseAsync from "../../services/handleResponseAsync";
 import programService from "../../services/programService";
 import { Modal } from "react-bootstrap";
 import categoryHook from "../../hooks/categoryHook";
+import CategoryForm from "../../components/forms/ModalForms/CategoryForm";
 
 const CategoryListSection = ({}) => {
   const navigate = useNavigate();
@@ -88,6 +89,10 @@ console.log(data)
       body: (rowData) => formatDateOnly(rowData.createdDate),
     },
     {
+      field: "status",
+      header: "Status",
+    },
+    {
       field: "",
       header: "Action",
       body: actionTemplate,
@@ -129,7 +134,7 @@ console.log(data)
             title="Programs"
             columnItems={columnItems}
           />
-          <ProgramForm
+          <CategoryForm
             handleShow={visible.form}
             handleClose={() => setVisible({ ...visible, form: false })}
             selectedData={selectedData}
@@ -149,6 +154,8 @@ console.log(data)
               <p>{selectedData?.name}</p>
               <h6>Description: </h6>
               <p>{selectedData?.description}</p>
+              <h6>Status: </h6>
+              <p>{selectedData?.status}</p>
               <h6 className="m-0">Created: </h6>
               <p>
                 {formatDateOnly(selectedData?.createdDate)} by{" "}

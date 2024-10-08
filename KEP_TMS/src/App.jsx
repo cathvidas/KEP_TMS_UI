@@ -29,7 +29,7 @@ function App() {
         <Route path="/KEP_TMS/Trainings" element={<Trainings />} />
         <Route path="/KEP_TMS/AssignedTrainings" element={<TrainerPage />} />
         <Route path="/KEP_TMS/List/:type/:page?" element={<ApproverPage />} />
-        <Route path="/KEP_TMS/MasterList/:category/:type?" element={<MasterListPage />} />
+        <Route path="/KEP_TMS/MasterList/:category?/:type?" element={<MasterListPage />} />
         <Route path="/KEP_TMS/CertificatesPage" element={<CertificatesPage />} />
         <Route path="/KEP_TMS/AnalyticsPage" element={<AnalyticsPage />} />
         <Route path="/KEP_TMS/ApproveRequest/:id" element={<ApproveRequestPage />} />

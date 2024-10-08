@@ -7,11 +7,12 @@ import ProgramListSection from "./MasterListSection/ProgramListSection";
 import { useEffect, useState } from "react";
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
 import CategoryListSection from "./MasterListSection/CategoryListSection";
+import MenuItemTemplate from "../components/General/MenuItemTemplate";
+import ProviderListSection from "./MasterListSection/ProviderListSection";
 
 const MasterListPage = () => {
   const page = useParams();
   const [currentContent, setCurrentContent] = useState(0);
-  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const items = [
@@ -19,16 +20,31 @@ const MasterListPage = () => {
       label: "Menu",
       items: [
         {
+          label: "Category",
+          icon: "pi pi-filter",
+          template: MenuItemTemplate,
+          active: currentContent === 0 ? true : false,
+          command: () => navigate("/KEP_TMS/MasterList/Categories"),
+        },
+        {
           label: "Programs",
-          icon: "pi pi-cog",
+          icon: "pi pi-file-check",
+          template: MenuItemTemplate,
+          active: currentContent === 1 ? true : false,
           command: () => navigate("/KEP_TMS/MasterList/Programs"),
         },
         {
-          label: "Category",
-          icon: "pi pi-sign-out",
-          command: () => navigate("/KEP_TMS/MasterList/Categories"),
+          label: "Providers",
+          template: MenuItemTemplate,
+          active: currentContent === 2 ? true : false,
+          command: () => navigate("/KEP_TMS/MasterList/Providers"),
+          icon: "pi pi-building",
         },
-        { label: "Training Type", icon: "pi pi-sign-out" },
+        {
+          label: "Training Type",
+          template: MenuItemTemplate,
+          icon: "pi pi-check-square",
+        },
       ],
     },
     {
@@ -36,7 +52,7 @@ const MasterListPage = () => {
       items: [
         {
           label: "Internal",
-          icon: "pi pi-cog",
+          icon: "pi pi-check-square",
           command: () => navigate("/KEP_TMS/MasterList/Training/Internal"),
         },
         {
@@ -48,15 +64,21 @@ const MasterListPage = () => {
     },
   ];
 
-  const pageContent = [<ProgramListSection key={0} setLoading={setLoading} />,
-    <CategoryListSection key={1} setLoading={setLoading}/>
+  const pageContent = [
+    <CategoryListSection key={0} />,
+    <ProgramListSection key={1} />,
+    <ProviderListSection key={2}/>
   ];
+  console.log(page);
   useEffect(() => {
     if (page.category === "Programs") {
-      setCurrentContent(0);
-    } else if (page.category === "Categories") {
       setCurrentContent(1);
+    } else if (page.category === "Categories") {
+      setCurrentContent(0);
+    } else if (page.category === "Providers") {
+      setCurrentContent(2);
     } else {
+      // navigate("/KEP_TMS/MasterList")
       setCurrentContent(0);
     }
   }, [page]);
@@ -68,8 +90,6 @@ const MasterListPage = () => {
           className="flex-fill overflow-auto border-start p-3"
           style={{ minHeight: "calc(100vh - 50px)" }}
         >
-            {/* {loading? <SkeletonBanner/> : pageContent[currentContent]} */}
-            {/* {currentContent === 0 ?  <ProgramListSection/> : <></>} */}
           {pageContent[currentContent]}
         </div>
       </div>
