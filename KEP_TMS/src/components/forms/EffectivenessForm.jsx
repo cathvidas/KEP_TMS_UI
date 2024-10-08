@@ -1,10 +1,10 @@
 import { Card, Col, Form, Row, Table } from "react-bootstrap";
 import AutoCompleteField from "./common/AutoCompleteField";
 import proptype from "prop-types";
-import { formatDateOnly } from "../../utils/Formatting";
+import { formatDateOnly, formatDateTime } from "../../utils/Formatting";
 import { useEffect, useState } from "react";
 import { Rating } from "primereact/rating";
-import { confirmAction } from "../../services/sweetalert";
+import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import { Button } from "primereact/button";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import effectivenessService from "../../services/effectivenessService";
@@ -15,26 +15,37 @@ import {
 } from "../../services/constants/effectivenessConstant";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import effectivenessHook from "../../hooks/effectivenessHook";
+import StatusColor from "../General/StatusColor";
+import { useNavigate } from "react-router-dom";
 const EffectivenessForm = ({ data, userData }) => {
+  const navigate = useNavigate();
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
   const [annotation, setAnnotation] = useState("");
   const [performanceCharacteristics, setPerformanceCharacteristics] = useState(
     performanceCharacteristicsArray
   );
-  const getEffectiveness = ()=>{
-    const result = data?.trainingParticipants?.find((item) => item.employeeBadge === userData?.data?.employeeBadge);
-   
-    return result?.effectivenessId;
-  }
-  const effectiveness = effectivenessHook.useEffectivenessById(getEffectiveness()??0)
-  
-  
-  console.log(effectiveness)
   const [projectPerformanceEvaluation, setProjectPerformanceEvaluation] =
     useState(projectPerformanceEvaluationArray);
-    // const effectivenessData = effectivenessHook.useEffectivenessById()
-    // console.log(data,userData)
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const getEffectiveness = () => {
+    const result = data?.trainingParticipants?.find(
+      (item) => item.employeeBadge === userData?.data?.employeeBadge
+    );
+    return result?.effectivenessId;
+  };
+  const effectiveness = effectivenessHook.useEffectivenessById(
+    getEffectiveness() ?? 0
+  );
+  useEffect(()=>{
+    if( effectiveness?.data?.status === 1){
+      const effectivenessData = effectiveness?.data?.data;
+      setAnnotation(effectivenessData?.annotation);
+       setPerformanceCharacteristics(effectivenessData?.performanceCharacteristics?? performanceCharacteristicsArray);
+       setProjectPerformanceEvaluation(effectivenessData?.projectPerformanceEvaluation ?? projectPerformanceEvaluationArray);
+       setIsSubmitted(true);
+    }
+  },[effectiveness?.data]);
   const numItems = [0, 1, 2];
   const getFacilitators = () => {
     let facilitators = "";
@@ -43,9 +54,6 @@ const EffectivenessForm = ({ data, userData }) => {
     });
     return facilitators;
   };
-  useEffect(()=>{
-
-  },[data, userData])
   const getFormData = {
     employeeBadge: userData?.data?.employeeBadge,
     trainingProgramId: data?.trainingProgram?.id,
@@ -54,34 +62,36 @@ const EffectivenessForm = ({ data, userData }) => {
     evaluationDate: formatDateOnly(new Date(), "dash"),
     trainingRequestId: data.id,
     annotation: annotation,
-    EvaluatorBadge:userData?.data?.superiorBadge,
+    EvaluatorBadge: userData?.data?.superiorBadge,
     performanceCharacteristics: performanceCharacteristics,
     projectPerformanceEvaluation: projectPerformanceEvaluation,
     createdBy: SessionGetEmployeeId(),
   };
   const handlePerfCharacterOnChange = (e, index) => {
     const { name, value } = e.target;
-    const updatedCharacteristics = [...performanceCharacteristics]; // Create a copy of the array
+    const updatedCharacteristics = [...performanceCharacteristics]; 
     updatedCharacteristics[index] = {
       ...updatedCharacteristics[index],
       [name]: value,
-    }; // Update the content of the first element
+    };
     setPerformanceCharacteristics(updatedCharacteristics);
   };
-  
+
   const handlePerfEvaluationOnChange = (e, index) => {
     const { name, value } = e.target;
-    const updatedEvaluation = [...projectPerformanceEvaluation]; // Create a copy of the array
+    const updatedEvaluation = [...projectPerformanceEvaluation]; 
     updatedEvaluation[index] = {
       ...updatedEvaluation[index],
       [name]: value,
-    }; // Update the content of the first element
+    };
     setProjectPerformanceEvaluation(updatedEvaluation);
   };
+
   const getAfterTrainingDate = () => {
     var date = new Date(data?.trainingEndDate);
     return formatDateOnly(date.setMonth(date.getMonth() + 6));
   };
+
   const handleSubmit = () => {
     const isValid = validateForm();
     if (isValid) {
@@ -92,7 +102,12 @@ const EffectivenessForm = ({ data, userData }) => {
         cancelButtonText: "Cancel",
         onConfirm: () =>
           handleResponseAsync(() =>
-            effectivenessService.createTrainingEffectiveness(getFormData)
+            effectivenessService.createTrainingEffectiveness(getFormData),
+        (e)=>{actionSuccessful("Success!", e?.message);
+          setTimeout(()=>{
+            window.location.reload();
+          }, 1500)
+        }
           ),
       });
     }
@@ -100,8 +115,8 @@ const EffectivenessForm = ({ data, userData }) => {
   const validateForm = () => {
     let formErrors = {};
     let validForm = true;
-    let validCharacteristic= true;
-    let validEvaluation= true;
+    let validCharacteristic = true;
+    let validEvaluation = true;
     if (!getFormData.evaluationDate) {
       formErrors.evaluationDate = "Evaluation Date is required";
       validForm = false;
@@ -123,7 +138,10 @@ const EffectivenessForm = ({ data, userData }) => {
           } is required`;
           validCharacteristic = false;
         }
-        if (performanceCharacteristics[i]?.rating === 0 && validCharacteristic) {
+        if (
+          performanceCharacteristics[i]?.rating === 0 &&
+          validCharacteristic
+        ) {
           formErrors.performanceCharacteristics = `Rating for Performance characteristic ${
             i + 1
           } is required`;
@@ -173,15 +191,32 @@ const EffectivenessForm = ({ data, userData }) => {
         }
       });
     }
-    if(!validForm || !validEvaluation){
-      validForm= false;
+    if (!validForm || !validEvaluation) {
+      validForm = false;
     }
     setErrors(formErrors);
     return validForm;
   };
   return (
     <>
-      <Card.Body className="border-top ">
+      <Card.Body className="border-top">
+        {isSubmitted && 
+        <div className=" flex justify-content-between  mb-2">
+          <div>
+            Submitted: {formatDateTime(effectiveness?.data?.data?.createdDate)}
+          </div>
+          <div>
+            Status: &nbsp;
+            {StatusColor({
+              status: effectiveness?.data?.data?.statusName,
+              class: "p-1",
+              showStatus: false,
+            })} 
+            {" For Evaluator Approval -"}
+             <b>{userData?.data?.superiorName
+}</b>
+          </div>
+        </div>}
         <div className="text-center  pb-3 mb-3 ">
           <h5 className="m-0">TRAINING EFFECTIVENESS MONITORING FORM</h5>
           <small className="text-muted">Knowles Electronics Philippines</small>
@@ -273,6 +308,7 @@ const EffectivenessForm = ({ data, userData }) => {
                         name="content"
                         value={performanceCharacteristics[item]?.content ?? ""}
                         onChange={(e) => handlePerfCharacterOnChange(e, item)}
+                        readOnly={isSubmitted ? true : false}
                       ></textarea>
                     </td>
                     <td style={{ verticalAlign: "middle" }}>
@@ -282,6 +318,7 @@ const EffectivenessForm = ({ data, userData }) => {
                         name="rating"
                         onChange={(e) => handlePerfCharacterOnChange(e, item)}
                         cancel={false}
+                        readOnly={isSubmitted ? true : false}
                       />
                     </td>
                   </tr>
@@ -359,6 +396,7 @@ const EffectivenessForm = ({ data, userData }) => {
                           projectPerformanceEvaluation[item]?.content ?? ""
                         }
                         onChange={(e) => handlePerfEvaluationOnChange(e, item)}
+                        readOnly={isSubmitted ? true : false}
                       ></textarea>
                     </td>
                     <td style={{ verticalAlign: "middle" }}>
@@ -371,6 +409,7 @@ const EffectivenessForm = ({ data, userData }) => {
                         name="performanceBeforeTraining"
                         onChange={(e) => handlePerfEvaluationOnChange(e, item)}
                         cancel={false}
+                        readOnly={isSubmitted ? true : false}
                       />
                     </td>
                     <td style={{ verticalAlign: "middle" }}>
@@ -383,6 +422,7 @@ const EffectivenessForm = ({ data, userData }) => {
                         name="projectedPerformance"
                         onChange={(e) => handlePerfEvaluationOnChange(e, item)}
                         cancel={false}
+                        readOnly={isSubmitted ? true : false}
                       />
                     </td>
                     <td style={{ verticalAlign: "middle" }}>
@@ -429,30 +469,36 @@ const EffectivenessForm = ({ data, userData }) => {
               disabled={!isAfter}
             ></textarea>
           </Form.Group>
-          {data?.trainingParticipants?.some(x=>x.employeeBadge === SessionGetEmployeeId()) && 
-          <div className="text-end mt-3">
-            <Button
-              type="button"
-              icon="pi pi-eraser"
-              label="Reset"
-              className="rounded"
-              severity="secondary"
-              onClick={() => {
-                setPerformanceCharacteristics(performanceCharacteristicsArray);
-                setProjectPerformanceEvaluation(
-                  projectPerformanceEvaluationArray
-                );
-              }}
-            />
-            <Button
-              type="button"
-              icon="pi pi-cloud-upload"
-              label="Submit Form"
-              className="rounded ms-2"
-              severity="success"
-              onClick={handleSubmit}
-            />
-          </div>}
+          {data?.trainingParticipants?.some(
+            (x) => x.employeeBadge === SessionGetEmployeeId()
+          ) &&
+            (!isSubmitted && (
+              <div className="text-end mt-3">
+                <Button
+                  type="button"
+                  icon="pi pi-eraser"
+                  label="Reset"
+                  className="rounded"
+                  severity="secondary"
+                  onClick={() => {
+                    setPerformanceCharacteristics(
+                      performanceCharacteristicsArray
+                    );
+                    setProjectPerformanceEvaluation(
+                      projectPerformanceEvaluationArray
+                    );
+                  }}
+                />
+                <Button
+                  type="button"
+                  icon="pi pi-cloud-upload"
+                  label="Submit Form"
+                  className="rounded ms-2"
+                  severity="success"
+                  onClick={handleSubmit}
+                />
+              </div>
+            ))}
         </Form>
       </Card.Body>
     </>

@@ -1,5 +1,6 @@
 import {
   createTrainingEffectivenessApi,
+  getAllEffectivenessApi,
   getEffectivenessByIdApi,
 } from "../api/effectivenessApi";
 const effectivenessService = {
@@ -9,8 +10,14 @@ const effectivenessService = {
   },
   getEffectivenessById: async (id) => {
     const response = await getEffectivenessByIdApi(id);
-    console.log(response)
     return response;
   },
+  getAllEffectiveness: async()=>{
+    const response = await getAllEffectivenessApi();
+    return response;
+  },
+  getForApprovalEffectiveness : async (id) =>{
+    const response = await getEffectivenessByIdApi(id);
+  }
 };
 export default effectivenessService;

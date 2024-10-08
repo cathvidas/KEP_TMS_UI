@@ -5,8 +5,8 @@ export const createTrainingEffectivenessApi = async (data)=>{
     return await fetchFromApi("TrainingEffectiveness/CreateTrainingEffectiveness", "POST", data);
 }
 export const getEffectivenessByIdApi = async (id)=>{
-    return await fetchFromApi(`TrainingEffectiveness/GetTrainingEffectivenessById?requestId=${id}`);
+    return await fetchFromApi(`TrainingEffectiveness/GetTrainingEffectivenessById?id=${id}`);
 }
-export const getAllEffectiveness = async ()=>{
+export const getAllEffectivenessApi = async ()=>{
     return await fetchFromApi(`TrainingEffectiveness/GetAllTrainingEffectiveness`);
 }
