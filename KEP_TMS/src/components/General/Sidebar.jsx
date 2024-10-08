@@ -149,7 +149,7 @@ const Sidebars = () => {
               icon={<i className="pi pi-list-check"></i>}
             />}
             <NavItem
-              item={"/KEP_TMS/ForApproval"}
+              item={"/KEP_TMS/List/ForApproval"}
               title="For Approval"
               expanded={expanded}
               icon={<i className="pi pi-pen-to-square"></i>}
@@ -161,8 +161,8 @@ const Sidebars = () => {
                   expanded={expanded}
                   icon={<FontAwesomeIcon icon={faCheckToSlot} />}
                 /> */}
-            {SessionGetRole() === "Admin" ||
-              (SessionGetRole() === "SuperAdmin" && (
+            {(SessionGetRole() === "Admin" ||
+              SessionGetRole() === "SuperAdmin") && (
                 <>
                   <NavItem
                     item="/KEP_TMS/MasterList/Facilitators"
@@ -182,8 +182,14 @@ const Sidebars = () => {
                     expanded={expanded}
                     icon={<i className="pi pi-chart-bar"></i>}
                   />
+                  <NavItem
+                    item="/KEP_TMS/Users"
+                    title="Users"
+                    expanded={expanded}
+                    icon={<i className="pi pi-users"></i>}
+                  />
                 </>
-              ))}
+              )}
           </ul>
           <div className="dropdown p-3">
             <Link

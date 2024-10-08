@@ -41,58 +41,61 @@ const TrainingPage = () => {
       <PendingView data={data}/>
       </>
   ];
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const items = [
     {
       label: "Menu",
       items: [
-        {separator: true,
-          template: MenuItemTemplate
-        },
+        { separator: true, template: MenuItemTemplate },
         {
           label: "Overview",
           icon: "pi pi-info-circle",
           command: () => navigate(`/KEP_TMS/Training/${id}`),
           template: MenuItemTemplate,
-          active: currentContent === 0 ? true : false
+          active: currentContent === 0 ? true : false,
         },
-        ...(data?.status?.id === statusCode.FORAPPROVAL ?    [{
+        {
           label: "Modules",
           icon: "pi pi-folder",
           command: () => navigate(`/KEP_TMS/Training/${id}/Modules`),
           template: MenuItemTemplate,
-          active: currentContent === 1 ? true : false
+          active: currentContent === 1 ? true : false,
+          disable: data?.status?.id !== statusCode.FORAPPROVAL ? true : false,
         },
         {
           label: "Exam",
           icon: "pi pi-list-check",
           command: () => navigate(`/KEP_TMS/Training/${id}/Exams`),
           template: MenuItemTemplate,
-        }]: []),
-     
-        (SessionGetEmployeeId() === data.requestorBadge
-          ? {
-              label: "Participants",
-              icon: "pi pi-users",
-              command: () => navigate(`/KEP_TMS/Training/${id}/Participants`),
-              template: MenuItemTemplate,
-              active: currentContent === 3 ? true : false
-            }
-          : []),
+          disable: data?.status?.id !== statusCode.FORAPPROVAL ? true : false,
+        },
+        {
+          label: "Participants",
+          icon: "pi pi-users",
+          command: () => navigate(`/KEP_TMS/Training/${id}/Participants`),
+          template: MenuItemTemplate,
+          active: currentContent === 3 ? true : false,
+          disable:
+            SessionGetEmployeeId() !== data.requestorBadge ? true : false,
+        },
         {
           label: "Reports",
           icon: "pi pi-address-book",
           command: () => navigate(`/KEP_TMS/Training/${id}/Report`),
           template: MenuItemTemplate,
           active: currentContent === 4 ? true : false,
-          notifBadge: data?.status?.id === statusCode.SUBMITTED ? true : false
+          notifBadge: data?.status?.id === statusCode.SUBMITTED ? true : false,
         },
-        (SessionGetRole() === "Admin" ||  SessionGetRole() === "SuperAdmin"?
         {
           label: "Pendings",
           icon: "pi pi-bookmark",
           command: () => navigate(`/KEP_TMS/Training/${id}/Pendings`),
-        }:[]),
+          template: MenuItemTemplate,
+          disable:
+            SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin"
+              ? false
+              : true,
+        },
       ],
     },
   ];
@@ -116,7 +119,6 @@ const TrainingPage = () => {
       <div className={`d-flex g-0`}>
         
         <MenuContainer itemList={items}/>
-        {/* <TraineeMenu reqId={parseInt(id)} /> */}
         {loading ? (
           <SkeletonBanner />
         ) : error ? (

@@ -39,7 +39,7 @@ export const UserList = ({
       <Button type="button" severity="danger" icon="pi pi-trash" text onClick={() => setRemoveEmpBadge(data.employeeBadge)}/>
     );
   };
-  const effectivenessTemplate =(rowData)=>  StatusColor(rowData.effectivenessId != null ? getStatusById(rowData.effectivenessId): "Pending", "p-2 px-3 ", {}, true)
+  const effectivenessTemplate =(rowData)=>  StatusColor({status:rowData.effectivenessId != null ? getStatusById(rowData.effectivenessId): "Pending", class: "p-2 px-3 ",showStatus:true})
 
   
   return (

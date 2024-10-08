@@ -45,7 +45,7 @@ const OverviewSection = ({ data }) => {
           <span> Badge No: {data.requestor.employeeBadge}</span>
           <span> Department: {data.requestor.departmentName}</span>
           <span> Date: {formatDateTime(data.createdDate)}</span>
-          <span>Status: {StatusColor(data.status?.name, "p-2 px-3 ",{},true)}</span>
+          <span>Status: {StatusColor({status:data.status?.name, class: "p-2 px-3 ",showStatus:true})}</span>
         </div>
       </div>
       <div className="flex justify-content-between">

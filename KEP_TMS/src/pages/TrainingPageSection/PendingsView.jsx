@@ -3,31 +3,48 @@ import { SectionHeading } from "../../components/General/Section";
 import { Column } from "primereact/column";
 import StatusColor from "../../components/General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
-
+import effectivenessService from "../../services/effectivenessService";
+import effectivenessHook from "../../hooks/effectivenessHook";
 const PendingView =({data})=>{
     const examTemplate = (rowData) => {
       return (
-        <>{StatusColor(getStatusById(rowData?.exam), "", {}, true)}</>
+        <>{StatusColor({status:getStatusById(rowData?.exam), showStatus: true})}</>
       );
     };
     const reportTemplate = (rowData) => {
       return (
-        <>{StatusColor(getStatusById(rowData.reportId), "", {}, true)}</>
+        <>{StatusColor({status:getStatusById(rowData.reportId),showStatus: true})}</>
       );
     };
     const evaluationTemplate = (rowData) => {
       return (
-        <>{StatusColor(getStatusById(rowData.evaluationId), "", {}, true)}</>
+        <>{StatusColor({status: getStatusById(rowData.evaluationId), showStatus: true})}</>
       );
     };
     const effectivenessTemplate = (rowData) => {
+      const effec = effectivenessHook.useEffectivenessById(
+        rowData.effectivenessId
+      );
       return (
-        <>{StatusColor(getStatusById(rowData.effectivenessId), "", {}, true)}</>
+        <>
+          {StatusColor({
+            status: effec?.data?.data?.statusName ?? "Pending",
+            showStatus: true,
+          })}
+        </>
       );
     };
     const overallStatusTemplate = (rowData) => {
+      const effec = effectivenessHook.useEffectivenessById(
+        rowData.effectivenessId
+      );
       return (
-        <>{StatusColor("Pending", "", {}, true)}</>
+        <>
+          {StatusColor({
+            status: effec?.data?.data?.statusName,
+            showStatus: true,
+          })}
+        </>
       );
     };
     console.log(data)

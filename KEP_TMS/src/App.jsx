@@ -7,13 +7,15 @@ import Login from "./pages/Login";
 import NewRequest from "./pages/Request";
 import RequestList from "./pages/RequestList";
 import Trainings from "./pages/Trainings";
-import ForApproval from "./pages/ForApproval";
 import MasterList from "./pages/MasterList";
 import CertificatesPage from "./pages/CertificatesPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import ApproveRequestPage from "./pages/ApproveRequest";
 import TrainingPage from "./pages/TrainingPage";
 import TrainerPage from "./pages/TrainerPage";
+import ApproverPage from "./pages/ApproverPage";
+import UserPage from "./pages/UsersPage";
+import MasterListPage from "./pages/MasterListPage";
 function App() {
   return (
     <>
@@ -26,12 +28,13 @@ function App() {
         <Route path="/KEP_TMS/RequestList/:type?" element={<RequestList />} />
         <Route path="/KEP_TMS/Trainings" element={<Trainings />} />
         <Route path="/KEP_TMS/AssignedTrainings" element={<TrainerPage />} />
-        <Route path="/KEP_TMS/ForApproval" element={<ForApproval />} />
-        <Route path="/KEP_TMS/MasterList/:category/:type?" element={<MasterList />} />
+        <Route path="/KEP_TMS/List/:type/:page?" element={<ApproverPage />} />
+        <Route path="/KEP_TMS/MasterList/:category/:type?" element={<MasterListPage />} />
         <Route path="/KEP_TMS/CertificatesPage" element={<CertificatesPage />} />
         <Route path="/KEP_TMS/AnalyticsPage" element={<AnalyticsPage />} />
         <Route path="/KEP_TMS/ApproveRequest/:id" element={<ApproveRequestPage />} />
         <Route path="/KEP_TMS/Training/:id/:page?" element={<TrainingPage />} />
+        <Route path="/KEP_TMS/Users/:page?/:id?" element={<UserPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

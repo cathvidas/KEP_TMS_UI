@@ -1,25 +1,26 @@
-const StatusColor = (status, style,customStyle, showStatus) => {
+// const StatusColor = (status, style,customStyle, showStatus) => {
+  const StatusColor = (data) => {
   const className =
-    status === "Submitted"
+  data?.status === "Submitted"
       ? "bg-info"
-      : status === "ForApproval"
+      : data?.status === "ForApproval"
       ? "bg-primary"
-      : status === "Approved"
+      : data?.status === "Approved"
       ? "bg-success"
-      : status === "Disapproved"
+      : data?.status === "Disapproved"
       ? "bg-danger"
-      : status === "Closed"
+      : data?.status === "Closed"
       ? "bg-secondary"
-      : status === "Pending"
+      : data?.status === "Pending"
       ? "bg-warning text-dark"
-      : status === "Completed"
+      : data?.status === "Completed"
       ? "bg-danger text-white"
-      : status === "Published"
+      : data?.status === "Published"
       ? "bg-warning text-dark"
       : "theme-secondary text-dark";
 
   return (<>
-  <span className={`badge ${style} ${className}`} style={customStyle} >{showStatus ? status === "ForApproval" ? "For Approval" : status : ""} </span>
+  <span className={`badge ${data?.class} ${className}`} style={data?.style} >{data?.showStatus ? data?.status === "ForApproval" ? "For Approval" : data?.status : ""} </span>
   </>);
 };
 export default StatusColor
