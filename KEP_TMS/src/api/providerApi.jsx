@@ -1,9 +1,17 @@
-import { API_ENDPOINTS } from "./apiEndpoints";
 import fetchFromApi from "./apiUtil";
 
-export const getTrainingProviderById=async(providerId)=>{
-    return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_PROVIDER_BY_ID}?id=${providerId}`)
+export const getProviderById=async(id)=>{
+    return await fetchFromApi(`TrainingProvider/GetTrainingProviderById?id=${id}`)
 }
-export const getAllTrainingProviders=async()=>{
-    return await fetchFromApi(API_ENDPOINTS.GET_TRAINING_PROVIDERS);
+export const getAllProvidersApi=async()=>{
+    return await fetchFromApi("TrainingProvider/GetAllTrainingProviders");
+}
+export const createProviderApi = async (data)=>{
+    return await fetchFromApi("TrainingProvider/CreateTrainingProvider", "POST", data);
+}
+export const updateProviderApi = async (data)=>{
+    return await fetchFromApi("TrainingProvider/UpdateTrainingProvider", "PUT", data);
+}
+export const deleteProviderApi = async (id)=>{
+    return await fetchFromApi(`TrainingProvider/DeleteTrainingProvider?id=${id}`, "DELETE");
 }
