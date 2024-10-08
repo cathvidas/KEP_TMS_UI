@@ -10,10 +10,8 @@ const programHook = {
     useEffect(() => {
       const getPrograms = async () => {
         handleResponseAsync(
-          () => programService.getAllPrograms(),
-          (e) => {setData(e);
-            console.log(e)
-          },
+         () => programService.getAllPrograms(),
+          (e) => setData(e),
           (e) => setError(e)
         );
         setLoading(false);
