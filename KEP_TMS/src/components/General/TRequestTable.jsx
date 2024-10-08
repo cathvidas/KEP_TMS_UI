@@ -77,7 +77,7 @@ console.log(data)
         <div>
           <span>
             {" "}
-            {StatusColor(rowData.status, "p-1", { fontSize: "0.55rem" }, false)}
+            {StatusColor({status: rowData.status, class: "p-1", style:{ fontSize: "0.55rem" }, showStatus:false})}
           </span>
           <span>
             {" "}
@@ -127,11 +127,10 @@ console.log(data)
                 variant="default"
                 className="border-0 p-0  rounded-0 btn   custom-dropdown-toggle"
               >
-                {StatusColor(
+                {StatusColor({status:
                   filter.label?? "Filter",
-                  "p-2 badge-lg btn rounded-pill px-3",
-                  {},
-                  true
+                  class:"p-2 badge-lg btn rounded-pill px-3",showStatus:
+                  true}
                 )}
               </Dropdown.Toggle>
 

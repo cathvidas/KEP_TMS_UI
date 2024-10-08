@@ -6,6 +6,7 @@ import { getRoutingActivity } from "../api/trainingServices";
 import countStatus from "../utils/countStatus";
 import handleResponseAsync from "../services/handleResponseAsync";
 import { ActivityType } from "../api/constants";
+import mapUserTrainings from "../services/DataMapping/mapUserTrainings";
 
 const trainingRequestHook = {
   useTrainingRequest: (id) => {
@@ -69,7 +70,7 @@ const trainingRequestHook = {
               : trainingRequestService.getAllTrainingRequests(),
           async (e) => {
             const updatedRequests = await Promise.all(
-              e?.data.map(async (request) => {
+              e?.map(async (request) => {
                 const facilitators = await userMapping.mapUserIdList(
                   request.trainingFacilitators,
                   "facilitatorBadge"
@@ -119,7 +120,7 @@ const trainingRequestHook = {
           () =>trainingRequestService.getAllTrainingRequests(),
           (e) => {
             const userRequest = id != null? e?.data?.filter((x)=>x.requestorBadge === id): e.data;
-            setData(countStatus(e.data,userRequest))
+            setData(countStatus(e,userRequest))
           },
           // (e) => setData(countStatus(e.data)),
           (e) => setError(e)
@@ -204,6 +205,22 @@ const trainingRequestHook = {
     return{
       data, error, loading
     }
+  }, useUserTrainingsSummary: (id)=>{
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(()=>{
+      const fetchData = ()=>{
+        handleResponseAsync(
+          ()=>trainingRequestService.getAllTrainingRequests(),
+          (response)=>setData(mapUserTrainings(response, id)),
+          (error)=>setError(error)
+        )
+        setLoading(false)
+      }
+      fetchData();
+    },[id]);
+    return {data, error, loading}
   }
 };
 

@@ -1,7 +1,7 @@
 import { getUserApi } from "../../api/userApi";
 
 export const mapTRequestToTableData = (data)=>{
-    const mappedData = data.map(item=>({
+    const mappedData = data?.map(item=>({
         id: item.id,
         requestorName: item?.requestorName,
         requestorBadge: item?.requestorBadge,
@@ -15,10 +15,10 @@ export const mapTRequestToTableData = (data)=>{
         startDate: item.trainingStartDate,
         endDate: item.trainingEndDate,
         totalFee: item?.totalTrainingFee,
-        approverId: item?.routing.approverId,
-        approverFullName: item?.routing.approverFullName,
-        approverUsername: item?.routing.approverUsername,
-        approverPosition: item?.routing.approverPosition,
+        approverId: item?.routing?.approverId,
+        approverFullName: item?.routing?.approverFullName,
+        approverUsername: item?.routing?.approverUsername,
+        approverPosition: item?.routing?.approverPosition,
         facilitatorName: item?.trainingFacilitators[0]?.fullname ,
         totalParticipants: item?.totalParticipants,
         trainingParticipants: item?.trainingParticipants

@@ -5,7 +5,7 @@ import { SessionGetEmployeeId } from "./sessions";
 const trainingRequestService = {
   getAllTrainingRequests: async () => {
     const response = await getAllTrainingRequestsApi();
-    return response;
+    return response?.data;
   },
   getTrainingRequest: async (id) => {
     const response = await getTrainingRequestApi(id);
