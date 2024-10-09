@@ -5,6 +5,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
+import effectivenessHook from "../../hooks/effectivenessHook";
 
 export const UserList = ({
   userlist,
@@ -39,8 +40,19 @@ export const UserList = ({
       <Button type="button" severity="danger" icon="pi pi-trash" text onClick={() => setRemoveEmpBadge(data.employeeBadge)}/>
     );
   };
-  const effectivenessTemplate =(rowData)=>  StatusColor({status:rowData.effectivenessId != null ? getStatusById(rowData.effectivenessId): "Pending", class: "p-2 px-3 ",showStatus:true})
-
+  const effectivenessTemplate = (rowData) => {
+    const effec = effectivenessHook.useEffectivenessById(
+      rowData.effectivenessId
+    );
+    return (
+      <>
+        {StatusColor({
+          status: effec?.data?.data?.statusName ?? "Pending",
+          showStatus: true,
+        })}
+      </>
+    );
+  };
   
   return (
     <>

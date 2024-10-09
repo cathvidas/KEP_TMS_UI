@@ -26,7 +26,6 @@ const MasterList = () => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedData, setSelectedData] = useState({});
-  const [dataType, setDataType] = useState("");
   const getUsersMasterList = () => {
     const getUsers = async () => {
       try {

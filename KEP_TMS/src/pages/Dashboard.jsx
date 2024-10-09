@@ -19,7 +19,7 @@ const Dashboard = () => {
   const approval = trainingRequestHook.useAssignedApprovalTrainingRequest(
     SessionGetEmployeeId()
   );
-  console.log(data);
+  // console.log(data);
 
   const values = [
     ...(approval?.data?.length > 0
@@ -34,26 +34,26 @@ const Dashboard = () => {
           },
         ]
       : []),
-      ...(data?.trainerAction > 0
-        ? [
-            {
-              label: "Facilitation Assignments",
-              color1: "#ff6bbd",
-              color2: "#ff6b6b",
-              value: data?.trainerAction,
-              icon: "pi pi-user-edit",
-              status: "AssignedTrainings",
-            },
-          ]
-        : []),
-        {
-          label: "Assigned Trainings",
-          color1: "#60c8fa",
-          color2: "#60a5fa",
-          value: data.assignedTraining ?? 0,
-          icon: "pi pi-clock",
-          status: "Training",
-        },
+    ...(data?.trainerAction > 0
+      ? [
+          {
+            label: "Facilitation Assignments",
+            color1: "#ff6bbd",
+            color2: "#ff6b6b",
+            value: data?.trainerAction,
+            icon: "pi pi-user-edit",
+            status: "AssignedTrainings",
+          },
+        ]
+      : []),
+    {
+      label: "Assigned Trainings",
+      color1: "#60c8fa",
+      color2: "#60a5fa",
+      value: data.assignedTraining ?? 0,
+      icon: "pi pi-clock",
+      status: "Training",
+    },
     {
       label: "Pending Request",
       color1: "#fbbf24",
@@ -113,7 +113,7 @@ const Dashboard = () => {
                         `/KEP_TMS/${
                           item.status === "Approver"
                             ? "ForApproval"
-                         : item.status === "Training"
+                            : item.status === "Training"
                             ? "Trainings"
                             : item.status === "AssignedTrainings"
                             ? "AssignedTrainings"

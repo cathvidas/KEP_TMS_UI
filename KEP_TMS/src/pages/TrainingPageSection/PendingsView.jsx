@@ -3,7 +3,7 @@ import { SectionHeading } from "../../components/General/Section";
 import { Column } from "primereact/column";
 import StatusColor from "../../components/General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
-import effectivenessService from "../../services/effectivenessService";
+import proptype from "prop-types";
 import effectivenessHook from "../../hooks/effectivenessHook";
 const PendingView =({data})=>{
     const examTemplate = (rowData) => {
@@ -103,5 +103,8 @@ const PendingView =({data})=>{
     </DataTable>
     </>)
 
+}
+PendingView.propTypes = {
+  data: proptype.object.isRequired,
 }
 export default PendingView;

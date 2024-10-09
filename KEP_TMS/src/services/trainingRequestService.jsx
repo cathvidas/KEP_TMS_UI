@@ -1,6 +1,5 @@
 import { statusCode } from "../api/constants";
 import { approveTrainingRequestApi, getAllTrainingRequestsApi, getCurrentRoutingActivityApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestsByRequestorApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
-import { SessionGetEmployeeId } from "./sessions";
 
 const trainingRequestService = {
   getAllTrainingRequests: async () => {
@@ -17,8 +16,7 @@ const trainingRequestService = {
   },
   getTrainingRequestsByRequestor: async (id) => {
     const response = await getTrainingRequestsByRequestorApi(id);
-    console.log(response);
-    return response;
+    return response.data;
   },
   getCurrentRoutingActivity: async (transactId, activityIn) => {
     const response = await getCurrentRoutingActivityApi(transactId, activityIn);

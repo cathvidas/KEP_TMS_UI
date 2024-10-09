@@ -12,11 +12,10 @@ const trainingRequestHook = {
   useTrainingRequest: (id) => {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequest = async () => {
         try {
-          setLoading(true);
           const response = await trainingRequestService.getTrainingRequest(id);
           console.log(response);
           const participants = await userMapping.mapUserIdList(
@@ -45,8 +44,9 @@ const trainingRequestHook = {
           });
         } catch (error) {
           setError(error);
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
       };
       getRequest();
     }, [id]);
@@ -69,6 +69,7 @@ const trainingRequestHook = {
               ? trainingRequestService.getTrainingRequestsByRequestor(id)
               : trainingRequestService.getAllTrainingRequests(),
           async (e) => {
+            console.log(e)
             const updatedRequests = await Promise.all(
               e?.map(async (request) => {
                 const facilitators = await userMapping.mapUserIdList(
@@ -98,38 +99,38 @@ const trainingRequestHook = {
             );
             setData(updatedRequests);
           },
-          (e) => setError(e)
+          (e) => setError(e),
+          () => setLoading(false)
         );
-        setLoading(false);
       };
       fetchData();
-    }, []);
+    }, [id]);
     return {
       data,
       error,
       loading,
     };
   },
-  useStatusCount: (id, role) => {
+  useStatusCount: (id) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    console.log(id);
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
-          () =>trainingRequestService.getAllTrainingRequests(),
+          () => trainingRequestService.getAllTrainingRequests(),
           (e) => {
-            const userRequest = id != null? e?.data?.filter((x)=>x.requestorBadge === id): e.data;
-            setData(countStatus(e,userRequest))
+            const userRequest =
+              id != null ? e?.filter((x) => x.requestorBadge === id) : e;
+            setData(countStatus(e, userRequest));
           },
-          // (e) => setData(countStatus(e.data)),
-          (e) => setError(e)
+          (e) => setError(e),
+          () => setLoading(false)
         );
-        setLoading(false);
       };
       fetchData();
-      console.log(data);
-    }, []);
+    }, [id]);
     return {
       data,
       error,
@@ -141,31 +142,31 @@ const trainingRequestHook = {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-      console.log(id)
       const fetchData = async () => {
         handleResponseAsync(
-          ()=>trainingRequestService.getTrainingRequestByApprover(id),
-          (e)=>setData(e),
-          (e)=>setError(e),
-          ()=>setLoading(false)
-        )
+          () => trainingRequestService.getTrainingRequestByApprover(id),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
       };
       fetchData();
-    },[]);
-    return{
+    }, [id]);
+    return {
       data,
       error,
       loading,
-    }
+    };
   },
-  useParticipantTrainings: (id, role)=>{
+  useParticipantTrainings: (id, role) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
-          () => trainingRequestService.getTrainingRequestByParticipant(id, role),
+          () =>
+            trainingRequestService.getTrainingRequestByParticipant(id, role),
           async (e) => {
             const updatedRequests = await Promise.all(
               e.map(async (request) => {
@@ -196,32 +197,35 @@ const trainingRequestHook = {
             );
             setData(updatedRequests);
           },
-          (e) => setError(e)
+          (e) => setError(e),
+          () => setLoading(false)
         );
-        setLoading(false);
       };
       fetchData();
-    }, []);
-    return{
-      data, error, loading
-    }
-  }, useUserTrainingsSummary: (id)=>{
+    }, [id, role]);
+    return {
+      data,
+      error,
+      loading,
+    };
+  },
+  useUserTrainingsSummary: (id) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    useEffect(()=>{
-      const fetchData = ()=>{
+    useEffect(() => {
+      const fetchData = () => {
         handleResponseAsync(
-          ()=>trainingRequestService.getAllTrainingRequests(),
-          (response)=>setData(mapUserTrainings(response, id)),
-          (error)=>setError(error)
-        )
-        setLoading(false)
-      }
+          () => trainingRequestService.getAllTrainingRequests(),
+          (response) => setData(mapUserTrainings(response, id)),
+          (error) => setError(error),
+          () => setLoading(false)
+        );
+      };
       fetchData();
-    },[id]);
-    return {data, error, loading}
-  }
+    }, [id]);
+    return { data, error, loading };
+  },
 };
 
 export default trainingRequestHook;

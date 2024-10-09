@@ -15,6 +15,7 @@ import ExportBtn from "./ExportBtn";
 import { Dropdown } from "react-bootstrap";
 import { statusCode } from "../../api/constants";
 import countData from "../../utils/countData";
+import effectivenessHook from "../../hooks/effectivenessHook";
 
 const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEdit = true }) => {
 console.log(data)
@@ -72,6 +73,7 @@ console.log(data)
     );
   };
   const approverColumnTemplate = (rowData) => {
+
     return (
       <>
         <div>

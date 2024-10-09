@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import ProgramListSection from "./MasterListSection/ProgramListSection";
 import { useEffect, useState } from "react";
-import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
 import CategoryListSection from "./MasterListSection/CategoryListSection";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import ProviderListSection from "./MasterListSection/ProviderListSection";

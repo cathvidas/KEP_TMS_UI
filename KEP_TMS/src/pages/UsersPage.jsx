@@ -1,8 +1,6 @@
-import { icon } from "@fortawesome/fontawesome-svg-core";
 import Layout from "../components/General/Layout";
 import MenuContainer from "../components/menus/MenuContainer";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
-import { UserList } from "../components/List/UserList";
 import AllUserPageSection from "./UserPageSection/AllUserPageSection";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";

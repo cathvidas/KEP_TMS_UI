@@ -10,10 +10,16 @@ import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 const RequestList = () => {
   const { type } = useParams();
-  const { data, error, loading } = SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin"
-      ? trainingRequestHook.useAllTrainingRequests() : trainingRequestHook.useAllTrainingRequests(SessionGetEmployeeId());
+  const { data, error, loading } =
+    SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin"
+      ? trainingRequestHook.useAllTrainingRequests()
+      : trainingRequestHook.useAllTrainingRequests(SessionGetEmployeeId());
   const [requests, setRequests] = useState();
-  const [filter, setFilter] = useState({label: type, value: getStatusCode(type)});
+  const [filter, setFilter] = useState({
+    label: type,
+    value: getStatusCode(type),
+  });
+  console.log(data)
   useEffect(() => {
     if (filter?.value) {
       const updatedList = data.filter(
@@ -27,17 +33,22 @@ const RequestList = () => {
   const Content = () => (
     <>
       <div className="p-3">
-        {/* <SectionBanner
-              title="Training Requests List"
-              subtitle={
-                "Easily access and manage your training requests. Review the status, update details, and plan your learning activities."
-              }
-            />
-            <ScalarMeasurement/> */}
-        {/* <TRequestTable userType={"user"} data={data.filter((x)=>x?.status?.name? === type )} /> */}
-        {loading ? 
-        <SkeletonDataTable/>:
-        <TRequestTable userType={"user"} data={requests} filter={filter} handleActionFilter={setFilter}/>}
+        {loading ? (
+          error ? (
+            <div className="text-center text-danger">
+              Error: {error?.message}
+            </div>
+          ) : (
+            <SkeletonDataTable />
+          )
+        ) : (
+          <TRequestTable
+            userType={"user"}
+            data={requests}
+            filter={filter}
+            handleActionFilter={setFilter}
+          />
+        )}
       </div>
     </>
   );

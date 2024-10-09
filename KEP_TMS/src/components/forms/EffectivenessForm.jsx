@@ -2,7 +2,7 @@ import { Card, Col, Form, Row, Table } from "react-bootstrap";
 import AutoCompleteField from "./common/AutoCompleteField";
 import proptype from "prop-types";
 import { formatDateOnly, formatDateTime } from "../../utils/Formatting";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Rating } from "primereact/rating";
 import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import { Button } from "primereact/button";
@@ -18,7 +18,6 @@ import effectivenessHook from "../../hooks/effectivenessHook";
 import StatusColor from "../General/StatusColor";
 import { useNavigate } from "react-router-dom";
 const EffectivenessForm = ({ data, userData }) => {
-  const navigate = useNavigate();
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
   const [annotation, setAnnotation] = useState("");
@@ -37,15 +36,21 @@ const EffectivenessForm = ({ data, userData }) => {
   const effectiveness = effectivenessHook.useEffectivenessById(
     getEffectiveness() ?? 0
   );
-  useEffect(()=>{
-    if( effectiveness?.data?.status === 1){
+  useEffect(() => {
+    if (effectiveness?.data?.status === 1) {
       const effectivenessData = effectiveness?.data?.data;
       setAnnotation(effectivenessData?.annotation);
-       setPerformanceCharacteristics(effectivenessData?.performanceCharacteristics?? performanceCharacteristicsArray);
-       setProjectPerformanceEvaluation(effectivenessData?.projectPerformanceEvaluation ?? projectPerformanceEvaluationArray);
-       setIsSubmitted(true);
+      setPerformanceCharacteristics(
+        effectivenessData?.performanceCharacteristics ??
+          performanceCharacteristicsArray
+      );
+      setProjectPerformanceEvaluation(
+        effectivenessData?.projectPerformanceEvaluation ??
+          projectPerformanceEvaluationArray
+      );
+      setIsSubmitted(true);
     }
-  },[effectiveness?.data]);
+  }, [effectiveness?.data]);
   const numItems = [0, 1, 2];
   const getFacilitators = () => {
     let facilitators = "";
@@ -69,7 +74,7 @@ const EffectivenessForm = ({ data, userData }) => {
   };
   const handlePerfCharacterOnChange = (e, index) => {
     const { name, value } = e.target;
-    const updatedCharacteristics = [...performanceCharacteristics]; 
+    const updatedCharacteristics = [...performanceCharacteristics];
     updatedCharacteristics[index] = {
       ...updatedCharacteristics[index],
       [name]: value,
@@ -79,18 +84,17 @@ const EffectivenessForm = ({ data, userData }) => {
 
   const handlePerfEvaluationOnChange = (e, index) => {
     const { name, value } = e.target;
-    const updatedEvaluation = [...projectPerformanceEvaluation]; 
+    const updatedEvaluation = [...projectPerformanceEvaluation];
     updatedEvaluation[index] = {
       ...updatedEvaluation[index],
       [name]: value,
     };
     setProjectPerformanceEvaluation(updatedEvaluation);
   };
-
-  const getAfterTrainingDate = () => {
+  const getAfterTrainingDate = useCallback(() => {
     var date = new Date(data?.trainingEndDate);
     return formatDateOnly(date.setMonth(date.getMonth() + 6));
-  };
+  },[data?.trainingEndDate]);
 
   const handleSubmit = () => {
     const isValid = validateForm();
@@ -101,13 +105,14 @@ const EffectivenessForm = ({ data, userData }) => {
         confirmButtonText: "Submit",
         cancelButtonText: "Cancel",
         onConfirm: () =>
-          handleResponseAsync(() =>
-            effectivenessService.createTrainingEffectiveness(getFormData),
-        (e)=>{actionSuccessful("Success!", e?.message);
-          setTimeout(()=>{
-            window.location.reload();
-          }, 1500)
-        }
+          handleResponseAsync(
+            () => effectivenessService.createTrainingEffectiveness(getFormData),
+            (e) => {
+              actionSuccessful("Success!", e?.message);
+              setTimeout(() => {
+                window.location.reload();
+              }, 1500);
+            }
           ),
       });
     }
@@ -197,26 +202,31 @@ const EffectivenessForm = ({ data, userData }) => {
     setErrors(formErrors);
     return validForm;
   };
+  useEffect(()=>{
+    setIsAfter(getAfterTrainingDate() >= formatDateOnly(new Date(), "dash"));
+  },[getAfterTrainingDate])
+  console.log(getAfterTrainingDate() >= formatDateOnly(new Date(), "dash"))
   return (
     <>
       <Card.Body className="border-top">
-        {isSubmitted && 
-        <div className=" flex justify-content-between  mb-2">
-          <div>
-            Submitted: {formatDateTime(effectiveness?.data?.data?.createdDate)}
+        {isSubmitted && (
+          <div className=" flex justify-content-between  mb-2">
+            <div>
+              Submitted:{" "}
+              {formatDateTime(effectiveness?.data?.data?.createdDate)}
+            </div>
+            <div>
+              Status: &nbsp;
+              {StatusColor({
+                status: effectiveness?.data?.data?.statusName,
+                class: "p-1",
+                showStatus: false,
+              })}
+              {" For Evaluator Approval -"}
+              <b>{userData?.data?.superiorName}</b>
+            </div>
           </div>
-          <div>
-            Status: &nbsp;
-            {StatusColor({
-              status: effectiveness?.data?.data?.statusName,
-              class: "p-1",
-              showStatus: false,
-            })} 
-            {" For Evaluator Approval -"}
-             <b>{userData?.data?.superiorName
-}</b>
-          </div>
-        </div>}
+        )}
         <div className="text-center  pb-3 mb-3 ">
           <h5 className="m-0">TRAINING EFFECTIVENESS MONITORING FORM</h5>
           <small className="text-muted">Knowles Electronics Philippines</small>
@@ -348,9 +358,9 @@ const EffectivenessForm = ({ data, userData }) => {
               </Col>
               <Col className={`d-flex gap-2 align-items-end`}>
                 <label className="fw-bold" style={{ fontSize: "0.8rem" }}>
-                  Evaluator
+                  Evaluator:
                 </label>
-                <span className="flex-grow-1 border-0 border-bottom"></span>
+                <span className="flex-grow-1 border-0 border-bottom">{userData?.data?.superiorName} - {userData?.data?.superiorBadge}</span>
               </Col>
             </Row>
             <Table className="mt-2 table-bordered m-0">
@@ -472,7 +482,7 @@ const EffectivenessForm = ({ data, userData }) => {
           {data?.trainingParticipants?.some(
             (x) => x.employeeBadge === SessionGetEmployeeId()
           ) &&
-            (!isSubmitted && (
+            !isSubmitted && (
               <div className="text-end mt-3">
                 <Button
                   type="button"
@@ -498,7 +508,7 @@ const EffectivenessForm = ({ data, userData }) => {
                   onClick={handleSubmit}
                 />
               </div>
-            ))}
+            )}
         </Form>
       </Card.Body>
     </>

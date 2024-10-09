@@ -6,14 +6,14 @@ import Layout from "../components/General/Layout";
 import ForApprovalRequest from "./ApproverPageSection/ForApprovalRequest";
 import ForApprovaleffectiveness from "./ApproverPageSection/ForApprovalEffectiveness";
 
-const ApproverPage = () =>{
+const ApproverPage = () => {
   const { type, page } = useParams();
-    const navigate = useNavigate();
-    const [currentContent, setCurrentContent] = useState(0); 
-    const pageContent = [
-          <ForApprovalRequest key={0} /> ,
-          <ForApprovaleffectiveness key={1} />
-      ];
+  const navigate = useNavigate();
+  const [currentContent, setCurrentContent] = useState(0);
+  const pageContent = [
+    <ForApprovalRequest key={0} />,
+    <ForApprovaleffectiveness key={1} />,
+  ];
   const items = [
     {
       label: "For Approval",
@@ -48,23 +48,23 @@ const ApproverPage = () =>{
         {
           label: "Requests",
           icon: "pi pi-list-check",
-          command: () => navigate(`/KEP_TMS/List/Approved/Requests`),
+          // command: () => navigate(`/KEP_TMS/List/Approved/Requests`),
           template: MenuItemTemplate,
-          active: currentContent === 0 ? true : false,
+          active: currentContent === 3 ? true : false,
         },
         {
           label: "Effectiveness",
           icon: "pi pi-file",
-          command: () => navigate(`/KEP_TMS/List/Approved/Effectiveness`),
+          // command: () => navigate(`/KEP_TMS/List/Approved/Effectiveness`),
           template: MenuItemTemplate,
-          active: currentContent === 1 ? true : false,
+          active: currentContent === 4 ? true : false,
         },
         {
           label: "Report",
           icon: "pi pi-file-check",
-          command: () => navigate(`/KEP_TMS/List/Approved/Reports`),
+          // command: () => navigate(`/KEP_TMS/List/Approved/Reports`),
           template: MenuItemTemplate,
-          active: currentContent === 2 ? true : false,
+          active: currentContent === 5 ? true : false,
         },
       ],
     },
@@ -78,16 +78,16 @@ const ApproverPage = () =>{
       } else if (page === "Reports") {
         setCurrentContent(2);
       }
-    } else if(type === "Approved") {
-        if (page === "Requests") {
-          setCurrentContent(0);
-        } else if (page === "Effectiveness") {
-          setCurrentContent(1);
-        } else if (page === "Reports") {
-          setCurrentContent(2);
-        }
+    } else if (type === "Approved") {
+      if (page === "Requests") {
+        setCurrentContent(0);
+      } else if (page === "Effectiveness") {
+        setCurrentContent(1);
+      } else if (page === "Reports") {
+        setCurrentContent(2);
+      }
     }
-  }, [page]);
+  }, [page, type]);
   const Content = () => (
     <div className={`d-flex g-0`}>
       <MenuContainer itemList={items} />
@@ -99,13 +99,17 @@ const ApproverPage = () =>{
       </div>
     </div>
   );
-    return<>  <Layout
-    BodyComponent={Content}
-    header={{
-      title: "For Approvals",
-      icon: <i className="pi pi-pen-to-square"></i>,
-    }}
-  />
-</>
-}
+  return (
+    <>
+      {" "}
+      <Layout
+        BodyComponent={Content}
+        header={{
+          title: "For Approvals",
+          icon: <i className="pi pi-pen-to-square"></i>,
+        }}
+      />
+    </>
+  );
+};
 export default ApproverPage;
