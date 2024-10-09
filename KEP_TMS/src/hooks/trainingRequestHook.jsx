@@ -57,7 +57,7 @@ const trainingRequestHook = {
     };
   },
 
-  useAllTrainingRequests: (id) => {
+  useAllTrainingRequests: (id=0, type=null) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -65,11 +65,10 @@ const trainingRequestHook = {
       const fetchData = async () => {
         handleResponseAsync(
           () =>
-            id
+            id !== 0
               ? trainingRequestService.getTrainingRequestsByRequestor(id)
               : trainingRequestService.getAllTrainingRequests(),
           async (e) => {
-            console.log(e)
             const updatedRequests = await Promise.all(
               e?.map(async (request) => {
                 const facilitators = await userMapping.mapUserIdList(
@@ -97,14 +96,16 @@ const trainingRequestHook = {
                 };
               })
             );
-            setData(updatedRequests);
+            console.log(updatedRequests)
+            setData(type!= null? updatedRequests.filter(x=> x.trainingTypeId === type):updatedRequests)
+
           },
           (e) => setError(e),
           () => setLoading(false)
         );
       };
       fetchData();
-    }, [id]);
+    }, [id, type]);
     return {
       data,
       error,
