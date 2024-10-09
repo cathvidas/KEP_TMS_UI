@@ -1,6 +1,8 @@
+import { ActivityType } from "../api/constants";
 import {
   createTrainingEffectivenessApi,
   getAllEffectivenessApi,
+  getApproverAssignedEffectivenessApi,
   getEffectivenessByIdApi,
 } from "../api/effectivenessApi";
 const effectivenessService = {
@@ -16,8 +18,10 @@ const effectivenessService = {
     const response = await getAllEffectivenessApi();
     return response;
   },
-  getForApprovalEffectiveness : async (id) =>{
-    const response = await getEffectivenessByIdApi(id);
+  getApproverAssignedEffectiveness : async (id) =>{
+    const response = await getApproverAssignedEffectivenessApi(id);
+    const filter = response?.filter(item => item?.routingActivity?.activityType === ActivityType.EFFECTIVENESS)
+    return filter;
   }
 };
 export default effectivenessService;

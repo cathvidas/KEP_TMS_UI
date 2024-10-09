@@ -23,7 +23,7 @@ import { SessionGetRole } from "../../services/sessions";
 const NavItem = ({ item, icon, title, expanded }) => {
   const locations = useLocation();
   const getClassNames = (page) =>
-    `nav-link p-3  rounded-0  ${
+    `nav-link p-3 link-body-emphasis rounded-0  ${
       locations.pathname === page ? "link-light active" : "text-secondary"
     }`;
 
@@ -110,7 +110,7 @@ const Sidebars = () => {
             )}
           </div>
         </div>
-        <div className="d-flex w-100 flex-column  top-0 bottom-0">
+        <div className="d-flex w-100 flex-column h-100  top-0 bottom-0">
           <Link
             className="fw-bold lh-1 theme-color flex text-decoration-none py-3 px-3 pe-4 d-flex"
             href="/"
@@ -170,7 +170,7 @@ const Sidebars = () => {
                     expanded={expanded}
                     icon={<i className="pi pi-list"></i>}
                   />
-                  <NavItem
+                  {/* <NavItem
                     item="/KEP_TMS/CertificatesPage"
                     title="Certificates"
                     expanded={expanded}
@@ -181,7 +181,7 @@ const Sidebars = () => {
                     title="Analytics"
                     expanded={expanded}
                     icon={<i className="pi pi-chart-bar"></i>}
-                  />
+                  /> */}
                   <NavItem
                     item="/KEP_TMS/Users"
                     title="Users"
@@ -191,8 +191,30 @@ const Sidebars = () => {
                 </>
               )}
           </ul>
-          <div className="dropdown p-3">
+          <div className={`dropdown p-3 d-flex ${expanded != "true" && "align-items-center"} flex-column nav-flush`}>
             <Link
+              className=" link-body-emphasis d-flex px-3 align-items-center text-decoration-none"
+              aria-expanded="false"
+              role="button"
+            >
+              <UserIcon Name={lastname + "," + firstname} />   
+              {expanded == "true" && (
+              <span className="text-start ms-3 ">{lastname + "," + firstname}</span>
+            )}
+            </Link>
+            <Link
+              className=" link-body-emphasis p-3 d-flex align-items-center "
+              aria-expanded="false"
+              role="button"
+              onClick={handleSignOut}
+            >
+              <i className="pi pi-sign-out"/>
+            {expanded == "true" && (
+              <span className="text-start ms-3 ">Log out</span>
+            )}
+            </Link>
+            
+            {/* <Link
               className="dropdown-toggle link-body-emphasis d-flex align-items-center text-decoration-none"
               aria-expanded="false"
               data-bs-toggle="dropdown"
@@ -217,7 +239,7 @@ const Sidebars = () => {
               <Link className="dropdown-item" onClick={handleSignOut}>
                 Sign out
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

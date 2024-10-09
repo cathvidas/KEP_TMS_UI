@@ -10,7 +10,7 @@ const Trainings =()=>{
   console.log(data)
     const Content =() =>(<div className="p-3">
    
-      <SectionBanner title="Trainings" subtitle="List of Trainings"/>
+      <SectionBanner title="Assigned Trainings" subtitle="List of trainings assigned to you"/>
 
       <TRequestTable data={data} headingTitle="Training List" allowEdit={false}/>
       </div>

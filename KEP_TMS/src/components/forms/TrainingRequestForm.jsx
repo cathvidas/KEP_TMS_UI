@@ -60,7 +60,7 @@ const trainingType = useParams().type;
   const handleFormSubmission = async () => {
     try {
       const formmatedData = { ...InsertFormattedTrainingRequestData(formData) };
-
+console.log(formmatedData)
       if (trainingType.toUpperCase() === "UPDATE" && requestId) {
         const updateData = {
           ...formmatedData,

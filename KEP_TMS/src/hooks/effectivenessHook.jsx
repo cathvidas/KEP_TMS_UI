@@ -39,6 +39,23 @@ const effectivenessHook = {
             getRequests();
         })
         return{data, error, loading}
-    }
+    },
+    useApproverAssignedEffectiness:  (approverId) =>{
+      const [data, setData] = useState([]);
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      useEffect(()=>{
+          const getRequests = async () => {
+            handleResponseAsync(
+              () => effectivenessService.getApproverAssignedEffectiveness(approverId),
+              (e) => setData(e),
+              (e) => setError(e),
+              ()=>setLoading(false)
+            );
+          };
+          getRequests();
+      },[approverId])
+      return{data, error, loading}
+  },
 }
 export default effectivenessHook;

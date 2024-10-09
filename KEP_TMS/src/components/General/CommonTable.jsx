@@ -64,7 +64,7 @@ const CommonTable = ({
           {columnItems &&
             columnItems.map((item, i) => (
               <Column
-                key={i}
+                key={"dt"+i}
                 field={item?.field}
                 header={item?.header}
                 body={item.body ?? ""}

@@ -20,7 +20,7 @@ console.log(formData)
         categoryId: formData.trainingCategory?.id,
         trainingProgramId: formData.trainingProgram?.id,
         trainingProviderId: formData.trainingProvider?.id,
-        // trainingTypeId: formData.trainingType?.id,
+       trainingTypeId: formData.trainingType?.id,
         trainingObjectives: formData.trainingObjectives,
         venue: formData.venue,
         trainingParticipants: formData.trainingParticipants? formData.trainingParticipants.map(({employeeBadge})=>({

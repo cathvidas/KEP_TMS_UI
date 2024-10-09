@@ -11,11 +11,7 @@ const Banner = ({ setShowModal }) => {
   const navigate = useNavigate();
 
   const displayName = () => {
-    if (username) {
-      return username;
-    } else {
       return fullname;
-    }
   };
 
 
@@ -32,7 +28,7 @@ const Banner = ({ setShowModal }) => {
         <Col className="d-md-flex align-items-md-center col-12 col-md-8">
           <div className="px-5">
             <h3 className="fw-bold" style={{ color: "rgb(0,75,80)" }}>
-              Welcome back  {displayName()}
+              Welcome back,  {displayName()}
             </h3>
             <p className="my-3">
                Click

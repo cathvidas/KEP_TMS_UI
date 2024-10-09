@@ -48,9 +48,12 @@ const countStatus = (data, userRequest) => {
     if(isParticipant && item?.status?.id === statusCode.PUBLISHED){
       count.ongoing++;
     }
-    if(isFacilitator && (item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.PUBLISHED)){
+    if(isFacilitator ){
       count.trainerAction++;
     }
+    // if(isFacilitator && (item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.PUBLISHED)){
+    //   count.trainerAction++;
+    // }
     if(isParticipant){
       count.assignedTraining++;
     }

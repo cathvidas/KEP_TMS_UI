@@ -77,7 +77,7 @@ const OverviewSection = ({ data }) => {
             col="3"
             userlist={data.trainingParticipants}
             property={"name"}
-            allowEffectiveness
+            // allowEffectiveness
           />
         </div>
       ) : (

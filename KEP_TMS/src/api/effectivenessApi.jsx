@@ -10,3 +10,6 @@ export const getEffectivenessByIdApi = async (id)=>{
 export const getAllEffectivenessApi = async ()=>{
     return await fetchFromApi(`TrainingEffectiveness/GetAllTrainingEffectiveness`);
 }
+export const getApproverAssignedEffectivenessApi = async (id)=>{
+    return await fetchFromApi(`Services/GetAssignedEffectiveness?assignedTo=${id}`);
+}

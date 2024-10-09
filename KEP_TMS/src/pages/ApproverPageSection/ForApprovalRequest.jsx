@@ -100,7 +100,7 @@ const ForApprovalRequest = () => {
       statusId: data.statusId,
       updatedBy: SessionGetEmployeeId(),
     };
-
+console.log(data)
     try {
       const response = await approveTrainingRequest(newData);
       if (response.isSuccess) {
@@ -115,7 +115,6 @@ const ForApprovalRequest = () => {
       setTrigger(trigger+1)
     }, 2000);
   };
-console.log(trigger)
   const actionTemplate = (data) => {
     return (
       <div className="d-flex">
@@ -139,7 +138,7 @@ console.log(trigger)
               confirmButtonText: "Approve",
               cancelButtonText: "No",
               onConfirm: handleApproveRequest,
-              param: { id: data.id, statusId: statusCode.equestForApprovalRequest },
+              param: { id: data.id, statusId: statusCode.APPROVED },
             })
           }
           size="small"
