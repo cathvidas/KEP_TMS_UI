@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import CategoryListSection from "./MasterListSection/CategoryListSection";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import ProviderListSection from "./MasterListSection/ProviderListSection";
+import TrainingListSection from "./MasterListSection/TrainingListSection";
+import { TrainingType } from "../api/constants";
 
 const MasterListPage = () => {
   const page = useParams();
@@ -66,7 +68,9 @@ const MasterListPage = () => {
   const pageContent = [
     <CategoryListSection key={0} />,
     <ProgramListSection key={1} />,
-    <ProviderListSection key={2}/>
+    <ProviderListSection key={2} />,
+    <TrainingListSection key={3} trainingType={TrainingType.INTERNAL} />,
+    <TrainingListSection key={4} trainingType={TrainingType.EXTERNAL} />,
   ];
   console.log(page);
   useEffect(() => {
@@ -76,6 +80,12 @@ const MasterListPage = () => {
       setCurrentContent(0);
     } else if (page.category === "Providers") {
       setCurrentContent(2);
+    } else if (page.category === "Training") {
+      if (page.type === "Internal") {
+        setCurrentContent(4);
+      } else if (page.type === "External") {
+        setCurrentContent(2);
+      }
     } else {
       // navigate("/KEP_TMS/MasterList")
       setCurrentContent(0);

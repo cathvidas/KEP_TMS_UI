@@ -8,13 +8,7 @@ import {
   faAngleLeft,
   faAngleRight,
   faAward,
-  faBarChart,
   faClipboardCheck,
-  faClipboardList,
-  faHouse,
-  faList,
-  faListCheck,
-  faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useState } from "react";
