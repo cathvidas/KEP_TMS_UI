@@ -12,6 +12,8 @@ import { getAllDepartments } from "../../api/ComboBoxes";
 import { getAllTrainingProviders } from "../../api/trainingServices";
 import { FilterMatchMode } from "primereact/api";
 import EmptyState from "./EmptyState";
+import { Button } from "primereact/button";
+import { Modal } from "react-bootstrap";
 const TrainingParticipantsForm = ({ formData, handleResponse, errors }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -272,7 +274,24 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors }) => {
       )}
 
       <div className="mt-4"></div>
-      <ModalContainer
+      <Modal show={showModal} onHide={()=>setShowModal(false)} size={"xl"}>
+        <Modal.Header className="border-0" closeButton>
+          <Modal.Title className={`h5 `}>{
+          currentSelected === "facilitators"
+            ? "Facilitators"
+            : currentSelected === "trainees"
+            ? "Employees": "Users"}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="py-0">{bodyContent}
+        </Modal.Body>
+        <Modal.Footer className="border-0">
+          
+        <Button label="Cancel"  onClick={()=>setShowModal(false)} className="p-button-text rounded" />
+        <Button label="Add" icon="pi pi-user-plus" onClick={checkUser} className="rounded"  />
+   
+        </Modal.Footer>
+      </Modal>
+      {/* <ModalContainer
         variantStyle={"primary"}
         state={showModal}
         close={handleClose}
@@ -288,7 +307,7 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors }) => {
         buttonText="Add"
         body={bodyContent}
         size={"xl"}
-      />
+      /> */}
     </>
   );
 };

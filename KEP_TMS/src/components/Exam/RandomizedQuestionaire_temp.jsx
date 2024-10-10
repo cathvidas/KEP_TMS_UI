@@ -3,7 +3,7 @@ import { ExamItem } from "./ExamItem";
 import { SectionHeading } from "../General/Section";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
-import { ModalContainer } from "../Modal/ModalContainer";
+// import { ModalContainer } from "../Modal/ModalContainer";
 import { Button } from "react-bootstrap";
 import { FormFieldItem } from "../trainingRequestFormComponents/FormElements";
 
@@ -81,7 +81,7 @@ const ExamContainer = () => {
       />
 
 <Button className="btn-sm mt-3" onClick={()=>setShowModal(true)}>Add Item</Button>
-      <ModalContainer
+      {/* <ModalContainer
         variantStyle={"primary"}
         state={showModal}
         close={() => setShowModal(false)}
@@ -90,7 +90,7 @@ const ExamContainer = () => {
         id="userlistModal"
         buttonText="Add"
         body={ModalContent}
-      />
+      /> */}
     </div>
   );
 };

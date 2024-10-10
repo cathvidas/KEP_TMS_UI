@@ -45,7 +45,7 @@ const TraineeReportView = ({ data }) => {
       </div>
     );
   };  
-  console.log(effectiveness)
+  console.log(data)
   return (
     <div className="w-100 oveflow-hidden">
       <SectionHeading title="Trainee Report" />
@@ -57,22 +57,26 @@ const TraineeReportView = ({ data }) => {
           orientation="horizontal"
           // headerPosition="bottom"
         >
+          {data?.durationInHours >= 16 &&
           <StepperPanel header="Training Effectiveness Form">
             <hr className="m-0"/>
-            <EffectivenessForm data={data} userData={userData} formData={effectiveness?.data}/>
+            <EffectivenessForm data={data} userData={userData?.data} formData={effectiveness?.data}/>
             {/* {<StepperButton back={true} next={true} index={2} />} */}
-          </StepperPanel>
-          {data.status.id === statusCode.APPROVED &&<>
+          </StepperPanel>}
+          {data?.status?.id === statusCode.PUBLISHED &&
           <StepperPanel header="Training Report Form">
           <hr className="m-0"/>
             <TrainingReportForm data={data} userData={userData} />
             {/* {<StepperButton next={true} index={0} />} */}
-          </StepperPanel>
+          </StepperPanel>}     
+          {data?.status?.id === statusCode.PUBLISHED &&
           <StepperPanel header="Evaluation Form">
           <hr className="m-0"/>
             <EvaluationForm data={data} userData={userData} />
             {/* {<StepperButton back={true} next={true} index={1} />} */}
-          </StepperPanel></>}
+          </StepperPanel>
+          
+          }
         </Stepper>
       </Card>
     </div>

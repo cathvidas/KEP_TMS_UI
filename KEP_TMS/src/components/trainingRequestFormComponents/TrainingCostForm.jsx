@@ -6,60 +6,50 @@ import proptype from "prop-types";
 import { useEffect, useState } from "react";
 import { SectionHeading } from "../General/Section";
 import Select from "react-select";
-import { getAllTrainingProviders } from "../../api/trainingServices";
 import { mapProviderListToOptionFormat } from "../../services/DataMapping/ProviderData";
-import { FormatDate } from "../../utils/FormatDateTime";
 
-const TrainingCostForm = ({formData, handleResponse}) => {  
+const TrainingCostForm = ({ formData, handleResponse, providersData }) => {
   const [data, setFormData] = useState(formData);
-    const [cost , setCost] = useState(data.trainingFee);
-    const [totalCost , setTotalCost] = useState(0);
-    const [providers, setProviders] = useState([]);
-    const [withEarlyRate, setWithEarlyRate] = useState(false);
-    console.log(data)
-    useEffect(()=>{
-      if(handleResponse!= null){
-        handleResponse(data)
-      }
-      
-    }, [data])
-    useEffect(()=>{
-      if(withEarlyRate){
+  const [cost, setCost] = useState(data.trainingFee);
+  const [totalCost, setTotalCost] = useState(0);
+  const [providers, setProviders] = useState([]);
+  const [withEarlyRate, setWithEarlyRate] = useState(false);
+  useEffect(() => {
+    if (handleResponse != null) {
+      handleResponse(data);
+    }
+  }, [data]);
+  useEffect(() => {
+    if (withEarlyRate) {
       const date = new Date();
-      const cutOffDate = date.toLocaleDateString('en-CA') ;
-      setFormData((prev)=>({...prev, cutOffDate: cutOffDate}))}
-      else{
-      setFormData((prev)=>({...prev, cutOffDate: "", discountedRate: 0}))
-      }
-      
-    }, [withEarlyRate])
-  
-    useEffect(()=>{
-      const getProviders = async () => {
-        try {
-          const res = await getAllTrainingProviders();
-          setProviders(mapProviderListToOptionFormat(res));
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      getProviders();
-    }, [formData])
-      
-    console.log(data);
-  useEffect(()=>{
-      setTotalCost(data.trainingParticipants.length * cost);
-      console.log(totalCost, cost)
-      setFormData((prev)=>({...prev, trainingFee: cost, totalTrainingFee: totalCost}))
-  }, [cost, totalCost])
+      const cutOffDate = date.toLocaleDateString("en-CA");
+      setFormData((prev) => ({ ...prev, cutOffDate: cutOffDate }));
+    } else {
+      setFormData((prev) => ({ ...prev, cutOffDate: "", discountedRate: 0 }));
+    }
+  }, [withEarlyRate]);
+  console.log(providersData);
+  useEffect(() => {
+    setProviders(mapProviderListToOptionFormat(providersData?.data));
+  }, [providersData]);
 
-  useEffect(()=>{
-if(formData.discountedRate > 0 || formData.cutOffDate != null){
-  setWithEarlyRate(true)
-}else{
-  setWithEarlyRate(false)
-}
-  },[formData])
+  useEffect(() => {
+    setTotalCost(data.trainingParticipants.length * cost);
+    console.log(totalCost, cost);
+    setFormData((prev) => ({
+      ...prev,
+      trainingFee: cost,
+      totalTrainingFee: totalCost,
+    }));
+  }, [cost, totalCost]);
+
+  useEffect(() => {
+    if (formData.discountedRate > 0 || formData.cutOffDate != null) {
+      setWithEarlyRate(true);
+    } else {
+      setWithEarlyRate(false);
+    }
+  }, [formData]);
 
   return (
     <>
@@ -72,10 +62,16 @@ if(formData.discountedRate > 0 || formData.cutOffDate != null){
         col="col-12"
         FieldComponent={
           <Select
-            value={providers.filter((x) => x.value === data.trainingProvider?.id)}
+            isLoading={providersData?.isLoading}
+            value={providers.filter(
+              (x) => x.value === data.trainingProvider?.id
+            )}
             options={providers}
             onChange={(e) =>
-              setFormData((obj) => ({ ...obj, trainingProvider:{id: e.value , name: e.label}}))
+              setFormData((obj) => ({
+                ...obj,
+                trainingProvider: { id: e.value, name: e.label },
+              }))
             }
           />
         }
@@ -126,7 +122,7 @@ if(formData.discountedRate > 0 || formData.cutOffDate != null){
                     name="flexRadioDefault"
                     id="flexRadioDefault1"
                     checked={withEarlyRate}
-                    onChange={()=>setWithEarlyRate(true)}
+                    onChange={() => setWithEarlyRate(true)}
                   />
                   <label
                     className="form-check-label"
@@ -142,7 +138,7 @@ if(formData.discountedRate > 0 || formData.cutOffDate != null){
                     name="flexRadioDefault"
                     id="flexRadioDefault2"
                     checked={!withEarlyRate}
-                    onChange={()=>setWithEarlyRate(false)}
+                    onChange={() => setWithEarlyRate(false)}
                   />
                   <label
                     className="form-check-label"
@@ -154,38 +150,54 @@ if(formData.discountedRate > 0 || formData.cutOffDate != null){
               </div>
             }
           />
-          {withEarlyRate  && 
-          <Row>
-          <FormFieldItem
-            label={"Discounted rate"}
-            col={"col-6"}
-            FieldComponent={
-              <input className="form-control" 
-              type="number"
-              min="0"
-              value={data.discountedRate}
-              onChange={(e)=>setFormData((prev)=>({...prev, discountedRate: parseFloat(e.target.value)}))}
+          {withEarlyRate && (
+            <Row>
+              <FormFieldItem
+                label={"Discounted rate"}
+                col={"col-6"}
+                FieldComponent={
+                  <input
+                    className="form-control"
+                    type="number"
+                    min="0"
+                    value={data.discountedRate}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        discountedRate: parseFloat(e.target.value),
+                      }))
+                    }
+                  />
+                }
               />
-            }
-          />
-          <FormFieldItem
-            label={"cut-off date"}
-            col={"col-6"}
-            FieldComponent={
-              <input className="form-control" type="date"
-              //defaultValue={"2023-12-12"}
-              value={data.cutOffDate}
-              onChange={(e)=>setFormData((prev)=>({...prev, cutOffDate: e.target.value}))}
+              <FormFieldItem
+                label={"cut-off date"}
+                col={"col-6"}
+                FieldComponent={
+                  <input
+                    className="form-control"
+                    type="date"
+                    //defaultValue={"2023-12-12"}
+                    value={data.cutOffDate}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        cutOffDate: e.target.value,
+                      }))
+                    }
+                  />
+                }
               />
-            }
-          /></Row>}
+            </Row>
+          )}
         </Col>
       </Row>
     </>
   );
 };
-TrainingCostForm.propTypes={
- formData: proptype.object.isRequired,
- handleResponse: proptype.func,
-}
+TrainingCostForm.propTypes = {
+  formData: proptype.object.isRequired,
+  handleResponse: proptype.func,
+  providersData: proptype.object,
+};
 export default TrainingCostForm;

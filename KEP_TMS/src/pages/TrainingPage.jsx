@@ -48,14 +48,15 @@ const TrainingPage = () => {
           command: () => navigate(`/KEP_TMS/Training/${id}/Modules`),
           template: MenuItemTemplate,
           active: currentContent === 1 ? true : false,
-          disable: data?.status?.id !== statusCode.FORAPPROVAL ? true : false,
+          disable: data?.status?.id !== statusCode.PUBLISHED ? true : false,
         },
         {
           label: "Exam",
           icon: "pi pi-list-check",
           command: () => navigate(`/KEP_TMS/Training/${id}/Exams`),
           template: MenuItemTemplate,
-          disable: data?.status?.id !== statusCode.FORAPPROVAL ? true : false,
+          active: currentContent === 2 ? true : false,
+          disable: data?.status?.id !== statusCode.PUBLISHED ? true : false,
         },
         {
           label: "Participants",

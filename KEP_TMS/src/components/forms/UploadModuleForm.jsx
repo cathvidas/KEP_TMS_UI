@@ -1,24 +1,64 @@
 import { Card, CardBody, Form } from "react-bootstrap";
 import { FormFieldItem } from "../trainingRequestFormComponents/FormElements";
 import { Button } from "primereact/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import proptype from "prop-types";
 import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import moduleService from "../../services/moduleService";
+import { SessionGetEmployeeId } from "../../services/sessions";
 const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
   const [files, setFiles] = useState([]);
   const [details, setDetails] = useState({ Name: "", Description: "" });
   const [errors, setErrors] = useState({});
-  const handleFileUpload = (e) => {
+  const getExtension=(filename)=> {
+    return filename.split('.').pop()
+  }
+  const handleFileUpload = (e) => { 
+    setErrors({...errors, file:  "" })
     const newFiles = Array.from(e.target.files);
-    setFiles([...files, ...newFiles]);
+    let validForm = true;
+    newFiles.forEach(file => {
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors({...errors, [file.name]: "File size should not exceed 5MB" });
+        validForm = false;
+      }
+      if (files.some(x => x.name === file.name)) {
+        setErrors({...errors, [file.name]: "File name already exists" });
+        validForm = false;
+      }
+      if (files.some(x => x.name === file.name
+        && x.size === file.size
+        && x.type === file.type)) {
+        setErrors({...errors, file: "File already added" });
+        validForm = false;
+      }    
+      if(getExtension(file?.name)!=='pdf'){
+              setErrors({...errors, file:  "Upload only pdf files" })
+              validForm= false
+            }
+    });
+    
+    if(validForm){
+    setFiles([...files,...newFiles]);}
+  //  newFiles.map(x=>{
+  //     console.log(x)
+  //     //write code that will show an error if the file is not in pdf format
+  //     if(!x.name.includes('pdf')){
+  //       setErrors({...errors, [x.file]:  "Upload only pdf files" })
+  //       return false
+  //     }
+  //     // setErrors({...errors, [x.file]: "File format not supported" })
+  //   })
+  //   setFiles([...files, ...newFiles]);
   };
+  useEffect
   const handleRemoveSpecificFile = (index) => {
     const updatedFiles = [...files];
     updatedFiles.splice(index, 1);
     setFiles(updatedFiles);
   };
+  console.log(errors)
   const handleSubmit = () => {
     const validate = validateForm();
     console.log(validate)
@@ -31,6 +71,7 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
       data.append("RequestId", reqId)
       data.append('Name', details.Name); // Append other fields
       data.append('Description', details.Description);
+      data.append('CreatedBy', SessionGetEmployeeId())
       handleResponseAsync(()=>moduleService.createModule(data))
       handleRefresh();
     }
@@ -98,7 +139,7 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
             />
             <FormFieldItem
               label={"Attachment"}
-              error={errors.Files}
+              error={errors.file}
               FieldComponent={
                 <>
                   {files && (

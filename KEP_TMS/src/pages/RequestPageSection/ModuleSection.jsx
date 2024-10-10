@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
-import { FormFieldItem } from "../../components/trainingRequestFormComponents/FormElements";
 import { SectionHeading } from "../../components/General/Section";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faNoteSticky } from "@fortawesome/free-solid-svg-icons";
 import EmptyState from "../../components/trainingRequestFormComponents/EmptyState";
-import { ModalContainer } from "../../components/Modal/ModalContainer";
 import { Col, Row } from "react-bootstrap";
 import { Button } from "primereact/button";
 import { ButtonGroup } from "primereact/buttongroup";
 import UploadModuleForm from "../../components/forms/UploadModuleForm";
 import proptype from "prop-types";
-import moduleHook from "../../hooks/moduleHook";
 import SkeletonList from "../../components/Skeleton/SkeletonList";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import moduleService from "../../services/moduleService";
+import PDFViewer from "../../components/General/PDFViewer";
 
 const ModuleSection = ({ data }) => {
   const [showForm, setShowForm] = useState(false);
   const [moduleList, setModuleList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [src, setSrc]= useState("");
   useEffect(() => {
     refreshData();
   }, []);
@@ -34,6 +33,7 @@ const ModuleSection = ({ data }) => {
     };
     getRequest();
   };
+  console.log(src)
   return (
     <>
       <SectionHeading
@@ -70,7 +70,7 @@ const ModuleSection = ({ data }) => {
               <Row className="row-cols-lg-2 g-2 row-cols-1">
                 {moduleList.map((x) => {
                   return (
-                    <Col key={x}>
+                    <Col key={`module${x.id}`}>
                       <div className="shadow-sm overflow-hidden card">
                         <div className="theme-bg-light p-2 px-3 d-flex align-items-center justify-content-between">
                           <small className="text-muted fw-bold text-uppercase">
@@ -97,24 +97,26 @@ const ModuleSection = ({ data }) => {
                         </div>
                         <div className="px-4 p-2">
                           <p className="m-0">{x.description}</p>
-                          <Button
-                            type="button"
-                            icon="pi pi-link"
-                            text
-                            label="FileName"
-                          />
-                          <Button
-                            type="button"
-                            icon="pi pi-link"
-                            text
-                            label="FileName"
-                          />
+
+                          {x?.attachments?.map((a) => (
+                            <Button
+                              key={`file${a.id}`}
+                              type="button"
+                              text
+                              size="small"
+                              icon="pi pi-link"
+                              label={a?.fileName}
+                              onClick={()=>setSrc(`http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${a.id}`)}
+                            />
+                          ))}
                         </div>
                       </div>
                     </Col>
                   );
                 })}
               </Row>
+              {/* <PDFViewer pdfUrl={src}/> */}
+              <iframe src={src} className="w-100 vh-100" ></iframe>
             </>
           ) : (
             <>

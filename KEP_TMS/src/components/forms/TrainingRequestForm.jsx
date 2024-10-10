@@ -31,18 +31,26 @@ import { formatDateTime } from "../../utils/Formatting";
 import { statusCode, TrainingType } from "../../api/constants";
 import TrainingParticipantsForm from "../trainingRequestFormComponents/TrainingParticipantsForm";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
+import programHook from "../../hooks/programHook";
+import categoryHook from "../../hooks/categoryHook";
+import providerHook from "../../hooks/providerHook";
 export const TrainingRequestForm = () => {
+  
+  const programs = programHook.useAllPrograms();
+  const categories = categoryHook.useAllCategories();
+  const providers = providerHook.useAllProviders();
 const trainingType = useParams().type;
   const requestId = useParams().id;
-  var details = {};
+  // var details = {};
+  const details = useRef({});
   var trainingSchedules = { trainingDates: [] };
   const [formData, setFormData] = useState(TrainingRequest);
   const navigate = useNavigate();
   const handleResponse = useCallback(
     (data) => {
-      details = data;
+      details.current = data;
     },
-    [details]
+    []
   );
 
   const getTrainingTypeId = ()=>{
@@ -54,13 +62,12 @@ const trainingType = useParams().type;
     }
   }
   const handleTrainingDates = useCallback((data) => {
-    details.trainingDates = data;
+    details.current.trainingDates = data;
     trainingSchedules.trainingDates = data;
-  });
+  },[details]);
   const handleFormSubmission = async () => {
     try {
       const formmatedData = { ...InsertFormattedTrainingRequestData(formData) };
-console.log(formmatedData)
       if (trainingType.toUpperCase() === "UPDATE" && requestId) {
         const updateData = {
           ...formmatedData,
@@ -112,11 +119,11 @@ console.log(formmatedData)
   });
   const handleButtonOnClick = (index) => {
     if (index === 0) {
-      const { hasErrors, newErrors } = validateTrainingDetails(details);
+      const { hasErrors, newErrors } = validateTrainingDetails(details.current);
       let schedulesValid = false;
       let detailsValid = !hasErrors;
       // Check if schedules are valid
-      if (details.trainingDates?.length > 0) {
+      if (details.current.trainingDates?.length > 0) {
         schedulesValid = true;
       } else {
         setErrors((prevErrors) => ({
@@ -135,7 +142,7 @@ console.log(formmatedData)
 
       // Proceed to next step only if both details and schedules are valid
       if (detailsValid && schedulesValid) {
-        setFormData(details);
+        setFormData(details.current);
         stepperRef.current.nextCallback();
         setErrors((prevErrors) => ({
           ...prevErrors,
@@ -147,13 +154,13 @@ console.log(formmatedData)
     } else if (index === 1) {
       let hasErrors = false;
       let newErrors = { trainees: "", facilitators: "" };
-      if (details.trainingParticipants?.length > 0) {
+      if (details.current.trainingParticipants?.length > 0) {
         <></>;
       } else {
         newErrors.trainees = "Please add participants";
         hasErrors = true;
       }
-      if (details.trainingFacilitators?.length > 0) {
+      if (details.current.trainingFacilitators?.length > 0) {
         <></>;
       } else {
         newErrors.facilitators = "Please add facilitator";
@@ -162,7 +169,7 @@ console.log(formmatedData)
       setErrors({ ...errors, participants: newErrors });
 
       if (!hasErrors) {
-        setFormData(details);
+        setFormData(details.current);
         stepperRef.current.nextCallback();
         setErrors((prevErrors) => ({
           ...prevErrors,
@@ -170,7 +177,7 @@ console.log(formmatedData)
         }));
       }
     } else if (index === 2) {
-      setFormData(details);
+      setFormData(details.current);
       stepperRef.current.nextCallback();
     }
   };
@@ -259,6 +266,8 @@ console.log(formmatedData)
                   handleResponse={handleResponse}
                   formData={formData}
                   error={errors?.details}
+                  programs={programs}
+                  categories={categories}
                 />
                 <TrainingScheduleForm
                   formData={formData}
@@ -279,6 +288,7 @@ console.log(formmatedData)
                 <TrainingCostForm
                   formData={formData}
                   handleResponse={handleResponse}
+                  providersData={providers}
                 />
                 {<StepperButton back={true} next={true} index={2} />}
               </StepperPanel>

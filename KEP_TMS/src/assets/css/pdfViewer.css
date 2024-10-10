@@ -1,0 +1,38 @@
+/* PDFViewer.css */
+.pdf-viewer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .pdf-canvas {
+    border: 1px solid #ccc; /* Optional: add a border for better visuals */
+    border-radius: 5px;
+    margin: 20px 0;
+  }
+  
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .pagination-controls button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .pagination-controls button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .pagination-controls button:not(:disabled):hover {
+    background-color: #0056b3;
+  }
+  

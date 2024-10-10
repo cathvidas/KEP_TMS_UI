@@ -8,36 +8,35 @@ import proptype from "prop-types";
 import { useEffect, useState } from "react";
 import programHook from "../../hooks/programHook";
 import categoryHook from "../../hooks/categoryHook";
-const TrainingDetailsForm = ({ handleResponse, formData , error}) => {
+const TrainingDetailsForm = ({ handleResponse, formData , error, programs, categories}) => {
   const [details, setDetails] = useState(formData);
   const [options, setOptions] = useState({ programs: [], categories: [] });
   const [errors, setErrors] = useState(error);
-  const programs = programHook.useAllPrograms();
-  const categories = categoryHook.useAllCategories();
+  
+  useEffect(() => {
+    const mappedPrograms = programs?.data?.map(({ id, name }) => ({
+      label: name,
+      value: id,
+    }));
+    const mappedCategories = categories?.data.map(({ id, name }) => ({
+      label: name,
+      value: id,
+    }));
+    setOptions({
+      programs: mappedPrograms,
+      categories: mappedCategories,
+    });
+  }, [programs?.loading, categories?.loading]);
   useEffect(()=>{
     setErrors(error);
   },[error])
   useEffect(()=>{
     setDetails(formData);
   },[formData])
-  useEffect(() => {
-        const mappedPrograms = programs?.data?.map(({ id, name }) => ({
-          label: name,
-          value: id,
-        }));
-        const mappedCategories = categories?.data.map(({ id, name }) => ({
-          label: name,
-          value: id,
-        }));
-        setOptions({
-          programs: mappedPrograms,
-          categories: mappedCategories,
-        });
-  }, [programs, categories]);
 
   useEffect(() => {
     handleResponse(details);
-  }, [details, handleResponse]);
+  }, [details]);
 
   //Emtpty field validation
   const handleOnChange = (name, value) => {
@@ -125,5 +124,7 @@ TrainingDetailsForm.propTypes = {
   handleResponse: proptype.func,
   formData: proptype.object,
   error: proptype.object,
+  programs: proptype.object,
+  categories: proptype.object,
 };
 export default TrainingDetailsForm;

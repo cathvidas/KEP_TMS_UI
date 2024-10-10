@@ -4,7 +4,6 @@ import Sidebars from "./Sidebar";
 import proptype from "prop-types";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
-import { RequestMenu } from "../TrainingPageComponents/Menu";
 
 const Layout = ({
   BodyComponent,
