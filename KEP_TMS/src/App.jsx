@@ -7,7 +7,6 @@ import Login from "./pages/Login";
 import NewRequest from "./pages/Request";
 import RequestList from "./pages/RequestList";
 import Trainings from "./pages/Trainings";
-import MasterList from "./pages/MasterList";
 import CertificatesPage from "./pages/CertificatesPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import ApproveRequestPage from "./pages/ApproveRequest";
@@ -16,6 +15,7 @@ import TrainerPage from "./pages/TrainerPage";
 import ApproverPage from "./pages/ApproverPage";
 import UserPage from "./pages/UsersPage";
 import MasterListPage from "./pages/MasterListPage";
+import MonitoringPage from "./pages/MonitoringPage";
 function App() {
   return (
     <>
@@ -34,6 +34,7 @@ function App() {
         <Route path="/KEP_TMS/AnalyticsPage" element={<AnalyticsPage />} />
         <Route path="/KEP_TMS/ApproveRequest/:id" element={<ApproveRequestPage />} />
         <Route path="/KEP_TMS/Training/:id/:page?" element={<TrainingPage />} />
+        <Route path="/KEP_TMS/TrainingMonitoring/:id/:page?" element={<MonitoringPage />} />
         <Route path="/KEP_TMS/Users/:page?/:id?" element={<UserPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

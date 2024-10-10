@@ -11,6 +11,7 @@ import { InputText } from "primereact/inputtext";
 const CommonTable = ({
   dataTable,
   columnItems,
+  tableName
 }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -28,7 +29,7 @@ const CommonTable = ({
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2 justify-content-between align-items-center">
-        <h6 className="m-0">Recent Trainings</h6>
+        <h6 className="m-0">{tableName ?? "Recent Trainings"}</h6>
         {/*         
         <Button type="button" icon="pi pi-file" rounded onClick={() => exportCSV(false)} data-pr-tooltip="CSV" />
         <Button type="button" icon="pi pi-pencil" text onClick={handleExport} /> */}
@@ -60,9 +61,10 @@ const CommonTable = ({
           dataKey={"id"}
           rows={10}
           tableStyle={{ minWidth: "50rem" }}
+          rowsPerPageOptions={[5, 10, 25, 50]}
         >
           {columnItems &&
-            columnItems.map((item, i) => (
+            columnItems?.map((item, i) => (
               <Column
                 key={"dt"+i}
                 field={item?.field}

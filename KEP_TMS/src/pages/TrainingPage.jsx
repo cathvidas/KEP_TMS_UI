@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../components/General/Layout";
-import TraineeMenu from "../components/menus/TraineeMenu";
 import trainingRequestHooks from "../hooks/trainingRequestHook";
 import TrainingOverview from "./TrainingPageSection/TrainingOverview";
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
@@ -9,12 +8,12 @@ import ModuleView from "./TrainingPageSection/ModuleView";
 import ExamView from "./TrainingPageSection/ExamView";
 import ParticipantsView from "./TrainingPageSection/ParticipantsView";
 import TraineeReportView from "./TrainingPageSection/TraineeReportView";
-import PendingView from "./TrainingPageSection/PendingsView";
+import PendingView from "./MonitoringPageSection/PendingsView";
 import MenuContainer from "../components/menus/MenuContainer";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import { statusCode } from "../api/constants";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
-import { Badge } from "react-bootstrap";
+import MonitoringReportView from "./MonitoringPageSection/MonitoringReportView";
 const TrainingPage = () => {
   const { id, page } = useParams();
   const { data, error, loading } = trainingRequestHooks.useTrainingRequest(
@@ -22,24 +21,13 @@ const TrainingPage = () => {
   );
   const [currentContent, setCurrentContent] = useState(0);
   const pageContent = [
-    <>
-      <TrainingOverview data={data} />
-    </>,
-    <>
-      <ModuleView reqId={data.id} />
-    </>,
-    <>
-      <ExamView />
-    </>,
-    <>
-      <ParticipantsView data={data?.trainingParticipants} />
-    </>,
-      <>
-      <TraineeReportView data={data}/>
-      </>,
-      <>
-      <PendingView data={data}/>
-      </>
+      <TrainingOverview key={0} data={data} />,
+      <ModuleView key={1} reqId={data.id} />,
+      <ExamView key={2}/>,
+      <ParticipantsView key={3} data={data?.trainingParticipants} />,
+      <TraineeReportView key={4} data={data}/>,
+      <PendingView key={5} data={data}/>,
+      <MonitoringReportView key={5} data={data}/>,
   ];
   const navigate = useNavigate();
   const items = [
@@ -81,37 +69,32 @@ const TrainingPage = () => {
         {
           label: "Reports",
           icon: "pi pi-address-book",
-          command: () => navigate(`/KEP_TMS/Training/${id}/Report`),
+          command: () => navigate(`/KEP_TMS/Training/${id}/Reports`),
           template: MenuItemTemplate,
           active: currentContent === 4 ? true : false,
-          notifBadge: data?.status?.id === statusCode.SUBMITTED ? true : false,
-        },
-        {
-          label: "Pendings",
-          icon: "pi pi-bookmark",
-          command: () => navigate(`/KEP_TMS/Training/${id}/Pendings`),
-          template: MenuItemTemplate,
-          disable:
-            SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin"
-              ? false
-              : true,
+          notifBadge: data?.status?.id === statusCode.SUBMITTED ? true : false,   
         },
       ],
     },
   ];
   useEffect(() => {
+    
     if (page === "Modules") {
       setCurrentContent(1);
     } else if (page === "Exams") {
       setCurrentContent(2);
     } else if (page === "Participants") {
       setCurrentContent(3);
-    }else if (page === "Report") {
-      setCurrentContent(4);
+    }else if (page === "Reports") {
+      setCurrentContent( 4);
     } else if (page === "Pendings") {
       setCurrentContent(5);
+    }  else if (page === "Effectiveness") {
+      setCurrentContent(5);
+    }else if (page === "Evaluation" ) {
+      setCurrentContent(5);
     } else {
-      setCurrentContent(0);
+        setCurrentContent( 0);
     }
   }, [page]);
   const bodyContent = () => {

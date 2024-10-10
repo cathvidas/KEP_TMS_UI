@@ -7,6 +7,9 @@ import countStatus from "../utils/countStatus";
 import handleResponseAsync from "../services/handleResponseAsync";
 import { ActivityType } from "../api/constants";
 import mapUserTrainings from "../services/DataMapping/mapUserTrainings";
+import trainingReportService from "../services/trainingReportService";
+import evaluationService from "../services/evaluationService";
+import effectivenessService from "../services/effectivenessService";
 
 const trainingRequestHook = {
   useTrainingRequest: (id) => {
@@ -97,7 +100,7 @@ const trainingRequestHook = {
               })
             );
             console.log(updatedRequests)
-            setData(type!= null? updatedRequests.filter(x=> x.trainingTypeId === type):updatedRequests)
+            setData(type!= null? updatedRequests.filter(x=> x?.trainingType?.id === type):updatedRequests)
 
           },
           (e) => setError(e),
@@ -225,6 +228,31 @@ const trainingRequestHook = {
       };
       fetchData();
     }, [id]);
+    return { data, error, loading };
+  },
+  useAllParticipantsReports: (datalist) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequests = async () => {
+        if(datalist?.length > 0) {
+        handleResponseAsync(
+         async ()=> await Promise.all(
+            datalist?.map(async (item) => {
+              const report = item?.reportId? await trainingReportService.getTrainingReportById(item.reportId):{};
+              const evluation = item?.evaluationId ? await evaluationService.getTrainingEvaluationById(item.evaluationId):{};
+              const effectiveness =item?.effectivenessId ? await effectivenessService.getEffectivenessById(item.effectivenessId):{};
+              return { userDetail: item, reportDetail: report, effectivenessDetail: effectiveness, evaluationDetail: evluation};
+            })
+          ),
+          (e)=> setData(e),
+          (e)=>setError(e),
+          ()=> setLoading(false)
+        )}
+      };
+      getRequests()
+    }, [datalist]);
     return { data, error, loading };
   },
 };

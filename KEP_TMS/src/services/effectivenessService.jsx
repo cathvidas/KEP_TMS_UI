@@ -1,4 +1,4 @@
-import { ActivityType } from "../api/constants";
+import { approveTrainingFormApi } from "../api/commonApi";
 import {
   createTrainingEffectivenessApi,
   getAllEffectivenessApi,
@@ -12,16 +12,27 @@ const effectivenessService = {
   },
   getEffectivenessById: async (id) => {
     const response = await getEffectivenessByIdApi(id);
-    return response;
+    if (response?.status === 1) {
+      return response?.data;
+    } else {
+      return {};
+    }
   },
-  getAllEffectiveness: async()=>{
+  getAllEffectiveness: async () => {
     const response = await getAllEffectivenessApi();
     return response;
   },
-  getApproverAssignedEffectiveness : async (id) =>{
+  getApproverAssignedEffectiveness: async (id) => {
     const response = await getApproverAssignedEffectivenessApi(id);
-    const filter = response?.filter(item => item?.routingActivity?.activityType === ActivityType.EFFECTIVENESS)
-    return filter;
+    return response;
+  },
+  approveTrainingEffectiveness: async (data)=>{
+    console.log(data)
+    const response = await approveTrainingFormApi(data);
+    if(response.status !== 1){
+      throw new Error('Failed to approve effectiveness');
+    }
+    return response;
   }
 };
 export default effectivenessService;

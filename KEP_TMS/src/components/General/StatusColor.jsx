@@ -20,7 +20,7 @@
       : "theme-secondary text-dark";
 
   return (<>
-  <span className={`badge ${data?.class} ${className}`} style={data?.style} >{data?.showStatus ? data?.status === "ForApproval" ? "For Approval" : data?.status : ""} </span>
+  <span className={`badge ${data?.class} ${className}`} style={data?.style} onClick={data?.handleOnclick}>{data?.showStatus ? data?.status === "ForApproval" ? "For Approval" : data?.status : ""} </span>
   </>);
 };
 export default StatusColor

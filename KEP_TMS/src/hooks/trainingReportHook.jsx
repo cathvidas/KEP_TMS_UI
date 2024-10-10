@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import effectivenessService from "../services/effectivenessService";
 import handleResponseAsync from "../services/handleResponseAsync";
+import trainingReportService from "../services/trainingReportService";
 
-const effectivenessHook = {
-  useEffectivenessById: (id) => {
+const trainingReportHook = {
+  useTrainingReportById: (id) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ const effectivenessHook = {
     useEffect(() => {
       const getRequest = async () => {
         handleResponseAsync(
-          () => effectivenessService.getEffectivenessById(id),
+          () => trainingReportService.getTrainingReportById(id),
           (e) => setData(e),
           (e) => setError(e),
           () => setLoading(false)
@@ -25,17 +25,14 @@ const effectivenessHook = {
       loading,
     };
   },
-  useAllEffectiveness: (assignee) => {
+  useAllTrainingReports: () => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequests = async () => {
         handleResponseAsync(
-          () =>
-            assignee
-              ? effectivenessService.getEffectivenessById(assignee)
-              : effectivenessService.getAllEffectiveness(),
+          () =>trainingReportService.getAllTrainingReports(),
           (e) => setData(e),
           (e) => setError(e),
           () => setLoading(false)
@@ -45,7 +42,7 @@ const effectivenessHook = {
     });
     return { data, error, loading };
   },
-  useApproverAssignedEffectiness: (approverId) => {
+  useApproverAssignedReports: (approverId) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -53,7 +50,7 @@ const effectivenessHook = {
       const getRequests = async () => {
         handleResponseAsync(
           () =>
-            effectivenessService.getApproverAssignedEffectiveness(approverId),
+            trainingReportService.getApproverAssignedReports(approverId),
           (e) => setData(e),
           (e) => setError(e),
           () => setLoading(false)
@@ -63,7 +60,7 @@ const effectivenessHook = {
     }, [approverId]);
     return { data, error, loading };
   },
-  useAllParticipantsEffectiveness: (datalist) => {
+  useAllParticipantsReports: (datalist) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -72,8 +69,8 @@ const effectivenessHook = {
         handleResponseAsync(
          async ()=> await Promise.all(
             datalist?.map(async (item) => {
-              const response = await effectivenessService.getEffectivenessById(
-                item?.effectivenessId ? item.effectivenessId : 0
+              const response = await trainingReportService.getTrainingReportById(
+                item?.reportId ? item.reportId : 0
               );
               console.log(response)
               return { userDetail: item, reportDetail: response };
@@ -89,4 +86,4 @@ const effectivenessHook = {
     return { data, error, loading };
   },
 };
-export default effectivenessHook;
+export default trainingReportHook;

@@ -1,4 +1,3 @@
-import { API_ENDPOINTS } from "./apiEndpoints";
 import fetchFromApi from "./apiUtil";
 
 export const createTrainingEffectivenessApi = async (data)=>{

@@ -63,7 +63,7 @@ const TrainingReportForm = ({ data, userData }) => {
     return isValid;
   };
   return (
-    <Card.Body className="border-top">
+    <Card.Body>
       <div className="text-center  pb-3 mb-3">
         <h5 className="m-0">Training Report Form</h5>
         <small className="text-muted">Knowles Electronics Philippines</small>

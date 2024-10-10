@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import effectivenessService from "../services/effectivenessService";
 import handleResponseAsync from "../services/handleResponseAsync";
+import evaluationService from "../services/evaluationService";
 
-const effectivenessHook = {
-  useEffectivenessById: (id) => {
+const evaluationHook = {
+  useEvaluationId: (id) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ const effectivenessHook = {
     useEffect(() => {
       const getRequest = async () => {
         handleResponseAsync(
-          () => effectivenessService.getEffectivenessById(id),
+          () => evaluationService.getTrainingEvaluationById(id),
           (e) => setData(e),
           (e) => setError(e),
           () => setLoading(false)
@@ -25,45 +25,24 @@ const effectivenessHook = {
       loading,
     };
   },
-  useAllEffectiveness: (assignee) => {
+  useAllEvaluations: () => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequests = async () => {
         handleResponseAsync(
-          () =>
-            assignee
-              ? effectivenessService.getEffectivenessById(assignee)
-              : effectivenessService.getAllEffectiveness(),
+          () => evaluationService.getAllTrainingEvaluation(),
           (e) => setData(e),
           (e) => setError(e),
           () => setLoading(false)
         );
       };
       getRequests();
-    });
+    },[]);
     return { data, error, loading };
   },
-  useApproverAssignedEffectiness: (approverId) => {
-    const [data, setData] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      const getRequests = async () => {
-        handleResponseAsync(
-          () =>
-            effectivenessService.getApproverAssignedEffectiveness(approverId),
-          (e) => setData(e),
-          (e) => setError(e),
-          () => setLoading(false)
-        );
-      };
-      getRequests();
-    }, [approverId]);
-    return { data, error, loading };
-  },
-  useAllParticipantsEffectiveness: (datalist) => {
+  useAllParticipantsEvaluation: (datalist) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -72,10 +51,9 @@ const effectivenessHook = {
         handleResponseAsync(
          async ()=> await Promise.all(
             datalist?.map(async (item) => {
-              const response = await effectivenessService.getEffectivenessById(
-                item?.effectivenessId ? item.effectivenessId : 0
+              const response = await evaluationService.getTrainingEvaluationById(
+                item?.evaluationId ? item.evaluationId : 0
               );
-              console.log(response)
               return { userDetail: item, reportDetail: response };
             })
           ),
@@ -89,4 +67,4 @@ const effectivenessHook = {
     return { data, error, loading };
   },
 };
-export default effectivenessHook;
+export default evaluationHook;

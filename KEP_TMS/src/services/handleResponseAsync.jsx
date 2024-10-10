@@ -10,7 +10,7 @@ const handleResponseAsync = async (
       if (onSuccess) {
         onSuccess(response);
       } else {
-        actionSuccessful("Success", "successss");
+        actionSuccessful("Success!", response.message);
       }
     
   } catch (error) {

@@ -104,7 +104,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
       <Modal show={handleShow} onHide={handleClose} size={"lg"}>
         <Modal.Header className="border-0" closeButton>
           <Modal.Title className={`h5 theme-color`}>
-            {selectedData != null ? "Update Program" : "Add Program"}
+            {selectedData != null ? "Update Provider" : "Add Provider"}
           </Modal.Title>
         </Modal.Header>
         <Form

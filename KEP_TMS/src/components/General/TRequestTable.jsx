@@ -15,10 +15,8 @@ import ExportBtn from "./ExportBtn";
 import { Dropdown } from "react-bootstrap";
 import { statusCode } from "../../api/constants";
 import countData from "../../utils/countData";
-import effectivenessHook from "../../hooks/effectivenessHook";
 
-const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEdit = true }) => {
-console.log(data)
+const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEdit = true , isAdmin}) => {
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -59,16 +57,17 @@ console.log(data)
           className="rounded"
           text
           onClick={() => handleButtonClick(data.id, "Request/Update")}
-        />}
-        {/* <Button
-      type="button"
-        icon="pi pi-trash"
-        size="small"
-        className="rounded"
-        severity="danger"
-        text
-        onClick={() => handleButtonClick(data.id)}
-      /> */}
+        />
+        }{isAdmin&&<Button
+          type="button"
+            icon="pi pi-check-circle"
+            size="small"
+            className="rounded"
+            severity="help"
+            text
+            onClick={() => handleButtonClick(data.id, "TrainingMonitoring")}
+            TrainingMonitoring
+          />}
       </div>
     );
   };
@@ -188,7 +187,7 @@ console.log(data)
           >
             <Column field="id" header="Id" sortable></Column>
             <Column field="requestorBadge" header="BadgeNo" sortable></Column>
-            <Column field="requestorName" header="Requestor" sortable></Column>
+            <Column field="requestorName" header="Requestor Name" sortable></Column>
             <Column field="type" header="Type" sortable></Column>
             <Column field="program" header="Program" sortable></Column>
             <Column field="category" header="Category" sortable></Column>
@@ -230,7 +229,7 @@ console.log(data)
             ></Column>
             {/* <Column
               field="status"
-              header="Status"
+              header="Overall Status"
               sortable
               body={(rowData) => {
                 return StatusColor(rowData.status);
@@ -249,5 +248,6 @@ TRequestTable.propTypes = {
   headingTitle: proptype.string,
   handleActionFilter: proptype.func,
   allowEdit: proptype.bool,
+  isAdmin: proptype.bool,
 };
 export default TRequestTable;

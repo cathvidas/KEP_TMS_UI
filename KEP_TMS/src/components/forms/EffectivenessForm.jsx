@@ -14,10 +14,9 @@ import {
   projectPerformanceEvaluationArray,
 } from "../../services/constants/effectivenessConstant";
 import { SessionGetEmployeeId } from "../../services/sessions";
-import effectivenessHook from "../../hooks/effectivenessHook";
 import StatusColor from "../General/StatusColor";
-import { useNavigate } from "react-router-dom";
-const EffectivenessForm = ({ data, userData }) => {
+const EffectivenessForm = ({ data, userData, formData }) => {
+  console.log(userData)
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
   const [annotation, setAnnotation] = useState("");
@@ -27,18 +26,9 @@ const EffectivenessForm = ({ data, userData }) => {
   const [projectPerformanceEvaluation, setProjectPerformanceEvaluation] =
     useState(projectPerformanceEvaluationArray);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const getEffectiveness = () => {
-    const result = data?.trainingParticipants?.find(
-      (item) => item.employeeBadge === userData?.data?.employeeBadge
-    );
-    return result?.effectivenessId;
-  };
-  const effectiveness = effectivenessHook.useEffectivenessById(
-    getEffectiveness() ?? 0
-  );
   useEffect(() => {
-    if (effectiveness?.data?.status === 1) {
-      const effectivenessData = effectiveness?.data?.data;
+    if (formData) {
+      const effectivenessData = formData;
       setAnnotation(effectivenessData?.annotation);
       setPerformanceCharacteristics(
         effectivenessData?.performanceCharacteristics ??
@@ -50,7 +40,7 @@ const EffectivenessForm = ({ data, userData }) => {
       );
       setIsSubmitted(true);
     }
-  }, [effectiveness?.data]);
+  }, [formData]);
   const numItems = [0, 1, 2];
   const getFacilitators = () => {
     let facilitators = "";
@@ -60,14 +50,14 @@ const EffectivenessForm = ({ data, userData }) => {
     return facilitators;
   };
   const getFormData = {
-    employeeBadge: userData?.data?.employeeBadge,
+    employeeBadge: userData?.employeeBadge,
     trainingProgramId: data?.trainingProgram?.id,
     trainingTypeId: data?.trainingType?.id,
     totalTrainingHours: data?.durationInHours,
     evaluationDate: formatDateOnly(new Date(), "dash"),
     trainingRequestId: data.id,
     annotation: annotation,
-    EvaluatorBadge: userData?.data?.superiorBadge,
+    EvaluatorBadge: userData?.superiorBadge,
     performanceCharacteristics: performanceCharacteristics,
     projectPerformanceEvaluation: projectPerformanceEvaluation,
     createdBy: SessionGetEmployeeId(),
@@ -205,25 +195,24 @@ const EffectivenessForm = ({ data, userData }) => {
   useEffect(()=>{
     setIsAfter(getAfterTrainingDate() >= formatDateOnly(new Date(), "dash"));
   },[getAfterTrainingDate])
-  console.log(getAfterTrainingDate() >= formatDateOnly(new Date(), "dash"))
   return (
     <>
-      <Card.Body className="border-top">
+      <Card.Body>
         {isSubmitted && (
           <div className=" flex justify-content-between  mb-2">
             <div>
               Submitted:{" "}
-              {formatDateTime(effectiveness?.data?.data?.createdDate)}
+              {formatDateTime(formData?.createdDate)}
             </div>
             <div>
               Status: &nbsp;
               {StatusColor({
-                status: effectiveness?.data?.data?.statusName,
+                status: formData?.statusName,
                 class: "p-1",
                 showStatus: false,
               })}
               {" For Evaluator Approval -"}
-              <b>{userData?.data?.superiorName}</b>
+              <b>{userData?.superiorName}</b>
             </div>
           </div>
         )}
@@ -235,21 +224,21 @@ const EffectivenessForm = ({ data, userData }) => {
           <Row>
             <AutoCompleteField
               label="Name of Employee"
-              value={userData?.data?.fullname}
+              value={userData?.fullname}
               className="col-6"
             />
             <AutoCompleteField
               label="Badge No"
-              value={userData?.data?.employeeBadge}
+              value={userData?.employeeBadge}
             />
             <AutoCompleteField
               label="Position"
-              value={userData?.data?.position}
+              value={userData?.position}
               className="col-6"
             />
             <AutoCompleteField
               label="Department"
-              value={userData?.data?.departmentName}
+              value={userData?.departmentName}
             />
             <AutoCompleteField
               label="Training / Program"
@@ -360,7 +349,7 @@ const EffectivenessForm = ({ data, userData }) => {
                 <label className="fw-bold" style={{ fontSize: "0.8rem" }}>
                   Evaluator:
                 </label>
-                <span className="flex-grow-1 border-0 border-bottom">{userData?.data?.superiorName} - {userData?.data?.superiorBadge}</span>
+                <span className="flex-grow-1 border-0 border-bottom">{userData?.superiorName} - {userData?.superiorBadge}</span>
               </Col>
             </Row>
             <Table className="mt-2 table-bordered m-0">
@@ -517,5 +506,6 @@ const EffectivenessForm = ({ data, userData }) => {
 EffectivenessForm.propTypes = {
   data: proptype.object,
   userData: proptype.object,
+  formData: proptype.object,
 };
 export default EffectivenessForm;

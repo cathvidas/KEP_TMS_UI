@@ -10,11 +10,13 @@ import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import ProviderListSection from "./MasterListSection/ProviderListSection";
 import TrainingListSection from "./MasterListSection/TrainingListSection";
 import { TrainingType } from "../api/constants";
+import TrainingFormMonitoring from "./MonitoringPageSection/TrainingFormMonitoring";
 
 const MasterListPage = () => {
   const page = useParams();
   const [currentContent, setCurrentContent] = useState(0);
-
+  const [selectedData, setSelectedData] = useState();
+  console.log(currentContent);
   const navigate = useNavigate();
   const items = [
     {
@@ -55,11 +57,15 @@ const MasterListPage = () => {
           label: "Internal",
           icon: "pi pi-check-square",
           command: () => navigate("/KEP_TMS/MasterList/Training/Internal"),
+          active: currentContent === 3 ? true : false,
+          template: MenuItemTemplate,
         },
         {
           label: "External",
           icon: "pi pi-sign-out",
           command: () => navigate("/KEP_TMS/MasterList/Training/External"),
+          active: currentContent === 4 ? true : false,
+          template: MenuItemTemplate,
         },
       ],
     },
@@ -72,7 +78,6 @@ const MasterListPage = () => {
     <TrainingListSection key={3} trainingType={TrainingType.INTERNAL} />,
     <TrainingListSection key={4} trainingType={TrainingType.EXTERNAL} />,
   ];
-  console.log(page);
   useEffect(() => {
     if (page.category === "Programs") {
       setCurrentContent(1);
@@ -82,9 +87,9 @@ const MasterListPage = () => {
       setCurrentContent(2);
     } else if (page.category === "Training") {
       if (page.type === "Internal") {
-        setCurrentContent(4);
+        setCurrentContent(3);
       } else if (page.type === "External") {
-        setCurrentContent(2);
+        setCurrentContent(4);
       }
     } else {
       // navigate("/KEP_TMS/MasterList")

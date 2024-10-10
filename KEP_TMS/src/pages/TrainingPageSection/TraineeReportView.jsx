@@ -11,8 +11,14 @@ import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import userHook from "../../hooks/userHook";
 import { statusCode } from "../../api/constants";
+import effectivenessHook from "../../hooks/effectivenessHook";
 const TraineeReportView = ({ data }) => {
   const userData = userHook.useUserById(SessionGetEmployeeId());
+  const getUser = data?.trainingParticipants?.find((item) => item.employeeBadge === SessionGetEmployeeId());
+
+ const effectiveness = getUser?.effectivenessId ? effectivenessHook.useEffectivenessById(getUser.effectivenessId):{};
+  const report = getUser?.reportId  ? effectivenessHook.useEffectivenessById(getUser.reportId):{};
+  const evaluation = getUser?.evaluationId? effectivenessHook.useEffectivenessById(getUser.evaluationId):{};
   const stepperRef = useRef();
   const StepperButton = (button) => {
     return (
@@ -38,7 +44,8 @@ const TraineeReportView = ({ data }) => {
         )}
       </div>
     );
-  };
+  };  
+  console.log(effectiveness)
   return (
     <div className="w-100 oveflow-hidden">
       <SectionHeading title="Trainee Report" />
@@ -51,15 +58,18 @@ const TraineeReportView = ({ data }) => {
           // headerPosition="bottom"
         >
           <StepperPanel header="Training Effectiveness Form">
-            <EffectivenessForm data={data} userData={userData} />
+            <hr className="m-0"/>
+            <EffectivenessForm data={data} userData={userData} formData={effectiveness?.data}/>
             {/* {<StepperButton back={true} next={true} index={2} />} */}
           </StepperPanel>
           {data.status.id === statusCode.APPROVED &&<>
           <StepperPanel header="Training Report Form">
+          <hr className="m-0"/>
             <TrainingReportForm data={data} userData={userData} />
             {/* {<StepperButton next={true} index={0} />} */}
           </StepperPanel>
           <StepperPanel header="Evaluation Form">
+          <hr className="m-0"/>
             <EvaluationForm data={data} userData={userData} />
             {/* {<StepperButton back={true} next={true} index={1} />} */}
           </StepperPanel></>}

@@ -112,7 +112,7 @@ const Dashboard = () => {
                       navigate(
                         `/KEP_TMS/${
                           item.status === "Approver"
-                            ? "ForApproval"
+                            ? "List/ForApproval"
                             : item.status === "Training"
                             ? "Trainings"
                             : item.status === "AssignedTrainings"

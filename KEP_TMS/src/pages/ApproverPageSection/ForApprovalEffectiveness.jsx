@@ -9,6 +9,8 @@ import { SessionGetEmployeeId } from "../../services/sessions";
 import StatusColor from "../../components/General/StatusColor";
 import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
+import effectivenessService from "../../services/effectivenessService";
+import { ActivityType } from "../../api/constants";
 
 const ForApprovaleffectiveness = ()=>{
     const {data, error, loading} = effectivenessHook.useApproverAssignedEffectiness(SessionGetEmployeeId());
@@ -16,19 +18,28 @@ const ForApprovaleffectiveness = ()=>{
     const actionTemplate = (rowData)=><>
     <div className="d-flex"> 
     <Button type="button" size="small" text icon="pi pi-eye" severity="success"  className="rounded-circle" />
-    <Button type="button" size="small" text icon="pi pi-thumbs-up"  className="rounded-circle" onClick={()=>approveEffectiveness(true)}/>
-    <Button type="button" size="small" text icon="pi pi-thumbs-down" severity="danger" className="rounded-circle" onClick={()=>approveEffectiveness(false)}/>
+    <Button type="button" size="small" text icon="pi pi-thumbs-up"  className="rounded-circle" onClick={()=>approveEffectiveness(rowData?.trainingEffectiveness?.id,true)}/>
+    <Button type="button" size="small" text icon="pi pi-thumbs-down" severity="danger" className="rounded-circle" onClick={()=>approveEffectiveness(rowData?.trainingEffectiveness?.id,false)}/>
     {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
     </div>
     </>
-      const approveEffectiveness = (isApprove) => {
+      const approveEffectiveness = (id, isApprove) => {
      confirmAction({
         title: isApprove ? "Approve Effectiveness" : "DisApprove Effectiveness",
         text: isApprove ? "Are you sure you want to approve this Effectiveness?" : "Are you sure you want to disapprove this Effectiveness?",
         confirmButtonText: isApprove? "Approve" : "Disapprove",
         cancelButtonText: "No",
         confirmButtonColor: isApprove? "#4CAF50" : "#f44336",
-        onConfirm: ""
+        onConfirm: ()=>{
+          handleResponseAsync(
+           ()=> effectivenessService.approveTrainingEffectiveness({ 
+            transactId: id,
+            updatedBy: SessionGetEmployeeId(),
+            activityIn: ActivityType.EFFECTIVENESS
+          })
+
+          )
+        }
      })
       };
   const columnItems = [{
