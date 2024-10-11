@@ -9,6 +9,7 @@ import trainingRequestHook from "../hooks/trainingRequestHook";
 import { useNavigate } from "react-router-dom";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import commonHook from "../hooks/commonHook";
+import SkeletonCards from "../components/Skeleton/SkeletonCards";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -94,6 +95,7 @@ const Dashboard = () => {
         {loading ? (
           <>
             <SkeletonBanner />
+            <SkeletonCards/>
           </>
         ) : (
           <>

@@ -8,11 +8,12 @@ import { Button } from "primereact/button";
 import TrainingExamForm from "../../components/forms/TrainingExamForm";
 import proptype from "prop-types";
 import { SessionGetEmployeeId } from "../../services/sessions";
-import { confirmAction } from "../../services/sweetalert";
+import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import examService from "../../services/examService";
 import examHook from "../../hooks/examHook";
 import SkeletonList from "../../components/Skeleton/SkeletonList"
+import { useNavigate } from "react-router-dom";
 
 const ExamSection = ({ data }) => {
   const [examData, setExamData] = useState({});
@@ -23,10 +24,10 @@ const ExamSection = ({ data }) => {
   const [defaultData, setDefaultData] = useState(null);
   const { exams, error, loading } = examHook.useExamByRequestId(data.id);
   const [isLocal, setIsLocal] = useState(true);
+  const navigate = useNavigate();
   useEffect(() => {
     refreshData();
   }, [exams]);
-  console.log(exams)
   const refreshData = () => {
     if(exams?.length > 0) {
       setExamList(exams);
@@ -74,12 +75,16 @@ const ExamSection = ({ data }) => {
       title: "Upload Exam",
       text: "Are you sure you want to upload this exam?",
       onConfirm: () => {
-        handleResponseAsync(() => examService.createExam(updatedData), (e)=>{
-          setInterval(() => {
+        handleResponseAsync(
+          () => examService.createExam(updatedData),
+          (e) => {
+            actionSuccessful("Success!", e?.message)
+          },
+          (e) => actionFailed("Error!", e.message),
+          () => {
             localStorage.removeItem("examDetails");
-            refreshData();
-          }, 1000);
-        }
+            navigate(`/KEP_TMS/TrainingRequest/${data?.id}/Exams`);
+          }
         );
       },
     });

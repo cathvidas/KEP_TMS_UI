@@ -4,7 +4,7 @@ import proptype from "prop-types";
 import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
 import { useCallback, useEffect, useState } from "react";
 import { Rating } from "primereact/rating";
-import { actionSuccessful, confirmAction } from "../../services/sweetalert";
+import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
 import { Button } from "primereact/button";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import effectivenessService from "../../services/effectivenessService";
@@ -15,8 +15,7 @@ import {
 } from "../../services/constants/effectivenessConstant";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import StatusColor from "../General/StatusColor";
-const EffectivenessForm = ({ data, userData, formData }) => {
-  console.log(userData)
+const EffectivenessForm = ({ data, userData, formData , onFinish}) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
   const [annotation, setAnnotation] = useState("");
@@ -99,10 +98,9 @@ const EffectivenessForm = ({ data, userData, formData }) => {
             () => effectivenessService.createTrainingEffectiveness(getFormData),
             (e) => {
               actionSuccessful("Success!", e?.message);
-              setTimeout(() => {
-                window.location.reload();
-              }, 1500);
-            }
+            },
+            (e) => actionFailed("Error!", e.message),
+            () => onFinish()
           ),
       });
     }

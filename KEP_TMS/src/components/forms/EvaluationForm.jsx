@@ -14,7 +14,7 @@ import evaluationService from "../../services/evaluationService";
 import { Button } from "primereact/button";
 import ErrorTemplate from "../General/ErrorTemplate";
 import { formatDateTime } from "../../utils/datetime/Formatting";
-const EvaluationForm = ({ data, userData }) => {
+const EvaluationForm = ({ data, userData,onFinish }) => {
   const [annotation, setAnnotation] = useState(evaluationConstant.annotation);
   const [contentMethodology, setContentMethodology] = useState(evaluationConstant.contentMethodology);
   const [programLogisticsRating, setProgramLogisticsRating] = useState(evaluationConstant.programLogisticsRating);
@@ -59,7 +59,8 @@ const EvaluationForm = ({ data, userData }) => {
           handleResponseAsync(
             () => evaluationService.createTrainingEvaluation(getFormData),
             (e) => actionSuccessful("Success", e.message),
-            (e) => actionFailed("Error", e.message)
+            (e) => actionFailed("Error", e.message),
+            ()=>onFinish()
           )
         }
       })

@@ -12,6 +12,7 @@ import { SessionGetEmployeeId } from "../../services/sessions";
 import userHook from "../../hooks/userHook";
 import { statusCode } from "../../api/constants";
 import effectivenessHook from "../../hooks/effectivenessHook";
+import { useNavigate } from "react-router-dom";
 const TraineeReportView = ({ data }) => {
   const userData = userHook.useUserById(SessionGetEmployeeId());
   const getUser = data?.trainingParticipants?.find((item) => item.employeeBadge === SessionGetEmployeeId());
@@ -20,6 +21,7 @@ const TraineeReportView = ({ data }) => {
   const report = getUser?.reportId  ? effectivenessHook.useEffectivenessById(getUser.reportId):{};
   const evaluation = getUser?.evaluationId? effectivenessHook.useEffectivenessById(getUser.evaluationId):{};
   const stepperRef = useRef();
+  const navigate = useNavigate();
   const StepperButton = (button) => {
     return (
       <div className="flex pt-4 justify-content-between">
@@ -46,6 +48,9 @@ const TraineeReportView = ({ data }) => {
     );
   };  
   console.log(data)
+  const handleOnFinish =()=>{
+    navigate(`/KEP_TMS/Training/${data?.id}/Reports`)
+  }
   return (
     <div className="w-100 oveflow-hidden">
       <SectionHeading title="Trainee Report" />
@@ -60,19 +65,19 @@ const TraineeReportView = ({ data }) => {
           {data?.durationInHours >= 16 &&
           <StepperPanel header="Training Effectiveness Form">
             <hr className="m-0"/>
-            <EffectivenessForm data={data} userData={userData?.data} formData={effectiveness?.data}/>
+            <EffectivenessForm data={data} userData={userData?.data} formData={effectiveness?.data} onFinish={handleOnFinish}/>
             {/* {<StepperButton back={true} next={true} index={2} />} */}
           </StepperPanel>}
           {data?.status?.id === statusCode.PUBLISHED &&
           <StepperPanel header="Training Report Form">
           <hr className="m-0"/>
-            <TrainingReportForm data={data} userData={userData} />
+            <TrainingReportForm data={data} userData={userData}  onFinish={handleOnFinish}/>
             {/* {<StepperButton next={true} index={0} />} */}
           </StepperPanel>}     
           {data?.status?.id === statusCode.PUBLISHED &&
           <StepperPanel header="Evaluation Form">
           <hr className="m-0"/>
-            <EvaluationForm data={data} userData={userData} />
+            <EvaluationForm data={data} userData={userData}  onFinish={handleOnFinish}/>
             {/* {<StepperButton back={true} next={true} index={1} />} */}
           </StepperPanel>
           

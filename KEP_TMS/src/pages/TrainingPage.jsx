@@ -20,9 +20,10 @@ const TrainingPage = () => {
   const { data, error, loading } = trainingRequestHooks.useTrainingRequest(
     parseInt(id)
   );
+  const isFacilitator = data?.trainingFacilitators?.some(item=> item?.employeeBadge === SessionGetEmployeeId())
   const [currentContent, setCurrentContent] = useState(0);
   const pageContent = [
-      <OverviewSection key={0} data={data} />,
+      <OverviewSection key={0} data={data} showParticipants={isFacilitator} />,
       <ModuleView key={1} reqId={data.id} />,
       <ExamView key={2}/>,
       <ParticipantsView key={3} data={data?.trainingParticipants} />,

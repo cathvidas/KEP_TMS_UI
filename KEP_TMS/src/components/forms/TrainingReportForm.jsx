@@ -16,11 +16,9 @@ import trainingReportService from "../../services/trainingReportService";
 import ErrorTemplate from "../General/ErrorTemplate";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 
-const TrainingReportForm = ({ data, userData }) => {
+const TrainingReportForm = ({ data, userData , onFinish}) => {
   const [formData, setFormData] = useState(trainingreportConstant);
   const [errors, setErrors] = useState({});
-  console.log(userData);
-  console.log(data);
   const getFormData = {
     ...formData,
     trainingRequestId: data.id,
@@ -40,6 +38,7 @@ const TrainingReportForm = ({ data, userData }) => {
           trainingReportService.createTrainingReport(getFormData),
        (e)=>actionSuccessful("Training report created successfully", e.message),
          (e)=>actionFailed("Error creating training report", e.message),
+         ()=>onFinish()
         ),
       });
     }

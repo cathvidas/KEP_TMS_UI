@@ -12,6 +12,7 @@ import SkeletonList from "../../components/Skeleton/SkeletonList";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import moduleService from "../../services/moduleService";
 import PDFViewer from "../../components/General/PDFViewer";
+import { useNavigate } from "react-router-dom";
 
 const ModuleSection = ({ data }) => {
   const [showForm, setShowForm] = useState(false);
@@ -20,13 +21,14 @@ const ModuleSection = ({ data }) => {
   const [error, setError] = useState(null);
   const [selected, setSelected]= useState({});
   const [showPDF, setShowPDF]= useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     refreshData();
   }, []);
   const refreshData = () => {
     const getRequest = async () => {
       handleResponseAsync(
-        () => moduleService.getModulesByRequestId(data.id),
+        () => moduleService.getModulesByRequestId(data?.id),
         (e) => setModuleList(e),
         (e) => setError(e)
       );
@@ -34,7 +36,6 @@ const ModuleSection = ({ data }) => {
     };
     getRequest();
   };
-  console.log(selected)
   return (
     <>
       <SectionHeading
@@ -49,10 +50,7 @@ const ModuleSection = ({ data }) => {
             <UploadModuleForm
               reqId={data?.id}
               setShowForm={() => setShowForm(false)}
-              handleRefresh={() => {
-                setShowForm(false);
-                refreshData();
-              }}
+              handleRefresh={() => navigate(`/KEP_TMS/TrainingRequest/${data?.id}/Modules`)}
             />
           ) : moduleList?.length > 0 ? (
             <>

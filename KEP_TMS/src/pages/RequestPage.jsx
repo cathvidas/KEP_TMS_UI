@@ -100,7 +100,7 @@ const checkIfFacilitator= ()=>{
             ()=>trainingRequestService.updateTrainingRequest(newData),
             (e)=>actionSuccessful("Training request published successfully",e.message),
             (error)=>console.error("Error publishing training request: ", error),
-            ()=>navigate(`KEP_TMS/Training/${data?.id}`)
+            ()=>navigate(`/KEP_TMS/Training/${data?.id}`)
           )
         }
       })
