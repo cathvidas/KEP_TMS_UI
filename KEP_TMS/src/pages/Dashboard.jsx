@@ -19,7 +19,7 @@ const Dashboard = () => {
   const approval = trainingRequestHook.useAssignedApprovalTrainingRequest(
     SessionGetEmployeeId()
   );
-  // console.log(data);
+   console.log(approval);
 
   const values = [
     ...(approval?.data?.length > 0

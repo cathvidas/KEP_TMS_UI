@@ -7,9 +7,8 @@ import userHook from "../../hooks/userHook";
 import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import trainingRequestHook from "../../hooks/trainingRequestHook";
 import CommonTable from "../../components/General/CommonTable";
-import TRequestTable from "../../components/General/TRequestTable";
-import { mapTrainingRequestDetails, mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
-import { formatCurrency } from "../../utils/Formatting";
+import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
+import { formatCurrency } from "../../utils/datetime/Formatting";
 const DetailItem = (data) => (
   <>
 <div className="flex py-1">

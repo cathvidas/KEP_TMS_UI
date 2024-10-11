@@ -2,7 +2,6 @@ import { Card, Col, Form, Row } from "react-bootstrap";
 import { FormFieldItem } from "./../trainingRequestFormComponents/FormElements";
 import AutoCompleteField from "./common/AutoCompleteField";
 import proptype from "prop-types";
-import { formatDateOnly } from "../../utils/Formatting";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import trainingreportConstant from "../../services/constants/trainingReportConstant";
 import { useState } from "react";
@@ -15,6 +14,7 @@ import {
 import handleResponseAsync from "../../services/handleResponseAsync";
 import trainingReportService from "../../services/trainingReportService";
 import ErrorTemplate from "../General/ErrorTemplate";
+import { formatDateOnly } from "../../utils/datetime/Formatting";
 
 const TrainingReportForm = ({ data, userData }) => {
   const [formData, setFormData] = useState(trainingreportConstant);

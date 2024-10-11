@@ -1,12 +1,9 @@
 import { Button } from "primereact/button";
 import CommonTable from "../../components/General/CommonTable";
-import GeneralTable from "../../components/General/GeneralTable";
 import userHook from "../../hooks/userHook";
-import { formatDateOnly } from "../../utils/Formatting";
-import UserDetailView from "./UserDetailView";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
+import { formatDateOnly } from "../../utils/datetime/Formatting";
 
 const AllUserPageSection = ({userType})=>{
     const navigate = useNavigate();

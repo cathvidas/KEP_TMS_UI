@@ -7,15 +7,14 @@ import { Button } from "primereact/button";
 import EmailForm from "../forms/ModalForms/EmailForm";
 import { useState } from "react";
 import { statusCode } from "../../api/constants";
-const ApproverList = ({ datalist, routing, requestStatus }) => {
-  console.log(routing)
+import { SessionGetEmployeeId } from "../../services/sessions";
+import ApproverAction from "../tableComponents/ApproverAction";
+const ApproverList = ({data }) => {
   const [visible, setVisible] = useState(false);
   const getStatus = (employeeBadge) => {
-    const status = routing.filter((x) => x.assignedTo === employeeBadge); // Get status for this employee
-    const others = datalist.filter((x) => !routing.some((y) => y.assignedTo === x.employeeBadge)); 
+    const status = data?.routing?.filter((x) => x.assignedTo === employeeBadge); // Get status for this employee
   
-  console.log(requestStatus, status)
-    if (status.length > 0 && status[0]?.statusId && requestStatus !== statusCode.SUBMITTED) {
+    if (status.length > 0 && status[0]?.statusId && data?.status?.id !== statusCode.SUBMITTED) {
       return getStatusById(status[0]?.statusId);
     } 
     else {
@@ -28,13 +27,18 @@ const ApproverList = ({ datalist, routing, requestStatus }) => {
   };
   const actionBodyTemplate = (rowData) => (
     <div>
+      {
+      (getStatus(rowData?.employeeBadge) === "ForApproval" && rowData?.employeeBadge === SessionGetEmployeeId()) ?
+      <>
+      <ApproverAction reqId={data?.id} onFinish={()=>window.location.reload()} />
+      </> :
       <Button
         type="button"
         icon="pi pi-envelope"
         text
         disabled={getStatus(rowData.employeeBadge) == "Pending" ? true : false}
         onClick={() => setVisible(true)}
-      />
+      />}
     </div>
   );
   const statusTemplate = (rowData) =>
@@ -43,7 +47,7 @@ const ApproverList = ({ datalist, routing, requestStatus }) => {
   return (
     <>
       <DataTable
-        value={datalist}
+        value={data?.approvers}
         size="small"
         scrollable
         scrollHeight="flex"
@@ -64,7 +68,6 @@ const ApproverList = ({ datalist, routing, requestStatus }) => {
   );
 };
 ApproverList.propTypes = {
-  datalist: proptype.array.isRequired,
-  routing: proptype.array.isRequired,
+  data: proptype.object,
 };
 export default ApproverList;

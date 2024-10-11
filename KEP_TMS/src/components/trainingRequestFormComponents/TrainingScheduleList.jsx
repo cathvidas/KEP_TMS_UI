@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FormatDate, FormatTime, formatTotalTime, getTotalTime } from "../../utils/FormatDateTime";
+import { FormatDate, FormatTime, formatTotalTime, getTotalTime } from "../../utils/datetime/FormatDateTime";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import proptype from 'prop-types'
 import { Button } from "primereact/button";
@@ -7,7 +7,7 @@ import sortSchedules from "../../utils/SortSchedule";
 import { DataTable } from "primereact/datatable";
 import React, { useEffect, useState } from "react";
 import { Column } from "primereact/column";
-import { formatDateOnly } from "../../utils/Formatting";
+import { formatDateOnly } from "../../utils/datetime/Formatting";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
 
 const TrainingScheduleList = ({schedules, onDelete}) => {

@@ -3,19 +3,25 @@ import { createProgramApi, deleteProgramApi, getAllProgramsApi, getProgramApi } 
 const programService ={
     getAllPrograms: async () => {
         const response = await getAllProgramsApi();
-        return response;
+        return response?.status === 1 ? response?.data: [];
     },
     getProgramById: async (id) => {
         const response = await getProgramApi(id);
-        return response.data;
+        return response?.status === 1 ? response?.data: {};
     },
     createProgram: async (program) => {
         const response = await createProgramApi(program);
-        return response;
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response?.data;
     },
     deleteProgram: async (id) => {
         const response = await deleteProgramApi(id);
-        return response;
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response?.data;
     },
 }
 export default programService;

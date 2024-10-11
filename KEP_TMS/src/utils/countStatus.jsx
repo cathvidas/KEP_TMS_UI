@@ -15,7 +15,6 @@ const countStatus = (data, userRequest) => {
     trainerAction: 0,
     assignedTraining: 0,
   };
-
   userRequest.forEach((item) => {
     count.total++;
     // if()
@@ -29,7 +28,6 @@ const countStatus = (data, userRequest) => {
       count.published++;
     }
   });  
-  console.log(data)
   data.forEach((item) => {  
     let isParticipant = false;
     let isFacilitator = false;
@@ -51,9 +49,6 @@ const countStatus = (data, userRequest) => {
     if(isFacilitator ){
       count.trainerAction++;
     }
-    // if(isFacilitator && (item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.PUBLISHED)){
-    //   count.trainerAction++;
-    // }
     if(isParticipant){
       count.assignedTraining++;
     }

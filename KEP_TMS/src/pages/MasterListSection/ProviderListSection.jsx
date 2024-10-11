@@ -5,13 +5,13 @@ import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
-import { formatDateOnly } from "../../utils/Formatting";
 import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import programService from "../../services/programService";
 import { Modal } from "react-bootstrap";
 import providerHook from "../../hooks/providerHook";
 import ProviderForm from "../../components/forms/ModalForms/ProviderForm";
+import { formatDateOnly } from "../../utils/datetime/Formatting";
 
 const ProviderListSection = () => {
   const [visible, setVisible] = useState({detail: false, form: false});

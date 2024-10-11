@@ -4,11 +4,14 @@ import { createTrainingEvaluationApi, getAllTrainingEvaluationApi, getTrainingEv
 const evaluationService = {
     createTrainingEvaluation: async (data)=>{
         const response = await createTrainingEvaluationApi(data);
-        return response;
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response?.data;
     },
     getAllTrainingEvaluation: async ()=>{
         const response = await getAllTrainingEvaluationApi();
-        return response;
+        return response?.status === 1 ? response?.data : [];
     },
     getTrainingEvaluationById: async (id)=>{
         const response = await getTrainingEvaluationByIdApi(id);

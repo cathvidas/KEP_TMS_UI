@@ -5,17 +5,11 @@ import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import programHook from "../../hooks/programHook";
 import CommonTable from "../../components/General/CommonTable";
-import { useEffect, useState } from "react";
-import { formatDateOnly } from "../../utils/Formatting";
-import { useNavigate } from "react-router-dom";
-import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
-import handleResponseAsync from "../../services/handleResponseAsync";
-import programService from "../../services/programService";
-import { Modal, ModalBody } from "react-bootstrap";
-import { faL } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import { Modal } from "react-bootstrap";
+import { formatDateOnly } from "../../utils/datetime/Formatting";
 
-const ProgramListSection = ({}) => {
-  const navigate = useNavigate();
+const ProgramListSection = () => {
   const [visible, setVisible] = useState({detail: false, form: false});
   const { data, error, loading } = programHook.useAllPrograms();
   const [selectedData, setSelectedData] = useState({});
@@ -34,19 +28,19 @@ const ProgramListSection = ({}) => {
       isUpdate ? { detail: false, form: true } : { detail: true, form: false }
     );
   };
-  const handleDelete = (id) => {
-      confirmAction({
-        title: "Confirm Deletion",
-        text: `Are you sure you want to delete this Program?`,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        onConfirm:()=> handleResponseAsync(
-          ()=>programService.deleteProgram(id),
-          ()=>actionSuccessful("Success!", "Program deleted successfully"),
-          (e)=>actionFailed("Error!", e.message)
-        ),
-      })
-  }
+  // const handleDelete = (id) => {
+  //     confirmAction({
+  //       title: "Confirm Deletion",
+  //       text: `Are you sure you want to delete this Program?`,
+  //       confirmButtonText: "Delete",
+  //       cancelButtonText: "Cancel",
+  //       onConfirm:()=> handleResponseAsync(
+  //         ()=>programService.deleteProgram(id),
+  //         ()=>actionSuccessful("Success!", "Program deleted successfully"),
+  //         (e)=>actionFailed("Error!", e.message)
+  //       ),
+  //     })
+  // }
   const columnItems = [{
     field: "id",
     header: "ID",

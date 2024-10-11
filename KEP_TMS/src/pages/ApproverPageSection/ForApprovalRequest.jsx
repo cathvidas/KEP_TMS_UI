@@ -1,13 +1,11 @@
 import { SectionBanner } from "../../components/General/Section";
 import { useEffect, useRef, useState } from "react";
 import {
-  approveTrainingRequest,
   getTrainingRequestByApprover,
 } from "../../api/trainingServices";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { formatCurrency, formatDateOnly } from "../../utils/Formatting";
 import { getUserApi } from "../../api/userApi";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
@@ -15,10 +13,9 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { FilterMatchMode } from "primereact/api";
 import StatusColor from "../../components/General/StatusColor";
-import { useNavigate } from "react-router-dom";
-import { statusCode } from "../../api/constants";
-import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
 import { mapForApprovalRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
+import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
+import ApproverAction from "../../components/tableComponents/ApproverAction";
 
 const ForApprovalRequest = () => {
   const [request, setRequest] = useState([]);
@@ -70,7 +67,6 @@ const ForApprovalRequest = () => {
   const exportCSV = (selectionOnly) => {
     datatable.current.exportCSV({ selectionOnly });
   };
-  const navigate = useNavigate();
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2  align-items-center">
@@ -93,79 +89,14 @@ const ForApprovalRequest = () => {
     );
   };
 
-  const handleApproveRequest = async (data) => {
-    const newData = {
-      requestId: data.id,
-      employeeBadge: SessionGetEmployeeId(),
-      statusId: data.statusId,
-      updatedBy: SessionGetEmployeeId(),
-    };
-console.log(data)
-    try {
-      const response = await approveTrainingRequest(newData);
-      if (response.isSuccess) {
-        actionSuccessful("Success", response?.message);
-      }else{
-        actionFailed("Error Approving Training Request", response?.message);
-      }
-    } catch (error) {
-      actionFailed("Error Approving Training Request", error);
-    }
+  const refreshData= ()=>{
     setInterval(() => {
       setTrigger(trigger+1)
     }, 2000);
-  };
+  }
   const actionTemplate = (data) => {
     return (
-      <div className="d-flex">
-        <Button
-          type="button"
-          icon="pi pi-eye"
-          size="small"
-          severity="success"
-          className="rounded"
-          text
-          onClick={() => navigate(`/KEP_TMS/TrainingRequest/${data.id}`)}
-        />
-        <Button
-          type="button"
-          icon="pi pi-thumbs-up
-"
-          onClick={() =>
-            confirmAction({
-              title: "Approve Request",
-              text: `Are you sure you want to approve this request?`,
-              confirmButtonText: "Approve",
-              cancelButtonText: "No",
-              onConfirm: handleApproveRequest,
-              param: { id: data.id, statusId: statusCode.APPROVED },
-            })
-          }
-          size="small"
-          className="rounded"
-          text
-        />
-        <Button
-          type="button"
-          icon="pi pi-thumbs-down
-"
-          size="small"
-          className="rounded"
-          severity="danger"
-          text
-          onClick={() =>
-            confirmAction({
-              title: "Disapprove Request",
-              text: `Are you sure you want to disapprove this request?`,
-              confirmButtonText: "Disapproved",
-              cancelButtonText: "No",
-              confirmButtonColor: "#d33",
-              onConfirm: handleApproveRequest,
-              param: { id: data.id, statusId: statusCode.DISAPPROVED },
-            })
-          }
-        />
-      </div>
+       <ApproverAction reqId={data.id} onFinish={refreshData} hasView/>
     );
   };
   const header = renderHeader();

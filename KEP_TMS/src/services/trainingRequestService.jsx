@@ -2,13 +2,17 @@ import { statusCode } from "../api/constants";
 import { approveTrainingRequestApi, getAllTrainingRequestsApi, getCurrentRoutingActivityApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestsByRequestorApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
 
 const trainingRequestService = {
+  approveTrainingRequest: async(data)=>{
+    const response = await approveTrainingRequestApi(data);
+    return response;
+  },
   getAllTrainingRequests: async () => {
     const response = await getAllTrainingRequestsApi();
-    return response?.data;
+    return response?.status === 1? response?.data: [];
   },
   getTrainingRequest: async (id) => {
     const response = await getTrainingRequestApi(id);
-    return response.data;
+    return response?.status === 1? response?.data: [];
   },
   updateTrainingRequest: async (data) => {
     const response = await updateTrainingRequestApi(data);
@@ -16,14 +20,10 @@ const trainingRequestService = {
   },
   getTrainingRequestsByRequestor: async (id) => {
     const response = await getTrainingRequestsByRequestorApi(id);
-    return response.data;
+    return response?.status === 1? response?.data: [];
   },
   getCurrentRoutingActivity: async (transactId, activityIn) => {
     const response = await getCurrentRoutingActivityApi(transactId, activityIn);
-    return response;
-  },
-  approveTrainingRequest: async (data) => {
-    const response = await approveTrainingRequestApi(data);
     return response;
   },
   getTrainingRequestByApprover: async (id) => {
@@ -32,6 +32,9 @@ const trainingRequestService = {
   },
   getTrainingRequestByParticipant: async (id, role) => {
     const response = await getAllTrainingRequestsApi(id);
+    if(response.status !== 1){
+      return [];
+    }
     let request = [];
     response?.data.forEach((item) => {
       let isParticipant = false;

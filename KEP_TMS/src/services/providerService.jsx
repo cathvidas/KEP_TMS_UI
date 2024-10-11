@@ -3,23 +3,32 @@ import { createProviderApi, deleteProviderApi, getAllProvidersApi, getProviderBy
 const providerService ={
     getProviderById: async (id)=>{
         const response = await getProviderById(id);
-        return response;
+        return response?.status === 1 ? response?.data:{};
     },
     getAllProviders: async ()=>{
         const response = await getAllProvidersApi();
-        return response;
+        return response?.status === 1 ? response?.data: [];
     },
     updateProvider: async (data)=>{
         const response = await updateProviderApi(data);
-        return response;
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response?.data;
     },
     createProvider: async (data)=>{
         const response = await createProviderApi(data);
-        return response;
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response?.data;
     },
     deleteProvider: async (id)=>{
         const response = await deleteProviderApi(id);
-        return response;
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response?.data;
     }
 }
 export default providerService;

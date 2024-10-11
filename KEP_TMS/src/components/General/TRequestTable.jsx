@@ -7,7 +7,6 @@ import { InputText } from "primereact/inputtext";
 import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
-import { formatCurrency, formatDateOnly } from "../../utils/Formatting";
 import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 import StatusColor from "./StatusColor";
 import proptype from "prop-types";
@@ -15,6 +14,7 @@ import ExportBtn from "./ExportBtn";
 import { Dropdown } from "react-bootstrap";
 import { statusCode } from "../../api/constants";
 import countData from "../../utils/countData";
+import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
 
 const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEdit = true , isAdmin}) => {
 

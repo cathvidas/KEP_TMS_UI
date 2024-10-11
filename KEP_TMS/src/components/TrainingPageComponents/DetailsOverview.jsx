@@ -1,11 +1,10 @@
 import { Col, Row } from "react-bootstrap";
 import DetailItem from "./DetailItem";
 import proptype from "prop-types";
-import { formatCurrency, formatDateOnly } from "../../utils/Formatting";
-import { formatTotalTime } from "../../utils/FormatDateTime";
+import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
+import { formatTotalTime } from "../../utils/datetime/FormatDateTime";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
 const DetailsOverview = ({ data }) => {
-  console.log(data);
   return (
     <div>
       <Row className="g-0 border-top  border-end border-bottom">

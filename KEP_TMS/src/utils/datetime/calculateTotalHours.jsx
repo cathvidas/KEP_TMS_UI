@@ -1,4 +1,4 @@
-import { getTotalTime } from "../FormatDateTime";
+import { getTotalTime } from "./FormatDateTime";
 
 const calculateTotalHours = (data) => {
   return data?.reduce((total, schedule) => {

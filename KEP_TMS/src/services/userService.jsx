@@ -7,7 +7,7 @@ const userService ={
     },
     getUserById: async(id)=>{
             const response = await getUserApi(id);
-            return response.data;
+            return response?.status === 1 ? response.data: {};
     },
     createUser: async(user)=>{
         const response = await createUserApi(user);

@@ -1,7 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  formatDateTime,
-} from "../../utils/Formatting";
 import proptype from "prop-types";
 import {
   faCalendar,
@@ -15,13 +12,14 @@ import StatusColor from "../../components/General/StatusColor";
 import TrainingScheduleList from "../../components/trainingRequestFormComponents/TrainingScheduleList";
 import DetailsOverview from "../../components/TrainingPageComponents/DetailsOverview";
 import ApproverList from "../../components/List/ApproversList";
+import { formatDateTime } from "../../utils/datetime/Formatting";
 // import { useHistory } from "react-router-dom";
 
 const TrainingOverview = ({ data }) => {
   const navigate = useNavigate();
   // const history = useHistory()
   return (
-    <div className="card  p-3 overflo-hidden w-100">
+    <div className="card  p-3  w-100">
       <div>
         <h3 className="text-center theme-color m-0">
           New {data?.trainingType?.name} Training Request
@@ -68,7 +66,7 @@ const TrainingOverview = ({ data }) => {
           title="Approvers"
           icon={<FontAwesomeIcon icon={faUsers} />}
         />
-        <ApproverList requestStatus={data?.status?.id} datalist={data?.approvers ?? []} routing={data?.routing ?? []} />
+        <ApproverList data={data} />
       </div>
     </div>
   );

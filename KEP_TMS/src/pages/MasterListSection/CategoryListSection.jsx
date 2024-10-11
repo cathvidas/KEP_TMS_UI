@@ -1,26 +1,15 @@
 import { Button } from "primereact/button";
-import ProgramForm from "../../components/forms/ModalForms/ProgramForm";
 import { SectionBanner } from "../../components/General/Section";
 import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
-import programHook from "../../hooks/programHook";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
-import { formatDateOnly } from "../../utils/Formatting";
-import { useNavigate } from "react-router-dom";
-import {
-  actionFailed,
-  actionSuccessful,
-  confirmAction,
-} from "../../services/sweetalert";
-import handleResponseAsync from "../../services/handleResponseAsync";
-import programService from "../../services/programService";
 import { Modal } from "react-bootstrap";
 import categoryHook from "../../hooks/categoryHook";
 import CategoryForm from "../../components/forms/ModalForms/CategoryForm";
+import { formatDateOnly } from "../../utils/datetime/Formatting";
 
-const CategoryListSection = ({}) => {
-  const navigate = useNavigate();
+const CategoryListSection = () => {
   const [visible, setVisible] = useState({ detail: false, form: false });
   const { data, error, loading } = categoryHook.useAllCategories();
   const [selectedData, setSelectedData] = useState({});
@@ -56,20 +45,20 @@ console.log(data)
       isUpdate ? { detail: false, form: true } : { detail: true, form: false }
     );
   };
-  const handleDelete = (id) => {
-    confirmAction({
-      title: "Confirm Deletion",
-      text: `Are you sure you want to delete this Program?`,
-      confirmButtonText: "Delete",
-      cancelButtonText: "Cancel",
-      onConfirm: () =>
-        handleResponseAsync(
-          () => programService.deleteProgram(id),
-          () => actionSuccessful("Success!", "Program deleted successfully"),
-          (e) => actionFailed("Error!", e.message)
-        ),
-    });
-  };
+  // const handleDelete = (id) => {
+  //   confirmAction({
+  //     title: "Confirm Deletion",
+  //     text: `Are you sure you want to delete this Program?`,
+  //     confirmButtonText: "Delete",
+  //     cancelButtonText: "Cancel",
+  //     onConfirm: () =>
+  //       handleResponseAsync(
+  //         () => programService.deleteProgram(id),
+  //         () => actionSuccessful("Success!", "Program deleted successfully"),
+  //         (e) => actionFailed("Error!", e.message)
+  //       ),
+  //   });
+  // };
   const columnItems = [
     {
       field: "id",

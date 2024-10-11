@@ -3,23 +3,32 @@ import { createCategoryApi, deleteCategoryApi, getAllCategoriesApi, getCategoryA
 const categoryService ={
     getAllCategories: async () => {
         const response = await getAllCategoriesApi();
-        return response.data;
+        return response.status === 1 ? response?.data : [];
     },
     getCategoryById: async (id) => {
         const response = await getCategoryApi(id);
-        return response.data;
+        return response.status === 1 ? response?.data : {};
     },
     createCategory: async (data) => {
         const response = await createCategoryApi(data);
-        return response;
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response?.data;
     },
     updateCategory: async (data) => {
         const response = await updateCategoryApi(data);
-        return response;
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response?.data;
     },
     deleteCategory: async (id) => {
         const response = await deleteCategoryApi(id);
-        return response;
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response?.data;
     },
 }
 export default categoryService;

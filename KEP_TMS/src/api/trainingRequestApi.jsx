@@ -1,3 +1,4 @@
+import { useAsyncValue } from "react-router-dom";
 import { API_ENDPOINTS } from "./apiEndpoints";
 import fetchFromApi from "./apiUtil";
 
@@ -13,8 +14,8 @@ export const craeteTrainingRequestApi = async (trainingRequest) => {
 export const getTrainingRequestsByRequestorApi = async (id) => {
     return await fetchFromApi(`TrainingRequest/GetRequestByRequestor?badge=${id}`);
 }
-export const approveTrainingRequestApi = async (formatData) => {
-    return await fetchFromApi(API_ENDPOINTS.APPROVE_TRAINING_REQUEST, "POST", formatData);
+export const approveTrainingRequestApi = async (data) => {
+    return await fetchFromApi(API_ENDPOINTS.APPROVE_TRAINING_REQUEST, "POST", data);
 }
 export const updateTrainingRequestApi = async (data)=>{
     return await fetchFromApi(API_ENDPOINTS.UPDATE_TRAINING_REQUEST, "PUT", data);

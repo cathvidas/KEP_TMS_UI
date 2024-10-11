@@ -11,7 +11,7 @@ import proptype from "prop-types";
 import SkeletonList from "../../components/Skeleton/SkeletonList";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import moduleService from "../../services/moduleService";
-import PDFViewer from "../../components/General/PDFViewer";
+// import PDFViewer from "../../components/General/PDFViewer";
 
 const ModuleSection = ({ data }) => {
   const [showForm, setShowForm] = useState(false);

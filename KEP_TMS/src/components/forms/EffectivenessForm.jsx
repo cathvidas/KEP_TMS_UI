@@ -1,7 +1,7 @@
 import { Card, Col, Form, Row, Table } from "react-bootstrap";
 import AutoCompleteField from "./common/AutoCompleteField";
 import proptype from "prop-types";
-import { formatDateOnly, formatDateTime } from "../../utils/Formatting";
+import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
 import { useCallback, useEffect, useState } from "react";
 import { Rating } from "primereact/rating";
 import { actionSuccessful, confirmAction } from "../../services/sweetalert";

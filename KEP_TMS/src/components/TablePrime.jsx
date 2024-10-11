@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { uploadFile } from "../api/trainingServices";
-import { formatDateTime } from "../utils/Formatting";
 import { Button } from "react-bootstrap";
+import { formatDateTime } from "../utils/datetime/Formatting";
 
 
 const ExamSection=()=> {

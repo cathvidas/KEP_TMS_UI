@@ -18,10 +18,9 @@ const trainingRequestHook = {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequest = async () => {
-        try {
-          const response = await trainingRequestService.getTrainingRequest(id);
-          console.log(response);
-          const participants = await userMapping.mapUserIdList(
+        handleResponseAsync(
+          ()=>trainingRequestService.getTrainingRequest(id),
+          async(response)=>{  const participants = await userMapping.mapUserIdList(
             response.trainingParticipants,
             "employeeBadge"
           );
@@ -37,6 +36,12 @@ const trainingRequestHook = {
             response.requestorBadge
           );
           const routing = await getRoutingActivity(response.id, 1);
+          const approver =
+          await trainingRequestService.getCurrentRoutingActivity(
+            response.id,
+            ActivityType.REQUEST
+          );
+        const currentRouting = await userService.getUserById(approver.assignedTo);
           setData({
             ...response,
             trainingParticipants: participants,
@@ -44,12 +49,13 @@ const trainingRequestHook = {
             requestor: requestor,
             routing: routing,
             approvers,
+            currentRouting : currentRouting
           });
-        } catch (error) {
-          setError(error);
-        } finally {
-          setLoading(false);
-        }
+
+          },
+          (e)=>setError(e),
+          ()=> setLoading(false)
+        )
       };
       getRequest();
     }, [id]);
@@ -119,7 +125,6 @@ const trainingRequestHook = {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    console.log(id);
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(

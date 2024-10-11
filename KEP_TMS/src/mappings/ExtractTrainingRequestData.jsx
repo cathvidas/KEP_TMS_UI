@@ -1,4 +1,5 @@
-import { formatCurrency } from "../utils/Formatting";
+import { formatCurrency } from "../utils/datetime/Formatting";
+
 
 export const extractTrainingRequests = (data) => {
   const extracted = data.map(

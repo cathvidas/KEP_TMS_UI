@@ -17,6 +17,7 @@ import { actionSuccessful, confirmAction } from "../services/sweetalert.jsx";
 import handleResponseAsync from "../services/handleResponseAsync.jsx";
 import trainingRequestService from "../services/trainingRequestService.jsx";
 import { Button } from "primereact/button";
+import countData from "../utils/countData.jsx";
 
 const TrainingRequestPage = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const TrainingRequestPage = () => {
   const { data, error, loading } = trainingRequestHook.useTrainingRequest(
     parseInt(id)
   );
-  
+  const [currentContent, setCurrentContent] = useState();
   const items = [
     {
         label: 'Menu',
@@ -34,28 +35,34 @@ const TrainingRequestPage = () => {
                 label: 'Overview',
                 icon: 'pi pi-info-circle',
                 command: () => navigate(`/KEP_TMS/TrainingRequest/${data.id}`),
-                template: MenuItemTemplate
+                template: MenuItemTemplate,
+                active: currentContent === 0? true : false,
                 
             },
             {
                 label: 'Modules',
                 icon: 'pi pi-folder',
                 command: () => navigate(`/KEP_TMS/TrainingRequest/${data.id}/Modules`),
-                template: MenuItemTemplate
+                template: MenuItemTemplate,
+                active: currentContent === 1? true : false,
             },
             {
                 label: 'Questionnaire',
                 icon: 'pi pi-list-check',
                 command: () => navigate(`/KEP_TMS/TrainingRequest/${data.id}/Exams`),
-                template: MenuItemTemplate
+                template: MenuItemTemplate,
+                active: currentContent === 2? true : false,
             }
         ]
     },
 ];
+const checkIfFacilitator= ()=>{
+ return data?.trainingFacilitators?.some(f=>f.employeeBadge=== SessionGetEmployeeId());
+}
   const Content = () => {
     const pages = [
       <>
-        <OverviewSection data={data}/>
+        <OverviewSection data={data} showParticipants showFacilitators showApprovers/>
       </>,
       <>
         <ModuleSection data={data}/>
@@ -67,7 +74,6 @@ const TrainingRequestPage = () => {
       <TraineeReportView/>
       </>
     ];
-    const [currentContent, setCurrentContent] = useState();
     useEffect(() => {
       if (page === "Modules") {
         setCurrentContent(1);
@@ -95,17 +101,12 @@ const TrainingRequestPage = () => {
           )
         }
       })
-      // actionSuccessful("ahsd")
-    
     }
     return (
       <>  <div className={`d-flex g-0`}>
-        {/* <div className={`row g-0`}> */}
-          {data.status?.id === statusCode.APPROVED && (<>
+          {(data.status?.id === statusCode.APPROVED && checkIfFacilitator() === true) && (<>
             <MenuContainer itemList={items} action={ <Button type="button" label="Publish" size="small" severity="info" className="rounded py-1 ms-3" onClick={handlePublish}/>}/>
-           
             </>
-            // <RequestMenu current={currentContent} reqId={data.id} />
           )}
           <div
             className={`${

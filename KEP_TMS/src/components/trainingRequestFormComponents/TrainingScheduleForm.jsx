@@ -11,7 +11,8 @@ import {
   ValidateSchedule,
 } from "../../utils/TrainingDateValidation";
 import { TrainingDates } from "../../services/insertData";
-import { formatTotalTime, getTotalTime } from "../../utils/FormatDateTime";
+import { formatTotalTime, getTotalTime } from "../../utils/datetime/FormatDateTime";
+import { formatDateOnly } from "../../utils/datetime/Formatting";
 
 const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
   const [trainingSchedules, setTrainingSchedules] = useState(
@@ -131,6 +132,7 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
                     className="form-control"
                     type="date"
                     name="date"
+                    min={formatDateOnly(new Date(), 'dash')}
                     value={schedData?.date}
                     onChange={handleInputChange}
                     // required

@@ -1,20 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { UserList } from "../List/UserList";
-import { ModalContainer } from "../Modal/ModalContainer";
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import { ActionButton } from "../General/Button";
 import { SectionHeading } from "../General/Section";
 import proptype from "prop-types";
 import { getAllUsersApi } from "../../api/userApi";
-import { getAllDepartments } from "../../api/ComboBoxes";
-import { getAllTrainingProviders } from "../../api/trainingServices";
 import { FilterMatchMode } from "primereact/api";
 import EmptyState from "./EmptyState";
 import { Button } from "primereact/button";
 import { Modal } from "react-bootstrap";
-const TrainingParticipantsForm = ({ formData, handleResponse, errors }) => {
+const TrainingParticipantsForm = ({ formData, handleResponse, errors , departments}) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -40,15 +37,12 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors }) => {
     setError(errors);
   }, [errors]);
 
-  const handleClose = () => setShowModal(false);
   const [list, setList] = useState({
     users: [],
-    departments: [],
     providers: [],
   });
   const [filteredList, setFilteredList] = useState({
     users: [],
-    departments: [],
     providers: [],
   });
   const [currentSelected, setCurrentSelected] = useState("");
@@ -80,24 +74,12 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors }) => {
             )
         );
 
-      const departments = await getAllDepartments();
-      const providers = await getAllTrainingProviders();
 
       setList({
         users: availableUsers,
-        departments: departments,
-        providers: providers.map(({ id, name }) => ({
-          value: id,
-          label: name,
-        })),
       });
       setFilteredList({
         users: availableUsers,
-        departments: departments,
-        providers: providers.map(({ id, name }) => ({
-          value: id,
-          label: name,
-        })),
       });
     };
     fetchDatas();
@@ -179,7 +161,7 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors }) => {
       {" "}
       <SearchBar
         handleOnInput={onGlobalFilterChange}
-        options={list.departments}
+        options={departments}
       />
       <div
         className="overflow-auto max-vh-100 mt-2"

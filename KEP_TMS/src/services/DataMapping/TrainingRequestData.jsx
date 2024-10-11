@@ -1,6 +1,7 @@
 import { getUserApi } from "../../api/userApi";
 
 export const mapTRequestToTableData = (data)=>{
+    console.log(data)
     const mappedData = data?.map(item=>({
         id: item.id,
         requestorName: item?.requestorName,
@@ -30,7 +31,7 @@ export const mapTRequestToTableData = (data)=>{
 
 export const mapForApprovalRequestToTableData =  (data) => {
   const result = data.map(
-    ({ auditTrail, routingActivity, trainingRequest }) => {
+    ({ routingActivity, trainingRequest }) => {
         const value = mapTrainingRequestDetails(trainingRequest);
         const currentApprover= routingActivity.assignedTo;
         return {...value, currentApprover: currentApprover}

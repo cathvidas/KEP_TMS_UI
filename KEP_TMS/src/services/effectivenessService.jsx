@@ -8,31 +8,29 @@ import {
 const effectivenessService = {
   createTrainingEffectiveness: async (data) => {
     const response = await createTrainingEffectivenessApi(data);
-    return response;
+    if(response.status !== 1){
+      throw new Error(response.message);
+    }
+    return response?.data;
   },
   getEffectivenessById: async (id) => {
     const response = await getEffectivenessByIdApi(id);
-    if (response?.status === 1) {
-      return response?.data;
-    } else {
-      return {};
-    }
+    return response.status === 1 ? response?.data : {};
   },
   getAllEffectiveness: async () => {
     const response = await getAllEffectivenessApi();
-    return response;
+    return response.status === 1 ? response?.data : [];
   },
   getApproverAssignedEffectiveness: async (id) => {
     const response = await getApproverAssignedEffectivenessApi(id);
-    return response;
+    return response.status === 1 ? response?.data : [];
   },
   approveTrainingEffectiveness: async (data)=>{
-    console.log(data)
     const response = await approveTrainingFormApi(data);
     if(response.status !== 1){
-      throw new Error('Failed to approve effectiveness');
+      throw new Error(response.message);
     }
-    return response;
+    return response?.data;
   }
 };
 export default effectivenessService;

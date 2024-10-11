@@ -15,7 +15,6 @@ import {
   actionSuccessful,
   confirmAction,
 } from "../../services/sweetalert";
-import { InsertFormattedTrainingRequestData } from "../../services/formatData";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   SessionGetDepartment,
@@ -27,18 +26,21 @@ import { StepperPanel } from "primereact/stepperpanel";
 import { Button } from "primereact/button";
 import validateTrainingDetails from "../../services/inputValidation/validateTrainingDetails";
 import { mapUserListAsync } from "../../services/DataMapping/UserListData";
-import { formatDateTime } from "../../utils/Formatting";
+import { formatDateTime } from "../../utils/datetime/Formatting";
 import { statusCode, TrainingType } from "../../api/constants";
 import TrainingParticipantsForm from "../trainingRequestFormComponents/TrainingParticipantsForm";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
 import programHook from "../../hooks/programHook";
 import categoryHook from "../../hooks/categoryHook";
 import providerHook from "../../hooks/providerHook";
+import commonHook from "../../hooks/commonHook";
+import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
 export const TrainingRequestForm = () => {
   
   const programs = programHook.useAllPrograms();
   const categories = categoryHook.useAllCategories();
   const providers = providerHook.useAllProviders();
+  const departments = commonHook.useAllDepartments();
 const trainingType = useParams().type;
   const requestId = useParams().id;
   // var details = {};
@@ -67,7 +69,7 @@ const trainingType = useParams().type;
   },[details]);
   const handleFormSubmission = async () => {
     try {
-      const formmatedData = { ...InsertFormattedTrainingRequestData(formData) };
+      const formmatedData = { ...validateTrainingRequestForm(formData) };
       if (trainingType.toUpperCase() === "UPDATE" && requestId) {
         const updateData = {
           ...formmatedData,
@@ -281,6 +283,7 @@ const trainingType = useParams().type;
                   formData={formData}
                   handleResponse={handleResponse}
                   errors={errors?.participants}
+                  departments={departments?.data}
                 />
                 {<StepperButton back={true} next={true} index={1} />}
               </StepperPanel>

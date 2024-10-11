@@ -27,4 +27,6 @@ export const ActivityType = {
   USER: 9,
   ROUTING_ACTIVITY: 10,
   EXAM: 11,
+  MODULE: 12,
+  TRAINEE_EXAM: 13,
 };

@@ -14,6 +14,7 @@ import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import { statusCode } from "../api/constants";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import MonitoringReportView from "./MonitoringPageSection/MonitoringReportView";
+import OverviewSection from "./RequestPageSection/OverviewSection";
 const TrainingPage = () => {
   const { id, page } = useParams();
   const { data, error, loading } = trainingRequestHooks.useTrainingRequest(
@@ -21,7 +22,7 @@ const TrainingPage = () => {
   );
   const [currentContent, setCurrentContent] = useState(0);
   const pageContent = [
-      <TrainingOverview key={0} data={data} />,
+      <OverviewSection key={0} data={data} />,
       <ModuleView key={1} reqId={data.id} />,
       <ExamView key={2}/>,
       <ParticipantsView key={3} data={data?.trainingParticipants} />,

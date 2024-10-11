@@ -6,32 +6,42 @@ import EmptyState from "../trainingRequestFormComponents/EmptyState";
 import { SectionHeading } from "../General/Section";
 import DetailsOverview from "../TrainingPageComponents/DetailsOverview";
 import TrainingScheduleList from "../trainingRequestFormComponents/TrainingScheduleList";
+import { useEffect, useState } from "react";
+import sortSchedules from "../../utils/SortSchedule";
 
-const TrainingSummary = ({ formData, handleResponse }) => {
-  console.log(formData)
+const TrainingSummary = ({ formData }) => {
+  const [updatedData, setUpdatedData] = useState(formData);
+  useEffect(()=>{
+    const startDate = sortSchedules(formData?.trainingDates)[0]?.date;
+    const endDate = sortSchedules(formData?.trainingDates)[formData?.trainingDates?.length-1]?.date;
+    setUpdatedData({...formData, trainingStartDate: startDate, trainingEndDate: endDate})
+  }, [formData])
   return (
     <>
       <SectionHeading
         title="Training Summary"
         icon={<FontAwesomeIcon icon={faInfoCircle} />}
       />
-      <DetailsOverview data={formData} />
-      <br />
-      <TrainingScheduleList schedules={formData.trainingDates} />
+      <DetailsOverview data={updatedData} />
+      <br />    <SectionHeading
+        title="Training Schedules"
+        icon={<FontAwesomeIcon icon={faInfoCircle} />}
+      />
+      <TrainingScheduleList schedules={updatedData.trainingDates} />
       <br />
       <SectionHeading
         title="Training Participants"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
-      {formData.trainingParticipants.length > 0 ? (
+      {updatedData.trainingParticipants.length > 0 ? (
         <>
           <small className="text-muted">
-            {formData.trainingParticipants.length} participants{" "}
+            {updatedData.trainingParticipants.length} participants{" "}
           </small>
           <UserList
             leadingElement={true}
             col="3"
-            userlist={formData.trainingParticipants}
+            userlist={updatedData.trainingParticipants}
             property={"name"}
           />
         </>
@@ -43,10 +53,10 @@ const TrainingSummary = ({ formData, handleResponse }) => {
         title="Training Facilitator/s"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
-      {formData.trainingFacilitators.length > 0 ? (
+      {updatedData.trainingFacilitators.length > 0 ? (
         <UserList
           leadingElement={true}
-          userlist={formData.trainingFacilitators}
+          userlist={updatedData.trainingFacilitators}
           property={"name"}
         />
       ) : (

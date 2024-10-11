@@ -9,11 +9,14 @@ import {
 const trainingReportService = {
   createTrainingReport: async (data) => {
     const response = await createTrainingReportApi(data);
-    return response;
+    if(response.status !== 1){
+      throw new Error(response.message);
+    }
+    return response?.data;
   },
   getAllTrainingReports: async () => {
     const response = await getAllTrainingReportsApi();
-    return response;
+    return response?.status === 1? response?.data: [];
   },
   getTrainingReportById: async (id) => {
     const response = await getTrainingReportByIdApi(id);
@@ -21,11 +24,14 @@ const trainingReportService = {
   },
   getApproverAssignedReports: async (id) => {
     const response = await getApproverAssignedReportsApi(id);
-    return response;
+    return response?.status === 1? response?.data: [];
   },
   approveTrainingReport: async (data)=>{
     const response = await approveTrainingFormApi(data);
-    return response;
+    if(response.status !== 1){
+      throw new Error(response.message);
+    }
+    return response?.data;
   }
 };
 export default trainingReportService;
