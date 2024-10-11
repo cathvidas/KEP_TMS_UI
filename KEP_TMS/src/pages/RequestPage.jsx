@@ -18,6 +18,8 @@ import handleResponseAsync from "../services/handleResponseAsync.jsx";
 import trainingRequestService from "../services/trainingRequestService.jsx";
 import { Button } from "primereact/button";
 import countData from "../utils/countData.jsx";
+import validateTrainingDetails from "../services/inputValidation/validateTrainingDetails.jsx";
+import { validateTrainingRequestForm } from "../services/inputValidation/validateTrainingRequestForm.jsx";
 
 const TrainingRequestPage = () => {
   const navigate = useNavigate();
@@ -25,6 +27,7 @@ const TrainingRequestPage = () => {
   const { data, error, loading } = trainingRequestHook.useTrainingRequest(
     parseInt(id)
   );
+  console.log(data)
   const [currentContent, setCurrentContent] = useState();
   const items = [
     {
@@ -87,17 +90,17 @@ const checkIfFacilitator= ()=>{
       }
     }, [page]);
     const handlePublish = () => {
-      const newData = {requestId: data.id,
-        employeeBadge: SessionGetEmployeeId(),
+      const newData = {...validateTrainingRequestForm(data),
         statusId: statusCode.PUBLISHED,
         updatedBy: SessionGetEmployeeId()
       }
       confirmAction({title: "Publish Training Request", text: "Are you sure you want to publish this training request?", confirmButtonText: "Publish",
         onConfirm: ()=>{
           handleResponseAsync(
-            ()=>trainingRequestService.approveTrainingRequest(newData),
+            ()=>trainingRequestService.updateTrainingRequest(newData),
             (e)=>actionSuccessful("Training request published successfully",e.message),
-            (error)=>console.error("Error publishing training request: ", error)
+            (error)=>console.error("Error publishing training request: ", error),
+            ()=>navigate(`KEP_TMS/Training/${data?.id}`)
           )
         }
       })

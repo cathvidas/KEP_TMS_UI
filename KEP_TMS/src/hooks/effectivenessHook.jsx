@@ -45,7 +45,7 @@ const effectivenessHook = {
     });
     return { data, error, loading };
   },
-  useApproverAssignedEffectiness: (approverId) => {
+  useApproverAssignedEffectiveness: (approverId) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);

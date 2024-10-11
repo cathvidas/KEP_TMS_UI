@@ -51,7 +51,7 @@ const ApproverAction = ({ reqId, onFinish, hasView = false }) => {
             confirmButtonText: "Approve",
             cancelButtonText: "No",
             onConfirm: handleApproveRequest,
-            param: { id: reqId, statusId: statusCode.FORAPPROVAL },
+            param: { id: reqId, statusId: statusCode.APPROVED },
           })
         }
         size="small"

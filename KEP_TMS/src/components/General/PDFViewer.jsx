@@ -1,41 +1,30 @@
-// import React, { useEffect, useRef } from 'react';
-// import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf';
+import proptype from "prop-types";
+import { useEffect, useState } from "react";
+import { Modal } from "react-bootstrap";
 
-// // Set the workerSrc to pdf.worker.js
-// GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.7.76/pdf.worker.min.js`;
-
-// const PDFViewer = ({ pdfUrl }) => {
-//   const canvasRef = useRef(null);
-
-//   useEffect(() => {
-//     const loadPDF = async () => {
-//       const loadingTask = getDocument(pdfUrl);
-//       const pdf = await loadingTask.promise;
-
-//       // Fetch the first page
-//       const page = await pdf.getPage(1);
-
-//       const scale = 1.5; // Scale to make the PDF more visible
-//       const viewport = page.getViewport({ scale });
-
-//       // Set canvas dimensions
-//       const canvas = canvasRef.current;
-//       const context = canvas.getContext('2d');
-//       canvas.height = viewport.height;
-//       canvas.width = viewport.width;
-
-//       // Render PDF page into canvas context
-//       const renderContext = {
-//         canvasContext: context,
-//         viewport: viewport,
-//       };
-//       await page.render(renderContext).promise;
-//     };
-
-//     loadPDF().catch(console.error); // Catch errors
-//   }, [pdfUrl]);
-
-//   return <canvas ref={canvasRef}></canvas>;
-// };
-
-// export default PDFViewer;
+const PDFViewer = ({ data, handleShow, handleClose }) => {
+  console.log(data)
+  const [file, setFile] = useState(data)
+  useEffect(()=>{
+    setFile(data)
+  },[data])
+  return (
+    <Modal show={handleShow} fullscreen onHide={()=>handleClose(false)}>
+    <Modal.Header closeButton>
+      <Modal.Title className="theme-color h6">{file?.fileName}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body className="p-0">
+      
+  <iframe src={file?.url} className="w-100 vh-100" ></iframe>
+    </Modal.Body>
+  </Modal>
+  )
+  
+};
+PDFViewer.propTypes = {
+  url: proptype.string,
+  data: proptype.object,
+  handleShow: proptype.bool,
+  handleClose: proptype.func,
+};
+export default PDFViewer;

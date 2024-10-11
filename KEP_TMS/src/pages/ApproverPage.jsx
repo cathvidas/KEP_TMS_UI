@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import Layout from "../components/General/Layout";
 import ForApprovalRequest from "./ApproverPageSection/ForApprovalRequest";
 import ForApprovaleffectiveness from "./ApproverPageSection/ForApprovalEffectiveness";
+import commonHook from "../hooks/commonHook";
+import { SessionGetEmployeeId } from "../services/sessions";
 
 const ApproverPage = () => {
   const { type, page } = useParams();
@@ -14,6 +16,10 @@ const ApproverPage = () => {
     <ForApprovalRequest key={0} />,
     <ForApprovaleffectiveness key={1} />,
   ];
+  const {data, error, loading} = commonHook.useAllAssignedForApproval(
+    SessionGetEmployeeId()
+  );
+  console.log(data);
   const items = [
     {
       label: "For Approval",
@@ -24,6 +30,7 @@ const ApproverPage = () => {
           command: () => navigate(`/KEP_TMS/List/ForApproval/Requests`),
           template: MenuItemTemplate,
           active: currentContent === 0 ? true : false,
+          badge: data?.requests?.length > 0 ?{value: data?.requests?.length}:false
         },
         {
           label: "Effectiveness",
@@ -31,6 +38,7 @@ const ApproverPage = () => {
           command: () => navigate(`/KEP_TMS/List/ForApproval/Effectiveness`),
           template: MenuItemTemplate,
           active: currentContent === 1 ? true : false,
+          badge: data?.effectiveness?.length > 0 ?{value: data?.requests?.length}:false
         },
         {
           label: "Report",
@@ -38,6 +46,7 @@ const ApproverPage = () => {
           command: () => navigate(`/KEP_TMS/List/ForApproval/Reports`),
           template: MenuItemTemplate,
           active: currentContent === 2 ? true : false,
+          badge: data?.reports?.length > 0 ?{value: data?.requests?.length}:false
         },
       ],
     },

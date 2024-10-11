@@ -3,7 +3,7 @@ import { SectionHeading } from "../../components/General/Section";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faNoteSticky } from "@fortawesome/free-solid-svg-icons";
 import EmptyState from "../../components/trainingRequestFormComponents/EmptyState";
-import { Col, Row } from "react-bootstrap";
+import { Col, Modal, ModalBody, Row } from "react-bootstrap";
 import { Button } from "primereact/button";
 import { ButtonGroup } from "primereact/buttongroup";
 import UploadModuleForm from "../../components/forms/UploadModuleForm";
@@ -11,14 +11,15 @@ import proptype from "prop-types";
 import SkeletonList from "../../components/Skeleton/SkeletonList";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import moduleService from "../../services/moduleService";
-// import PDFViewer from "../../components/General/PDFViewer";
+import PDFViewer from "../../components/General/PDFViewer";
 
 const ModuleSection = ({ data }) => {
   const [showForm, setShowForm] = useState(false);
   const [moduleList, setModuleList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [src, setSrc]= useState("");
+  const [selected, setSelected]= useState({});
+  const [showPDF, setShowPDF]= useState(false);
   useEffect(() => {
     refreshData();
   }, []);
@@ -33,7 +34,7 @@ const ModuleSection = ({ data }) => {
     };
     getRequest();
   };
-  console.log(src)
+  console.log(selected)
   return (
     <>
       <SectionHeading
@@ -106,7 +107,14 @@ const ModuleSection = ({ data }) => {
                               size="small"
                               icon="pi pi-link"
                               label={a?.fileName}
-                              onClick={()=>setSrc(`http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${a.id}`)}
+                              onClick={() =>{
+                                setSelected({
+                                  ...a,
+                                  url: `http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${a.id}`,
+                                });
+                                setShowPDF(true);
+                              }
+                              }
                             />
                           ))}
                         </div>
@@ -115,8 +123,7 @@ const ModuleSection = ({ data }) => {
                   );
                 })}
               </Row>
-              {/* <PDFViewer pdfUrl={src}/> */}
-              <iframe src={src} className="w-100 vh-100" ></iframe>
+              <PDFViewer data={selected} handleShow={showPDF} handleClose={setShowPDF}/>
             </>
           ) : (
             <>

@@ -26,7 +26,7 @@ const ExamSection = ({ data }) => {
   useEffect(() => {
     refreshData();
   }, [exams]);
-  
+  console.log(exams)
   const refreshData = () => {
     if(exams?.length > 0) {
       setExamList(exams);
@@ -187,6 +187,7 @@ const ExamSection = ({ data }) => {
                       />
                     
                   )}
+                  {isLocal &&
                   <div className="text-end p-3 border-top">
                     <Button
                       icon="pi pi-trash"
@@ -198,7 +199,7 @@ const ExamSection = ({ data }) => {
                     />
                     <Button
                       icon="pi pi-pen-to-square"
-                      label="Upload Exam"
+                      label={isLocal ?"Upload Exam": "Edit Questionnaire"}
                       className="rounded ms-2 py-1"
                       type="button"
                       onClick={uploadExam}
@@ -212,7 +213,7 @@ const ExamSection = ({ data }) => {
                       //   setExamTitle(item.title);
                       // }}
                     />
-                  </div>
+                  </div>}
                 </div>
               );
             })

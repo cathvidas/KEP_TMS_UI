@@ -16,6 +16,7 @@ import StatusColor from "../../components/General/StatusColor";
 import { mapForApprovalRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
 import ApproverAction from "../../components/tableComponents/ApproverAction";
+import CommonTable from "../../components/General/CommonTable";
 
 const ForApprovalRequest = () => {
   const [request, setRequest] = useState([]);
@@ -28,7 +29,6 @@ const ForApprovalRequest = () => {
         const updated = await Promise.all(
           mappedData.map(async (x) => {
             const user = await getUserApi(x.requestorId);
-            // const approver = await getUserApi(x.currentApprover);
             return { ...x, requestorName: user.data.fullname };
           })
         );
@@ -40,15 +40,6 @@ const ForApprovalRequest = () => {
     getRequest();
   }, [trigger]);
 
-  const dateStartTemplate = (rowData) => {
-    return <div>{formatDateOnly(rowData.startDate)}</div>;
-  };
-  const dateEndTemplate = (rowData) => {
-    return <div>{formatDateOnly(rowData.startDate)}</div>;
-  };
-  const totalFeeTemplate = (rowData) => {
-    return <div>{formatCurrency(rowData.totalFee)}</div>;
-  };
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -67,6 +58,67 @@ const ForApprovalRequest = () => {
   const exportCSV = (selectionOnly) => {
     datatable.current.exportCSV({ selectionOnly });
   };
+  
+  const actionTemplate = (data) => {
+    return (
+       <ApproverAction reqId={data.id} onFinish={refreshData} hasView/>
+    );
+  };
+  const columnItems = [
+    {
+      field: "id",
+      header: "Id",
+    },
+    {
+      field: "requestorName",
+      header: "Requestor",
+    },
+    {
+      field: "requestorId",
+      header: "Badge No",
+    },
+    {
+      field: "program",
+      header: "Program",
+    },
+    {
+      field: "category",
+      header: "Category",
+    },
+    {
+      field: "provider",
+      header: "Provider",
+    },
+    {
+      field: "venue",
+      header: "Venue",
+    },
+    {
+      field: "startDate",
+      header: "Start Date",
+      body: (rowData) => <>{formatDateOnly(rowData.startDate)}</>
+    },
+    {
+      field: "endDate",
+      header: "End Date",
+      body: (rowData) => <>{formatDateOnly(rowData.endDate)}</>
+    },
+    {
+      field: "endDate",
+      header: "Total Fee",
+      body: (rowData) => <>{formatCurrency(rowData.totalFee)}</>
+    },
+    {
+      field: "endDate",
+      header: "Total Fee",
+      body: (rowData) => <>{StatusColor({status: rowData.status,showStatus:true})}</>
+    },
+    {
+      field: "",
+      header: "Action",
+       body: actionTemplate
+    },
+  ];
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2  align-items-center">
@@ -94,11 +146,6 @@ const ForApprovalRequest = () => {
       setTrigger(trigger+1)
     }, 2000);
   }
-  const actionTemplate = (data) => {
-    return (
-       <ApproverAction reqId={data.id} onFinish={refreshData} hasView/>
-    );
-  };
   const header = renderHeader();
 
   return (
@@ -107,48 +154,7 @@ const ForApprovalRequest = () => {
       title="For Approvals"
       subtitle="List of Trainings waiting for Approval"
     />
-    <DataTable
-      ref={datatable}
-      header={header}
-      value={request}
-      stripedRows
-      size="small"
-      tableStyle={{ minWidth: "50rem" }}
-      paginator
-      rows={10}
-      rowsPerPageOptions={[5, 10, 25, 50]}
-      dataKey="id"
-      filters={filters}
-      emptyMessage="No data found."
-      sortMode="multiple"
-    >
-      <Column field="id" header="Id"></Column>
-      <Column field="requestorName" header="Requestor"></Column>
-      <Column field="requestorId" header="Badge No"></Column>
-      <Column field="program" header="Program Name"></Column>
-      <Column field="category" header="Category"></Column>
-      <Column field="provider" header="Provider"></Column>
-      <Column field="venue" header="Venue"></Column>
-      <Column
-        field="startDate"
-        header="Start Date"
-        body={dateStartTemplate}
-      ></Column>
-      <Column
-        field="endDate"
-        header="End Date"
-        body={dateEndTemplate}
-      ></Column>
-      <Column header="Total Fee" body={totalFeeTemplate}></Column>
-      <Column
-        field="status"
-        header="Current Status"
-        body={(rowData) => {
-          return StatusColor({status: rowData.status,showStatus:true});
-        }}
-      ></Column>
-      <Column field="id" header="Action" body={actionTemplate}></Column>
-    </DataTable>
+    <CommonTable dataTable={request} columnItems={columnItems} tableName="Training Requests"/>
   </div>
   );
 };

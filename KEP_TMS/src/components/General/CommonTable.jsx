@@ -11,7 +11,8 @@ import { InputText } from "primereact/inputtext";
 const CommonTable = ({
   dataTable,
   columnItems,
-  tableName
+  tableName,
+  header
 }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -50,7 +51,8 @@ const CommonTable = ({
         {dataTable?.length > 0 ?
         <DataTable
           // ref={dt}
-          header={renderHeader}
+
+          header={header??renderHeader}
           filters={filters}
           value={dataTable}
           size="small"

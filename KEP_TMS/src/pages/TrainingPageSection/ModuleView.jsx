@@ -8,14 +8,13 @@ import { Button } from "primereact/button";
 import SkeletonList from "../../components/Skeleton/SkeletonList";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import PDFViewer from "../../components/General/PDFViewer";
 const ModuleView = ({reqId})=>{
     const [fileSrc, setFileSrc] = useState(null)
     const navigate = useNavigate();
     const {  modules, error, loading} = moduleHook.useModulesByRequestId(reqId)
-    console.log(modules)
-    const getFileAttachment = (id)=>{
-setFileSrc(`http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${id}`)
-    }
+  const [selected, setSelected]= useState({});
+  const [showPDF, setShowPDF]= useState(false);
     return (
       <>
         {loading ? (
@@ -41,18 +40,17 @@ setFileSrc(`http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${id
                             text
                             label={file.fileName}
                             className="rounded py-1"
-                            onClick={()=>getFileAttachment(file.id)}
+                            onClick={() =>{
+                              setSelected({
+                                ...file,
+                                url: `http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${file.id}`,
+                              });
+                              setShowPDF(true);
+                            }}
                           />
                         );
                       })}
 
-                      <Button
-                        type="button"
-                        icon="pi pi-link"
-                        text
-                        label="FileName"
-                        className="rounded py-1"
-                      />
                     </div>
                   </AccordionTab>
                 );
@@ -60,16 +58,8 @@ setFileSrc(`http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${id
             </Accordion>
           </>
         )}
-        <div>
-          <iframe
-            src={fileSrc}
-            style={{
-                frameBorder:"0",
-                scrolling:"auto",
-                height:"100vh",
-                width:"100%"}}
-          ></iframe>
-        </div>
+        
+        <PDFViewer data={selected} handleShow={showPDF} handleClose={setShowPDF}/>
       </>
     ); 
 }

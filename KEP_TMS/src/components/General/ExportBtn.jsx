@@ -9,6 +9,13 @@ function ExportBtn({ data }) {
   const handleDownload = (e) => {
     e.preventDefault();
   
+    const mapFacilitator = (dataList) => {
+      let facilitators = "";
+      dataList?.map((x, i) => {
+        facilitators += `(${i+1}) ${x?.fullname} `;
+      });
+      return facilitators;
+    };
     const requestData = data.map((dataItem) => ({
       RequestID: dataItem.id,
       RequestorBadge: dataItem.requestorBadge,
@@ -17,13 +24,13 @@ function ExportBtn({ data }) {
       Program: dataItem.trainingProgram.name,
       Category: dataItem.trainingCategory.name,
       Provider: dataItem.trainingProvider.name,
-      Venue: dataItem.transactiontypename,
+      Venue: dataItem?.venue,
       StartDate: dataItem.trainingStartDate,
       EndDate: dataItem.trainingEndDate,
       TotalTrainingFee: dataItem.totalTrainingFee,
       TrainingHours: dataItem.durationInHours,
       TotalTrainingParticipants: dataItem.totalParticipants,
-      TrainingFacilitators: dataItem.trainingFacilitators.map((facilitator) => facilitator.facilitatorBadge).join(", "),
+      TrainingFacilitators: mapFacilitator(dataItem.trainingFacilitators),
     }));
   
     const csvRequestHeaders = [
@@ -45,7 +52,15 @@ function ExportBtn({ data }) {
   
     const csvContent = [
       csvRequestHeaders.join(","),
-      ...requestData.map((row) => Object.values(row).join(",")),
+      ...requestData.map((row) => Object.values(row)
+      .map((value) => {
+        if (typeof value === "string") {
+          return `"${value.replace(/"/g, '""')}"`;
+        } else {
+          return `"${value}"`;
+        }
+      })
+      .join(","))
     ].join("\n");
   
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });

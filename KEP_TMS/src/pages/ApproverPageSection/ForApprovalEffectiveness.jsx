@@ -13,7 +13,7 @@ import effectivenessService from "../../services/effectivenessService";
 import { ActivityType } from "../../api/constants";
 
 const ForApprovaleffectiveness = ()=>{
-    const {data, error, loading} = effectivenessHook.useApproverAssignedEffectiness(SessionGetEmployeeId());
+    const {data, error, loading} = effectivenessHook.useApproverAssignedEffectiveness(SessionGetEmployeeId());
     console.log(data)
     const actionTemplate = (rowData)=><>
     <div className="d-flex"> 
@@ -47,11 +47,6 @@ const ForApprovaleffectiveness = ()=>{
     header: "Request Id",
     body: (rowData)=><>{rowData?.trainingEffectiveness?.trainingRequest?.id}</>
   },
-//   {
-//     field: "",
-//     header: "Created",
-//     body: (rowData)=><>{rowData?.trainingEffectiveness?.trainingProgram?.name}</>
-//   },
    {
     field: "name",
     header: "Created By",

@@ -8,6 +8,7 @@ import { Card, Col, Row } from "react-bootstrap";
 import trainingRequestHook from "../hooks/trainingRequestHook";
 import { useNavigate } from "react-router-dom";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
+import commonHook from "../hooks/commonHook";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -16,19 +17,18 @@ const Dashboard = () => {
     SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin"
       ? trainingRequestHook.useStatusCount()
       : trainingRequestHook.useStatusCount(SessionGetEmployeeId());
-  const approval = trainingRequestHook.useAssignedApprovalTrainingRequest(
+  const approval = commonHook.useAllAssignedForApproval(
     SessionGetEmployeeId()
   );
-   console.log(approval);
 
   const values = [
-    ...(approval?.data?.length > 0
+    ...(approval?.data?.overallCount > 0
       ? [
           {
             label: "For Approval",
             color1: "#ff6b6b",
             color2: "#ff6b6b",
-            value: approval?.data?.length,
+            value: approval?.data?.overallCount,
             icon: "pi pi-user-edit",
             status: "Approver",
           },
