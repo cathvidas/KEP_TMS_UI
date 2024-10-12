@@ -44,10 +44,11 @@ export const UserList = ({
     const effec = effectivenessHook.useEffectivenessById(
       rowData.effectivenessId
     );
+    console.log(effec)
     return (
       <>
         {StatusColor({
-          status: effec?.data?.data?.statusName ?? "Pending",
+          status: effec?.data?.statusName ?? "Pending",
           showStatus: true,
         })}
       </>
@@ -82,7 +83,10 @@ export const UserList = ({
             <Column field="position" header="Position" sortable={sortable}></Column>
             <Column field="departmentName" header="Department" sortable={sortable}></Column>
             {allowEffectiveness && 
-            <Column field="effectivenessId" header="Effectiveness Report" body={effectivenessTemplate} sortable={sortable}></Column>}
+            <Column field="effectivenessId" header="Effectiveness Report" body={effectivenessTemplate} sortable={sortable}></Column>
+            }
+            {allowEffectiveness && 
+            <Column field="superiorName" header="Approver" sortable={sortable}></Column>}
             {trailingElement?.action === true && (
               <Column
                 headerStyle={{ width: "10%", minWidth: "8rem" }}

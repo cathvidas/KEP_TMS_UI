@@ -23,7 +23,7 @@ const effectivenessService = {
   },
   getApproverAssignedEffectiveness: async (id) => {
     const response = await getApproverAssignedEffectivenessApi(id);
-    return response.status === 1 ? response?.data : [];
+    return response;
   },
   approveTrainingEffectiveness: async (data)=>{
     const response = await approveTrainingFormApi(data);

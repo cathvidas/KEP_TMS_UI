@@ -20,10 +20,12 @@ const TrainingPage = () => {
   const { data, error, loading } = trainingRequestHooks.useTrainingRequest(
     parseInt(id)
   );
+  console.log(data)
   const isFacilitator = data?.trainingFacilitators?.some(item=> item?.employeeBadge === SessionGetEmployeeId())
+  const isAdmin = SessionGetRole() ==="Admin" || SessionGetRole() ==="SuperAdmin" ? true : false;
   const [currentContent, setCurrentContent] = useState(0);
   const pageContent = [
-      <OverviewSection key={0} data={data} showParticipants={isFacilitator} />,
+      <OverviewSection key={0} data={data} showParticipants={isFacilitator === true ? isFacilitator : isAdmin} showFacilitators={isAdmin} showApprovers={isAdmin}/>,
       <ModuleView key={1} reqId={data.id} />,
       <ExamView key={2}/>,
       <ParticipantsView key={3} data={data?.trainingParticipants} />,
@@ -66,8 +68,8 @@ const TrainingPage = () => {
           command: () => navigate(`/KEP_TMS/Training/${id}/Participants`),
           template: MenuItemTemplate,
           active: currentContent === 3 ? true : false,
-          disable:
-            SessionGetEmployeeId() !== data.requestorBadge ? true : false,
+          disable: isAdmin ||
+          SessionGetEmployeeId() === data.requestorBadge ? false : true,
         },
         {
           label: "Reports",

@@ -11,13 +11,26 @@ import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import effectivenessService from "../../services/effectivenessService";
 import { ActivityType } from "../../api/constants";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Modal } from "react-bootstrap";
+import EffectivenessForm from "../../components/forms/EffectivenessForm";
+import trainingRequestHook from "../../hooks/trainingRequestHook";
+import userHook from "../../hooks/userHook";
 
 const ForApprovaleffectiveness = ()=>{
     const {data, error, loading} = effectivenessHook.useApproverAssignedEffectiveness(SessionGetEmployeeId());
-    console.log(data)
+    const navigate = useNavigate()
+    const [showModal, setShowModal] = useState(false);
+    const [effectivenessId, setEffectivenessId] = useState(0);
+    const [selectedData, setSElectedData] = useState({});
+    const requestData = trainingRequestHook.useTrainingRequest(selectedData?.trainingEffectiveness?.trainingRequest?.id);
+    const userData = userHook.useUserById(selectedData?.trainingEffectiveness?.employeeBadge);
     const actionTemplate = (rowData)=><>
     <div className="d-flex"> 
-    <Button type="button" size="small" text icon="pi pi-eye" severity="success"  className="rounded-circle" />
+    <Button type="button" size="small" text icon="pi pi-eye" severity="success"  className="rounded-circle" onClick={()=>{setSElectedData(rowData);
+      setShowModal(true)
+    }}/>
     <Button type="button" size="small" text icon="pi pi-thumbs-up"  className="rounded-circle" onClick={()=>approveEffectiveness(rowData?.trainingEffectiveness?.id,true)}/>
     <Button type="button" size="small" text icon="pi pi-thumbs-down" severity="danger" className="rounded-circle" onClick={()=>approveEffectiveness(rowData?.trainingEffectiveness?.id,false)}/>
     {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
@@ -42,6 +55,7 @@ const ForApprovaleffectiveness = ()=>{
         }
      })
       };
+      console.log(requestData)
   const columnItems = [{
     field: "id",
     header: "Request Id",
@@ -73,6 +87,20 @@ const ForApprovaleffectiveness = ()=>{
             title="Programs"
             columnItems={columnItems}
           />
+          <Modal show={showModal} onHide={()=>setShowModal(false)} fullscreen>
+            <Modal.Header closeButton>
+              <Modal.Title>Training Effectiveness Details</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {selectedData?.loading? "Loading..." : <EffectivenessForm userData={userData?.data} data={requestData?.data} formData={selectedData?.trainingEffectiveness
+}/>}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={()=>setEffectivenessId(0)}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
   </div>
   );
 }

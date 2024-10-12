@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import getStatusCode from "../utils/status/getStatusCode";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
+import getStatusById from "../utils/status/getStatusById";
+import { statusCode } from "../api/constants";
 const RequestList = () => {
   const { type } = useParams();
   const { data, error, loading } =
@@ -19,17 +21,23 @@ const RequestList = () => {
     label: type,
     value: getStatusCode(type),
   });
-  console.log(data)
   useEffect(() => {
     if (filter?.value) {
-      const updatedList = data.filter(
-        (request) => request?.status?.id === filter.value
-      );
-      setRequests(updatedList);
+      if(filter.label === "Pending"){
+        const updatedList = data.filter(
+          (request) => request?.status?.id === statusCode.FORAPPROVAL || request?.status?.id === statusCode.SUBMITTED
+        );
+        setRequests(updatedList);
+      }else{
+        const updatedList = data.filter(
+          (request) => request?.status?.id === filter.value
+        );
+        setRequests(updatedList);}
     } else {
       setRequests(data);
     }
   }, [filter.value, type, data]);
+  console.log(type)
   const Content = () => (
     <>
       <div className="p-3">

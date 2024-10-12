@@ -27,12 +27,12 @@ const commonHook ={
         const [data, setData] = useState({});
         const [error, setError] = useState(null);
         const [loading, setLoading] = useState(true);
+        console.log(id)
         useEffect(()=>{
             const fetchData = async () => {
               try {
                 const requests =
                   await trainingRequestService.getTrainingRequestByApprover(id);
-                  console.log(requests)
                 const effectiveness =
                   await effectivenessService.getApproverAssignedEffectiveness(
                     id

@@ -20,7 +20,7 @@ const countStatus = (data, userRequest) => {
     // if()
     if (item?.status?.id === statusCode.APPROVED) {
       count.approved++;
-    } else if (item.status.id === statusCode.FORAPPROVAL) {
+    } else if (item.status.id === statusCode.FORAPPROVAL || item.status.id === statusCode.SUBMITTED) {
       count.pending++;
     } else if (item.status.id === statusCode.CLOSED) {
       count.closed++;

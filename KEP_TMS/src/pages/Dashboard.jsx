@@ -61,7 +61,7 @@ const Dashboard = () => {
       color2: "#fbbf24",
       value: data.pending,
       icon: "pi pi-list-check",
-      status: "ForApproval",
+      status: "Pending",
     },
     {
       label: "Approved Request",
