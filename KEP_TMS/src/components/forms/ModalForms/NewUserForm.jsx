@@ -10,10 +10,12 @@ import { actionFailed, actionSuccessful, confirmAction } from "../../../services
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import userService from "../../../services/userService";
 import { SessionGetEmployeeId } from "../../../services/sessions";
+import { useNavigate } from "react-router-dom";
 const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false, headerTitle})=>{
     const [formData, setFormData] = useState(userConstant);
     const [showPass, setShowPass] = useState(false);
     const [error, setError] = useState({});
+    const navigate= useNavigate()
     const handleOnChange = (e)=>{
         const {name, value} = e.target;
         setFormData((prev)=>({...prev, [name]: value}))
@@ -42,7 +44,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                         ()=>isUpdate? userService.updateUser(newFormData) : userService.createUser(newFormData),
                         () => actionSuccessful("Success!", isUpdate ? "User updated successfully": "User created successfully"),
                         (e) => actionFailed("Error!", e.message),
-                        ()=>closeForm()
+                        ()=>window.location.reload()
                     )
             })
         }
@@ -59,8 +61,11 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
               <FormFieldItem
                 label="badge no"
                 col="col-lg-4 col-sm-6"
+                error={error?.employeeBadge}
+                required
                 FieldComponent={
                   <Form.Control
+                  disabled={isUpdate}
                     placeholder="Badge No"
                     value={formData.employeeBadge}
                     name="employeeBadge"
@@ -71,6 +76,8 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
               <FormFieldItem
                 label="First Name"
                 col="col-lg-4 col-sm-6"
+                error={error?.firstname}
+                required
                 FieldComponent={
                   <Form.Control
                     placeholder="First Name"
@@ -81,7 +88,9 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                 }
               />
               <FormFieldItem
+                error={error?.lastname}
                 label="last Name"
+                required
                 col="col-lg-4 col-sm-6"
                 FieldComponent={
                   <Form.Control
@@ -93,6 +102,8 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                 }
               />
               <FormFieldItem
+              required
+                error={error?.username}
                 label="userName"
                 col="col-lg-4 col-sm-6"
                 FieldComponent={
@@ -105,6 +116,8 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                 }
               />
               <FormFieldItem
+              required
+              error={error?.email}
                 label="email"
                 col="col-lg-4 col-sm-6"
                 FieldComponent={
@@ -117,8 +130,10 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                 }
               />
               <FormFieldItem
+              required
                 label="Superior"
                 col="col-lg-4 col-sm-6"
+                error={error?.superiorBadge}
                 FieldComponent={
                   <Select
                     isLoading={options?.loading}
@@ -136,6 +151,8 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                 }
               />
               <FormFieldItem
+              required
+              error={error?.departmentId}
                 label="Department"
                 col="col-lg-4 col-sm-6"
                 FieldComponent={
@@ -155,32 +172,46 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                 }
               />
               <FormFieldItem
+              required
+              error={error?.positionId}
                 label="Position"
                 col="col-lg-4 col-sm-6"
                 FieldComponent={
-                  <Select
-                  //   options={options.categories}
-                  //   value={options.categories.filter(
-                  //     (x) => x.value === details.trainingCategory?.id
-                  //   )}
-                  //   onChange={(e) => handleOnChange("trainingCategory", {id:e.value, name:e.label})}
-                  />
+                    <Select
+                      isLoading={options?.positions}
+                      options={options?.options?.positions}
+                      value={
+                        !options?.loading &&
+                        options?.options?.positions?.filter(
+                          (x) => x.value === formData?.positionId
+                        )
+                      }
+                      onChange={(e) => handleSelectOnChange("positionId", e.value)}
+                    />
                 }
               />
               <FormFieldItem
+              required
+              error={error?.employeeTypeId}
                 label="Employee Type"
                 col="col-lg-4 col-sm-6"
                 FieldComponent={
                   <Select
-                  //   options={options.categories}
-                  //   value={options.categories.filter(
-                  //     (x) => x.value === details.trainingCategory?.id
-                  //   )}
-                  //   onChange={(e) => handleOnChange("trainingCategory", {id:e.value, name:e.label})}
+                  isLoading={options?.loading}
+                  options={options?.options?.empTypes}
+                  value={
+                    !options?.loading &&
+                    options?.options?.empTypes?.filter(
+                      (x) => x.value === formData?.employeeTypeId
+                    )
+                  }
+                  onChange={(e) => handleSelectOnChange("employeeTypeId", e.value)}
                   />
                 }
               />
               <FormFieldItem
+              required
+              error={error?.roleId}
                 label="Role"
                 col="col-lg-4 col-sm-6"
                 FieldComponent={
@@ -198,6 +229,8 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                 }
               />
               <FormFieldItem
+              required
+              error={error?.password}
                 label="Password"
                 col="col-lg-4 col-sm-6"
                 FieldComponent={

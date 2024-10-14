@@ -4,16 +4,16 @@ import proptype from "prop-types"
 import { FormFieldItem } from "../../trainingRequestFormComponents/FormElements";
 import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
+import { UserTypeValue } from "../../../api/constants";
+import mapUserUpdateDetail from "../../../services/DataMapping/mapUserUpdateDetails";
 import { actionFailed, actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import userService from "../../../services/userService";
-import { UserTypeValue } from "../../../api/constants";
-import { useNavigate } from "react-router-dom";
-const AddUserForm = ({showForm, closeForm, userType, data, userRoles})=>{
+import { SessionGetEmployeeId } from "../../../services/sessions";
+const AddUserForm = ({showForm, closeForm, userType, data, userRoles, optionList})=>{
     const [selectedUser, setSelectedUser] = useState({label:"", value:""})
     const [options, setOptions] = useState([]);
     const [error, setError] = useState("");
-    const navigate = useNavigate();
     useEffect(() => {
      const mappedData = data?.map((user) => (
        { label: user?.fullname, value: user?.employeeBadge })
@@ -25,11 +25,10 @@ const AddUserForm = ({showForm, closeForm, userType, data, userRoles})=>{
       const userData = data?.filter(
         (user) => user.employeeBadge === selectedUser.value
       )?.[0];
-      const roleId = userRoles?.filter((role) => role?.name === userType)?.[0]
-        ?.id;
-        console.log(isValid, userData, roleId);
+      const roleId = userRoles?.filter((role) => role?.label === userType)?.[0]
+        ?.value;
       if (isValid && userData && roleId) {
-        const newData = { ...userData, roleId: roleId };
+        const newData = { ...mapUserUpdateDetail(userData, optionList), roleId: roleId, updatedBy: SessionGetEmployeeId() };
         console.log(newData)
         confirmAction({
           onConfirm: () => {
@@ -37,10 +36,7 @@ const AddUserForm = ({showForm, closeForm, userType, data, userRoles})=>{
               () => userService.updateUser(newData),
               (e) => actionSuccessful("Success!", e.message),
               (e) => actionFailed("Error!", e.message),
-              () => {
-                closeForm();
-                navigate();
-              }
+              () =>window.location.reload()
             );
           },
         });
@@ -96,6 +92,7 @@ AddUserForm.propTypes = {
     closeForm: proptype.func, 
     userType: proptype.string,
     data: proptype.array,
-    userRoles: proptype.array 
+    userRoles: proptype.array,
+    optionList: proptype.array
 }
 export default AddUserForm;

@@ -10,3 +10,9 @@ export const getAllDepartmentsApi = async()=>{
 export const getAllRolesApi = async()=>{
     return await fetchFromApi(`Comboboxes/GetRoles`);
 }
+export const getAllPositionsApi = async()=>{
+    return await fetchFromApi(`Comboboxes/GetPositions`);
+}
+export const getAllEmployeeTypesApi = async()=>{
+    return await fetchFromApi(`Comboboxes/GetEmployeeTypes`);
+}

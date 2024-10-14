@@ -23,6 +23,7 @@ const TrainingPage = () => {
   console.log(data)
   const isFacilitator = data?.trainingFacilitators?.some(item=> item?.employeeBadge === SessionGetEmployeeId())
   const isAdmin = SessionGetRole() ==="Admin" || SessionGetRole() ==="SuperAdmin" ? true : false;
+  const isTrainee = data?.trainingParticipants?.some(user=>user.employeeBadge === SessionGetEmployeeId())
   const [currentContent, setCurrentContent] = useState(0);
   const pageContent = [
       <OverviewSection key={0} data={data} showParticipants={isFacilitator === true ? isFacilitator : isAdmin} showFacilitators={isAdmin} showApprovers={isAdmin}/>,
@@ -78,6 +79,7 @@ const TrainingPage = () => {
           template: MenuItemTemplate,
           active: currentContent === 4 ? true : false,
           notifBadge: data?.status?.id === statusCode.SUBMITTED ? true : false,   
+          disable: !isTrainee
         },
       ],
     },

@@ -41,6 +41,10 @@ const validateUserDetails = (data)=>{
         errors.employeeTypeId = "Employee Type is required";
         isValid = false;
     }
+    if(!data?.superiorBadge){
+        errors.superiorBadge = "This field is required";
+        isValid = false;
+    }
     if(data?.roleId === 0){
         errors.roleId = "User Type is required";
         isValid = false;

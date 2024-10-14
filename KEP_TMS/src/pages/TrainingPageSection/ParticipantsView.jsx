@@ -22,8 +22,7 @@ const ParticipantsView = ({ data }) => {
       <UserList
         userlist={data}
         handleParticipants={""}
-        trailingElement={{ action: true }}
-        allowEffectiveness
+        // trailingElement={{ action: true }}
         scrollHeight={"100%"}
         sortable
       />

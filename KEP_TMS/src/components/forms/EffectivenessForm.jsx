@@ -49,7 +49,7 @@ const EffectivenessForm = ({ data, userData, formData , onFinish}) => {
     return facilitators;
   };
   const getFormData = {
-    employeeBadge: userData?.employeeBadge,
+    employeeBadge: SessionGetEmployeeId(),
     trainingProgramId: data?.trainingProgram?.id,
     trainingTypeId: data?.trainingType?.id,
     totalTrainingHours: data?.durationInHours,
@@ -330,7 +330,7 @@ const EffectivenessForm = ({ data, userData, formData , onFinish}) => {
           <Form.Group>
             <b>
               II. List the Projects/Task/Assignment the trainee is currently
-              undertaking or will be undertaking whre the Knowledge and skills
+              undertaking or will be undertaking where the Knowledge and skills
               developed from training will be applied.
             </b>
             <Row>

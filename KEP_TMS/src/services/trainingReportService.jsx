@@ -24,7 +24,7 @@ const trainingReportService = {
   },
   getApproverAssignedReports: async (id) => {
     const response = await getApproverAssignedReportsApi(id);
-    return response?.status === 1? response?.data: [];
+    return response;
   },
   approveTrainingReport: async (data)=>{
     const response = await approveTrainingFormApi(data);

@@ -4,7 +4,7 @@ import AutoCompleteField from "./common/AutoCompleteField";
 import proptype from "prop-types";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import trainingreportConstant from "../../services/constants/trainingReportConstant";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import {
   actionFailed,
@@ -16,7 +16,7 @@ import trainingReportService from "../../services/trainingReportService";
 import ErrorTemplate from "../General/ErrorTemplate";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 
-const TrainingReportForm = ({ data, userData , onFinish}) => {
+const TrainingReportForm = ({ data, userData , onFinish, defaultValue}) => {
   const [formData, setFormData] = useState(trainingreportConstant);
   const [errors, setErrors] = useState({});
   const getFormData = {
@@ -25,11 +25,16 @@ const TrainingReportForm = ({ data, userData , onFinish}) => {
     traineeBadge: SessionGetEmployeeId(),
     createdBy: SessionGetEmployeeId(),
   };
-  console.log(getFormData);
+  console.log(userData);
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  useEffect(()=>{
+    if(defaultValue){
+      setFormData({...defaultValue});
+    }
+  }, [defaultValue])
   const handleSubmit = () => {
     const isValid = validateForm();
     if (isValid) {

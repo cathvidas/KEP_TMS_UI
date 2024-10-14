@@ -47,7 +47,6 @@ const TraineeReportView = ({ data }) => {
       </div>
     );
   };  
-  console.log(data)
   const handleOnFinish =()=>{
     navigate(`/KEP_TMS/Training/${data?.id}/Reports`)
   }

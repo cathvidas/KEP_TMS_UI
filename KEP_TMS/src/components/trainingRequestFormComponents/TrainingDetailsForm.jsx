@@ -52,7 +52,7 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, programs, categ
         <FormFieldItem
           required
           error={errors?.trainingProgramId}
-          col="col-6"
+          col="col-md-6"
           label={"Program"}
           FieldComponent={
             <Select
@@ -69,7 +69,7 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, programs, categ
         <FormFieldItem
           required
           error={errors?.categoryId}
-          col="col-6"
+          col="col-md-6"
           label={"Category"}
           FieldComponent={
             <Select

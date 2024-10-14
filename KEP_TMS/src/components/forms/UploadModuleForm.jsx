@@ -3,7 +3,7 @@ import { FormFieldItem } from "../trainingRequestFormComponents/FormElements";
 import { Button } from "primereact/button";
 import { useEffect, useState } from "react";
 import proptype from "prop-types";
-import { confirmAction } from "../../services/sweetalert";
+import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import moduleService from "../../services/moduleService";
 import { SessionGetEmployeeId } from "../../services/sessions";
@@ -58,22 +58,23 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
     updatedFiles.splice(index, 1);
     setFiles(updatedFiles);
   };
-  console.log(errors)
   const handleSubmit = () => {
     const validate = validateForm();
-    console.log(validate)
     if(validate){
       const data = new FormData();
       for (let i = 0; i < files.length; i++) {
-        data.append('Files', files[i]); // 'files' is the key for each file (server must handle this as array)
+        data.append("Files", files[i]); // 'files' is the key for each file (server must handle this as array)
       }
       // data.append('Files', files); // Append the file
-      data.append("RequestId", reqId)
-      data.append('Name', details.Name); // Append other fields
-      data.append('Description', details.Description);
-      data.append('CreatedBy', SessionGetEmployeeId())
-      handleResponseAsync(()=>moduleService.createModule(data))
-      handleRefresh();
+      data.append("RequestId", reqId);
+      data.append("Name", details.Name); // Append other fields
+      data.append("Description", details.Description);
+      data.append("CreatedBy", SessionGetEmployeeId());
+      handleResponseAsync(() => moduleService.createModule(data),
+    (e)=> actionSuccessful("Success", e.message),
+    (e)=> actionSuccessful("Error", e.message),
+    ()=> handleRefresh(), 
+    )
     }
     
   };

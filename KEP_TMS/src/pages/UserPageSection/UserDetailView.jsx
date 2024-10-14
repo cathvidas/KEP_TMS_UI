@@ -49,6 +49,7 @@ const UserDetailView = ({id})=>{
                 <DetailItem label="Position" value={data?.position} />
                 <DetailItem label="Department" value={data?.departmentName} />
                 <DetailItem label="User Type" value={data?.roleName} />
+                <DetailItem label="Status" value={data?.statusName} />
                 <DetailItem label="Password" value={data?.password} />
               </Col>
               <Col className="border-start">

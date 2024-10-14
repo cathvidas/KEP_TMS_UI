@@ -30,9 +30,9 @@ const ModuleSection = ({ data }) => {
       handleResponseAsync(
         () => moduleService.getModulesByRequestId(data?.id),
         (e) => setModuleList(e),
-        (e) => setError(e)
+        (e) => setError(e),
+        ()=>setLoading(false)
       );
-      setLoading(false);
     };
     getRequest();
   };
@@ -50,7 +50,8 @@ const ModuleSection = ({ data }) => {
             <UploadModuleForm
               reqId={data?.id}
               setShowForm={() => setShowForm(false)}
-              handleRefresh={() => navigate(`/KEP_TMS/TrainingRequest/${data?.id}/Modules`)}
+              handleRefresh={() => window.location.reload()}
+              // handleRefresh={() => navigate(`/KEP_TMS/TrainingRequest/${data?.id}/Modules`)}
             />
           ) : moduleList?.length > 0 ? (
             <>

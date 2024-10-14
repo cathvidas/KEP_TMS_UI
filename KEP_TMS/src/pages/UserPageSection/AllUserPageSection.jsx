@@ -8,6 +8,11 @@ import { useEffect, useState } from "react";
 import AddUserForm from "../../components/forms/ModalForms/AddUserForm";
 import NewUserForm from "../../components/forms/ModalForms/NewUserForm";
 import mapUserUpdateDetail from "../../services/DataMapping/mapUserUpdateDetails";
+import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
+import handleResponseAsync from "../../services/handleResponseAsync";
+import userService from "../../services/userService";
+import { UserTypeValue } from "../../api/constants";
+import { SessionGetEmployeeId } from "../../services/sessions";
 
 const AllUserPageSection = ({userType, data, options, isFilter})=>{
     const [defaultValue, setDefaultValue] = useState({});
@@ -17,6 +22,7 @@ const AllUserPageSection = ({userType, data, options, isFilter})=>{
    const filterdata =()=>{
     return userType ? data?.filter(item=>  item.roleName === userType) : data
    }
+   console.log(defaultValue)
     const actionTemplate = (rowData) => (
       <>
         <Button
@@ -49,9 +55,30 @@ const AllUserPageSection = ({userType, data, options, isFilter})=>{
           icon="pi pi-trash"
           severity="danger"
           className="rounded-circle"
+          onClick={()=>handleRemoveUser(rowData)}
         />}
       </>
     );
+    const handleRemoveUser = (data)=>{
+        const roleId = options?.options?.roles?.filter(role=>role.label === UserTypeValue.TRAINEE)?.[0]?.value;
+        const newData = {...mapUserUpdateDetail(data, options?.options), roleId: roleId, updatedBy: SessionGetEmployeeId()}
+        console.log(newData)
+        confirmAction({
+            title: "Confirm Remove?",
+            text: `Are you sure you want to remove this user as ${userType}?`,
+            confirmButtonText: "Remove",
+            confirmButtonColor: "#d33",
+            
+            onConfirm: () => {
+              handleResponseAsync(
+                () => userService.updateUser(newData),
+                (e) => actionSuccessful("Success!", e.message),
+                (e) => actionFailed("Error!", e.message),
+                ()=>window.location.reload()
+              );
+            },
+          });
+    }
     const columnItems = [
         {field: "employeeBadge", header: "Badge No"},
         {field: "fullname", header: "Name"},
@@ -60,6 +87,7 @@ const AllUserPageSection = ({userType, data, options, isFilter})=>{
         {field: "roleName", header: "User Type"},
         {field: "createdBy", header: "Created By"},
         {field: "createdDate", header: "Date Created" , body: (rowdata)=>formatDateOnly(rowdata?.createdDate)},
+        {field: "statusName", header: "Status"},
         {field: "createdDate", header: "Action" , body:(rowData)=>actionTemplate(rowData)},
     ]
 return (
@@ -83,8 +111,8 @@ return (
       />
     )}
     <CommonTable dataTable={filterdata()} columnItems={columnItems} />
-    <AddUserForm showForm={showForm} closeForm={()=>setShowForm(false)} userType={userType} data={data} userRoles={options?.options?.roles}/>
-    <NewUserForm showForm={showUpdateForm} closeForm={setShowUpdateForm} options={options} defaultData={mapUserUpdateDetail(defaultValue)} headerTitle={"Update User Details"} isUpdate/>
+    <AddUserForm showForm={showForm} closeForm={()=>setShowForm(false)} userType={userType} data={data} userRoles={options?.options?.roles} optionList={options?.options}/>
+    <NewUserForm showForm={showUpdateForm} closeForm={setShowUpdateForm} options={options} defaultData={mapUserUpdateDetail(defaultValue, options?.options)} headerTitle={"Update User Details"} isUpdate/>
   </>
 )
 }

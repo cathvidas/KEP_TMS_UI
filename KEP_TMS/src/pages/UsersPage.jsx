@@ -18,19 +18,56 @@ const UserPage = ()=>{
     const navigate= useNavigate();
     const [currentContent, setCurrentContent] = useState(0);
     const {data, error, loading} = userHook.useAllUsersAndEmployee();
-    const [options, setOptions] = useState({options:{status: [{label: "Active", value: statusCode.ACTIVE}, {label: "Inactive", value: statusCode.INACTIVE}]}, loading: true})
+    const [options, setOptions] = useState({options:{}, loading: true})
     const roles = commonHook.useAllRoles();
     const departments = commonHook.useAllDepartments();
-    useEffect(()=>{
-      if(!roles?.loading && !departments?.loading && !departments?.loading){
-        const mappedRoles = roles?.data?.map((role)=>({label:role.name, value:role.id}));
-      const mappedDepartments = departments?.data?.map((dept)=>({label:dept.name, value:dept.id}));
-      const mappedUsers = data?.map((user)=>({label:user.fullname, value:user.employeeBadge}));
-       setOptions((prev)=>({...prev, loading: false, options:{...options.options, roles:mappedRoles,departments:mappedDepartments, users:mappedUsers}}));
+    const positions = commonHook.useAllPositions();
+    const empTypes = commonHook.useAllEmployeeTypes();
+
+    useEffect(() => {
+      if (
+        !roles?.loading &&
+        !departments?.loading &&
+        !departments?.loading &&
+        !positions?.loading &&
+        !empTypes?.loading
+      ) {
+        const mappedRoles = roles?.data?.map((role) => ({
+          label: role.name,
+          value: role.id,
+        }));
+        const mappedDepartments = departments?.data?.map((dept) => ({
+          label: dept.name,
+          value: dept.id,
+        }));
+        const mappedPositions = positions?.data
+          ?.filter((p) => p.isActive === true)
+          ?.map((p) => ({ label: p.positionDesc, value: p.positionId }));
+        const mappedEmpTypes = empTypes?.data?.map((emptype) => ({
+          label: emptype.name,
+          value: emptype.id,
+        }));
+        const mappedUsers = data?.map((user) => ({
+          label: user.fullname,
+          value: user.employeeBadge,
+        }));
+        setOptions((prev) => ({
+          ...prev,
+          loading: false,
+          options: {
+            ...options.options,
+            roles: mappedRoles,
+            departments: mappedDepartments,
+            users: mappedUsers,
+            positions: mappedPositions,
+            empTypes: mappedEmpTypes,
+            status: [{ label: "Active", value: statusCode.ACTIVE }, { label: "Inactive", value: statusCode.INACTIVE }]
+          },
+        }));
       }
-    }, [data, roles?.loading, departments?.loading])
+    }, [data, roles?.loading, departments?.loading, positions?.loading, empTypes?.loading]);
     
-    
+    console.log(options, positions)
     const items = [{
         label: "Users",
         items:[

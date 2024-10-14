@@ -67,6 +67,41 @@ const commonHook ={
           getRoles();
       }, []);
       return { data, error, loading };
-    }
+    },
+    useAllPositions: ()=>{
+      const [data, setData] = useState({});
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      useEffect(()=>{
+          const getRoles = async ()=>{
+              handleResponseAsync(
+                  ()=>commonService.getAllPositions(),
+                  (e)=>setData(e),
+                  (e)=>setError(e),
+                  ()=>setLoading(false)
+              )
+          }
+          getRoles();
+      }, []);
+      return { data, error, loading };
+    },
+    useAllEmployeeTypes: ()=>{
+      const [data, setData] = useState({});
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      useEffect(()=>{
+          const getRoles = async ()=>{
+              handleResponseAsync(
+                  ()=>commonService.getAllEmployeeTypes(),
+                  (e)=>setData(e),
+                  (e)=>setError(e),
+                  ()=>setLoading(false)
+              )
+          }
+          getRoles();
+      }, []);
+      return { data, error, loading };
+    },
+
 }
 export default commonHook;
