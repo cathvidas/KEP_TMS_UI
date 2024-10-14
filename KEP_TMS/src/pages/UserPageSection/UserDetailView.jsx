@@ -49,14 +49,15 @@ const UserDetailView = ({id})=>{
                 <DetailItem label="Position" value={data?.position} />
                 <DetailItem label="Department" value={data?.departmentName} />
                 <DetailItem label="User Type" value={data?.roleName} />
+                <DetailItem label="Password" value={data?.password} />
               </Col>
               <Col className="border-start">
                 <h5 className="theme-color">Training Summary</h5>
                 <hr />
-                <DetailItem label="No of Training Attended" badge={trainings?.data?.attended?.length} />
-                <DetailItem label="No of Training Facilitated" badge={trainings?.data?.facilitated?.length} />
-                <DetailItem label="No of Ongoing Training" badge={trainings?.data?.ongoing?.length} />
-                <DetailItem label="No of Training Requested" badge={trainings?.data?.requested?.length} />
+                <DetailItem label="No of Trainings Attended" badge={trainings?.data?.attended?.length} />
+                <DetailItem label="No of Trainings Facilitated" badge={trainings?.data?.facilitated?.length} />
+                <DetailItem label="No of Ongoing Trainings" badge={trainings?.data?.ongoing?.length} />
+                <DetailItem label="No of Trainings Requested" badge={trainings?.data?.requested?.length} />
                 <DetailItem label="Total Accumulated Hours" badge={5} />
               </Col>
             </Row>

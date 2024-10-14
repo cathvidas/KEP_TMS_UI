@@ -5,28 +5,50 @@ import AllUserPageSection from "./UserPageSection/AllUserPageSection";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import UserDetailView from "./UserPageSection/UserDetailView";
+import { Button } from "primereact/button";
+import NewUserForm from "../components/forms/ModalForms/NewUserForm";
+import userHook from "../hooks/userHook";
+import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
+import commonHook from "../hooks/commonHook";
+import { statusCode, UserTypeValue } from "../api/constants";
 
 const UserPage = ()=>{
+  const [showForm, setShowForm] = useState(false);
     const {page, id} = useParams();
     const navigate= useNavigate();
-    const [currentContent, setCurrentContent] = useState(0)
+    const [currentContent, setCurrentContent] = useState(0);
+    const {data, error, loading} = userHook.useAllUsersAndEmployee();
+    const [options, setOptions] = useState({options:{status: [{label: "Active", value: statusCode.ACTIVE}, {label: "Inactive", value: statusCode.INACTIVE}]}, loading: true})
+    const roles = commonHook.useAllRoles();
+    const departments = commonHook.useAllDepartments();
+    useEffect(()=>{
+      if(!roles?.loading && !departments?.loading && !departments?.loading){
+        const mappedRoles = roles?.data?.map((role)=>({label:role.name, value:role.id}));
+      const mappedDepartments = departments?.data?.map((dept)=>({label:dept.name, value:dept.id}));
+      const mappedUsers = data?.map((user)=>({label:user.fullname, value:user.employeeBadge}));
+       setOptions((prev)=>({...prev, loading: false, options:{...options.options, roles:mappedRoles,departments:mappedDepartments, users:mappedUsers}}));
+      }
+    }, [data, roles?.loading, departments?.loading])
+    
+    
     const items = [{
         label: "Users",
         items:[
-            {label: "View Users", icon: "pi pi-eye", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users")},
-            {label: "Trainee", icon: "pi pi-users", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users/Trainee") },
-            {label: "Approver", icon: "pi pi-users", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users/Approver")},
-            {label: "Facilatator", icon: "pi pi-users", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users/Facilitator")},
-            {label: "Admin", icon: "pi pi-users", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users/Admin")}
+          { separator: true, template: MenuItemTemplate },
+            {label: "All Users", icon: "pi pi-eye", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users"), active: currentContent === 1 ?true: false},
+            {label: "Trainees", icon: "pi pi-users", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users/Trainee"), active: currentContent === 2 ?true: false },
+            {label: "Approvers", icon: "pi pi-users", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users/Approver"),active: currentContent === 3 ?true: false},
+            {label: "Facilitators", icon: "pi pi-users", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users/Facilitator"),active: currentContent === 4 ?true: false},
+            {label: "Admins", icon: "pi pi-users", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users/Admin"),active: currentContent === 5 ?true: false}
         ]
     }]
     const pageContent = [
         <UserDetailView key={0} id={id}/>,
-        <AllUserPageSection key={1}/>,
-        <AllUserPageSection key={2} userType="Trainee"/>,
-        <AllUserPageSection key={3} userType="Approver"/>,
-        <AllUserPageSection key={4} userType="Facilitator"/>,
-        <AllUserPageSection key={5} userType="Admin"/>,
+        <AllUserPageSection key={1} options={options} data={data}/>,
+        <AllUserPageSection key={2} options={options} data={data} userType={UserTypeValue.TRAINEE}/>,
+        <AllUserPageSection key={3} options={options} data={data} userType={UserTypeValue.APPROVER} isFilter/>,
+        <AllUserPageSection key={4} options={options} data={data} userType={UserTypeValue.FACILITATOR} isFilter/>,
+        <AllUserPageSection key={5} options={options} data={data} userType={UserTypeValue.ADMIN} isFilter/>,
     ]
     useEffect(() => {
       if (page && id) {
@@ -43,19 +65,37 @@ const UserPage = ()=>{
         setCurrentContent(1);
       }
     }, [page, id]);
-      console.log(page, id)
     const Content = ()=>{
-        return <>
-        <div className={`d-flex g-0`}>
-          <MenuContainer itemList={items} />
-          <div
-            className={`border-start p-3 pb-5 flex-grow-1`}
-            style={{ minHeight: "calc(100vh - 50px)" }}
-          >
-            {pageContent[currentContent]}
-          </div>
-        </div>
-        </>
+        return (
+          <>
+            <div className={`d-flex g-0`}>
+              <MenuContainer
+                itemList={items}
+                action={
+                  <Button
+                    type="button"
+                    label="Add User"
+                    className="theme-bg rounded"
+                    icon="pi pi-plus"
+                    onClick={() => setShowForm(true)}
+                  />
+                }
+              />
+              <div
+                className={`border-start p-3 pb-5 flex-grow-1`}
+                style={{ minHeight: "calc(100vh - 50px)" }}
+              >
+                {loading ? <SkeletonDataTable /> : pageContent[currentContent]}
+              </div>
+            </div>
+            <NewUserForm
+              showForm={showForm}
+              closeForm={() => setShowForm(false)}
+              options={options}
+              headerTitle="Add New User"
+            />
+          </>
+        );
     }
     return(
         <Layout header={{title: "Users", icon: <i className="pi pi-users"></i>}} BodyComponent={Content}/>
