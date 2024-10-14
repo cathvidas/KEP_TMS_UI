@@ -13,7 +13,7 @@ const commonHook ={
         useEffect(()=>{
             const getDepartments = async ()=>{
                 handleResponseAsync(
-                    ()=>commonService.getDepartments(),
+                    ()=>commonService.getAllDepartments(),
                     (e)=>setData(e),
                     (e)=>setError(e),
                     ()=>setLoading(false)
@@ -50,6 +50,23 @@ const commonHook ={
             fetchData();
         }, [id]);
         return { data, error, loading };
+    }, 
+    useAllRoles: ()=>{
+      const [data, setData] = useState({});
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      useEffect(()=>{
+          const getRoles = async ()=>{
+              handleResponseAsync(
+                  ()=>commonService.getAllRoles(),
+                  (e)=>setData(e),
+                  (e)=>setError(e),
+                  ()=>setLoading(false)
+              )
+          }
+          getRoles();
+      }, []);
+      return { data, error, loading };
     }
 }
 export default commonHook;
