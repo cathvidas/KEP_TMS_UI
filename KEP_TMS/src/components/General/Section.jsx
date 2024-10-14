@@ -37,7 +37,7 @@ export const SectionBanner = ({ title, subtitle, ActionComponents }) => {
         <p className="m-0">{subtitle}</p>
         {ActionComponents && (
           <div className="mt-2">
-            <ActionComponents />
+            <ActionComponents /> 
           </div>
         )}
       </div>

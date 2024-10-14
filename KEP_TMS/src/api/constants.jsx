@@ -29,4 +29,11 @@ export const ActivityType = {
   EXAM: 11,
   MODULE: 12,
   TRAINEE_EXAM: 13,
-};
+}
+export const UserTypeValue = {
+  ADMIN: "Admin",
+  FACILITATOR: "Facilitator",
+  TRAINEE: "Trainee",
+  SUPER_ADMIN: "SuperAdmin",
+  APPROVER: "Approver",
+}

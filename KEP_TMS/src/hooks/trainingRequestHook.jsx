@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import trainingRequestService from "../services/trainingRequestService";
-import userMapping from "../mappings/userMapping";
+import userMapping from "../services/DataMapping/userMapping";
 import userService from "../services/userService";
 import { getRoutingActivity } from "../api/trainingServices";
 import countStatus from "../utils/countStatus";

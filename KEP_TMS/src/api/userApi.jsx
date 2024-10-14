@@ -21,6 +21,6 @@ export const getUserNameByUserId = async (id) =>{
 export const createUserApi = async (data)=>{
     return await fetchFromApi(API_ENDPOINTS.CREATE_USER, "POST", data);
 }
-export const updateUserApi = async (id, data)=>{
-    return await fetchFromApi(`${API_ENDPOINTS.UPDATE_USER}?badge=${id}`, "PUT", data);
+export const updateUserApi = async (data)=>{
+    return await fetchFromApi(API_ENDPOINTS.UPDATE_USER, "PUT", data);
 }

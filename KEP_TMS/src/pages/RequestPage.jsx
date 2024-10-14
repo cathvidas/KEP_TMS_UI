@@ -17,8 +17,6 @@ import { actionSuccessful, confirmAction } from "../services/sweetalert.jsx";
 import handleResponseAsync from "../services/handleResponseAsync.jsx";
 import trainingRequestService from "../services/trainingRequestService.jsx";
 import { Button } from "primereact/button";
-import countData from "../utils/countData.jsx";
-import validateTrainingDetails from "../services/inputValidation/validateTrainingDetails.jsx";
 import { validateTrainingRequestForm } from "../services/inputValidation/validateTrainingRequestForm.jsx";
 
 const TrainingRequestPage = () => {

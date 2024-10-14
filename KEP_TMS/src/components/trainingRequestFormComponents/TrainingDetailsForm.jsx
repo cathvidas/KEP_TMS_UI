@@ -6,8 +6,6 @@ import Select from "react-select";
 import { SectionHeading } from "../General/Section";
 import proptype from "prop-types";
 import { useEffect, useState } from "react";
-import programHook from "../../hooks/programHook";
-import categoryHook from "../../hooks/categoryHook";
 const TrainingDetailsForm = ({ handleResponse, formData , error, programs, categories}) => {
   const [details, setDetails] = useState(formData);
   const [options, setOptions] = useState({ programs: [], categories: [] });
