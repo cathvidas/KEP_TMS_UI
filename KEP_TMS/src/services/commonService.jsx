@@ -1,7 +1,7 @@
 import { getAllDepartmentsApi, getAllRolesApi } from "../api/commonApi";
 
 const commonService = {
-    getAllServices: async () =>{
+    getAllDepartments: async () =>{
         const response = await getAllDepartmentsApi();
         return response.status === 1 ? response?.data : [];
     },
