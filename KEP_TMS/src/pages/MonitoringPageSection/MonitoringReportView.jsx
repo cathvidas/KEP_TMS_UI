@@ -9,9 +9,11 @@ import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import EvaluationForm from "../../components/forms/EvaluationForm";
 import { ActivityType } from "../../api/constants";
+import getStatusById from "../../utils/status/getStatusById";
 const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formData, typeId }) => {
     const [showForm, setShowForm] = useState(false);
     const [selectedData, setSelectedData] = useState({});
+    console.log(formData)
   const actionTemplate = (rowData) => {
     return (
       <>
@@ -59,7 +61,7 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
       body: (rowData) => (
         <>
           {StatusColor({
-            status: rowData[reportType]?.statusName ?? "Pending",
+            status: getStatusById(rowData[reportType]?.currentRouting?.statusId) ?? "Pending",
             showStatus: true,
           })}
         </>
@@ -69,7 +71,7 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
       ? {
           field: "department",
           header: "Approver",
-          body: (rowData) => <>{rowData?.userDetail?.superiorName ?? "N/A"}</>,
+          body: (rowData) => <>{rowData[reportType]?.currentRouting?.assignedDetail?.fullname ?? "N/A"}</>,
         }
       : [],
     {
@@ -114,6 +116,8 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
           data={data}
           userData={selectedData?.userDetail}
           formData={selectedData[reportType]}
+          // currentRouting={{}}
+          isSubmitted
         />}
         {typeId === ActivityType.EVALUATION && 
         <EvaluationForm
@@ -129,10 +133,10 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
 };
 
 MonitoringReportView.propTypes = {
-  data: proptype.object.isRequired,
-  reportType: proptype.string.isRequired,
+  data: proptype.object,
+  reportType: proptype.string,
   tableName: proptype.string,
   hasApprover: proptype.bool,
-  formData: proptype.object.isRequired,
+  formData: proptype.object,
 };
 export default MonitoringReportView;

@@ -62,6 +62,7 @@ const CommonTable = ({
           stripedRows
           dataKey={"id"}
           rows={10}
+          key={"id"}
           tableStyle={{ minWidth: "50rem" }}
           rowsPerPageOptions={[5, 10, 25, 50]}
         >

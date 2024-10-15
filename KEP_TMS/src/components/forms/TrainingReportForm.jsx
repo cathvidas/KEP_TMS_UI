@@ -14,9 +14,11 @@ import {
 import handleResponseAsync from "../../services/handleResponseAsync";
 import trainingReportService from "../../services/trainingReportService";
 import ErrorTemplate from "../General/ErrorTemplate";
-import { formatDateOnly } from "../../utils/datetime/Formatting";
+import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
+import StatusColor from "../General/StatusColor";
+import getStatusById from "../../utils/status/getStatusById";
 
-const TrainingReportForm = ({ data, userData , onFinish, defaultValue}) => {
+const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitted, currentRouting, auditTrail}) => {
   const [formData, setFormData] = useState(trainingreportConstant);
   const [errors, setErrors] = useState({});
   const getFormData = {
@@ -25,23 +27,25 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue}) => {
     traineeBadge: SessionGetEmployeeId(),
     createdBy: SessionGetEmployeeId(),
   };
-  console.log(userData);
+  console.log(defaultValue, data);
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
   useEffect(()=>{
-    if(defaultValue){
+    if(defaultValue && isSubmitted){
       setFormData({...defaultValue});
     }
-  }, [defaultValue])
+  }, [defaultValue, isSubmitted])
   const handleSubmit = () => {
     const isValid = validateForm();
     if (isValid) {
       confirmAction({
         onConfirm: ()=>handleResponseAsync(()=>
           trainingReportService.createTrainingReport(getFormData),
-       (e)=>actionSuccessful("Training report created successfully", e.message),
+        (e)=>{actionSuccessful("Training report created successfully", e.message)
+          onFinish();
+        },
          (e)=>actionFailed("Error creating training report", e.message),
          ()=>onFinish()
         ),
@@ -68,7 +72,24 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue}) => {
   };
   return (
     <Card.Body>
-      <div className="text-center  pb-3 mb-3">
+      {isSubmitted &&          
+      <div className=" flex justify-content-between  mb-2">
+            <div>
+              Submitted:{" "}
+              {formatDateTime(auditTrail?.createdDate)}
+            </div>
+            <div>
+              Status: &nbsp;
+              {StatusColor({
+                status: getStatusById(currentRouting?.statusId),
+                class: "p-1",
+                showStatus: true,
+              })}
+              <b> - {currentRouting?.assignedDetail?.fullname}</b>
+            </div>
+          </div>
+        // <small>Created: {formatDateTime(auditTrail?.createdDate)} {StatusColor({status: getStatusById(formData?.statusId), showStatus: true})}</small>   
+      } <div className="text-center  pb-3 mb-3">
         <h5 className="m-0">Training Report Form</h5>
         <small className="text-muted">Knowles Electronics Philippines</small>
       </div>
@@ -76,21 +97,21 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue}) => {
         <Row>
           <AutoCompleteField
             label="Name"
-            value={userData?.data?.fullname}
+            value={userData?.fullname}
             className="col-6"
           />
           <AutoCompleteField
             label="BadgeNo"
-            value={userData?.data?.employeeBadge}
+            value={userData?.employeeBadge}
           />
           <AutoCompleteField
             label="Position"
-            value={userData?.data?.position}
+            value={userData?.position}
             className="col-6"
           />
           <AutoCompleteField
             label="Department"
-            value={userData?.data?.departmentName}
+            value={userData?.departmentName}
           />
           <AutoCompleteField
             label="Training Program Attended"
@@ -171,7 +192,9 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue}) => {
 
             </div>
           </Col>
-        </Row>          {data?.trainingParticipants?.some(x=>x.employeeBadge === SessionGetEmployeeId()) && 
+        </Row>  
+        <br />     
+        {data?.trainingParticipants?.some(x=>x.employeeBadge === SessionGetEmployeeId()) && !defaultValue&&
         <div className="text-end mt-3">
           <Button
             type="button"
@@ -200,5 +223,10 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue}) => {
 TrainingReportForm.propTypes = {
   data: proptype.object,
   userData: proptype.object,
+  onFinish: proptype.func,
+  defaultValue: proptype.object,
+  isSubmitted: proptype.bool,
+  currentRouting: proptype.object,
+  auditTrail: proptype.object,
 };
 export default TrainingReportForm;

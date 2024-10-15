@@ -9,6 +9,7 @@ import { Card } from "react-bootstrap";
 import { Button } from "primereact/button";
 import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import EvaluationForm from "../../components/forms/EvaluationForm";
+import getStatusById from "../../utils/status/getStatusById";
 const PendingView = ({ data, formData }) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedData, setSelectedData] = useState({});
@@ -55,12 +56,12 @@ const PendingView = ({ data, formData }) => {
       field: "Effectiveness",
       header: "Effectiveness",
       body: (rowData) => (
-        <>
-          {StatusColor({
-            status: rowData?.effectivenessDetail?.statusName ?? "Pending",
+        <> {data?.durationInHours >= 16 ? 
+          StatusColor({
+            status: getStatusById(rowData?.effectivenessDetail?.currentRouting?.statusId) ?? "Pending",
             showStatus: true,
             handleOnclick : ()=>handleOnclick(rowData,  {typeId: ActivityType.EFFECTIVENESS, property:"effectivenessDetail"}),
-          })}
+          }): "N/A"}
         </>
       ),
     },
@@ -70,7 +71,7 @@ const PendingView = ({ data, formData }) => {
       body: (rowData) => (
         <>
           {StatusColor({
-            status: rowData?.reportDetail?.statusName ?? "Pending",
+            status: getStatusById(rowData?.reportDetail?.currentRouting?.statusId) ?? "Pending",
             showStatus: true,
             handleOnclick : ()=>handleOnclick(rowData,  {typeId: ActivityType.REPORT, property:"reportDetail"}),
           })}
@@ -128,18 +129,22 @@ const PendingView = ({ data, formData }) => {
               data={data}
               userData={selectedData?.userDetail}
               formData={selectedData[formType.property]}
+              currentRouting={selectedData[formType.property]?.currentRouting}
             />}
             {formType?.typeId === ActivityType.REPORT && 
             <TrainingReportForm
               data={data}
               userData={selectedData?.userDetail}
-              formData={selectedData[formType.property]}
+              defaultValue={selectedData[formType.property]}
+              currentRouting={selectedData[formType.property]?.currentRouting}
+              auditTrail={selectedData[formType.property]?.auditTrail}
+              isSubmitted
             />}
             {formType?.typeId === ActivityType.EVALUATION && 
             <EvaluationForm
               data={data}
               userData={selectedData?.userDetail}
-              formData={selectedData[formType.property]}
+              defaultValue={selectedData[formType.property]}
             />}</>:
             <div className="text-center py-5">No data available</div> }
           </Card>

@@ -21,7 +21,6 @@ const Dashboard = () => {
   const approval = commonHook.useAllAssignedForApproval(
     SessionGetEmployeeId()
   );
-
   const values = [
     ...(approval?.data?.overallCount > 0
       ? [

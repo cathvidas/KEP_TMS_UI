@@ -3,7 +3,7 @@ import handleResponseAsync from "../services/handleResponseAsync";
 import evaluationService from "../services/evaluationService";
 
 const evaluationHook = {
-  useEvaluationId: (id) => {
+  useEvaluationById: (id, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ const evaluationHook = {
         );
       };
       getRequest();
-    }, [id]);
+    }, [id, trigger]);
     return {
       data,
       error,

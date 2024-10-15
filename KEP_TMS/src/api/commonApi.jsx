@@ -16,3 +16,6 @@ export const getAllPositionsApi = async()=>{
 export const getAllEmployeeTypesApi = async()=>{
     return await fetchFromApi(`Comboboxes/GetEmployeeTypes`);
 }
+export const getAuditTrailApi =async(transactId, activityIn)=>{
+    return await fetchFromApi(`/Services/GetAuditTrail?transactId=${transactId}&activityIn=${activityIn}`);
+}

@@ -3,7 +3,7 @@ import effectivenessService from "../services/effectivenessService";
 import handleResponseAsync from "../services/handleResponseAsync";
 
 const effectivenessHook = {
-  useEffectivenessById: (id) => {
+  useEffectivenessById: (id, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ const effectivenessHook = {
         );
       };
       getRequest();
-    }, [id]);
+    }, [id, trigger]);
     return {
       data,
       error,
@@ -45,7 +45,7 @@ const effectivenessHook = {
     });
     return { data, error, loading };
   },
-  useApproverAssignedEffectiveness: (approverId) => {
+  useApproverAssignedEffectiveness: (approverId, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -60,7 +60,7 @@ const effectivenessHook = {
         );
       };
       getRequests();
-    }, [approverId]);
+    }, [approverId, trigger]);
     return { data, error, loading };
   },
   useAllParticipantsEffectiveness: (datalist) => {

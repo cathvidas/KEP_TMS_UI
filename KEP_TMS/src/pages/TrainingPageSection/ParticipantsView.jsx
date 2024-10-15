@@ -2,7 +2,9 @@ import { SectionHeading } from "../../components/General/Section";
 import proptype from "prop-types";
 import { UserList } from "../../components/List/UserList";
 import { Button } from "primereact/button";
+import trainingRequestHook from "../../hooks/trainingRequestHook";
 const ParticipantsView = ({ data }) => {
+  const trainingForms = trainingRequestHook.useAllParticipantsReports(data ?? []) 
   const statusTemplate = (rowData) => {
     // return <>{StatusColor("Pending", "", {}, true)}</>
     return (
@@ -12,7 +14,7 @@ const ParticipantsView = ({ data }) => {
       </>
     );
   };
-  console.log(data);
+  console.log(trainingForms,data);
   return (
     <>
       <SectionHeading
@@ -25,6 +27,7 @@ const ParticipantsView = ({ data }) => {
         // trailingElement={{ action: true }}
         scrollHeight={"100%"}
         sortable
+        allowEffectiveness
       />
     </>
   );

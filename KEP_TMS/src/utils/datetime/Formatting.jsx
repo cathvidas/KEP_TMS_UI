@@ -10,8 +10,8 @@ export const formatCurrency = (value) => {
 };
 
 export const formatDateTime = (value) => {
-    const date = value ? new Date(value): new Date();
-    return date.toLocaleString("en-US")
+    const date = value && new Date(value);
+    return date?.toLocaleString("en-US")
 }
 export const formatDateOnly = (value, type = 'slash') => {
     const date = new Date(value);

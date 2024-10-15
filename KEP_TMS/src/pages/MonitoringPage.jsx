@@ -16,6 +16,7 @@ const MonitoringPage = () => {
   );
   const trainingForms = trainingRequestHook.useAllParticipantsReports(data?.trainingParticipants ?? []) 
   const [currentContent, setCurrentContent] = useState(0);
+  // console.log(trainingForms,data)
   const pageContent = [
       <PendingView key={0} data={data} formData={trainingForms}/>,
       <MonitoringReportView key={2} data={data} formData={trainingForms} reportType="examDetail" />,
@@ -23,6 +24,7 @@ const MonitoringPage = () => {
       <MonitoringReportView key={3} data={data} formData={trainingForms} reportType="reportDetail" typeId={ActivityType.REPORT} hasApprover/>,
       <MonitoringReportView key={4}data={data} formData={trainingForms} reportType="evaluationDetail" typeId={ActivityType.EVALUATION}/>,
   ];
+  console.log(trainingForms)
   const navigate = useNavigate();
   const monitoringMenuItem = [  {
     label: "Menu",
@@ -48,6 +50,7 @@ const MonitoringPage = () => {
         command: () => navigate(`/KEP_TMS/TrainingMonitoring/${id}/Effectiveness`),
         template: MenuItemTemplate,
         active: currentContent === 2 ? true : false,
+        disable: data?.durationInHours >= 16 ? false: true
       },
     {
       label: "Reports",

@@ -15,7 +15,7 @@ import { UserList } from "../../components/List/UserList";
 import EmptyState from "../../components/trainingRequestFormComponents/EmptyState";
 import DetailsOverview from "../../components/TrainingPageComponents/DetailsOverview";
 import { formatDateTime } from "../../utils/datetime/Formatting";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Toast } from "primereact/toast";
 import { statusCode } from "../../api/constants";
 import countData from "../../utils/countData";
@@ -27,33 +27,50 @@ const OverviewSection = ({
   showFacilitators = false,
   showApprovers = false,
 }) => {
-  console.log(data)
   const navigate = useNavigate();
   const toast = useRef(null);
-  const [reqStatus, setReqStatus] = useState({show: true,statusId: 0, summary: "", detail: {}});
+  const [reqStatus, setReqStatus] = useState({
+    show: true,
+    statusId: 0,
+    summary: "",
+    detail: {},
+  });
+  const isTrainee = data?.trainingParticipants?.find(
+    (user) => user?.employeeBadge === SessionGetEmployeeId()
+  );
+  console.log(data)
   useEffect(() => {
     const status = data?.status?.id;
     const statusData = { ...reqStatus, statusId: status };
     if (status == statusCode.FORAPPROVAL) {
       statusData.detail = [data?.currentRouting?.fullname];
-      statusData.summary = SessionGetEmployeeId() === data?.currentRouting?.employeeBadge ? "Waiting for your Approval": `For ${data?.currentRouting?.position} Approval`;
+      statusData.summary =
+        SessionGetEmployeeId() === data?.currentRouting?.employeeBadge
+          ? "Waiting for your Approval"
+          : `For ${data?.currentRouting?.position} Approval`;
       statusData.severity = "info";
     } else if (status == statusCode.APPROVED) {
       statusData.summary = "Waiting for Facilitator's Action";
-      const isFacilitator = data?.trainingFacilitators?.some((f) => f.employeeBadge === SessionGetEmployeeId());
+      const isFacilitator = data?.trainingFacilitators?.some(
+        (f) => f.employeeBadge === SessionGetEmployeeId()
+      );
       let facilitators = "";
       data?.trainingFacilitators?.forEach((f) => {
         facilitators += `${f?.fullname}, `;
       });
       statusData.severity = "info";
-      statusData.detail = isFacilitator ? "Please add module or set an exam if required and publish the request" : facilitators;
+      statusData.detail = isFacilitator
+        ? "Please add module or set an exam if required and publish the request"
+        : facilitators;
     } else if (status == statusCode.SUBMITTED) {
       statusData.summary = "Waiting for participants Effectiveness";
-      statusData.detail = `${countData(
-        data.trainingParticipants,
-        "effectivenessId",
-        4
-      )}/${data.totalParticipants} submitted`;
+      statusData.detail =
+        isTrainee && isTrainee?.effectivenessId === null
+          ? "Navigate to Report section and fill out the effectiveness form"
+          // : isTrainee?.effectivenessId?.sta
+          : `${countData(data.trainingParticipants, "effectivenessId", 4)}/${
+              data.totalParticipants
+            } submitted`;
       statusData.severity = "warn";
     } else {
       statusData.show = false;

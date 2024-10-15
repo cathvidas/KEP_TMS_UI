@@ -7,7 +7,7 @@ import { Button } from "primereact/button";
 import effectivenessHook from "../../hooks/effectivenessHook";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import StatusColor from "../../components/General/StatusColor";
-import { confirmAction } from "../../services/sweetalert";
+import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import effectivenessService from "../../services/effectivenessService";
 import { ActivityType } from "../../api/constants";
@@ -19,10 +19,9 @@ import trainingRequestHook from "../../hooks/trainingRequestHook";
 import userHook from "../../hooks/userHook";
 
 const ForApprovaleffectiveness = ()=>{
-    const {data, error, loading} = effectivenessHook.useApproverAssignedEffectiveness(SessionGetEmployeeId());
-    const navigate = useNavigate()
+    const [trigger, setTrigger] = useState(0);
+    const {data, error, loading} = effectivenessHook.useApproverAssignedEffectiveness(SessionGetEmployeeId(), trigger);
     const [showModal, setShowModal] = useState(false);
-    const [effectivenessId, setEffectivenessId] = useState(0);
     const [selectedData, setSElectedData] = useState({});
     const requestData = trainingRequestHook.useTrainingRequest(selectedData?.trainingEffectiveness?.trainingRequest?.id);
     const userData = userHook.useUserById(selectedData?.trainingEffectiveness?.employeeBadge);
@@ -38,24 +37,31 @@ const ForApprovaleffectiveness = ()=>{
     </>
       const approveEffectiveness = (id, isApprove) => {
      confirmAction({
-        title: isApprove ? "Approve Effectiveness" : "DisApprove Effectiveness",
+        title: isApprove ? "Approve Effectiveness" : "Disapprove Effectiveness",
         text: isApprove ? "Are you sure you want to approve this Effectiveness?" : "Are you sure you want to disapprove this Effectiveness?",
         confirmButtonText: isApprove? "Approve" : "Disapprove",
-        cancelButtonText: "No",
-        confirmButtonColor: isApprove? "#4CAF50" : "#f44336",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: isApprove? "#4CAF50" : "#d33",
         onConfirm: ()=>{
           handleResponseAsync(
-           ()=> effectivenessService.approveTrainingEffectiveness({ 
-            transactId: id,
-            updatedBy: SessionGetEmployeeId(),
-            activityIn: ActivityType.EFFECTIVENESS
-          })
-
-          )
+            () =>
+              effectivenessService.approveTrainingEffectiveness({
+                transactId: id,
+                approvedBy: SessionGetEmployeeId(),
+                activityIn: ActivityType.EFFECTIVENESS,
+              }),
+            (e)=>{
+              actionSuccessful("Sucess!", e.mesasge)
+              setTimeout(() => {
+                setShowModal(false)
+                setTrigger(trigger+1)
+              }, 1000);},
+            null,
+          );
         }
      })
       };
-      console.log(requestData)
+      console.log(data)
   const columnItems = [{
     field: "id",
     header: "Request Id",
@@ -80,28 +86,40 @@ const ForApprovaleffectiveness = ()=>{
   }
 ]
     return (
-    <div className="p-3">
-    <SectionBanner title="Training Request Effectiveness" subtitle="List of for Approval"/>
-    <CommonTable
-            dataTable={data}
-            title="Programs"
-            columnItems={columnItems}
-          />
-          <Modal show={showModal} onHide={()=>setShowModal(false)} fullscreen>
-            <Modal.Header closeButton>
-              <Modal.Title>Training Effectiveness Details</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {selectedData?.loading? "Loading..." : <EffectivenessForm userData={userData?.data} data={requestData?.data} formData={selectedData?.trainingEffectiveness
-}/>}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={()=>setEffectivenessId(0)}>
-                Close
-              </Button>
+      <div className="p-3">
+        <SectionBanner
+          title="Training Request Effectiveness"
+          subtitle="List of for Approval"
+        />
+        <CommonTable
+          dataTable={data}
+          title="Programs"
+          columnItems={columnItems}
+        />
+        <Modal show={showModal} onHide={() => setShowModal(false)} fullscreen>
+          <Modal.Header closeButton>
+            <Modal.Title className="theme-color h5">Training Effectiveness Details</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="p-md-4 px-md-5">
+            {selectedData?.loading ? (
+              "Loading..."
+            ) : (
+              <EffectivenessForm
+                userData={userData?.data}
+                data={requestData?.data}
+                formData={selectedData?.trainingEffectiveness}
+                currentRouting={selectedData?.routingActivity}
+                auditTrail={selectedData?.auditTrail}
+              
+              />
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+              <Button type="button" size="small" label="Disapprove" icon="pi pi-thumbs-down" className="rounded" severity="danger" text onClick={()=>approveEffectiveness(selectedData?.trainingEffectiveness?.id,false)} />
+              <Button type="button" size="small" label="Approve" icon="pi pi-thumbs-up" className="rounded" onClick={()=>approveEffectiveness(selectedData?.trainingEffectiveness?.id,true)} />
             </Modal.Footer>
-          </Modal>
-  </div>
-  );
+        </Modal>
+      </div>
+    );
 }
 export default ForApprovaleffectiveness

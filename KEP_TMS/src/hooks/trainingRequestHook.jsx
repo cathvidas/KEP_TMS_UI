@@ -20,7 +20,8 @@ const trainingRequestHook = {
       const getRequest = async () => {
         handleResponseAsync(
           ()=>trainingRequestService.getTrainingRequest(id),
-          async(response)=>{  const participants = await userMapping.mapUserIdList(
+          async(response)=>{  
+            const participants = await userMapping.mapUserIdList(
             response.trainingParticipants,
             "employeeBadge"
           );
@@ -248,6 +249,7 @@ const trainingRequestHook = {
               const report = item?.reportId? await trainingReportService.getTrainingReportById(item.reportId):{};
               const evluation = item?.evaluationId ? await evaluationService.getTrainingEvaluationById(item.evaluationId):{};
               const effectiveness =item?.effectivenessId ? await effectivenessService.getEffectivenessById(item.effectivenessId):{};
+              console.log(effectiveness)
               return { userDetail: item, reportDetail: report, effectivenessDetail: effectiveness, evaluationDetail: evluation};
             })
           ),

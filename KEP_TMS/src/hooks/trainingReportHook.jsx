@@ -3,7 +3,7 @@ import handleResponseAsync from "../services/handleResponseAsync";
 import trainingReportService from "../services/trainingReportService";
 
 const trainingReportHook = {
-  useTrainingReportById: (id) => {
+  useTrainingReportById: (id, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ const trainingReportHook = {
         );
       };
       getRequest();
-    }, [id]);
+    }, [id, trigger]);
     return {
       data,
       error,
@@ -42,7 +42,7 @@ const trainingReportHook = {
     });
     return { data, error, loading };
   },
-  useApproverAssignedReports: (approverId) => {
+  useApproverAssignedReports: (approverId, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -57,7 +57,7 @@ const trainingReportHook = {
         );
       };
       getRequests();
-    }, [approverId]);
+    }, [approverId, trigger]);
     return { data, error, loading };
   },
   useAllParticipantsReports: (datalist) => {

@@ -15,7 +15,7 @@ const PDFViewer = ({ data, handleShow, handleClose }) => {
     </Modal.Header>
     <Modal.Body className="p-0">
       
-  <iframe src={file?.url} className="w-100 vh-100" ></iframe>
+  <iframe src={file?.url} className="w-100 " style={{height: "calc(100vh - 70px)"}}></iframe>
     </Modal.Body>
   </Modal>
   )

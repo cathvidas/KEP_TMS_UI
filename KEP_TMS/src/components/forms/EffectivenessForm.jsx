@@ -15,7 +15,8 @@ import {
 } from "../../services/constants/effectivenessConstant";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import StatusColor from "../General/StatusColor";
-const EffectivenessForm = ({ data, userData, formData , onFinish}) => {
+import getStatusById from "../../utils/status/getStatusById";
+const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting, auditTrail}) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
   const [annotation, setAnnotation] = useState("");
@@ -98,9 +99,11 @@ const EffectivenessForm = ({ data, userData, formData , onFinish}) => {
             () => effectivenessService.createTrainingEffectiveness(getFormData),
             (e) => {
               actionSuccessful("Success!", e?.message);
+              setInterval(() => {
+                window.location.reload();
+              }, 1000);
             },
             (e) => actionFailed("Error!", e.message),
-            () => onFinish()
           ),
       });
     }
@@ -200,17 +203,16 @@ const EffectivenessForm = ({ data, userData, formData , onFinish}) => {
           <div className=" flex justify-content-between  mb-2">
             <div>
               Submitted:{" "}
-              {formatDateTime(formData?.createdDate)}
+              {formatDateTime(auditTrail?.createdDate)}
             </div>
             <div>
               Status: &nbsp;
               {StatusColor({
-                status: formData?.statusName,
+                status: getStatusById(currentRouting?.statusId),
                 class: "p-1",
-                showStatus: false,
+                showStatus: true,
               })}
-              {" For Evaluator Approval -"}
-              <b>{userData?.superiorName}</b>
+              <b> - {currentRouting?.assignedDetail?.fullname}</b>
             </div>
           </div>
         )}
@@ -505,5 +507,9 @@ EffectivenessForm.propTypes = {
   data: proptype.object,
   userData: proptype.object,
   formData: proptype.object,
+  onFinish: proptype.func,
+  currentRouting: proptype.object,
+  auditTrail: proptype.object,
+
 };
 export default EffectivenessForm;
