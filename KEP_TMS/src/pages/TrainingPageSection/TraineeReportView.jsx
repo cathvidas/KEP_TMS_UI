@@ -13,43 +13,21 @@ import userHook from "../../hooks/userHook";
 import { statusCode } from "../../api/constants";
 import effectivenessHook from "../../hooks/effectivenessHook";
 import { useNavigate } from "react-router-dom";
+import trainingReportHook from "../../hooks/trainingReportHook";
+import evaluationHook from "../../hooks/evaluationHook";
 const TraineeReportView = ({ data }) => {
   const userData = userHook.useUserById(SessionGetEmployeeId());
   const getUser = data?.trainingParticipants?.find((item) => item.employeeBadge === SessionGetEmployeeId());
 
  const effectiveness = getUser?.effectivenessId ? effectivenessHook.useEffectivenessById(getUser.effectivenessId):{};
-  const report = getUser?.reportId  ? effectivenessHook.useEffectivenessById(getUser.reportId):{};
-  const evaluation = getUser?.evaluationId? effectivenessHook.useEffectivenessById(getUser.evaluationId):{};
+  const report = getUser?.reportId  ? trainingReportHook.useTrainingReportById(getUser.reportId):{};
+  const evaluation = getUser?.evaluationId? evaluationHook.useEvaluationById(getUser.evaluationId):{};
   const stepperRef = useRef();
   const navigate = useNavigate();
-  const StepperButton = (button) => {
-    return (
-      <div className="flex pt-4 justify-content-between">
-        {button.back && (
-          <Button
-            label="Back"
-            severity="secondary"
-            icon="pi pi-arrow-left"
-            className="rounded"
-            onClick={() => stepperRef.current.prevCallback()}
-          />
-        )}
-        {button.next && (
-          <Button
-            type="button"
-            className="ms-auto rounded"
-            label="Next"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            onClick={() => stepperRef.current.nextCallback()}
-          />
-        )}
-      </div>
-    );
-  };  
   const handleOnFinish =()=>{
     navigate(`/KEP_TMS/Training/${data?.id}/Reports`)
   }
+  console.log(evaluation)
   return (
     <div className="w-100 oveflow-hidden">
       <SectionHeading title="Trainee Report" />
@@ -65,19 +43,16 @@ const TraineeReportView = ({ data }) => {
           <StepperPanel header="Training Effectiveness Form">
             <hr className="m-0"/>
             <EffectivenessForm data={data} userData={userData?.data} formData={effectiveness?.data} onFinish={handleOnFinish}/>
-            {/* {<StepperButton back={true} next={true} index={2} />} */}
           </StepperPanel>}
           {data?.status?.id === statusCode.PUBLISHED &&
           <StepperPanel header="Training Report Form">
           <hr className="m-0"/>
-            <TrainingReportForm data={data} userData={userData}  onFinish={handleOnFinish}/>
-            {/* {<StepperButton next={true} index={0} />} */}
+            <TrainingReportForm data={data} userData={userData?.data} defaultValue={report?.data} onFinish={handleOnFinish}/>
           </StepperPanel>}     
           {data?.status?.id === statusCode.PUBLISHED &&
           <StepperPanel header="Evaluation Form">
           <hr className="m-0"/>
             <EvaluationForm data={data} userData={userData}  onFinish={handleOnFinish}/>
-            {/* {<StepperButton back={true} next={true} index={1} />} */}
           </StepperPanel>
           
           }
