@@ -38,7 +38,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
     facilitatorRating: facilitatorRating,
     createdBy: SessionGetEmployeeId()
   }
-  console.log(getFormData)
+  // console.log(getFormData)
   const handleOnChange = (value, name, field, setField) => {
     setField({ ...field, [name]: value });
   }
@@ -57,7 +57,9 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
         onConfirm: () => {
           handleResponseAsync(
             () => evaluationService.createTrainingEvaluation(getFormData),
-            (e) => actionSuccessful("Success", e.message),
+            (e) => {actionSuccessful("Success", e.message);
+              window.location.reload();
+            },
             (e) => actionFailed("Error", e.message),
             ()=>onFinish()
           )

@@ -10,7 +10,6 @@ import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import ProviderListSection from "./MasterListSection/ProviderListSection";
 import TrainingListSection from "./MasterListSection/TrainingListSection";
 import { TrainingType } from "../api/constants";
-import TrainingFormMonitoring from "./MonitoringPageSection/TrainingFormMonitoring";
 
 const MasterListPage = () => {
   const page = useParams();
@@ -43,11 +42,11 @@ const MasterListPage = () => {
           command: () => navigate("/KEP_TMS/MasterList/Providers"),
           icon: "pi pi-building",
         },
-        {
-          label: "Training Type",
-          template: MenuItemTemplate,
-          icon: "pi pi-check-square",
-        },
+        // {
+        //   label: "Training Type",
+        //   template: MenuItemTemplate,
+        //   icon: "pi pi-check-square",
+        // },
       ],
     },
     {
@@ -55,14 +54,14 @@ const MasterListPage = () => {
       items: [
         {
           label: "Internal",
-          icon: "pi pi-check-square",
+          icon: "pi pi-arrow-down-left-and-arrow-up-right-to-center",
           command: () => navigate("/KEP_TMS/MasterList/Training/Internal"),
           active: currentContent === 3 ? true : false,
           template: MenuItemTemplate,
         },
         {
           label: "External",
-          icon: "pi pi-sign-out",
+          icon: "pi pi-external-link",
           command: () => navigate("/KEP_TMS/MasterList/Training/External"),
           active: currentContent === 4 ? true : false,
           template: MenuItemTemplate,

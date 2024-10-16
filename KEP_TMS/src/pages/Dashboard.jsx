@@ -37,11 +37,11 @@ const Dashboard = () => {
     ...(data?.trainerAction > 0
       ? [
           {
-            label: "Facilitation Assignments",
+            label: "Facilitated Trainings",
             color1: "#ff6bbd",
             color2: "#ff6b6b",
             value: data?.trainerAction,
-            icon: "pi pi-user-edit",
+            icon: "pi pi-tag",
             status: "AssignedTrainings",
           },
         ]
@@ -51,7 +51,7 @@ const Dashboard = () => {
       color1: "#60c8fa",
       color2: "#60a5fa",
       value: data.assignedTraining ?? 0,
-      icon: "pi pi-clock",
+      icon: "pi pi-address-book",
       status: "Training",
     },
     {

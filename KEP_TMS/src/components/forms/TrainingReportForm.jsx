@@ -17,6 +17,8 @@ import ErrorTemplate from "../General/ErrorTemplate";
 import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
 import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
+import ActivityLog from "../General/ActivityLog";
+import { statusCode } from "../../api/constants";
 
 const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitted, currentRouting, auditTrail}) => {
   const [formData, setFormData] = useState(trainingreportConstant);
@@ -44,7 +46,7 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
         onConfirm: ()=>handleResponseAsync(()=>
           trainingReportService.createTrainingReport(getFormData),
         (e)=>{actionSuccessful("Training report created successfully", e.message)
-          onFinish();
+          window.location.reload();
         },
          (e)=>actionFailed("Error creating training report", e.message),
          ()=>onFinish()
@@ -70,6 +72,36 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     setErrors(formErrors);
     return isValid;
   };
+  const events = [
+    { status: 'Ordered',label: "Submitted", severity: "", date: '15/10/2020 10:30 AM', icon: 'pi pi-shopping-cart', color: '#9C27B0', image: 'game-controller.jpg' },
+    { status: 'Processing', label: "route to hr approver", severity: "", date: '15/10/2020 3:00 AM', icon: 'pi pi-cog', color: '#673AB7' },
+    { status: 'Shipped', label: "approve by hr approver with a message 'good job girl'", severity: "success", date: '15/10/2020 06:15 AM', icon: 'pi pi-shopping-cart', color: '#FF9800' },
+    { status: 'Delivered',label: "route to manager", severity: "warning",  date: '16/10/2020 10:00 PM', icon: 'pi pi-check', color: '#607D8B' },
+    { status: 'Delivered',label: "route to manager", severity: "danger",  date: '16/10/2020 10:00 PM', icon: 'pi pi-check', color: '#607D8B' }
+];
+const [logs, setLogs] = useState([])
+
+useEffect(()=>{
+if(defaultValue){
+  let newLogs = [];
+  newLogs.push({
+    label: "Created",
+    date: formatDateTime(defaultValue?.createdDate)
+  })
+  defaultValue?.routings?.forEach((item) => {
+    const isApproved = item?.statusId === statusCode.APPROVED ? true : false;
+      newLogs.push({
+        label: isApproved ? `Approved by ${item.assignedTo}`:`Routed to ${item.assignedTo}`,
+        date: formatDateTime(item.updatedDate),
+        // icon: isApproved ? "pi pi-thumbs-up": "",
+        // color: isApproved ? "#4CAF50" : "#FF9800",
+        severity: isApproved ? "success" : "warning"
+      });
+    
+  });
+  setLogs(newLogs)
+}
+},[defaultValue])
   return (
     <Card.Body>
       {isSubmitted &&          
@@ -216,6 +248,8 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
           />
         </div>}
       </Form>
+      {isSubmitted && 
+      <ActivityLog label="Activity Logs" items={logs}/>}
     </Card.Body>
   );
 };

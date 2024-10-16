@@ -71,9 +71,11 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
       data.append("Description", details.Description);
       data.append("CreatedBy", SessionGetEmployeeId());
       handleResponseAsync(() => moduleService.createModule(data),
-    (e)=> actionSuccessful("Success", e.message),
+    (e)=> {actionSuccessful("Success", e.message);
+      handleRefresh();
+    },
     (e)=> actionSuccessful("Error", e.message),
-    ()=> handleRefresh(), 
+    // ()=> handleRefresh(), 
     )
     }
     
@@ -87,6 +89,10 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
     }
     if (!details.Description) {
       formErrors.Description = "Description is required";
+      validForm = false;
+    }
+    if(files?.length === 0){
+      formErrors.file = "Please select at least one file";
       validForm = false;
     }
     if (!validForm) {

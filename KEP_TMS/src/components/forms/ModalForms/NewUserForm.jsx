@@ -278,7 +278,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
             </Row>
           </Modal.Body>
           <Modal.Footer>
-            <Button type="button" className="rounded" text onClick={()=>setFormData(userConstant)} label="Reset"/>
+            <Button type="button" className="rounded" text onClick={()=>setFormData(isUpdate?defaultData:userConstant)} label="Reset"/>
             <Button type="button" className="rounded" label="Submit" onClick={handleSubmit}/>
             {/* <Button variant="danger" >
               Delete

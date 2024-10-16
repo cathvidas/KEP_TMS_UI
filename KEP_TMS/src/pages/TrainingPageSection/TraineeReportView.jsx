@@ -1,6 +1,6 @@
 import { Stepper } from "primereact/stepper";
 import { SectionHeading } from "../../components/General/Section";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StepperPanel } from "primereact/stepperpanel";
 import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import { Card } from "react-bootstrap";
@@ -11,7 +11,6 @@ import { SessionGetEmployeeId } from "../../services/sessions";
 import userHook from "../../hooks/userHook";
 import { statusCode } from "../../api/constants";
 import effectivenessHook from "../../hooks/effectivenessHook";
-import { useNavigate } from "react-router-dom";
 import trainingReportHook from "../../hooks/trainingReportHook";
 import evaluationHook from "../../hooks/evaluationHook";
 const TraineeReportView = ({ data }) => {
@@ -24,18 +23,17 @@ const TraineeReportView = ({ data }) => {
   const report = getUser?.reportId  ? trainingReportHook.useTrainingReportById(getUser.reportId, trigger):{};
   const evaluation = getUser?.evaluationId? evaluationHook.useEvaluationById(getUser.evaluationId, trigger):{};
   const stepperRef = useRef();
-  const navigate = useNavigate();
   const handleOnFinish =()=>{
     // navigate(`/KEP_TMS/Training/${data?.id}/Reports`)
     setTimeout(() => {
     setTrigger(trigger+1)
     }, 1000);
   }
- 
+ console.log(report)
   useEffect(()=>{
-    if(effectiveness){
+    if(effectiveness?.data){
       stepperRef.current?.nextCallback();
-    }else if(effectiveness || report){
+    }else if(effectiveness?.data || report?.data){
       stepperRef.current?.nextCallback();
     }
   },[effectiveness?.data, report?.data, evaluation?.data])
@@ -72,7 +70,7 @@ const TraineeReportView = ({ data }) => {
                 userData={userData?.data}
                 defaultValue={report?.data}
                 onFinish={handleOnFinish}
-                isSubmitted={report ? true:false}
+                isSubmitted={report?.data ? true:false}
                 currentRouting={report?.data?.currentRouting}
                 auditTrail={report?.data?.auditTrail}
               />

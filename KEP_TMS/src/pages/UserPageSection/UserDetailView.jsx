@@ -8,11 +8,11 @@ import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import trainingRequestHook from "../../hooks/trainingRequestHook";
 import CommonTable from "../../components/General/CommonTable";
 import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
-import { formatCurrency } from "../../utils/datetime/Formatting";
+import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
 const DetailItem = (data) => (
   <>
 <div className="flex py-1">
-    <h6 className="mb-0">{data.label}:</h6>
+    <h6 className={`mb-0 ${data?.className}`}>{data.label}:</h6>
     {data.value && <span>{data.value}</span>}
     {data.badge && <Badge value={data.badge}/>}
     </div>
@@ -23,21 +23,22 @@ const UserDetailView = ({id})=>{
     const trainings = trainingRequestHook.useUserTrainingsSummary(id);
     console.log(trainings)
     const columnItem =[
-        {field: "id", header: "ID", },
+        {field: "id", header: "No",body: (_, {rowIndex})=><>{rowIndex+1}</> },
+        // {field: "id", header: "Id", },
         {field: "requestorName", header: "Requestor", },
         {field: "type", header: "Type", },
         {field: "program", header: "Program", },
         {field: "category", header: "Category",},
         {field: "provider", header: "Provider", },
-        {field: "startDate", header: "Start Date", },
-        {field: "endDate", header: "End Date", },
+        {field: "startDate", header: "Start Date", body: (rowData)=><>{formatDateOnly(rowData.startDate)}</> },
+        {field: "endDate", header: "End Date", body: (rowData)=><>{formatDateOnly(rowData.endDate)}</> },
         {field: "venue", header: "Venue", },
         {field: "totalFee", header: "Cost", body: (rowData)=><>{formatCurrency(rowData.totalFee)}</>},
     ]
     return (
       <>
       {loading ? <SkeletonBanner/> : error ? <h1>error</h1> :<>
-        <SectionBanner title="sa"/>
+        {/* <SectionBanner title="User Details and Training Summary"/> */}
         <Card>
           <CardBody>
             <Row>
@@ -55,11 +56,13 @@ const UserDetailView = ({id})=>{
               <Col className="border-start">
                 <h5 className="theme-color">Training Summary</h5>
                 <hr />
-                <DetailItem label="No of Trainings Attended" badge={trainings?.data?.attended?.length} />
-                <DetailItem label="No of Trainings Facilitated" badge={trainings?.data?.facilitated?.length} />
-                <DetailItem label="No of Ongoing Trainings" badge={trainings?.data?.ongoing?.length} />
-                <DetailItem label="No of Trainings Requested" badge={trainings?.data?.requested?.length} />
-                <DetailItem label="Total Accumulated Hours" badge={5} />
+                <h6>Trainings Attended:</h6>
+                <DetailItem label="No of Trainings" badge={trainings?.data?.attended?.length} className="text-muted" />
+                <DetailItem label="Total Accumulated Hours" badge={trainings?.data?.facilitated?.length}  className="text-muted"/>
+                <br />
+                <h6>Trainings Facilitated:</h6>
+                <DetailItem label="No of Trainings" badge={trainings?.data?.ongoing?.length} className="text-muted" />
+                <DetailItem label="Total Accumulated Hours"  className="text-muted" />
               </Col>
             </Row>
           </CardBody>
@@ -75,12 +78,12 @@ const UserDetailView = ({id})=>{
                 <TabPanel header={"Trainings Facilitated"}>
                     <CommonTable dataTable={mapTRequestToTableData(trainings?.data?.facilitated)} columnItems={columnItem}/>
                 </TabPanel>
-                <TabPanel header={"Ongoing Trainings"}>
+                {/* <TabPanel header={"Ongoing Trainings"}>
                 <CommonTable dataTable={mapTRequestToTableData(trainings?.data?.ongoing)} columnItems={columnItem}/>
                 </TabPanel>
                 <TabPanel header={"Trainings Requested"} >
                 <CommonTable dataTable={mapTRequestToTableData(trainings?.data?.requested)} columnItems={columnItem}/>
-                </TabPanel>
+                </TabPanel> */}
               </TabView>
             </Row>
           </CardBody>

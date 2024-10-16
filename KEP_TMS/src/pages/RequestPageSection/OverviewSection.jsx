@@ -38,7 +38,6 @@ const OverviewSection = ({
   const isTrainee = data?.trainingParticipants?.find(
     (user) => user?.employeeBadge === SessionGetEmployeeId()
   );
-  console.log(data)
   useEffect(() => {
     const status = data?.status?.id;
     const statusData = { ...reqStatus, statusId: status };

@@ -1,4 +1,4 @@
-import { FormatDate } from "./FormatDateTime";
+import { FormatDate, FormatTime } from "./FormatDateTime";
 
 export const FormatToOptions=(data)=>{
     return {value: data.id, label: data.name}
@@ -9,9 +9,15 @@ export const formatCurrency = (value) => {
     return value?.toLocaleString('en-PH', { style: 'currency', currency: 'PHP' });
 };
 
-export const formatDateTime = (value) => {
+export const formatDateTime = (value, hasSecond) => {
     const date = value && new Date(value);
-    return date?.toLocaleString("en-US")
+    if(hasSecond){
+        return date?.toLocaleString("en-US")
+    }else{
+     const time = date?.toLocaleTimeString("en-US", { hour12: true, hour: '2-digit', minute: '2-digit' });
+     return `${date?.toLocaleDateString("en-US")} ${time}`;
+    }
+    
 }
 export const formatDateOnly = (value, type = 'slash') => {
     const date = new Date(value);

@@ -21,10 +21,16 @@ const ApproverAction = ({ reqId, onFinish, hasView = false }) => {
     };
     handleResponseAsync(
       () => trainingRequestService.approveTrainingRequest(newData),
-      (e) => actionSuccessful("Success", data?.statusId === statusCode.DISAPPROVED ? "Successfully disapproved the request": e.message),
+      (e) =>
+        {actionSuccessful(
+          "Success",
+          data?.statusId === statusCode.DISAPPROVED
+            ? "Successfully disapproved the request"
+            : e.message
+        );
+        onFinish()},
       (error) =>
-        actionFailed("Error Approving Training Request", error?.message),
-      () => onFinish()
+        actionFailed("Error Approving Training Request", error?.message)
     );
   };
   return (

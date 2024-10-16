@@ -19,3 +19,6 @@ export const getAllEmployeeTypesApi = async()=>{
 export const getAuditTrailApi =async(transactId, activityIn)=>{
     return await fetchFromApi(`/Services/GetAuditTrail?transactId=${transactId}&activityIn=${activityIn}`);
 }
+export const getRoutingActivityWithAuditTrailApi = async(transactId, activityIn)=>{
+    return await fetchFromApi(`/Services/GetRoutingActivityWithAuditTrail?transactId=${transactId}&activityIn=${activityIn}`);
+}

@@ -1,4 +1,4 @@
-import { getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getAuditTrailApi } from "../api/commonApi";
+import { getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getAuditTrailApi, getRoutingActivityWithAuditTrailApi } from "../api/commonApi";
 
 const commonService = {
   getAllDepartments: async () => {
@@ -25,6 +25,10 @@ const commonService = {
       return {};
     }
   },
+  getRoutingActivityWithAuditTrail: async (transactId, activityIn) => {
+      const response = await getRoutingActivityWithAuditTrailApi(transactId, activityIn);
+      return response?.status === 1 ? response?.data : [];
+  }
 };
 
 export default commonService;

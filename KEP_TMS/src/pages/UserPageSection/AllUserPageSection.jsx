@@ -80,6 +80,7 @@ const AllUserPageSection = ({userType, data, options, isFilter})=>{
           });
     }
     const columnItems = [
+        {field: "_", header: "No", body: (_, {rowIndex})=><>{rowIndex + 1}</>},
         {field: "employeeBadge", header: "Badge No"},
         {field: "fullname", header: "Name"},
         {field: "position", header: "Position"},
@@ -110,7 +111,7 @@ return (
         )}
       />
     )}
-    <CommonTable dataTable={filterdata()} columnItems={columnItems} />
+    <CommonTable dataTable={filterdata()} columnItems={columnItems} tableName={`${userType ?? "All"} Users`}/>
     <AddUserForm showForm={showForm} closeForm={()=>setShowForm(false)} userType={userType} data={data} userRoles={options?.options?.roles} optionList={options?.options}/>
     <NewUserForm showForm={showUpdateForm} closeForm={setShowUpdateForm} options={options} defaultData={mapUserUpdateDetail(defaultValue, options?.options)} headerTitle={"Update User Details"} isUpdate/>
   </>

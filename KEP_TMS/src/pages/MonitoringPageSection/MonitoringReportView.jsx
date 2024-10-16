@@ -110,12 +110,15 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
           data={data}
           userData={selectedData?.userDetail}
           formData={selectedData[reportType]}
+          currentRouting={selectedData?.effectivenessDetail?.currentRouting}
+          auditTrail={selectedData?.effectivenessDetail?.auditTrail}
         />}
         {typeId === ActivityType.REPORT && 
         <TrainingReportForm
           data={data}
           userData={selectedData?.userDetail}
-          formData={selectedData[reportType]}
+          defaultValue={selectedData[reportType]}
+
           // currentRouting={{}}
           isSubmitted
         />}
