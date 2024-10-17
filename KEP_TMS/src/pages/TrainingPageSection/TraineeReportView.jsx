@@ -45,7 +45,7 @@ const TraineeReportView = ({ data }) => {
           orientation="horizontal"
           // headerPosition="bottom"
         >
-          {data?.durationInHours >= 16 && (
+          {data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR && (
             <StepperPanel header="Training Effectiveness Form">
               <hr className="m-0" />
               <EffectivenessForm

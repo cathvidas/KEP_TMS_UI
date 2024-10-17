@@ -12,17 +12,13 @@ import ApproverAction from "../tableComponents/ApproverAction";
 const ApproverList = ({data }) => {
   const [visible, setVisible] = useState(false);
   const getStatus = (employeeBadge) => {
-    const status = data?.routing?.filter((x) => x.assignedTo === employeeBadge); // Get status for this employee
+    const status = data?.routings?.filter((x) => x.assignedTo === employeeBadge); // Get status for this employee
   
     if (status.length > 0 && status[0]?.statusId && data?.status?.id !== statusCode.SUBMITTED) {
       return getStatusById(status[0]?.statusId);
     } 
     else {
-      // if(datalist.length != routing.length && employeeBadge === others[0].employeeBadge){
-      //   return "ForApproval"
-      // }else{
         return "Pending";
-      // } // Default if no conditions matched
     }
   };
   const actionBodyTemplate = (rowData) => (

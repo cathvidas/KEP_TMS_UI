@@ -53,5 +53,6 @@ const ActivityLog = ({ items, label, isDescending }) => {
 ActivityLog.propTypes = {
   items: proptype.array,
   label: proptype.string,
+  isDescending: proptype.bool,
 };
 export default ActivityLog;

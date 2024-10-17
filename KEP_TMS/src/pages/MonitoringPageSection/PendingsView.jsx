@@ -130,6 +130,7 @@ const PendingView = ({ data, formData }) => {
               userData={selectedData?.userDetail}
               formData={selectedData[formType.property]}
               currentRouting={selectedData[formType.property]?.currentRouting}
+              auditTrail={selectedData[formType.property]?.auditTrail}
             />}
             {formType?.typeId === ActivityType.REPORT && 
             <TrainingReportForm

@@ -25,13 +25,7 @@ const GeneralTable = ({ dataTable, title, handleUpdate , dataType}) => {
     setFilters(_filters);
     setGlobalFilterValue(value);
   };
-  const handleExport =()=>{
-
-  } 
   const dt = useRef(null);
-  const exportCSV = (selectionOnly) => {
-    dt.current.exportCSV({ selectionOnly });
-};
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2 justify-content-between align-items-center">

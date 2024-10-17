@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import trainingRequestService from "../services/trainingRequestService";
 import userMapping from "../services/DataMapping/userMapping";
 import userService from "../services/userService";
-import { getRoutingActivity } from "../api/trainingServices";
 import countStatus from "../utils/countStatus";
 import handleResponseAsync from "../services/handleResponseAsync";
 import { ActivityType } from "../api/constants";
@@ -10,6 +9,7 @@ import mapUserTrainings from "../services/DataMapping/mapUserTrainings";
 import trainingReportService from "../services/trainingReportService";
 import evaluationService from "../services/evaluationService";
 import effectivenessService from "../services/effectivenessService";
+import commonService from "../services/commonService";
 
 const trainingRequestHook = {
   useTrainingRequest: (id) => {
@@ -48,7 +48,7 @@ const trainingRequestHook = {
             trainingParticipants: participants,
             trainingFacilitators: facilitators,
             requestor: requestor,
-            routing: routing,
+            routings,
             approvers,
             currentRouting : currentRouting
           });

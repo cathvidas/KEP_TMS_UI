@@ -1,14 +1,11 @@
-import { config } from "@fortawesome/fontawesome-svg-core";
 import { Button } from "primereact/button";
-import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
-import { useRef } from "react";
 import { Modal } from "react-bootstrap";
 
-const ExamConfirmDialog = ()=>{
+const ExamConfirmDialog = ({})=>{
    
 
     return(<> 
-    <Modal show={false} onHide={close} size={"md"} >
+    <Modal show={false} onHide={close} size={"md"}  >
         <Modal.Header className="border-0" closeButton>
           {/* <Modal.Title className={`h5 `}>ugsadgusd</Modal.Title> */}
         </Modal.Header>

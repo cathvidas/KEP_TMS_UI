@@ -102,8 +102,10 @@ const TrainingPage = () => {
           command: () => navigate(`/KEP_TMS/Training/${id}/Participants`),
           template: MenuItemTemplate,
           active: currentContent === 3 ? true : false,
-          disable: isAdmin ||
-          SessionGetEmployeeId() === data.requestorBadge ? false : true,
+          disable:
+            isAdmin || SessionGetEmployeeId() === data.requestorBadge
+              ? false
+              : true,
         },
         {
           label: "Reports",

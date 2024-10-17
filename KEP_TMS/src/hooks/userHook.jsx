@@ -4,7 +4,7 @@ import handleResponseAsync from "../services/handleResponseAsync";
 
 const userHook = {
     useUserById: (id) => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {

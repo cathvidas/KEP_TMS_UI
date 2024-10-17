@@ -1,4 +1,4 @@
-import { statusCode } from "../api/constants";
+import { OtherConstant, statusCode } from "../api/constants";
 import { SessionGetEmployeeId } from "../services/sessions";
 
 const countStatus = (data, userRequest) => {
@@ -49,7 +49,7 @@ const countStatus = (data, userRequest) => {
     if(isFacilitator &&(item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.PUBLISHED)){
       count.trainerAction++;
     }
-    if(isParticipant && (item?.durationInHours >= 16 || item?.status?.id === statusCode.PUBLISHED)){
+    if(isParticipant && (item?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR || item?.status?.id === statusCode.PUBLISHED)){
       count.assignedTraining++;
     }
   });
