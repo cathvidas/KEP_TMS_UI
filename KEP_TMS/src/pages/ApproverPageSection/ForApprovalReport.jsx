@@ -24,7 +24,6 @@ const ForApprovalReport = () => {
   const userData = userHook.useUserById(
     selectedData?.trainingReport?.traineeBadge
   );
-  console.log(showModal)
   const [showAnnotation, setShowAnnotation] = useState(false)
   const actionTemplate = (rowData) => (
     <>

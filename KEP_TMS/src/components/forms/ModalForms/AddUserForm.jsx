@@ -29,7 +29,6 @@ const AddUserForm = ({showForm, closeForm, userType, data, userRoles, optionList
         ?.value;
       if (isValid && userData && roleId) {
         const newData = { ...mapUserUpdateDetail(userData, optionList), roleId: roleId, updatedBy: SessionGetEmployeeId() };
-        console.log(newData)
         confirmAction({
           onConfirm: () => {
             handleResponseAsync(

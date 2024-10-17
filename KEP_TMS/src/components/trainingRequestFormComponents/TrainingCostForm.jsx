@@ -28,14 +28,12 @@ const TrainingCostForm = ({ formData, handleResponse, providersData }) => {
       setFormData((prev) => ({ ...prev, cutOffDate: "", discountedRate: 0 }));
     }
   }, [withEarlyRate]);
-  console.log(providersData);
   useEffect(() => {
     setProviders(mapProviderListToOptionFormat(providersData?.data));
   }, [providersData]);
 
   useEffect(() => {
     setTotalCost(data.trainingParticipants.length * cost);
-    console.log(totalCost, cost);
     setFormData((prev) => ({
       ...prev,
       trainingFee: cost,

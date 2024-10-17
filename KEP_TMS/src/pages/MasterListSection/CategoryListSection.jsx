@@ -11,9 +11,8 @@ import { formatDateOnly } from "../../utils/datetime/Formatting";
 
 const CategoryListSection = () => {
   const [visible, setVisible] = useState({ detail: false, form: false });
-  const { data, error, loading } = categoryHook.useAllCategories();
+  const { data, loading } = categoryHook.useAllCategories();
   const [selectedData, setSelectedData] = useState({});
-console.log(data)
   const actionTemplate = (rowData) => (
     <>
       <div className="d-flex">

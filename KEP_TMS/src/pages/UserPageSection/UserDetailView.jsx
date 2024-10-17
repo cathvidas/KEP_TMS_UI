@@ -21,7 +21,6 @@ const DetailItem = (data) => (
 const UserDetailView = ({id})=>{
     const {data, error, loading } = userHook.useUserById(id);
     const trainings = trainingRequestHook.useUserTrainingsSummary(id);
-    console.log(trainings)
     const columnItem =[
         {field: "id", header: "No",body: (_, {rowIndex})=><>{rowIndex+1}</> },
         // {field: "id", header: "Id", },

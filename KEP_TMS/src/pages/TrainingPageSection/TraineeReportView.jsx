@@ -9,7 +9,7 @@ import proptype from "prop-types";
 import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import userHook from "../../hooks/userHook";
-import { statusCode } from "../../api/constants";
+import { OtherConstant, statusCode } from "../../api/constants";
 import effectivenessHook from "../../hooks/effectivenessHook";
 import trainingReportHook from "../../hooks/trainingReportHook";
 import evaluationHook from "../../hooks/evaluationHook";
@@ -17,19 +17,15 @@ const TraineeReportView = ({ data }) => {
   const [trigger, setTrigger] = useState(0);
   const userData = userHook.useUserById(SessionGetEmployeeId());
   const getUser = data?.trainingParticipants?.find((item) => item.employeeBadge === SessionGetEmployeeId());
-
-//  const effectiveness = effectivenessHook.useEffectivenessById(9);
   const effectiveness = getUser?.effectivenessId ? effectivenessHook.useEffectivenessById(getUser.effectivenessId, trigger):{};
   const report = getUser?.reportId  ? trainingReportHook.useTrainingReportById(getUser.reportId, trigger):{};
   const evaluation = getUser?.evaluationId? evaluationHook.useEvaluationById(getUser.evaluationId, trigger):{};
   const stepperRef = useRef();
   const handleOnFinish =()=>{
-    // navigate(`/KEP_TMS/Training/${data?.id}/Reports`)
     setTimeout(() => {
     setTrigger(trigger+1)
     }, 1000);
   }
- console.log(report)
   useEffect(()=>{
     if(effectiveness?.data){
       stepperRef.current?.nextCallback();

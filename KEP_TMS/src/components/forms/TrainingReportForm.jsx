@@ -29,7 +29,6 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     traineeBadge: SessionGetEmployeeId(),
     createdBy: SessionGetEmployeeId(),
   };
-  console.log(defaultValue, data);
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -249,7 +248,7 @@ if(defaultValue){
         </div>}
       </Form>
       {isSubmitted && 
-      <ActivityLog label="Activity Logs" items={logs}/>}
+      <ActivityLog label="Activity Logs" items={logs} isDescending/>}
     </Card.Body>
   );
 };

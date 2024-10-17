@@ -67,7 +67,6 @@ const UserPage = ()=>{
       }
     }, [data, roles?.loading, departments?.loading, positions?.loading, empTypes?.loading]);
     
-    console.log(options, positions)
     const items = [{
         label: "Users",
         items:[

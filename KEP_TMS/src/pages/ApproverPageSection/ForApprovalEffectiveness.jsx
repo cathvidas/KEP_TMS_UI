@@ -61,7 +61,6 @@ const ForApprovaleffectiveness = ()=>{
         }
      })
       };
-      console.log(data)
   const columnItems = [{
     field: "id",
     header: "Request Id",

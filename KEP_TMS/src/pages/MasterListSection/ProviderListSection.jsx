@@ -15,9 +15,8 @@ import { formatDateOnly } from "../../utils/datetime/Formatting";
 
 const ProviderListSection = () => {
   const [visible, setVisible] = useState({detail: false, form: false});
-  const { data, error, loading } = providerHook.useAllProviders();
+  const { data, loading } = providerHook.useAllProviders();
   const [selectedData, setSelectedData] = useState({});
-console.log(data)
   const actionTemplate = (rowData)=><>
   <div className="d-flex"> 
   <Button type="button" size="small" text icon="pi pi-eye" severity="help" className="rounded-circle" onClick={()=>handleOnclick(rowData.id)}/>

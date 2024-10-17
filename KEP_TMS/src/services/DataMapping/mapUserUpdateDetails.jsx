@@ -1,5 +1,4 @@
 const mapUserUpdateDetail = (data, options) => {
-  console.log(options,data)
   return {
     id: data.id,
     username: data?.username,

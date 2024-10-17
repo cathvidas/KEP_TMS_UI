@@ -9,9 +9,8 @@ import { SessionGetEmployeeId } from "../services/sessions"
 
 
 const TrainerPage =()=>{
-  const {data, error, loading} = trainingRequestHook.useParticipantTrainings(SessionGetEmployeeId(),'trainer');
+  const {data, loading} = trainingRequestHook.useParticipantTrainings(SessionGetEmployeeId(),'trainer');
   const updatedData = data?.filter(item=> item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.PUBLISHED)
-  console.log(data, updatedData)
     const Content =() =>(<div className="p-3">
       {loading ? <><SkeletonBanner/><SkeletonDataTable/></>:<>
       <SectionBanner title="Assigned Trainings" subtitle="List of Trainings Assigned to you"/>

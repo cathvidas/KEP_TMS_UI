@@ -31,7 +31,6 @@ const ExamSection=()=> {
           const response = await uploadFile(formData);
           if (response.isSuccess) {
             setUsers(response.data.users);
-            console.log(response)
             if(response.message === ""){
               setSuccess("Successfully retrieved users.")
             }else{

@@ -18,7 +18,6 @@ const SearchBar = ({handleOnInput, options}) => {
     setFilter({...filter, value: filter.department})
   }, [filter.department])
 
-console.log(filter)
   return (
     <>
       <div className="form-group position-relative z-1">

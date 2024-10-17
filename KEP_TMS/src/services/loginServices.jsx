@@ -8,7 +8,6 @@ const handleUserLogin = async (data) => {
     var res = await checkUserCredentials(data);
     if (res.isSuccess === true) {
       const data = res.data;
-      console.log(data);
       SessionSetReference(data);
       return true
     } else{  

@@ -42,7 +42,6 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
     if(validForm){
     setFiles([...files,...newFiles]);}
   //  newFiles.map(x=>{
-  //     console.log(x)
   //     //write code that will show an error if the file is not in pdf format
   //     if(!x.name.includes('pdf')){
   //       setErrors({...errors, [x.file]:  "Upload only pdf files" })

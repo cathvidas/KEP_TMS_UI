@@ -14,7 +14,6 @@ const ParticipantsView = ({ data }) => {
       </>
     );
   };
-  console.log(trainingForms,data);
   return (
     <>
       <SectionHeading

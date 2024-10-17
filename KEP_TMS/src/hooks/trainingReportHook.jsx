@@ -72,7 +72,6 @@ const trainingReportHook = {
               const response = await trainingReportService.getTrainingReportById(
                 item?.reportId ? item.reportId : 0
               );
-              console.log(response)
               return { userDetail: item, reportDetail: response };
             })
           ),

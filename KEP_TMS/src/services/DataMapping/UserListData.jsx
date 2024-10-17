@@ -1,7 +1,6 @@
 import { getUserApi } from "../../api/userApi";
 
 export const mapUserListAsync = (users, property)=>{
-    console.log(users, property)
     const getUser = async () =>{
         try{ 
             const participants = await Promise.all(

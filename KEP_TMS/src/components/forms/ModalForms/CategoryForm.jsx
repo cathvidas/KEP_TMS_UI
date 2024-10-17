@@ -18,7 +18,6 @@ const CategoryForm = ({ handleShow, handleClose, selectedData }) => {
     { label: "Active", value: statusCode.ACTIVE },
     { label: "Inactive", value: statusCode.INACTIVE },
   ])
-console.log(formData, selectedData)
   const handleOnChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

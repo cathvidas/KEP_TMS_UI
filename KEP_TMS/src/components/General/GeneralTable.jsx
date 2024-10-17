@@ -16,7 +16,6 @@ const GeneralTable = ({ dataTable, title, handleUpdate , dataType}) => {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-console.log(dataType)
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     let _filters = { ...filters };
@@ -51,11 +50,7 @@ console.log(dataType)
       </div>
     );
   };
-  const action = (s) => {
-    console.log(s);
-  };
   const handleDelete = async (id) => {
-    console.log(id)
     try{
       const res = dataType === "Categories" ? await deleteTrainingCategory(id): null;
       if(res?.isSuccess){

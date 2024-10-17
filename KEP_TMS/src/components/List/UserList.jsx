@@ -44,7 +44,6 @@ export const UserList = ({
     const effec = effectivenessHook.useEffectivenessById(
       rowData.effectivenessId
     );
-    console.log(effec)
     return (
       <>
         {StatusColor({

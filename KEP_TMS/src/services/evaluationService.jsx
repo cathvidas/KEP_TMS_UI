@@ -3,7 +3,6 @@ import { createTrainingEvaluationApi, getAllTrainingEvaluationApi, getTrainingEv
 const evaluationService = {
     createTrainingEvaluation: async (data)=>{
         const response = await createTrainingEvaluationApi(data);
-        console.log(response)
         if(response.status === 400){
           throw new Error(response.title);
         }

@@ -25,7 +25,6 @@ const TrainingRequestPage = () => {
   const { data, error, loading } = trainingRequestHook.useTrainingRequest(
     parseInt(id)
   );
-  console.log(data)
   const [currentContent, setCurrentContent] = useState();
   const items = [
     {

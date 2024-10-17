@@ -14,8 +14,6 @@ import { TrainingType } from "../api/constants";
 const MasterListPage = () => {
   const page = useParams();
   const [currentContent, setCurrentContent] = useState(0);
-  const [selectedData, setSelectedData] = useState();
-  console.log(currentContent);
   const navigate = useNavigate();
   const items = [
     {

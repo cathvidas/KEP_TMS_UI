@@ -15,13 +15,11 @@ export const SessionGetDepartment = () => {
 };
 export const SessionGetUserId = () => {
   const id = sessionStorage.getItem("id");
-  console.log(id)
   if (id == null) return new Error("User not found, please log in again!");
   return parseInt(id) ;
 };
 
 export const SessionSetReference=(data)=>{
-  console.log(data)
   sessionStorage.setItem("fullname", `${data.lastname}, ${data.firstname}`);
   sessionStorage.setItem("username", data.username);
   sessionStorage.setItem("firstname", data.firstname);
@@ -31,7 +29,6 @@ export const SessionSetReference=(data)=>{
   sessionStorage.setItem("employeeId", data.employeeBadge);
   sessionStorage.setItem("role", data.roleName);
   sessionStorage.setItem("department", data.departmentName);
-  console.log(data)
 }
 
 export const ClearSessions=()=>{

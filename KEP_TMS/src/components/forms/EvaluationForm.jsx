@@ -38,7 +38,6 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
     facilitatorRating: facilitatorRating,
     createdBy: SessionGetEmployeeId()
   }
-  // console.log(getFormData)
   const handleOnChange = (value, name, field, setField) => {
     setField({ ...field, [name]: value });
   }

@@ -75,13 +75,10 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
   };
 
   const removeSchedule = (index) => {
-    console.log(index);
     const updatedSchedules = trainingSchedules.filter((item, i) => i !== index);
-    console.log(updatedSchedules);
     setTrainingSchedules(updatedSchedules);
   };
 
-  console.log(trainingSchedules)
   return (
     <>
       <Row className="mt-2">

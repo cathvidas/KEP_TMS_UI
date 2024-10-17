@@ -90,7 +90,6 @@ const ExamSection = ({ data }) => {
     });
   };
   const updateExamQuestion = (data)=>{
-    console.log(data)
   }
   return (
     <>

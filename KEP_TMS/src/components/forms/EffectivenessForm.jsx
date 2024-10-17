@@ -127,7 +127,6 @@ const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting
       validCharacteristic = false;
     } else {
       numItems.forEach((i) => {
-        // console.log(performanceCharacteristics.rating[i] )
         if (!performanceCharacteristics[i]?.content && validCharacteristic) {
           formErrors.performanceCharacteristics = `Performance characteristic ${
             i + 1

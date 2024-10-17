@@ -22,7 +22,6 @@ const AllUserPageSection = ({userType, data, options, isFilter})=>{
    const filterdata =()=>{
     return userType ? data?.filter(item=>  item.roleName === userType) : data
    }
-   console.log(defaultValue)
     const actionTemplate = (rowData) => (
       <>
         <Button
@@ -62,7 +61,6 @@ const AllUserPageSection = ({userType, data, options, isFilter})=>{
     const handleRemoveUser = (data)=>{
         const roleId = options?.options?.roles?.filter(role=>role.label === UserTypeValue.TRAINEE)?.[0]?.value;
         const newData = {...mapUserUpdateDetail(data, options?.options), roleId: roleId, updatedBy: SessionGetEmployeeId()}
-        console.log(newData)
         confirmAction({
             title: "Confirm Remove?",
             text: `Are you sure you want to remove this user as ${userType}?`,

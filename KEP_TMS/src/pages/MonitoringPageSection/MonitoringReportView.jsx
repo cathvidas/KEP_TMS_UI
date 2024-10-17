@@ -13,7 +13,6 @@ import getStatusById from "../../utils/status/getStatusById";
 const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formData, typeId }) => {
     const [showForm, setShowForm] = useState(false);
     const [selectedData, setSelectedData] = useState({});
-    console.log(formData)
   const actionTemplate = (rowData) => {
     return (
       <>

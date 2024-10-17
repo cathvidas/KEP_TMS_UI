@@ -75,7 +75,6 @@ const effectivenessHook = {
               const response = await effectivenessService.getEffectivenessById(
                 item?.effectivenessId ? item.effectivenessId : 0
               );
-              console.log(response)
               return { userDetail: item, reportDetail: response };
             })
           ),

@@ -102,11 +102,10 @@ const trainingRequestHook = {
                 return {
                   ...request,
                   trainingFacilitators: facilitators,
-                  routing: routing, // Replace with detailed facilitator information
+                  routing, // Replace with detailed facilitator information
                 };
               })
             );
-            console.log(updatedRequests)
             setData(type!= null? updatedRequests.filter(x=> x?.trainingType?.id === type):updatedRequests)
 
           },
@@ -249,7 +248,6 @@ const trainingRequestHook = {
               const report = item?.reportId? await trainingReportService.getTrainingReportById(item.reportId):{};
               const evluation = item?.evaluationId ? await evaluationService.getTrainingEvaluationById(item.evaluationId):{};
               const effectiveness =item?.effectivenessId ? await effectivenessService.getEffectivenessById(item.effectivenessId):{};
-              console.log(effectiveness)
               return { userDetail: item, reportDetail: report, effectivenessDetail: effectiveness, evaluationDetail: evluation};
             })
           ),
