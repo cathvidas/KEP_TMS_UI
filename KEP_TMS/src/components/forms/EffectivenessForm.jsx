@@ -16,6 +16,8 @@ import {
 import { SessionGetEmployeeId } from "../../services/sessions";
 import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
+import ActivityLog from "../General/ActivityLog";
+import activityLogHook from "../../hooks/activityLogHook";
 const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting, auditTrail}) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
@@ -195,6 +197,7 @@ const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting
   useEffect(()=>{
     setIsAfter(getAfterTrainingDate() >= formatDateOnly(new Date(), "dash"));
   },[getAfterTrainingDate])
+const logs = activityLogHook.useReportsActivityLog(formData);
   return (
     <>
       <Card.Body>
@@ -467,6 +470,10 @@ const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting
               disabled={!isAfter}
             ></textarea>
           </Form.Group>
+          {isSubmitted &&
+          <>
+          <br />
+          <ActivityLog label="Activity Logs" items={logs} isDescending/></>}
           {data?.trainingParticipants?.some(
             (x) => x.employeeBadge === SessionGetEmployeeId()
           ) &&

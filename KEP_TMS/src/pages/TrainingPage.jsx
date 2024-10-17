@@ -14,34 +14,59 @@ import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import MonitoringReportView from "./MonitoringPageSection/MonitoringReportView";
 import OverviewSection from "./RequestPageSection/OverviewSection";
 import trainingRequestHook from "../hooks/trainingRequestHook";
+import activityLogHook from "../hooks/activityLogHook";
+import ActivityLogView from "./TrainingPageSection/ActivityLogView";
 const TrainingPage = () => {
   const { id, page } = useParams();
   const { data, error, loading } = trainingRequestHooks.useTrainingRequest(
     parseInt(id)
   );
-  const isFacilitator = data?.trainingFacilitators?.some(item=> item?.employeeBadge === SessionGetEmployeeId())
-  const isAdmin = SessionGetRole() ==="Admin" || SessionGetRole() ==="SuperAdmin" ? true : false;
-  const isTrainee = data?.trainingParticipants?.find(user=>user.employeeBadge === SessionGetEmployeeId())
+  const isFacilitator = data?.trainingFacilitators?.some(
+    (item) => item?.employeeBadge === SessionGetEmployeeId()
+  );
+  const isAdmin =
+    SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin"
+      ? true
+      : false;
+  const isTrainee = data?.trainingParticipants?.find(
+    (user) => user.employeeBadge === SessionGetEmployeeId()
+  );
   const [currentContent, setCurrentContent] = useState(0);
-  const trainingForms = trainingRequestHook.useAllParticipantsReports(data?.trainingParticipants ?? []) 
+  const trainingForms = trainingRequestHook.useAllParticipantsReports(
+    data?.trainingParticipants ?? []
+  );
+
+  const logs = activityLogHook.useTrainingRequestActivityLogs(
+    data,
+    trainingForms?.data
+  );
   const pageContent = [
-      <OverviewSection key={0} data={data} showParticipants={isFacilitator === true ? isFacilitator : isAdmin} showFacilitators={isAdmin} showApprovers={isAdmin}/>,
-      <ModuleView key={1} reqId={data.id} />,
-      <ExamView key={2}/>,
-      <PendingView key={3} data={data} formData={trainingForms} />,
-      <TraineeReportView key={4} data={data}/>,
-      // <PendingView key={5} data={data}/>,
-      <MonitoringReportView key={5} data={data}/>,
+    <OverviewSection
+      key={0}
+      data={data}
+      showParticipants={isFacilitator === true ? isFacilitator : isAdmin}
+      showFacilitators={isAdmin}
+      showApprovers={isAdmin}
+    />,
+    <ModuleView key={1} reqId={data.id} />,
+    <ExamView key={2} />,
+    <PendingView key={3} data={data} formData={trainingForms} />,
+    <TraineeReportView key={4} data={data} />,
+    <MonitoringReportView key={5} data={data} />,
+    <ActivityLogView key={6} logs={logs} />,
   ];
-  // console.log(trainingForms,data)
-  useEffect(()=>{
-    if(data?.status?.id === statusCode.SUBMITTED){
-      const hasPendings = trainingForms?.data?.some(item=> item?.effectivenessDetail?.currentRouting?.statusId != statusCode.APPROVED)
-     if(!hasPendings){
-      // const reponse =  trainingRequestService.updateTrainingRequest({...mapTrainingRequestDetails(data), statusId: ""})
-     }
+  useEffect(() => {
+    if (data?.status?.id === statusCode.SUBMITTED) {
+      const hasPendings = trainingForms?.data?.some(
+        (item) =>
+          item?.effectivenessDetail?.currentRouting?.statusId !=
+          statusCode.APPROVED
+      );
+      if (!hasPendings) {
+        // const reponse =  trainingRequestService.updateTrainingRequest({...mapTrainingRequestDetails(data), statusId: ""})
+      }
     }
-  },[trainingForms?.data])
+  }, [trainingForms?.data]);
   const navigate = useNavigate();
   const items = [
     {
@@ -86,39 +111,54 @@ const TrainingPage = () => {
           command: () => navigate(`/KEP_TMS/Training/${id}/Reports`),
           template: MenuItemTemplate,
           active: currentContent === 4 ? true : false,
-          notifBadge: (data?.status?.id === statusCode.SUBMITTED && isTrainee && isTrainee?.effectivenessId === null) ||
-          (data?.status?.id === statusCode.PUBLISHED && isTrainee && (isTrainee?.reportId === null || isTrainee?.evaluationId === null))
-          ? true : false,   
-          disable: !isTrainee
+          notifBadge:
+            (data?.status?.id === statusCode.SUBMITTED &&
+              isTrainee &&
+              isTrainee?.effectivenessId === null) ||
+            (data?.status?.id === statusCode.PUBLISHED &&
+              isTrainee &&
+              (isTrainee?.reportId === null ||
+                isTrainee?.evaluationId === null))
+              ? true
+              : false,
+          disable: !isTrainee,
+        },
+        {
+          label: "Activity Log",
+          icon: "pi pi-address-book",
+          command: () => navigate(`/KEP_TMS/Training/${id}/Logs`),
+          template: MenuItemTemplate,
+          active: currentContent === 6 ? true : false,
+          disable: !isAdmin,
         },
       ],
     },
   ];
   useEffect(() => {
-    
     if (page === "Modules") {
       setCurrentContent(1);
     } else if (page === "Exams") {
       setCurrentContent(2);
     } else if (page === "Participants") {
       setCurrentContent(3);
-    }else if (page === "Reports") {
-      setCurrentContent( 4);
+    } else if (page === "Reports") {
+      setCurrentContent(4);
     } else if (page === "Pendings") {
       setCurrentContent(5);
-    }  else if (page === "Effectiveness") {
+    } else if (page === "Effectiveness") {
       setCurrentContent(5);
-    }else if (page === "Evaluation" ) {
+    } else if (page === "Evaluation") {
       setCurrentContent(5);
+    } else if (page === "Logs") {
+      setCurrentContent(6);
     } else {
-        setCurrentContent( 0);
+      setCurrentContent(0);
     }
   }, [page]);
   const bodyContent = () => {
     return (
       <div className={`d-flex g-0`}>
-        
-        <MenuContainer itemList={items}/>
+        <MenuContainer itemList={items} />
         {loading ? (
           <SkeletonBanner />
         ) : error ? (

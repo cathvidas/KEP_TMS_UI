@@ -36,7 +36,7 @@ const trainingRequestHook = {
           const requestor = await userService.getUserById(
             response.requestorBadge
           );
-          const routing = await getRoutingActivity(response.id, 1);
+          const routings = await commonService.getRoutingActivityWithAuditTrail(response.id, ActivityType.REQUEST);
           const approver =
           await trainingRequestService.getCurrentRoutingActivity(
             response.id,
