@@ -37,3 +37,7 @@ export const UserTypeValue = {
   SUPER_ADMIN: "SuperAdmin",
   APPROVER: "Approver",
 }
+
+export const OtherConstant = {
+  EFFECTIVENESS_MINHOUR : 16
+}

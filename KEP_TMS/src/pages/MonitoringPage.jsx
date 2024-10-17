@@ -7,7 +7,7 @@ import MenuContainer from "../components/menus/MenuContainer";
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
 import Layout from "../components/General/Layout";
 import trainingRequestHook from "../hooks/trainingRequestHook";
-import { ActivityType } from "../api/constants";
+import { ActivityType, OtherConstant } from "../api/constants";
 
 const MonitoringPage = () => {
   const { id, page } = useParams();
@@ -48,7 +48,7 @@ const MonitoringPage = () => {
         command: () => navigate(`/KEP_TMS/TrainingMonitoring/${id}/Effectiveness`),
         template: MenuItemTemplate,
         active: currentContent === 2 ? true : false,
-        disable: data?.durationInHours >= 16 ? false: true
+        disable: data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR ? false: true
       },
     {
       label: "Reports",

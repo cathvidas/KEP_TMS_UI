@@ -3,7 +3,7 @@ import StatusColor from "../../components/General/StatusColor";
 import proptype from "prop-types";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
-import { ActivityType } from "../../api/constants";
+import { ActivityType, OtherConstant } from "../../api/constants";
 import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import { Card } from "react-bootstrap";
 import { Button } from "primereact/button";
@@ -56,7 +56,7 @@ const PendingView = ({ data, formData }) => {
       field: "Effectiveness",
       header: "Effectiveness",
       body: (rowData) => (
-        <> {data?.durationInHours >= 16 ? 
+        <> {data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR ? 
           StatusColor({
             status: getStatusById(rowData?.effectivenessDetail?.currentRouting?.statusId) ?? "Pending",
             showStatus: true,
