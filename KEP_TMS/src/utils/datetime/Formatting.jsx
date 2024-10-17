@@ -45,3 +45,9 @@ export const formatDateString = (value) => {
     const date = new Date(value);
     return FormatDate(date.toISOString().split('T')[0]);
 }
+export const formatSeconds = (value)=>{
+    const minute = Math.floor(value / 60)
+    const hour = Math.floor(minute / 60);
+    const seconds = Math.floor(value - (minute * 60))
+    return `${ hour <10 ? "0" + hour : hour}:${ minute <10 ? "0" + minute : minute }:${seconds <10 ? "0" + seconds :seconds}`
+}

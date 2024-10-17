@@ -10,7 +10,7 @@ const examService ={
     },
     getExamByRequestId: async (id)=>{
         const response = await getExamByRequestIdApi(id);
-        return response?.status === 1 ? response?.data : {};
+        return response?.status === 1 ? response?.data : [];
     }
 }
 export default examService;

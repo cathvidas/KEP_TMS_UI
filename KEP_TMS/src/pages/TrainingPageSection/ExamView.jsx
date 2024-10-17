@@ -1,78 +1,76 @@
 import proptype from "prop-types";
 import { SectionHeading } from "../../components/General/Section";
-import { Stepper } from "primereact/stepper";
-import { StepperPanel } from "primereact/stepperpanel";
-import { useRef } from "react";
-import { Button } from "primereact/button";
+import { useState } from "react";
 import ExamConfirmDialog from "../../components/Modal/ExamConfirmDialog";
-const ExamView = ({ exams }) => {
-  const stepperRef = useRef();
+import { Button } from "primereact/button";
+import { Card } from "primereact/card";
+import { Row } from "react-bootstrap";
+import cardHeaderImg from "../../img/examHeader.png";
+import TraineeExamForm from "../../components/forms/ModalForms/TraineeExamForm";
+import examHook from "../../hooks/examHook";
+import SkeletonList from "../../components/Skeleton/SkeletonList";
+const ExamView = ({ data }) => {
+  const [showDialog, setShowDialog] = useState(false);
+  const [showExam, setShowExam] = useState(false);
+  const [selectedExam, setSelectedExam] = useState({})
+  const exam = examHook.useExamByRequestId(data?.id)
+  console.log(exam)
   return (
     <>
       <SectionHeading title="Exams" icon={<i className="pi pi-box"></i>} />
-      <Stepper
-        linear
-        ref={stepperRef}
-        style={{ flexBasis: "50rem" }}
-        orientation="vertical"
-      >
-        <StepperPanel header="Header I">
-          <div className="flex flex-column h-12rem">
-            <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
-              Content I
+      
+      {showExam ? (
+        <TraineeExamForm data={selectedExam} />
+      ):
+      <>
+      <Row className="row-cols-1 row-cols-md-2 g-0">
+        {exam?.loading ? <SkeletonList/>:
+        exam?.exams?.map(item =>
+          <>
+        <Card
+          title={item?.title}
+          subTitle={`${item?.examQuestion?.length} Questions`}
+          footer={
+            <div className="text-end">
+              <Button
+                label="View Details"
+                severity="secondary"
+                icon="pi pi-eye"
+                size="small"
+                text
+                className="rounded"
+              />
+              <Button
+                type="button"
+                label="Take Exam"
+                size="small"
+                icon="pi pi-pen-to-square"
+                className="ms-2 rounded theme-bg"
+                onClick={() => {setShowDialog(true);
+                  setSelectedExam(item)
+                }}
+              />
             </div>
-          </div>
-          <div className="flex py-4">
-            <Button
-              label="Next"
-              icon="pi pi-arrow-right"
-              iconPos="right"
-              onClick={() => stepperRef.current.nextCallback()}
-            />
-          </div>
-        </StepperPanel>
-        <StepperPanel header="Header II">
-          <div className="flex flex-column h-12rem">
-            <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
-              Content II
-            </div>
-          </div>
-          <div className="flex py-4 gap-2">
-            <Button
-              label="Back"
-              severity="secondary"
-              icon="pi pi-arrow-left"
-              onClick={() => stepperRef.current.prevCallback()}
-            />
-            <Button
-              label="Next"
-              icon="pi pi-arrow-right"
-              iconPos="right"
-              onClick={() => stepperRef.current.nextCallback()}
-            />
-          </div>
-        </StepperPanel>
-        <StepperPanel header="Header III">
-          <div className="flex flex-column h-12rem">
-            <div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
-              Content III
-            </div>
-          </div>
-          <div className="flex py-4">
-            <Button
-              label="Back"
-              severity="secondary"
-              icon="pi pi-arrow-left"
-              onClick={() => stepperRef.current.prevCallback()}
-            />
-          </div>
-        </StepperPanel>
-      </Stepper>
-      <ExamConfirmDialog />
+          }
+          header={<img alt="Card" src={cardHeaderImg} />}
+          className="md:w-25rem"
+        >
+        
+        </Card>
+          </>
+        )
+        }
+      </Row>
+      <ExamConfirmDialog
+        handleClose={() => setShowDialog(false)}
+        handleShow={showDialog}
+        handleOnclick={()=>setShowExam(true)}
+      />
+      </>}
     </>
   );
 };
 ExamView.propTypes = {
-  exam: proptype.array,
+  data: proptype.object,
 };
 export default ExamView;

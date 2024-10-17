@@ -49,7 +49,7 @@ const TrainingPage = () => {
       showApprovers={isAdmin}
     />,
     <ModuleView key={1} reqId={data.id} />,
-    <ExamView key={2} />,
+    <ExamView key={2} data={data}/>,
     <PendingView key={3} data={data} formData={trainingForms} />,
     <TraineeReportView key={4} data={data} />,
     <MonitoringReportView key={5} data={data} />,
