@@ -3,7 +3,7 @@ import { faFile } from "@fortawesome/free-solid-svg-icons";
 import Layout from "../components/General/Layout.jsx";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { statusCode } from "../api/constants.jsx";
+import { statusCode, UserTypeValue } from "../api/constants.jsx";
 import OverviewSection from "./RequestPageSection/OverviewSection.jsx";
 import ModuleSection from "./RequestPageSection/ModuleSection.jsx";
 import ExamSection from "./RequestPageSection/ExamSection.jsx";
@@ -12,7 +12,7 @@ import TraineeReportView from "./TrainingPageSection/TraineeReportView.jsx";
 import SkeletonList from "../components/Skeleton/SkeletonList.jsx";
 import MenuContainer from "../components/menus/MenuContainer.jsx";
 import MenuItemTemplate from "../components/General/MenuItemTemplate.jsx";
-import { SessionGetEmployeeId } from "../services/sessions.jsx";
+import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions.jsx";
 import { actionSuccessful, confirmAction } from "../services/sweetalert.jsx";
 import handleResponseAsync from "../services/handleResponseAsync.jsx";
 import trainingRequestService from "../services/trainingRequestService.jsx";
@@ -22,7 +22,7 @@ import { validateTrainingRequestForm } from "../services/inputValidation/validat
 const TrainingRequestPage = () => {
   const navigate = useNavigate();
   const { id, page } = useParams();
-  const { data, error, loading } = trainingRequestHook.useTrainingRequest(
+  const { data, loading } = trainingRequestHook.useTrainingRequest(
     parseInt(id)
   );
   const [currentContent, setCurrentContent] = useState();
@@ -104,7 +104,7 @@ const checkIfFacilitator= ()=>{
     }
     return (
       <>  <div className={`d-flex g-0`}>
-          {(data.status?.id === statusCode.APPROVED && checkIfFacilitator() === true) && (<>
+          {(data.status?.id === statusCode.APPROVED && (checkIfFacilitator() === true || SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.SUPER_ADMIN)) && (<>
             <MenuContainer itemList={items} action={ <Button type="button" label="Publish" size="small" severity="info" className="rounded py-1 ms-3" onClick={handlePublish}/>}/>
             </>
           )}

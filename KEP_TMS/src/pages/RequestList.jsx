@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 import getStatusCode from "../utils/status/getStatusCode";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
-import getStatusById from "../utils/status/getStatusById";
 import { statusCode } from "../api/constants";
+import { MeterGroup } from 'primereact/metergroup';
 const RequestList = () => {
   const { type } = useParams();
   const { data, error, loading } =
@@ -37,6 +37,12 @@ const RequestList = () => {
       setRequests(data);
     }
   }, [filter.value, type, data]);
+  const values = [
+    { label: 'Approved', color: '#34d399', value: 16 },
+    { label: 'Published', color: '#fbbf24', value: 8 },
+    { label: 'For Approval', color: '#60a5fa', value: 24 },
+    { label: 'System', color: '#c084fc', value: 10 }
+];
   const Content = () => (
     <>
       <div className="p-3">
@@ -49,12 +55,17 @@ const RequestList = () => {
             <SkeletonDataTable />
           )
         ) : (
-          <TRequestTable
-            userType={"user"}
-            data={requests}
-            filter={filter}
-            handleActionFilter={setFilter}
-          />
+          <>
+            {/* <div className="card flex justify-content-center"> */}
+              <MeterGroup values={values} max="200" />
+            {/* </div> */}
+            <TRequestTable
+              userType={"user"}
+              data={requests}
+              filter={filter}
+              handleActionFilter={setFilter}
+            />
+          </>
         )}
       </div>
     </>

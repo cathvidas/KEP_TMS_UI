@@ -137,12 +137,12 @@ const ProviderListSection = () => {
               <h6>Category: </h6>
               <p>{selectedData?.categoryName}</p>
               <h6>Address: </h6>
-              <p className="mb-0"><i>Building: </i> {selectedData?.address?.building}</p>
-              <p className="mb-0"><i>Street: </i> {selectedData?.address?.street}</p>
-              <p className="mb-0"><i>Barangay: </i> {selectedData?.address?.barangay}</p>
-              <p className="mb-0"><i>Landmark: </i> {selectedData?.address?.landmark}</p>
-              <p className="mb-0"><i>Municipality: </i> {selectedData?.address?.city_Municipality}</p>
-              <p className="mb-0"><i>Country: </i> {selectedData?.address?.country}</p>
+              <p><i>Building: </i> {selectedData?.address?.building}</p>
+              <p><i>Street: </i> {selectedData?.address?.street}</p>
+              <p><i>Barangay: </i> {selectedData?.address?.barangay}</p>
+              <p><i>Landmark: </i> {selectedData?.address?.landmark}</p>
+              <p><i>Municipality: </i> {selectedData?.address?.city_Municipality}</p>
+              <p><i>Country: </i> {selectedData?.address?.country}</p>
               <p><i>Postal Code: </i> {selectedData?.address?.postalCode}</p>
               <h6>Status: </h6>
               <p>{selectedData?.statusName}</p>

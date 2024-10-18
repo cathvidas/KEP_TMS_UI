@@ -1,22 +1,13 @@
 import { SectionBanner } from "../../components/General/Section";
-import { useEffect, useRef, useState } from "react";
-import {
-  getTrainingRequestByApprover,
-} from "../../api/trainingServices";
+import { useEffect, useState } from "react";
 import { SessionGetEmployeeId } from "../../services/sessions";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import { getUserApi } from "../../api/userApi";
-import { IconField } from "primereact/iconfield";
-import { InputIcon } from "primereact/inputicon";
-import { InputText } from "primereact/inputtext";
-import { Button } from "primereact/button";
-import { FilterMatchMode } from "primereact/api";
 import StatusColor from "../../components/General/StatusColor";
 import { mapForApprovalRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
 import ApproverAction from "../../components/tableComponents/ApproverAction";
 import CommonTable from "../../components/General/CommonTable";
+import trainingRequestService from "../../services/trainingRequestService";
 
 const ForApprovalRequest = () => {
   const [request, setRequest] = useState([]);
@@ -24,7 +15,7 @@ const ForApprovalRequest = () => {
   useEffect(() => {
     const getRequest = async () => {
       try {
-        const res = await getTrainingRequestByApprover(SessionGetEmployeeId());
+        const res = await trainingRequestService.getTrainingRequestByApprover(SessionGetEmployeeId());
         const mappedData = mapForApprovalRequestToTableData(res);
         const updated = await Promise.all(
           mappedData.map(async (x) => {
@@ -40,25 +31,7 @@ const ForApprovalRequest = () => {
     getRequest();
   }, [trigger]);
 
-  const [filters, setFilters] = useState({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  });
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
 
-  const onGlobalFilterChange = (e) => {
-    const value = e.target.value;
-    let _filters = { ...filters };
-
-    _filters["global"].value = value;
-
-    setFilters(_filters);
-    setGlobalFilterValue(value);
-  };
-  const datatable = useRef(null);
-  const exportCSV = (selectionOnly) => {
-    datatable.current.exportCSV({ selectionOnly });
-  };
-  
   const actionTemplate = (data) => {
     return (
        <ApproverAction reqId={data.id} onFinish={refreshData} hasView/>
@@ -119,35 +92,12 @@ const ForApprovalRequest = () => {
        body: actionTemplate
     },
   ];
-  const renderHeader = () => {
-    return (
-      <div className="flex flex-wrap gap-2  align-items-center">
-        <h6 className="m-0 me-auto">Recent Requests</h6>
-        <IconField iconPosition="left">
-          <InputIcon className="pi pi-search" />
-          <InputText
-            value={globalFilterValue}
-            onChange={onGlobalFilterChange}
-            placeholder="Keyword Search"
-          />
-        </IconField>
-        <Button
-          icon="pi pi-download"
-          text
-          className="rounded"
-          onClick={() => exportCSV(false)}
-        />
-      </div>
-    );
-  };
-
   const refreshData= ()=>{
     
     setInterval(() => {
       setTrigger(trigger+1)
     }, 2000);
   }
-  const header = renderHeader();
 
   return (
     <div className="p-3">

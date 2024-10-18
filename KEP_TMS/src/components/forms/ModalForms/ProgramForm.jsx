@@ -2,14 +2,11 @@ import { Row, Col, Form, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import proptype from "prop-types";
 import { Button } from "primereact/button";
-import {
-  insertTrainingProgram,
-  updateTrainingProgram,
-} from "../../../api/trainingServices";
 import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import { SessionGetEmployeeId } from "../../../services/sessions";
 import Select from "react-select";
 import { statusCode } from "../../../api/constants";
+import programService from "../../../services/programService";
 const ProgramForm = ({ handleShow, handleClose, selectedData }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
@@ -68,8 +65,8 @@ const ProgramForm = ({ handleShow, handleClose, selectedData }) => {
             };
       const res =
         selectedData != null
-          ? await updateTrainingProgram(data)
-          : await insertTrainingProgram(data);
+          ? await programService.updateTrainingProgram(data)
+          : await programService.createProgram(data);
       if (res.isSuccess) {
         handleClose();
         actionSuccessful(res.message);

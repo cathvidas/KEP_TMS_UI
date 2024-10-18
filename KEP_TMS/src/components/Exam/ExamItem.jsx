@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 export const ExamItem = ({ itemNo, question, options, onAnswer }) => {
   const [chosen, setChosen] = useState(null);
   useEffect(() => {
-    onAnswer(chosen);
+    if(onAnswer){
+    onAnswer(chosen);}
   }, [chosen]);
   return (
     <>

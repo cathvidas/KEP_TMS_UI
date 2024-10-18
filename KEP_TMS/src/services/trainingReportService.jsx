@@ -1,4 +1,4 @@
-import { approveTrainingFormApi } from "../api/commonApi";
+import { approveTrainingFormApi, getCurrentRoutingActivityApi } from "../api/commonApi";
 import { ActivityType } from "../api/constants";
 import {
   createTrainingReportApi,
@@ -6,7 +6,6 @@ import {
   getApproverAssignedReportsApi,
   getTrainingReportByIdApi,
 } from "../api/trainingReportApi";
-import { getCurrentRoutingActivity } from "../api/trainingServices";
 import commonService from "./commonService";
 import userMapping from "./DataMapping/userMapping";
 import userService from "./userService";
@@ -28,7 +27,7 @@ const trainingReportService = {
     if(response?.status === 1){
       const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.REPORT)
       const routingWithDetail = await userMapping.mapUserIdList(routings, "assignedTo", [{label: "assignedName",value:"fullname"}]);
-      const currentRouting = await getCurrentRoutingActivity(response?.data?.id, ActivityType.REPORT);
+      const currentRouting = await getCurrentRoutingActivityApi(response?.data?.id, ActivityType.REPORT);
       const approverDetail =await userService.getUserById(currentRouting?.assignedTo)
       const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.REPORT)
       return {...response?.data, routings: routingWithDetail, currentRouting: {...currentRouting, assignedDetail: approverDetail}, auditTrail};

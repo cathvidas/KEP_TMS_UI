@@ -16,6 +16,7 @@ import OverviewSection from "./RequestPageSection/OverviewSection";
 import trainingRequestHook from "../hooks/trainingRequestHook";
 import activityLogHook from "../hooks/activityLogHook";
 import ActivityLogView from "./TrainingPageSection/ActivityLogView";
+import getPassingScore from "../utils/common/getPassingScore";
 const TrainingPage = () => {
   const { id, page } = useParams();
   const { data, error, loading } = trainingRequestHooks.useTrainingRequest(
@@ -35,7 +36,6 @@ const TrainingPage = () => {
   const trainingForms = trainingRequestHook.useAllParticipantsReports(
     data?.trainingParticipants ?? []
   );
-
   const logs = activityLogHook.useTrainingRequestActivityLogs(
     data,
     trainingForms?.data
@@ -161,18 +161,18 @@ const TrainingPage = () => {
     return (
       <div className={`d-flex g-0`}>
         <MenuContainer itemList={items} />
-        {loading ? (
-          <SkeletonBanner />
-        ) : error ? (
-          "Error while processing your request"
-        ) : (
-          <div
-            className={`border-start p-3 pb-5 flex-grow-1`}
-            style={{ minHeight: "calc(100vh - 50px)" }}
-          >
-            {pageContent[currentContent]}
-          </div>
-        )}
+        <div
+          className={`border-start p-3 pb-5 flex-grow-1`}
+          style={{ minHeight: "calc(100vh - 60px)" }}
+        >
+          {loading ? (
+            <SkeletonBanner />
+          ) : error ? (
+            "Error while processing your request"
+          ) : (
+            pageContent[currentContent]
+          )}
+        </div>
       </div>
     );
   };

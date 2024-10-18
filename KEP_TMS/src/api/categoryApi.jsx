@@ -1,18 +1,17 @@
-import { API_ENDPOINTS } from "./apiEndpoints";
 import fetchFromApi from "./apiUtil";
 
 export const getAllCategoriesApi = async () => {
-    return await fetchFromApi(API_ENDPOINTS.GET_TRAINING_CATEGORIES);
+    return await fetchFromApi("/TrainingCategory/GetAllTrainingCategories");
 }
 export const getCategoryApi = async (categoryId) => {
-    return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_CATEGORY_BY_ID}?id=${categoryId}`);
+    return await fetchFromApi(`/TrainingCategory/GetTrainingCategoryById?id=${categoryId}`);
 }
 export const createCategoryApi = async (data)=>{
-    return await fetchFromApi(API_ENDPOINTS.INSERT_TRAINING_CATEGORY, "POST", data);
+    return await fetchFromApi("/TrainingCategory/CreateTrainingCategory", "POST", data);
 }
 export const updateCategoryApi =async (data)=>{
-    return await fetchFromApi(API_ENDPOINTS.UPDATE_TRAINING_CATEGORY, "PUT", data);
+    return await fetchFromApi("/TrainingCategory/UpdateTrainingCategory", "PUT", data);
 }
 export const deleteCategoryApi =async(id) =>{
-    return await fetchFromApi(`${API_ENDPOINTS.DELETE_TRAINING_CATEGORY}?id=${id}`, "DELETE");
+    return await fetchFromApi(`/TrainingCategory/DeleteTrainingCategory?id=${id}`, "DELETE");
 }

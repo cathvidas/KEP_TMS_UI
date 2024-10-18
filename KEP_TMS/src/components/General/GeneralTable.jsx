@@ -8,7 +8,7 @@ import { FilterMatchMode } from "primereact/api";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
-import { deleteTrainingCategory } from "../../api/trainingServices";
+import categoryService from "../../services/categoryService";
 
 const GeneralTable = ({ dataTable, title, handleUpdate , dataType}) => {
   const columns = dataTable.length > 0 ? Object.keys(dataTable[0]) : [];
@@ -46,7 +46,7 @@ const GeneralTable = ({ dataTable, title, handleUpdate , dataType}) => {
   };
   const handleDelete = async (id) => {
     try{
-      const res = dataType === "Categories" ? await deleteTrainingCategory(id): null;
+      const res = dataType === "Categories" ? await categoryService.deleteCategory(id): null;
       if(res?.isSuccess){
         actionSuccessful("Success", res.message)
         setInterval(() => {

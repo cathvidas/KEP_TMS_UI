@@ -6,11 +6,6 @@ import TrainingCostForm from "../trainingRequestFormComponents/TrainingCostForm"
 import TrainingSummary from "./TSummary";
 import { TrainingRequest } from "../../services/insertData";
 import {
-  getTrainingRequestById,
-  insertTrainingRequest,
-  updateTrainingRequest,
-} from "../../api/trainingServices";
-import {
   actionFailed,
   actionSuccessful,
   confirmAction,
@@ -35,6 +30,7 @@ import categoryHook from "../../hooks/categoryHook";
 import providerHook from "../../hooks/providerHook";
 import commonHook from "../../hooks/commonHook";
 import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
+import trainingRequestService from "../../services/trainingRequestService";
 export const TrainingRequestForm = () => {
   
   const programs = programHook.useAllPrograms();
@@ -75,7 +71,7 @@ const trainingType = useParams().type;
           ...formmatedData,
           updatedBy: SessionGetEmployeeId(),
         };
-        const response = await updateTrainingRequest(updateData);
+        const response = await trainingRequestService.updateTrainingRequest(updateData);
         if (response.isSuccess === true) {
           actionSuccessful(
             "updated",
@@ -96,7 +92,7 @@ const trainingType = useParams().type;
           ? statusCode.SUBMITTED
           : statusCode.FORAPPROVAL,
         };
-        const response = await insertTrainingRequest(updateData);
+        const response = await trainingRequestService.createTrainingRequest(updateData);
         if (response.isSuccess === true) {
           actionSuccessful(
             "Success",
@@ -189,7 +185,7 @@ const trainingType = useParams().type;
     if (trainingType.toUpperCase() === "UPDATE" && requestId) {
       const getRequest = async () => {
         try {
-          const res = await getTrainingRequestById(requestId);
+          const res = await trainingRequestService.getTrainingRequest(requestId);
          const participants = await mapUserListAsync(res?.data?.trainingParticipants, "employeeBadge")
          const facilitators = await mapUserListAsync(res?.data.trainingFacilitators, "facilitatorBadge")
           if (res.data != null) {

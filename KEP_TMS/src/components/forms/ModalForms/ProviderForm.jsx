@@ -2,10 +2,6 @@ import { Row, Col, Form, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import proptype from "prop-types";
 import { Button } from "primereact/button";
-import {
-  insertTrainingProgram,
-  updateTrainingProgram,
-} from "../../../api/trainingServices";
 import { actionFailed, actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import ErrorTemplate from "../../General/ErrorTemplate"
 import Select from "react-select";
@@ -19,7 +15,6 @@ import { SessionGetEmployeeId } from "../../../services/sessions";
 const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
   const [formData, setFormData] = useState(providerConstant);
   const [errors, setErrors] = useState({});
-  const [validated, setValidated] = useState(false);
   const categories = categoryHook.useAllCategories();
   const [options, setOptions] = useState({status:[
     { label: "Active", value: statusCode.ACTIVE },

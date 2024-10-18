@@ -1,9 +1,14 @@
-import { API_ENDPOINTS } from "./apiEndpoints";
 import fetchFromApi from "./apiUtil";
 
-export const createExamApi = async (data)=>{
-    return await fetchFromApi(API_ENDPOINTS.CREATE_TRAINING_EXAM, "POST", data);
-}
-export const getExamByRequestIdApi = async (id)=>{
-    return await fetchFromApi(`${API_ENDPOINTS.GET_EXAM_BY_REQUEST_ID}?requestId=${id}`);
-}
+export const createExamApi = async (data) => {
+  return await fetchFromApi(`/Exam/CreateExam`, "POST", data);
+};
+export const getExamByRequestIdApi = async (id) => {
+  return await fetchFromApi(`/Exam/GetExamByRequestId?requestId=${id}`);
+};
+export const saveTraineeExamApi = async (data) => {
+  return await fetchFromApi(`/Exam/SaveTraineeExam`, "POST", data);
+};
+export const getTraineeExamApi = async (id) => {
+  return await fetchFromApi(`/Exam/GetTraineeExamById?traineeExamId=${id}`);
+};

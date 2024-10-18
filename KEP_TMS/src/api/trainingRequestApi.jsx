@@ -1,27 +1,22 @@
-import { useAsyncValue } from "react-router-dom";
-import { API_ENDPOINTS } from "./apiEndpoints";
 import fetchFromApi from "./apiUtil";
 
 export const getTrainingRequestApi = async (requestId)=>{
-    return await fetchFromApi(`${API_ENDPOINTS.GET_TRAINING_REQUEST_BY_ID}?id=${requestId}`);
+    return await fetchFromApi(`/TrainingRequest/GetTrainingRequestById?id=${requestId}`);
 }
 export const getAllTrainingRequestsApi = async () => {
-    return await fetchFromApi(API_ENDPOINTS.GET_TRAINING_REQUESTS);
+    return await fetchFromApi("/TrainingRequest/GetAllTrainingRequests");
 }
-export const craeteTrainingRequestApi = async (trainingRequest) => {
-    return await fetchFromApi(API_ENDPOINTS.INSERT_TRAINING_REQUEST, "POST", trainingRequest);
+export const createTrainingRequestApi = async (trainingRequest) => {
+    return await fetchFromApi("/TrainingRequest/CreateTrainingRequest", "POST", trainingRequest);
 }
 export const getTrainingRequestsByRequestorApi = async (id) => {
-    return await fetchFromApi(`TrainingRequest/GetRequestByRequestor?badge=${id}`);
+    return await fetchFromApi(`/TrainingRequest/GetRequestByRequestor?badge=${id}`);
 }
 export const approveTrainingRequestApi = async (data) => {
-    return await fetchFromApi(API_ENDPOINTS.APPROVE_TRAINING_REQUEST, "POST", data);
+    return await fetchFromApi("/Services/ApproveRequest", "POST", data);
 }
 export const updateTrainingRequestApi = async (data)=>{
-    return await fetchFromApi(API_ENDPOINTS.UPDATE_TRAINING_REQUEST, "PUT", data);
-}
-export const getCurrentRoutingActivityApi = async (transactId, activityIn) =>{
-    return await fetchFromApi(`${API_ENDPOINTS.GET_CURRENT_ROUTING}?transactId=${transactId}&activityIn=${activityIn}`);
+    return await fetchFromApi("/TrainingRequest/UpdateTrainingRequest", "PUT", data);
 }
 export const getTrainingRequestByApproverApi = async (id) =>{
     return await fetchFromApi(`Services/GetAssignedRequests?assignedTo=${id}`);

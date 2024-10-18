@@ -4,10 +4,10 @@ import PendingView from "./MonitoringPageSection/PendingsView";
 import MonitoringReportView from "./MonitoringPageSection/MonitoringReportView";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import MenuContainer from "../components/menus/MenuContainer";
-import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
 import Layout from "../components/General/Layout";
 import trainingRequestHook from "../hooks/trainingRequestHook";
 import { ActivityType, OtherConstant } from "../api/constants";
+import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 
 const MonitoringPage = () => {
   const { id, page } = useParams();
@@ -80,20 +80,19 @@ const MonitoringPage = () => {
   const bodyContent = () => {
     return (
       <div className={`d-flex g-0`}>
-        
-        <MenuContainer itemList={monitoringMenuItem}/>
-        {loading ? (
-          <SkeletonBanner />
-        ) : error ? (
-          "Error while processing your request"
-        ) : (
-          <div
-            className={`border-start p-3 pb-5 flex-grow-1`}
-            style={{ minHeight: "calc(100vh - 50px)" }}
-          >
-            {pageContent[currentContent]}
-          </div>
-        )}
+        <MenuContainer itemList={monitoringMenuItem} />
+        <div
+          className={`border-start p-3 pb-5 flex-grow-1`}
+          style={{ minHeight: "calc(100vh - 50px)" }}
+        >
+          {loading ? (
+            <SkeletonDataTable />
+          ) : error ? (
+            "Error while processing your request"
+          ) : (
+            pageContent[currentContent]
+          )}
+        </div>
       </div>
     );
   };

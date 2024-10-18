@@ -2,10 +2,8 @@ import { Row, Col, Form, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import proptype from "prop-types";
 import { Button } from "primereact/button";
-import { inserTrainingCategory, updateTrainingCategory } from "../../../api/trainingServices";
 import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import { SessionGetEmployeeId } from "../../../services/sessions";
-import { useNavigate } from "react-router-dom";
 import Select from 'react-select'
 import { statusCode } from "../../../api/constants";
 import handleResponseAsync from "../../../services/handleResponseAsync";

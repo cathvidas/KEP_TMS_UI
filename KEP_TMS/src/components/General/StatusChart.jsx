@@ -1,19 +1,22 @@
 import { useState } from "react";
 import Chart from "react-apexcharts";
 import proptype from "prop-types";
-
-const StatusChart = ({ data }) => {
+const StatusChart = ({ series, label, value , color}) => {
+  console.log(series, label, value)
   const [chartData, setChartData] = useState({
-    series: [data],
+    series: [series],
     options: {
       chart: {
-        height: 280,
         type: "radialBar",
+      },
+      fill: {
+        type: "solid",
+        colors: [color?? "#00a76f"],
       },
       plotOptions: {
         radialBar: {
           hollow: {
-            margin: 15,
+            margin: 0,
             size: "70%",
           },
 
@@ -23,12 +26,13 @@ const StatusChart = ({ data }) => {
               offsetY: -10,
               show: true,
               color: "#888",
-              fontSize: "13px",
+              fontSize: "1.2rem",
             },
             value: {
               color: "#111",
-              fontSize: "30px",
+              fontSize: "25px",
               show: true,
+              formatter: () => value,
             },
           },
         },
@@ -36,7 +40,7 @@ const StatusChart = ({ data }) => {
       stroke: {
         lineCap: "round",
       },
-      labels: ["Progress"],
+      labels: [label ?? "Progress"],
     },
   });
 
@@ -52,6 +56,10 @@ const StatusChart = ({ data }) => {
   );
 };
 StatusChart.propTypes = {
-  data: proptype.number.isRequired,
+  series: proptype.number,
+  label: proptype.string,
+  value: proptype.string,
+  height: proptype.number,
+  color: proptype.string,
 };
 export default StatusChart;

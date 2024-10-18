@@ -1,7 +1,7 @@
 import { Button } from "primereact/button";
 import { Modal } from "react-bootstrap";
 import proptype from "prop-types";
-const ExamConfirmDialog = ({ handleShow, handleClose, handleOnclick }) => {
+const ExamDialog = ({header, bodyContent, handleShow, handleClose, handleOnclick, footer }) => {
   return (
     <>
       <Modal show={handleShow} onHide={handleClose} size={"md"} centered>
@@ -9,17 +9,9 @@ const ExamConfirmDialog = ({ handleShow, handleClose, handleOnclick }) => {
         </Modal.Header>
         <Modal.Body className="py-0 px-5">
           <h5 className="text-center theme-color">
-            Are you sure you want to take the exam now?
+            {header}
           </h5>
-          <p>
-            Once you start the exam, you will not be able to go back to the
-            previous page.
-            <br />
-            <br />
-            You will have 12 minutes to complete the exam.
-            <br />
-            Do you want to proceed?
-          </p>
+          {bodyContent}
         </Modal.Body>
         <Modal.Footer className="border-0 d-flex justify-content-center">
           <Button
@@ -41,9 +33,11 @@ const ExamConfirmDialog = ({ handleShow, handleClose, handleOnclick }) => {
     </>
   );
 };
-ExamConfirmDialog.propTypes = {
+ExamDialog.propTypes = {
   handleShow: proptype.bool.isRequired,
   handleClose: proptype.func.isRequired,
   handleOnclick: proptype.func,
+  header: proptype.string,
+  bodyContent: proptype.node,
 };
-export default ExamConfirmDialog;
+export default ExamDialog;

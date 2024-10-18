@@ -19,44 +19,49 @@ const trainingRequestHook = {
     useEffect(() => {
       const getRequest = async () => {
         handleResponseAsync(
-          ()=>trainingRequestService.getTrainingRequest(id),
-          async(response)=>{  
+          () => trainingRequestService.getTrainingRequest(id),
+          async (response) => {
             const participants = await userMapping.mapUserIdList(
-            response.trainingParticipants,
-            "employeeBadge"
-          );
-          const facilitators = await userMapping.mapUserIdList(
-            response.trainingFacilitators,
-            "facilitatorBadge"
-          );
-          const approvers = await userMapping.mapUserIdList(
-            response.approvers,
-            "employeeBadge"
-          );
-          const requestor = await userService.getUserById(
-            response.requestorBadge
-          );
-          const routings = await commonService.getRoutingActivityWithAuditTrail(response.id, ActivityType.REQUEST);
-          const approver =
-          await trainingRequestService.getCurrentRoutingActivity(
-            response.id,
-            ActivityType.REQUEST
-          );
-        const currentRouting = await userService.getUserById(approver.assignedTo);
-          setData({
-            ...response,
-            trainingParticipants: participants,
-            trainingFacilitators: facilitators,
-            requestor: requestor,
-            routings,
-            approvers,
-            currentRouting : currentRouting
-          });
-
+              response.trainingParticipants,
+              "employeeBadge"
+            );
+            const facilitators = await userMapping.mapUserIdList(
+              response.trainingFacilitators,
+              "facilitatorBadge"
+            );
+            const approvers = await userMapping.mapUserIdList(
+              response.approvers,
+              "employeeBadge"
+            );
+            const requestor = await userService.getUserById(
+              response.requestorBadge
+            );
+            const routings =
+              await commonService.getRoutingActivityWithAuditTrail(
+                response.id,
+                ActivityType.REQUEST
+              );
+            const approver =
+              await trainingRequestService.getCurrentRoutingActivity(
+                response.id,
+                ActivityType.REQUEST
+              );
+            const currentRouting = await userService.getUserById(
+              approver.assignedTo
+            );
+            setData({
+              ...response,
+              trainingParticipants: participants,
+              trainingFacilitators: facilitators,
+              requestor: requestor,
+              routings,
+              approvers,
+              currentRouting: currentRouting,
+            });
+            setLoading(false)
           },
-          (e)=>setError(e),
-          ()=> setLoading(false)
-        )
+          (e) => setError(e),
+        );
       };
       getRequest();
     }, [id]);
@@ -67,7 +72,7 @@ const trainingRequestHook = {
     };
   },
 
-  useAllTrainingRequests: (id=0, type=null) => {
+  useAllTrainingRequests: (id = 0, type = null) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -106,11 +111,14 @@ const trainingRequestHook = {
                 };
               })
             );
-            setData(type!= null? updatedRequests.filter(x=> x?.trainingType?.id === type):updatedRequests)
-
+            setData(
+              type != null
+                ? updatedRequests.filter((x) => x?.trainingType?.id === type)
+                : updatedRequests
+            );
+           setLoading(false)
           },
           (e) => setError(e),
-          () => setLoading(false)
         );
       };
       fetchData();
@@ -241,22 +249,41 @@ const trainingRequestHook = {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequests = async () => {
-        if(datalist?.length > 0) {
-        handleResponseAsync(
-         async ()=> await Promise.all(
-            datalist?.map(async (item) => {
-              const report = item?.reportId? await trainingReportService.getTrainingReportById(item.reportId):{};
-              const evluation = item?.evaluationId ? await evaluationService.getTrainingEvaluationById(item.evaluationId):{};
-              const effectiveness =item?.effectivenessId ? await effectivenessService.getEffectivenessById(item.effectivenessId):{};
-              return { userDetail: item, reportDetail: report, effectivenessDetail: effectiveness, evaluationDetail: evluation};
-            })
-          ),
-          (e)=> setData(e),
-          (e)=>setError(e),
-          ()=> setLoading(false)
-        )}
+        if (datalist?.length > 0) {
+          handleResponseAsync(
+            async () =>
+              await Promise.all(
+                datalist?.map(async (item) => {
+                  const report = item?.reportId
+                    ? await trainingReportService.getTrainingReportById(
+                        item.reportId
+                      )
+                    : {};
+                  const evluation = item?.evaluationId
+                    ? await evaluationService.getTrainingEvaluationById(
+                        item.evaluationId
+                      )
+                    : {};
+                  const effectiveness = item?.effectivenessId
+                    ? await effectivenessService.getEffectivenessById(
+                        item.effectivenessId
+                      )
+                    : {};
+                  return {
+                    userDetail: item,
+                    reportDetail: report,
+                    effectivenessDetail: effectiveness,
+                    evaluationDetail: evluation,
+                  };
+                })
+              ),
+            (e) => setData(e),
+            (e) => setError(e),
+            () => setLoading(false)
+          );
+        }
       };
-      getRequests()
+      getRequests();
     }, [datalist]);
     return { data, error, loading };
   },

@@ -6,7 +6,8 @@ export const statusCode = {
   APPROVED: 5,
   DISAPPROVED: 6,
   CLOSED: 7,
-  PUBLISHED: 8
+  PUBLISHED: 8,
+  FAILED: 9
 };
 
 export const TrainingType = {
