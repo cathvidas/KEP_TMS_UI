@@ -1,6 +1,7 @@
 // const StatusColor = (status, style,customStyle, showStatus) => {
   const StatusColor = (data) => {
   const className =
+  data?.color ? `${data.color}`:
   data?.status === "Submitted"
       ? "bg-info"
       : data?.status === "ForApproval"

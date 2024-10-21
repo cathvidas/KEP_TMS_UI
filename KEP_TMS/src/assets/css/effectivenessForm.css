@@ -1,0 +1,3 @@
+.performanceTable:hover .perf-button{
+    display: flex     !important         ;
+}

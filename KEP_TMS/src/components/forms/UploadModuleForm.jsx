@@ -7,13 +7,12 @@ import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import moduleService from "../../services/moduleService";
 import { SessionGetEmployeeId } from "../../services/sessions";
+import { getFileExtension } from "../../utils/fileUtils";
 const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
   const [files, setFiles] = useState([]);
   const [details, setDetails] = useState({ Name: "", Description: "" });
   const [errors, setErrors] = useState({});
-  const getExtension=(filename)=> {
-    return filename.split('.').pop()
-  }
+
   const handleFileUpload = (e) => { 
     setErrors({...errors, file:  "" })
     const newFiles = Array.from(e.target.files);
@@ -33,7 +32,7 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
         setErrors({...errors, file: "File already added" });
         validForm = false;
       }    
-      if(getExtension(file?.name)!=='pdf'){
+      if(getFileExtension(file?.name)!=='pdf'){
               setErrors({...errors, file:  "Upload only pdf files" })
               validForm= false
             }

@@ -19,6 +19,7 @@ const PendingView = ({ data, formData }) => {
     setFormType(formProperty)
     setShowForm(true)
   }
+  console.log(formData)
   const columnItems = [
     {
       field: "id",
@@ -41,18 +42,6 @@ const PendingView = ({ data, formData }) => {
       body: (rowData) => <>{rowData?.userDetail?.departmentName}</>,
     },
     {
-      field: "exam",
-      header: "Exam",
-      body: (rowData) => (
-        <>
-          {StatusColor({
-            status: rowData?.reportDetail?.statusName ?? "Pending",
-            showStatus: true,
-          })}
-        </>
-      ),
-    },
-    {
       field: "Effectiveness",
       header: "Effectiveness",
       body: (rowData) => (
@@ -62,6 +51,18 @@ const PendingView = ({ data, formData }) => {
             showStatus: true,
             handleOnclick : ()=>handleOnclick(rowData,  {typeId: ActivityType.EFFECTIVENESS, property:"effectivenessDetail"}),
           }): "N/A"}
+        </>
+      ),
+    },
+    {
+      field: "exam",
+      header: "Exam",
+      body: (rowData) => (
+        <>
+          {StatusColor({
+            status: rowData?.reportDetail?.statusName ?? "Pending",
+            showStatus: true,
+          })}
         </>
       ),
     },
@@ -84,7 +85,8 @@ const PendingView = ({ data, formData }) => {
       body: (rowData) => (
         <>
           {StatusColor({
-            status: rowData?.evaluationDetail?.statusName ?? "Pending",
+            status: rowData?.evaluationDetail?.status ?? "Pending",
+            color: rowData?.evaluationDetail?.status === "Submitted" && "bg-success" ,
             showStatus: true,
             handleOnclick : ()=>handleOnclick(rowData, {typeId: ActivityType.EVALUATION, property:"evaluationDetail"}),
           })}

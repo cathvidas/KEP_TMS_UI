@@ -31,7 +31,6 @@ const TraineeExamForm = ({ data }) => {
     });
     setRandomizeItem(randomizeList(items));
   };
-  console.log(data)
   useEffect(() => {
     const interval = setInterval(() => {
       if (startExam) {

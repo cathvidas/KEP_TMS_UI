@@ -12,7 +12,7 @@ const trainingRequestService = {
     return response?.status === 1 ? response?.data : [];
   },
   getTrainingRequest: async (id) => {
-    const response = await getTrainingRequestApi(id);
+    const response = id && await getTrainingRequestApi(id) ;
     return response?.status === 1 ? response?.data : [];
   },
   updateTrainingRequest: async (data) => {
@@ -28,7 +28,7 @@ const trainingRequestService = {
     return response?.status === 1 ? response?.data : [];
   },
   getCurrentRoutingActivity: async (transactId, activityIn) => {
-    const response = await getCurrentRoutingActivityApi(transactId, activityIn);
+    const response = transactId && await getCurrentRoutingActivityApi(transactId, activityIn);
     return response;
   },
   getTrainingRequestByApprover: async (id) => {

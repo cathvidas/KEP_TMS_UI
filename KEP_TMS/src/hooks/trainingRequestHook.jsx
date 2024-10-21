@@ -47,7 +47,7 @@ const trainingRequestHook = {
                 ActivityType.REQUEST
               );
             const currentRouting = await userService.getUserById(
-              approver.assignedTo
+              approver?.assignedTo
             );
             setData({
               ...response,

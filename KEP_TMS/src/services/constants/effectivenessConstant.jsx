@@ -14,14 +14,3 @@ const effectivenessConstant = {
   },
 };
 export default effectivenessConstant;
-
-export const performanceCharacteristicsArray = [
-  effectivenessConstant.performanceCharacteristics,
-  effectivenessConstant.performanceCharacteristics,
-  effectivenessConstant.performanceCharacteristics,
-];
-export const projectPerformanceEvaluationArray = [
-  effectivenessConstant.projectPerformanceEvaluation,
-  effectivenessConstant.projectPerformanceEvaluation,
-  effectivenessConstant.projectPerformanceEvaluation,
-];

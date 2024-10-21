@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSadTear, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 const ExamDetails = ({ handleClose, traineeExam, examDetail }) => {
   const [mappedDetail, setMappedDetail] = useState({});
-  console.log(traineeExam, examDetail);
   useEffect(() => {
     const questions = traineeExam?.traineeExamQuestion?.map((item) =>
       getExamItem(item.examQuestionId, item.traineeAnswer[0]?.answerOptionId)

@@ -1,4 +1,4 @@
-import { getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getAuditTrailApi, getRoutingActivityWithAuditTrailApi } from "../api/commonApi";
+import { getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getRoutingActivityWithAuditTrailApi } from "../api/commonApi";
 
 const commonService = {
   getAllDepartments: async () => {
@@ -19,15 +19,19 @@ const commonService = {
   },
   getAuditTrail: async (transactId, activityIn) => {
     try {
-      const response = await getAuditTrailApi(transactId, activityIn);
+      const response = transactId && await getAuditTrailApi(transactId, activityIn);
       return response;
     } catch {
       return {};
     }
   },
   getRoutingActivityWithAuditTrail: async (transactId, activityIn) => {
-      const response = await getRoutingActivityWithAuditTrailApi(transactId, activityIn);
+      const response = transactId && await getRoutingActivityWithAuditTrailApi(transactId, activityIn);
       return response?.status === 1 ? response?.data : [];
+  },
+  getApprovedForms: async (assignedTo, activityIn)=>{
+    const response = await getApprovedFormsApi(assignedTo, activityIn);
+    return response.status === 1? response?.data : [];
   }
 };
 

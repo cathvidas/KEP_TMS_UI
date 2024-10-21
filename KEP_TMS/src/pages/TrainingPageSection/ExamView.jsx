@@ -19,7 +19,6 @@ const ExamView = ({ data }) => {
   const getUser = data?.trainingParticipants?.find((item) => item.employeeBadge === SessionGetEmployeeId());
   const traineeExam = examHook.useTraineeExam(getUser?.traineeExamId)
   const [showTraineeExam, setShowTraineeExam] = useState(false);
-  console.log(getUser)
   return (
     <>
       <SectionHeading title="Exams" icon={<i className="pi pi-box"></i>} />

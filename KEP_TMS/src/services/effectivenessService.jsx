@@ -35,15 +35,10 @@ const effectivenessService = {
   },
   getApproverAssignedEffectiveness: async (id) => {
     const response = await getApproverAssignedEffectivenessApi(id);
-    response?.map( async item =>{
-      const currentRouting = item?.routingActivity;
-      const approverDetail =await userService.getUserById(currentRouting?.assignedTo);
-      item.routingActivity = {...currentRouting, assignedDetail: approverDetail};
-    })
     return response;
   },
-  approveTrainingEffectiveness: async (data)=>{
-    const response = await approveTrainingFormApi(data);
+  approveTrainingEffectiveness: async (formData)=>{
+    const response = await approveTrainingFormApi(formData);
     if(response.status !== 1){
       throw new Error(response.message);
     }

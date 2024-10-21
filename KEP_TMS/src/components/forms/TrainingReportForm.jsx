@@ -152,6 +152,7 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue);
                 name="trainingTakeaways"
                 value={formData?.trainingTakeaways ?? ""}
                 onChange={handleOnChange}
+                readOnly={isSubmitted}
               ></textarea>
             }
           />
@@ -171,6 +172,7 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue);
                 name="actionPlan"
                 value={formData?.actionPlan ?? ""}
                 onChange={handleOnChange}
+                readOnly={isSubmitted}
               ></textarea>
 
            
@@ -190,6 +192,7 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue);
                 name="timeframe"
                 value={formData?.timeframe ?? ""}
                 onChange={handleOnChange}
+                readOnly={isSubmitted}
               ></textarea>
 
             </div>

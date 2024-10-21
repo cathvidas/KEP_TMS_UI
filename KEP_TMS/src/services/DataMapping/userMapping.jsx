@@ -3,8 +3,9 @@ import userService from "../userService";
 const userMapping = {
   mapUserIdList: (data, property, propList) => {
     const getUser = async () => {
+      if(data){
       const users = await Promise.all(
-        data.map(async (user) => {
+        data?.map(async (user) => {
           try {
             const userDetail = await userService.getUserById(user[property]);
             if (propList && propList.length > 0) {
@@ -24,7 +25,7 @@ const userMapping = {
         })
       );
       return users
-    };
+    };}
     return getUser();
   },
 };

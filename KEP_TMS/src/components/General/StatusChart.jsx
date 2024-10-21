@@ -2,7 +2,6 @@ import { useState } from "react";
 import Chart from "react-apexcharts";
 import proptype from "prop-types";
 const StatusChart = ({ series, label, value , color}) => {
-  console.log(series, label, value)
   const [chartData, setChartData] = useState({
     series: [series],
     options: {

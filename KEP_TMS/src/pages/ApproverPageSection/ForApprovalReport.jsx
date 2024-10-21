@@ -24,6 +24,7 @@ const ForApprovalReport = () => {
   const userData = userHook.useUserById(
     selectedData?.trainingReport?.traineeBadge
   );
+  const report = trainingReportHook.useTrainingReportById(selectedData?.trainingReport?.id, trigger)
   const [showAnnotation, setShowAnnotation] = useState(false)
   const actionTemplate = (rowData) => (
     <>
@@ -84,7 +85,6 @@ const ForApprovalReport = () => {
           (e)=> {
             actionSuccessful("Sucess!", e.mesasge)
             setTimeout(() => {
-              setShowModal(false)
               setTrigger(trigger+1)
             }, 1000);
           },null, null
@@ -171,35 +171,39 @@ const ForApprovalReport = () => {
             <TrainingReportForm
               userData={userData?.data}
               data={requestData}
-              defaultValue={selectedData?.trainingReport}
+              defaultValue={report?.data}
               isSubmitted
-              currentRouting={selectedData?.routingActivity}
-              auditTrail={selectedData?.auditTrail}
+              currentRouting={report?.data?.currentRouting}
+              auditTrail={report?.data?.auditTrail}
             />
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            size="small"
-            label="Disapprove"
-            icon="pi pi-thumbs-down"
-            className="rounded"
-            severity="danger"
-            text onClick={() =>
-            {
-              setSElectedData(selectedData);
-              setShowAnnotation(true);}
-            }
-          />
-          <Button
-            size="small"
-            label="Approve"
-            icon="pi pi-thumbs-up"
-            className="rounded"
-            onClick={() =>
-              approveReport(selectedData?.trainingReport?.id, true)
-            }
-          />
+        {report?.data?.currentRouting?.assignedTo === SessionGetEmployeeId() && 
+            report?.data?.currentRouting?.statusId === statusCode.FORAPPROVAL ? <>
+            <Button
+              size="small"
+              label="Disapprove"
+              icon="pi pi-thumbs-down"
+              className="rounded"
+              severity="danger"
+              text onClick={() =>
+              {
+                setSElectedData(selectedData);
+                setShowAnnotation(true);}
+              }
+            />
+            <Button
+              size="small"
+              label="Approve"
+              icon="pi pi-thumbs-up"
+              className="rounded"
+              onClick={() =>
+                approveReport(selectedData?.trainingReport?.id, true)
+              }
+            /> </> :  report?.data?.routings?.find(item=>item?.assignedTo === SessionGetEmployeeId() && item?.statusId === statusCode.APPROVED) ? <Button type="button" size="small" label="Approved" icon="pi pi-check" className="rounded theme-color" text /> : null&&
+              <Button type="button" size="small" label="Approved" icon="pi pi-check" className="rounded theme-color" text />
+               } 
         </Modal.Footer>
       </Modal>
       <AnnotationBox

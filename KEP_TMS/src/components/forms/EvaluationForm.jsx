@@ -4,7 +4,7 @@ import RateFieldItem from "./common/RateFieldItem";
 import { TabPanel, TabView } from "primereact/tabview";
 import proptype from "prop-types"
 import { Rating } from "primereact/rating";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import evaluationConstant from "../../services/constants/evaluationConstant";
 import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
@@ -20,6 +20,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
   const [facilitatorRating, setFacilitatorRating] = useState(evaluationConstant.facilitatorRating);
   const [overallRating, setOverallRating] = useState(evaluationConstant.overallRating);
   const [errors, setErrors] = useState({})
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const getFacilitators = () => {
     let facilitators = "";
     data?.trainingFacilitators?.map((x) => {
@@ -111,6 +112,18 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
     setErrors(formErrors)
     return isValid;
   }
+  useEffect(()=>{
+    if(defaultValue){
+      setContentMethodology(defaultValue?.contentMethodology);
+      setProgramLogisticsRating(defaultValue?.programLogisticsRating);
+      setAnnotation(defaultValue?.annotation);
+      setOverallRating(defaultValue?.overallRating);
+      setFacilitatorRating(defaultValue?.facilitatorsRating)
+      setIsSubmitted(true)
+    }
+    console.log(defaultValue, getFormData)
+  },
+[defaultValue])
   return (
     <Card.Body>
       <div className="text-center  pb-3 mb-3 ">
@@ -175,30 +188,35 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
             label="The objectives of the training were met."
             value={contentMethodology?.cmOne}
             onChange={(e) => handleOnChange(e, "cmOne", contentMethodology, setContentMethodology)}
+            readOnly={isSubmitted}
           />
           <RateFieldItem
             sequenceNo={2}
             label="The module was relevant to my present work or future professional career."
             value={contentMethodology?.cmTwo}
             onChange={(e) => handleOnChange(e, "cmTwo", contentMethodology, setContentMethodology)}
+            readOnly={isSubmitted}
           />
           <RateFieldItem
             sequenceNo={3}
             label="The course content was highly related to the stated course learning objectives."
             value={contentMethodology?.cmThree}
             onChange={(e) => handleOnChange(e, "cmThree", contentMethodology, setContentMethodology)}
+            readOnly={isSubmitted}
           />
           <RateFieldItem
             sequenceNo={4}
             label="The materials & training methods used in the program were clear, understandable and suitable."
             value={contentMethodology?.cmFour}
             onChange={(e) => handleOnChange(e, "cmFour", contentMethodology, setContentMethodology)}
+            readOnly={isSubmitted}
           />
           <RateFieldItem
             sequenceNo={5}
             label="Ample time has been given for the module"
             value={contentMethodology?.cmFive}
             onChange={(e) => handleOnChange(e, "cmFive", contentMethodology, setContentMethodology)}
+            readOnly={isSubmitted}
           />
           <hr />
         </Row>
@@ -211,6 +229,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
             placeholder="start writing here..."
             rows={4}
             value={contentMethodology?.cmSix ?? ""}
+            readOnly={isSubmitted}
             onChange={(e) => handleOnChange(e.target.value, "cmSix", contentMethodology, setContentMethodology)}
           ></textarea>
           {errors.cmSix && <ErrorTemplate message={errors.cmSix}/>}
@@ -223,6 +242,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
             id=""
             placeholder="start writing here..."
             rows={4}
+            readOnly={isSubmitted}
             value={contentMethodology?.cmSeven ?? ""}
             onChange={(e) => handleOnChange(e.target.value, "cmSeven", contentMethodology, setContentMethodology)}
           ></textarea>
@@ -232,15 +252,19 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
         {errors.programLogisticsRating && <ErrorTemplate message={errors.programLogisticsRating}/>}
         <RateFieldItem label="Handouts & other training materials"
           value={programLogisticsRating?.plrOne}
+          readOnly={isSubmitted}
           onChange={(e) => handleOnChange(e, "plrOne", programLogisticsRating, setProgramLogisticsRating)} />
         <RateFieldItem label="Audio-visual presentation/multi-media resources"
           value={programLogisticsRating?.plrTwo}
+          readOnly={isSubmitted}
           onChange={(e) => handleOnChange(e, "plrTwo", programLogisticsRating, setProgramLogisticsRating)} />
         <RateFieldItem label="Facilities (lay-out, temperature, etc.)"
           value={programLogisticsRating?.plrThree}
+          readOnly={isSubmitted}
           onChange={(e) => handleOnChange(e, "plrThree", programLogisticsRating, setProgramLogisticsRating)} />
         <RateFieldItem label="Equipment & supplies"
           value={programLogisticsRating?.plrFour}
+          readOnly={isSubmitted}
           onChange={(e) => handleOnChange(e, "plrFour", programLogisticsRating, setProgramLogisticsRating)} />
         <hr />
         <label className="form-label m-0">FACILITATOR/S: </label>
@@ -254,24 +278,30 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
                 <div>
                   <RateFieldItem label="Clarity of Presentation (delivery, platform skills, etc.)"
                     value={facilitatorRating[index]?.frOne}
+                    readOnly={isSubmitted}
                     onChange={(e) => handlefacilitatorRating(e, "frOne", index)} />
                   <RateFieldItem label="Mastery of subject matter"
                     value={facilitatorRating[index]?.frTwo}
+                    readOnly={isSubmitted}
                     onChange={(e) => handlefacilitatorRating(e, "frTwo", index)} />
                   <RateFieldItem label="Managing discussions"
                     value={facilitatorRating[index]?.frThree}
+                    readOnly={isSubmitted}
                     onChange={(e) => handlefacilitatorRating(e, "frThree", index)} />
                   <RateFieldItem label="Motivates learning"
                     value={facilitatorRating[index]?.frFour}
+                    readOnly={isSubmitted}
                     onChange={(e) => handlefacilitatorRating(e, "frFour", index)} />
                   <RateFieldItem label="Motivates learning"
                     value={facilitatorRating[index]?.frFive}
+                    readOnly={isSubmitted}
                     onChange={(e) => handlefacilitatorRating(e, "frFive", index)} />
                   <RateFieldItem label="Balanced theory w/ real life applications/examples"
                     value={facilitatorRating[index]?.frSix}
                     onChange={(e) => handlefacilitatorRating(e, "frSix", index)} />
                   <RateFieldItem label="Clear & well organized lectures/activities (time management) 5"
                     value={facilitatorRating[index]?.frAverage}
+                    readOnly={isSubmitted}
                     onChange={(e) => handlefacilitatorRating(e, "frAverage", index)} />
                 </div>
               </TabPanel>)
@@ -283,6 +313,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
           <p className="m-0 fw-bold">Overall Rating of the program:</p>
           <Rating cancel={false}
             value={overallRating}
+            readOnly={isSubmitted}
             onChange={(e) => setOverallRating(e.value)}
           />
         </div>
@@ -295,6 +326,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
             id=""
             placeholder="start writing here..."
             rows={4}
+            readOnly={isSubmitted}
             value={annotation}
             onChange={(e) => setAnnotation(e.target.value)}
           ></textarea>
@@ -336,5 +368,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
 EvaluationForm.propTypes = {
   data: proptype.object,
   userData: proptype.object,
+  courseId: proptype.string,
+  defaultValue: proptype.object,
 };
 export default EvaluationForm;

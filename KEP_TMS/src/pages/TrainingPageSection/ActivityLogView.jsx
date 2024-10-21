@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "primereact/button";
 const ActivityLogView = ({ logs }) => {
     const [isDescending, setIsDescending] = useState(true);
+
   return (
     <>
       <Card>

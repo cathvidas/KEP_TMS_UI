@@ -9,6 +9,7 @@ import { useState } from "react";
 import { statusCode } from "../../api/constants";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import ApproverAction from "../tableComponents/ApproverAction";
+import { formatDateTime } from "../../utils/datetime/Formatting";
 const ApproverList = ({data }) => {
   const [visible, setVisible] = useState(false);
   const getStatus = (employeeBadge) => {
@@ -21,6 +22,12 @@ const ApproverList = ({data }) => {
         return "Pending";
     }
   };
+  const getApprovedDate = (employeeBadge) => {
+    const status = data?.routings?.find((x) => x.assignedTo === employeeBadge); 
+    if (status?.statusId === statusCode.APPROVED) {
+      return status?.updatedDate;
+    }
+  }
   const actionBodyTemplate = (rowData) => (
     <div>
       {
@@ -55,7 +62,7 @@ const ApproverList = ({data }) => {
         <Column field="fullname" header="Name"></Column>
         <Column field="employeeBadge" header="Badge No"></Column>
         <Column field="departmentName" header="Department"></Column>
-        <Column header="Approved Date" body={"N/A"}></Column>
+        <Column header="Approved Date" body={(rowData)=><>{getApprovedDate(rowData.employeeBadge) ? formatDateTime(getApprovedDate(rowData.employeeBadge)):"N/A"}</>}></Column>
         <Column header="Status" body={statusTemplate}></Column>
         <Column header="Action" body={actionBodyTemplate}></Column>
       </DataTable>

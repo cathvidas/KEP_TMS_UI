@@ -85,5 +85,7 @@ const CommonTable = ({
 CommonTable.propTypes = {
   dataTable: proptype.array.isRequired,
   columnItems: proptype.array,
+  tableName: proptype.string,
+  header: proptype.func,
 };
 export default CommonTable;

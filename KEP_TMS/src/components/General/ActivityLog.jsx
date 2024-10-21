@@ -2,8 +2,9 @@ import { Badge } from "primereact/badge";
 import proptype from "prop-types";
 import sortArrayInDescending from "../../utils/sorting/sortArrayInDescending";
 
-const ActivityLog = ({ items, label, isDescending }) => {
+const ActivityLog = ({ items, label, isDescending, sort }) => {
   const arrayList = isDescending ? sortArrayInDescending(items) : items;
+
   return (
     <>
       <h6>{label}</h6>

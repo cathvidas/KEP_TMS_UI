@@ -16,7 +16,7 @@ import OverviewSection from "./RequestPageSection/OverviewSection";
 import trainingRequestHook from "../hooks/trainingRequestHook";
 import activityLogHook from "../hooks/activityLogHook";
 import ActivityLogView from "./TrainingPageSection/ActivityLogView";
-import getPassingScore from "../utils/common/getPassingScore";
+import TraineeCertificateView from "./TrainingPageSection/TraineeCertificateView";
 const TrainingPage = () => {
   const { id, page } = useParams();
   const { data, error, loading } = trainingRequestHooks.useTrainingRequest(
@@ -53,7 +53,8 @@ const TrainingPage = () => {
     <PendingView key={3} data={data} formData={trainingForms} />,
     <TraineeReportView key={4} data={data} />,
     <MonitoringReportView key={5} data={data} />,
-    <ActivityLogView key={6} logs={logs} />,
+    <TraineeCertificateView key={6} data={data} />,
+    <ActivityLogView key={7} logs={logs} />,
   ];
   useEffect(() => {
     if (data?.status?.id === statusCode.SUBMITTED) {
@@ -126,12 +127,20 @@ const TrainingPage = () => {
           disable: !isTrainee,
         },
         {
+          label: "Certificate",
+          icon: "pi pi-file-arrow-up",
+          command: () => navigate(`/KEP_TMS/Training/${id}/Certificate`),
+          template: MenuItemTemplate,
+          active: currentContent === 6 ? true : false,
+          disable: !isAdmin,
+        },
+        {
           label: "Activity Log",
           icon: "pi pi-address-book",
           command: () => navigate(`/KEP_TMS/Training/${id}/Logs`),
           template: MenuItemTemplate,
-          active: currentContent === 6 ? true : false,
-          disable: !isAdmin,
+          active: currentContent === 7 ? true : false,
+          // disable: !isAdmin,
         },
       ],
     },
@@ -151,8 +160,10 @@ const TrainingPage = () => {
       setCurrentContent(5);
     } else if (page === "Evaluation") {
       setCurrentContent(5);
-    } else if (page === "Logs") {
+    } else if (page === "Certificate") {
       setCurrentContent(6);
+    } else if (page === "Logs") {
+      setCurrentContent(7);
     } else {
       setCurrentContent(0);
     }

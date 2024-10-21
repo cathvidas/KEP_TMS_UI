@@ -16,7 +16,7 @@ const ApproverPage = () => {
   const pageContent = [
     <ForApprovalRequest key={0} />,
     <ForApprovaleffectiveness key={1} />,
-    <ForApprovalReport key={2}/>
+    <ForApprovalReport key={2}/>,
   ];
   const {data, error, loading} = commonHook.useAllAssignedForApproval(
     SessionGetEmployeeId()
@@ -25,6 +25,7 @@ const ApproverPage = () => {
     {
       label: "For Approval",
       items: [
+        { separator: true, template: MenuItemTemplate },
         {
           label: "Requests",
           icon: "pi pi-list-check",
@@ -51,33 +52,33 @@ const ApproverPage = () => {
         },
       ],
     },
-    { separator: true, template: MenuItemTemplate },
-    {
-      label: "Approved",
-      items: [
-        {
-          label: "Requests",
-          icon: "pi pi-list-check",
-          // command: () => navigate(`/KEP_TMS/List/Approved/Requests`),
-          template: MenuItemTemplate,
-          active: currentContent === 3 ? true : false,
-        },
-        {
-          label: "Effectiveness",
-          icon: "pi pi-file",
-          // command: () => navigate(`/KEP_TMS/List/Approved/Effectiveness`),
-          template: MenuItemTemplate,
-          active: currentContent === 4 ? true : false,
-        },
-        {
-          label: "Report",
-          icon: "pi pi-file-check",
-          // command: () => navigate(`/KEP_TMS/List/Approved/Reports`),
-          template: MenuItemTemplate,
-          active: currentContent === 5 ? true : false,
-        },
-      ],
-    },
+    // { separator: true, template: MenuItemTemplate },
+    // {
+    //   label: "Approved",
+    //   items: [
+    //     {
+    //       label: "Requests",
+    //       icon: "pi pi-list-check",
+    //       // command: () => navigate(`/KEP_TMS/List/Approved/Requests`),
+    //       template: MenuItemTemplate,
+    //       active: currentContent === 3 ? true : false,
+    //     },
+    //     {
+    //       label: "Effectiveness",
+    //       icon: "pi pi-file",
+    //       command: () => navigate(`/KEP_TMS/List/Approved/Effectiveness`),
+    //       template: MenuItemTemplate,
+    //       active: currentContent === 4 ? true : false,
+    //     },
+    //     {
+    //       label: "Report",
+    //       icon: "pi pi-file-check",
+    //       // command: () => navigate(`/KEP_TMS/List/Approved/Reports`),
+    //       template: MenuItemTemplate,
+    //       active: currentContent === 5 ? true : false,
+    //     },
+    //   ],
+    // },
   ];
   useEffect(() => {
     if (type === "ForApproval") {
@@ -92,7 +93,7 @@ const ApproverPage = () => {
       if (page === "Requests") {
         setCurrentContent(0);
       } else if (page === "Effectiveness") {
-        setCurrentContent(1);
+        setCurrentContent(4);
       } else if (page === "Reports") {
         setCurrentContent(2);
       }

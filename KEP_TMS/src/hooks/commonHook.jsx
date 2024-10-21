@@ -104,5 +104,23 @@ const commonHook = {
     }, []);
     return { data, error, loading };
   },
+  useApproverApprovedForms: (assignedTo, activityIn)=>{
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequests = async () => {
+        handleResponseAsync(
+          () =>
+            commonService.getApprovedForms(assignedTo, activityIn),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      getRequests();
+    }, [assignedTo, activityIn]);
+    return { data, error, loading };
+  },
 };
 export default commonHook;

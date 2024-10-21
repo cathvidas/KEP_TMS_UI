@@ -1,8 +1,7 @@
 import { Rating } from "primereact/rating";
-import { useState } from "react";
 import proptype from "prop-types"
 import ErrorTemplate from "../../General/ErrorTemplate";
-const RateFieldItem = ({ sequenceNo, label, onChange, value, error,disabled = false, required = false }) => {
+const RateFieldItem = ({ sequenceNo, label, onChange, value, error,disabled = false, required = false, readOnly = false }) => {
     return (
         <>
         <div className="d-flex gap-2 align-items-center justify-content-between">
@@ -10,7 +9,7 @@ const RateFieldItem = ({ sequenceNo, label, onChange, value, error,disabled = fa
                 {sequenceNo && 
                 <b>{sequenceNo}. </b>}
                 {label}</p>
-            <Rating value={value} onChange={(e) => onChange(e.value)} cancel={false} />
+            <Rating value={value} onChange={(e) => onChange(e.value)} cancel={false} readOnly={readOnly} disabled={disabled} required={required} />
         </div>
         {error && <ErrorTemplate message={error}/>}
         </>
@@ -24,6 +23,9 @@ RateFieldItem.propTypes = {
     onChange: proptype.func,
     defvalue: proptype.number,
     disabled: proptype.bool,
-    required: proptype.bool
+    required: proptype.bool,
+    readOnly: proptype.bool,
+    error: proptype.string,
+    value: proptype.string,
 }
 export default RateFieldItem;

@@ -9,24 +9,23 @@ import { Button } from "primereact/button";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import effectivenessService from "../../services/effectivenessService";
 import ErrorTemplate from "../General/ErrorTemplate";
-import {
-  performanceCharacteristicsArray,
-  projectPerformanceEvaluationArray,
-} from "../../services/constants/effectivenessConstant";
+import effectivenessConstant from "../../services/constants/effectivenessConstant";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
 import ActivityLog from "../General/ActivityLog";
 import activityLogHook from "../../hooks/activityLogHook";
+import validateTrainingEffectiveness from "../../services/inputValidation/validateTrainingEffectiveness";
+import "../../assets/css/effectivenessForm.css"
 const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting, auditTrail}) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
   const [annotation, setAnnotation] = useState("");
   const [performanceCharacteristics, setPerformanceCharacteristics] = useState(
-    performanceCharacteristicsArray
+    [effectivenessConstant.performanceCharacteristics]
   );
   const [projectPerformanceEvaluation, setProjectPerformanceEvaluation] =
-    useState(projectPerformanceEvaluationArray);
+    useState([effectivenessConstant.projectPerformanceEvaluation]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   useEffect(() => {
     if (formData) {
@@ -34,16 +33,15 @@ const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting
       setAnnotation(effectivenessData?.annotation);
       setPerformanceCharacteristics(
         effectivenessData?.performanceCharacteristics ??
-          performanceCharacteristicsArray
+          [effectivenessConstant.performanceCharacteristics]
       );
       setProjectPerformanceEvaluation(
         effectivenessData?.projectPerformanceEvaluation ??
-          projectPerformanceEvaluationArray
+        [effectivenessConstant.projectPerformanceEvaluation]
       );
       setIsSubmitted(true);
     }
   }, [formData]);
-  const numItems = [0, 1, 2];
   const getFacilitators = () => {
     let facilitators = "";
     data?.trainingFacilitators?.map((x) => {
@@ -89,7 +87,8 @@ const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting
   },[data?.trainingEndDate]);
 
   const handleSubmit = () => {
-    const isValid = validateForm();
+    const {formErrors,isValid} = validateTrainingEffectiveness(getFormData, performanceCharacteristics, projectPerformanceEvaluation, isAfter);
+    setErrors(formErrors);
     if (isValid) {
       confirmAction({
         title: "Confirm Submission",
@@ -110,94 +109,10 @@ const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting
       });
     }
   };
-  const validateForm = () => {
-    let formErrors = {};
-    let validForm = true;
-    let validCharacteristic = true;
-    let validEvaluation = true;
-    if (!getFormData.evaluationDate) {
-      formErrors.evaluationDate = "Evaluation Date is required";
-      validForm = false;
-    }
-    if (!getFormData.annotation && isAfter) {
-      formErrors.annotation = "Annotation is required";
-      validForm = false;
-    }
-    if (!getFormData.performanceCharacteristics.length && validCharacteristic) {
-      formErrors.performanceCharacteristics =
-        "At least three performance characteristic is required";
-      validCharacteristic = false;
-    } else {
-      numItems.forEach((i) => {
-        if (!performanceCharacteristics[i]?.content && validCharacteristic) {
-          formErrors.performanceCharacteristics = `Performance characteristic ${
-            i + 1
-          } is required`;
-          validCharacteristic = false;
-        }
-        if (
-          performanceCharacteristics[i]?.rating === 0 &&
-          validCharacteristic
-        ) {
-          formErrors.performanceCharacteristics = `Rating for Performance characteristic ${
-            i + 1
-          } is required`;
-          validCharacteristic = false;
-        }
-      });
-    }
-    if (!getFormData.projectPerformanceEvaluation.length) {
-      formErrors.projectPerformanceEvaluation =
-        "At least three project performance evaluation is required";
-      validForm = false;
-    } else {
-      numItems.forEach((i) => {
-        if (!projectPerformanceEvaluation[i].content) {
-          formErrors.projectPerformanceEvaluation = `Project Performance Evaluation ${
-            i + 1
-          } content is required`;
-          validForm = false;
-        }
-        if (projectPerformanceEvaluation[i].performanceBeforeTraining === 0) {
-          formErrors.projectPerformanceEvaluation = `Performance before training for Project Performance Evaluation ${
-            i + 1
-          } is required`;
-          validForm = false;
-        }
-        if (projectPerformanceEvaluation[i].projectedPerformance === 0) {
-          formErrors.projectPerformanceEvaluation = `Projected performance for Project Performance Evaluation ${
-            i + 1
-          } is required`;
-          validForm = false;
-        }
-        if (isAfter) {
-          if (projectPerformanceEvaluation[i].actualPerformance === 0) {
-            formErrors.projectPerformanceEvaluation = `Actual performance for Project Performance Evaluation ${
-              i + 1
-            } is required`;
-            validForm = false;
-          }
-          if (
-            projectPerformanceEvaluation[i].evaluatedActualPerformance === 0
-          ) {
-            formErrors.projectPerformanceEvaluation = `Evaluated actual performance for Project Performance Evaluation ${
-              i + 1
-            } is required`;
-            validForm = false;
-          }
-        }
-      });
-    }
-    if (!validForm || !validEvaluation) {
-      validForm = false;
-    }
-    setErrors(formErrors);
-    return validForm;
-  };
   useEffect(()=>{
     setIsAfter(getAfterTrainingDate() >= formatDateOnly(new Date(), "dash"));
   },[getAfterTrainingDate])
-const logs = activityLogHook.useReportsActivityLog(formData);
+const logs = activityLogHook.useReportsActivityLog(formData, userData);
   return (
     <>
       <Card.Body>
@@ -297,38 +212,51 @@ const logs = activityLogHook.useReportsActivityLog(formData);
                   <th className="theme-bg-light text-muted text-center">
                     Self-assessment/ Rating
                   </th>
+                  {/* <th></th> */}
                 </tr>
               </thead>
               <tbody>
-                {numItems.map((item) => (
-                  <tr key={`character${item}`}>
-                    <th scope="row">{item + 1}</th>
+                {performanceCharacteristics?.map((_, index) => (<>
+                  <tr key={`character${index}`} className="position-relative performanceTable">
+                    <th scope="row" className="text-center">{index + 1}</th>
                     <td>
                       <textarea
                         className="no-focus w-100 border-0"
                         name="content"
-                        value={performanceCharacteristics[item]?.content ?? ""}
-                        onChange={(e) => handlePerfCharacterOnChange(e, item)}
-                        readOnly={isSubmitted ? true : false}
+                        value={performanceCharacteristics[index]?.content ?? ""}
+                        onChange={(e) => handlePerfCharacterOnChange(e, index)}
+                        readOnly={isSubmitted}
                       ></textarea>
                     </td>
                     <td style={{ verticalAlign: "middle" }}>
                       <Rating
                         className="justify-content-center"
-                        value={performanceCharacteristics[item]?.rating}
+                        value={performanceCharacteristics[index]?.rating}
                         name="rating"
-                        onChange={(e) => handlePerfCharacterOnChange(e, item)}
+                        onChange={(e) => handlePerfCharacterOnChange(e, index)}
                         cancel={false}
-                        readOnly={isSubmitted ? true : false}
+                        readOnly={isSubmitted}
                       />
                     </td>
+                  {performanceCharacteristics?.length > 1 && !isSubmitted &&
+                    <Button type="button" style={{display: "none"}} icon="pi pi-trash" text 
+                    className="perf-button position-absolute end-0 top-50 translate-middle-y me-3 text-danger " severity="danger"
+                    onClick={()=>setPerformanceCharacteristics((prev) => [...prev].filter((_, i) => i!== index))}
+                    />}
                   </tr>
+                   
+                   </>
                 ))}
               </tbody>
             </Table>
+            <div className="flex">
             {errors?.performanceCharacteristics && (
               <ErrorTemplate message={errors?.performanceCharacteristics} />
             )}
+            {performanceCharacteristics?.length < 3 && !isSubmitted &&
+            <Button type="button" text icon="pi pi-plus" label="Add row" className="ms-auto"
+             onClick={()=>setPerformanceCharacteristics([...performanceCharacteristics, effectivenessConstant.performanceCharacteristics])} />
+            }</div>
           </Form.Group>
           <br />
           <Form.Group>
@@ -386,54 +314,54 @@ const logs = activityLogHook.useReportsActivityLog(formData);
                 </tr>
               </thead>
               <tbody>
-                {numItems.map((item) => (
-                  <tr key={`evaluation${item}`}>
-                    <th scope="row">{item + 1}</th>
+                {projectPerformanceEvaluation?.map((_,index) => (
+                  <tr key={`evaluation${index}`} className="position-relative performanceTable">
+                    <th scope="row">{index + 1}</th>
                     <td>
                       <textarea
                         className="no-focus w-100 border-0"
                         name="content"
                         value={
-                          projectPerformanceEvaluation[item]?.content ?? ""
+                          projectPerformanceEvaluation[index]?.content ?? ""
                         }
-                        onChange={(e) => handlePerfEvaluationOnChange(e, item)}
-                        readOnly={isSubmitted ? true : false}
+                        onChange={(e) => handlePerfEvaluationOnChange(e, index)}
+                        readOnly={isSubmitted}
                       ></textarea>
                     </td>
                     <td style={{ verticalAlign: "middle" }}>
                       <Rating
                         className="justify-content-center"
                         value={
-                          projectPerformanceEvaluation[item]
+                          projectPerformanceEvaluation[index]
                             ?.performanceBeforeTraining
                         }
                         name="performanceBeforeTraining"
-                        onChange={(e) => handlePerfEvaluationOnChange(e, item)}
+                        onChange={(e) => handlePerfEvaluationOnChange(e, index)}
                         cancel={false}
-                        readOnly={isSubmitted ? true : false}
+                        readOnly={isSubmitted}
                       />
                     </td>
                     <td style={{ verticalAlign: "middle" }}>
                       <Rating
                         className="justify-content-center"
                         value={
-                          projectPerformanceEvaluation[item]
+                          projectPerformanceEvaluation[index]
                             ?.projectedPerformance
                         }
                         name="projectedPerformance"
-                        onChange={(e) => handlePerfEvaluationOnChange(e, item)}
+                        onChange={(e) => handlePerfEvaluationOnChange(e, index)}
                         cancel={false}
-                        readOnly={isSubmitted ? true : false}
+                        readOnly={isSubmitted}
                       />
                     </td>
                     <td style={{ verticalAlign: "middle" }}>
                       <Rating
                         className="justify-content-center"
                         value={
-                          projectPerformanceEvaluation[item]?.actualPerformance
+                          projectPerformanceEvaluation[index]?.actualPerformance
                         }
                         name="actualPerformance"
-                        onChange={(e) => handlePerfEvaluationOnChange(e, item)}
+                        onChange={(e) => handlePerfEvaluationOnChange(e, index)}
                         cancel={false}
                         disabled={!isAfter}
                       />
@@ -442,22 +370,34 @@ const logs = activityLogHook.useReportsActivityLog(formData);
                       <Rating
                         className="justify-content-center"
                         value={
-                          projectPerformanceEvaluation[item]
+                          projectPerformanceEvaluation[index]
                             ?.evaluatedActualPerformance
                         }
                         name="evaluatedActualPerformance"
-                        onChange={(e) => handlePerfEvaluationOnChange(e, item)}
+                        onChange={(e) => handlePerfEvaluationOnChange(e, index)}
                         cancel={false}
                         disabled={!isAfter}
                       />
-                    </td>
+                    </td>    
+                    {projectPerformanceEvaluation?.length > 1  && !isSubmitted &&
+                    <Button type="button" style={{display: "none"}} icon="pi pi-trash" text 
+                    className="perf-button position-absolute end-0 top-50 translate-middle-y me-3 text-danger " severity="danger"
+                    onClick={()=>setProjectPerformanceEvaluation((prev) => [...prev].filter((_, i) => i!== index))}
+                    />}
                   </tr>
                 ))}
               </tbody>
             </Table>
+            <div className="flex">
             {errors?.projectPerformanceEvaluation && (
               <ErrorTemplate message={errors?.projectPerformanceEvaluation} />
             )}
+            {projectPerformanceEvaluation?.length < 3 && !isSubmitted &&
+            <Button type="button" text icon="pi pi-plus" label="Add row" className="ms-auto"
+             onClick={()=>setProjectPerformanceEvaluation([...projectPerformanceEvaluation, effectivenessConstant.projectPerformanceEvaluation])} />}
+             </div>
+        
+           
           </Form.Group>
           <br />
           <Form.Group>
@@ -487,10 +427,10 @@ const logs = activityLogHook.useReportsActivityLog(formData);
                   severity="secondary"
                   onClick={() => {
                     setPerformanceCharacteristics(
-                      performanceCharacteristicsArray
+                      [effectivenessConstant.performanceCharacteristics]
                     );
                     setProjectPerformanceEvaluation(
-                      projectPerformanceEvaluationArray
+                      [effectivenessConstant.projectPerformanceEvaluation]
                     );
                   }}
                 />
