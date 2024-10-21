@@ -9,7 +9,7 @@ import TraineeReportView from "./TrainingPageSection/TraineeReportView";
 import PendingView from "./MonitoringPageSection/PendingsView";
 import MenuContainer from "../components/menus/MenuContainer";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
-import { statusCode } from "../api/constants";
+import { OtherConstant, statusCode } from "../api/constants";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import MonitoringReportView from "./MonitoringPageSection/MonitoringReportView";
 import OverviewSection from "./RequestPageSection/OverviewSection";
@@ -95,7 +95,7 @@ const TrainingPage = () => {
           command: () => navigate(`/KEP_TMS/Training/${id}/Exams`),
           template: MenuItemTemplate,
           active: currentContent === 2 ? true : false,
-          disable: data?.status?.id !== statusCode.PUBLISHED ? true : false,
+          disable: !isTrainee || data?.status?.id !== statusCode.PUBLISHED || data?.trainingEndDate < new Date() ? true : false,
         },
         {
           label: "Participants",
@@ -124,7 +124,7 @@ const TrainingPage = () => {
                 isTrainee?.evaluationId === null))
               ? true
               : false,
-          disable: !isTrainee,
+          disable: !isTrainee || data?.durationInHours < OtherConstant.EFFECTIVENESS_MINHOUR && data?.trainingEndDate < new Date() ? true : false ,
         },
         {
           label: "Certificate",

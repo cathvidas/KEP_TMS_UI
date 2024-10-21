@@ -21,7 +21,8 @@ export const mapTRequestToTableData = (data)=>{
         approverPosition: item?.routing?.approverPosition,
         facilitatorName: item?.trainingFacilitators[0]?.fullname ,
         totalParticipants: item?.totalParticipants,
-        trainingParticipants: item?.trainingParticipants
+        trainingParticipants: item?.trainingParticipants,
+        durationInHours: item?.durationInHours
         // facilitatorName: item?trainingFac 
 
     }))

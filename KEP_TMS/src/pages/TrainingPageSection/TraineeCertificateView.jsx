@@ -1,4 +1,3 @@
-import { Toast } from "react-bootstrap";
 import { Tooltip } from "primereact/tooltip";
 import { FileUpload } from "primereact/fileupload";
 import { ProgressBar } from "primereact/progressbar";
@@ -6,10 +5,15 @@ import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
 import { useRef, useState } from "react";
 import { SectionHeading } from "../../components/General/Section";
-import { checkFileIfImage, getFileExtension } from "../../utils/fileUtils";
+import { checkFileIfImage } from "../../utils/fileUtils";
 import attachmentService from "../../services/attachmentService";
+import { attachmentType } from "../../api/constants";
+import { SessionGetEmployeeId } from "../../services/sessions";
+import handleResponseAsync from "../../services/handleResponseAsync";
+import proptype from "prop-types"
+import { confirmAction } from "../../services/sweetalert";
 
-const TraineeCertificateView = () => {
+const TraineeCertificateView = ({data}) => {
   const toast = useRef(null);
   const [totalSize, setTotalSize] = useState(0);
   const fileUploadRef = useRef(null);
@@ -163,9 +167,28 @@ console.log(e)
     className:
       "custom-cancel-btn p-button-danger p-button-rounded p-button-outlined  rounded-circle",
   };
+  console.log(data)
 const uploadCertificate = (e)=>{
+    const file = e.files[0];
+    if (file) {
     const formData = new FormData();
-    formData.append("ReferenceId", e.referenceId);
+    formData.append("ReferenceId", data?.id);
+    formData.append("AttachmentType", attachmentType.CERTIFICATE);
+    formData.append("EmployeeBadge", SessionGetEmployeeId());
+    formData.append("Files", file);
+    confirmAction({
+        title: "Upload Certificate",
+        text: "Are you sure you want to upload this certificate?",
+      onConfirm: () =>
+        handleResponseAsync(
+          () => attachmentService.addAttachment(formData),
+          null,
+          null,
+        ),
+    });
+    }else{
+        alert("No file selected")  // or show an error message
+    }
 }
   return (
     <div>
@@ -201,4 +224,7 @@ const uploadCertificate = (e)=>{
     </div>
   );
 };
+TraineeCertificateView.propTypes = {
+    data: proptype.object.isRequired,
+}
 export default TraineeCertificateView;

@@ -32,8 +32,16 @@ const UserDetailView = ({id})=>{
         {field: "startDate", header: "Start Date", body: (rowData)=><>{formatDateOnly(rowData.startDate)}</> },
         {field: "endDate", header: "End Date", body: (rowData)=><>{formatDateOnly(rowData.endDate)}</> },
         {field: "venue", header: "Venue", },
+        {field: "durationInHours", header: "Total Hours", },
         {field: "totalFee", header: "Cost", body: (rowData)=><>{formatCurrency(rowData.totalFee)}</>},
     ]
+    const countTotalHours = (trainings)=>{
+      let count = 0;
+      trainings?.map(item =>{
+        count += item?.durationInHours
+      })
+      return count;
+    }
     return (
       <>
       {loading ? <SkeletonBanner/> : error ? <h1>error</h1> :<>
@@ -57,11 +65,11 @@ const UserDetailView = ({id})=>{
                 <hr />
                 <h6>Trainings Attended:</h6>
                 <DetailItem label="No of Trainings" badge={trainings?.data?.attended?.length} className="text-muted" />
-                <DetailItem label="Total Accumulated Hours" badge={trainings?.data?.facilitated?.length}  className="text-muted"/>
+                <DetailItem label="Total Accumulated Hours" badge={countTotalHours(trainings?.data?.attended)}  className="text-muted"/>
                 <br />
                 <h6>Trainings Facilitated:</h6>
-                <DetailItem label="No of Trainings" badge={trainings?.data?.ongoing?.length} className="text-muted" />
-                <DetailItem label="Total Accumulated Hours"  className="text-muted" />
+                <DetailItem label="No of Trainings" badge={trainings?.data?.facilitated?.length} className="text-muted" />
+                <DetailItem label="Total Accumulated Hours" badge={countTotalHours(trainings?.data?.facilitated)}  className="text-muted" />
               </Col>
             </Row>
           </CardBody>

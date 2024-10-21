@@ -328,7 +328,7 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                         readOnly={isSubmitted}
                       ></textarea>
                     </td>
-                    <td style={{ verticalAlign: "middle" }}>
+                    <td className="text-center" style={{ verticalAlign: "middle" }}>
                       <Rating
                         className="justify-content-center"
                         value={
@@ -340,8 +340,10 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                         cancel={false}
                         readOnly={isSubmitted}
                       />
+                      <small className="mt-1 d-block">{isSubmitted ? formatDateTime(auditTrail?.createdDate): projectPerformanceEvaluation[index]
+                            ?.performanceBeforeTraining !== 0 && formatDateTime(new Date())}</small>
                     </td>
-                    <td style={{ verticalAlign: "middle" }}>
+                    <td className="text-center" style={{ verticalAlign: "middle" }}>
                       <Rating
                         className="justify-content-center"
                         value={
@@ -353,8 +355,9 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                         cancel={false}
                         readOnly={isSubmitted}
                       />
+                      <small className="mt-1 d-block">{isSubmitted ? formatDateTime(auditTrail?.createdDate): projectPerformanceEvaluation[index]?.projectedPerformance !== 0 && formatDateTime(new Date())}</small>
                     </td>
-                    <td style={{ verticalAlign: "middle" }}>
+                    <td className="text-center" style={{ verticalAlign: "middle" }}>
                       <Rating
                         className="justify-content-center"
                         value={
@@ -365,8 +368,10 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                         cancel={false}
                         disabled={!isAfter}
                       />
+                      <small className="mt-1 d-block">{isSubmitted ?  "": projectPerformanceEvaluation[index]?.actualPerformance !== 0 && formatDateTime(new Date())}</small>
+                   
                     </td>
-                    <td style={{ verticalAlign: "middle" }}>
+                    <td className="text-center" style={{ verticalAlign: "middle" }}>
                       <Rating
                         className="justify-content-center"
                         value={
@@ -378,6 +383,8 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                         cancel={false}
                         disabled={!isAfter}
                       />
+                      <small className="mt-1 d-block">{isSubmitted ? "": projectPerformanceEvaluation[index]?.evaluatedActualPerformance !== 0 && formatDateTime(new Date())}</small>
+                   
                     </td>    
                     {projectPerformanceEvaluation?.length > 1  && !isSubmitted &&
                     <Button type="button" style={{display: "none"}} icon="pi pi-trash" text 
