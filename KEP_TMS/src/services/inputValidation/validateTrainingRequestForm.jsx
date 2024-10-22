@@ -1,4 +1,4 @@
-import { SessionGetEmployeeId, SessionGetUserId } from "../sessions";
+import { SessionGetEmployeeId } from "../sessions";
 
 export const validateTrainingRequestForm = (formData)=>{
     if(!formData.trainingDates) throw new Error("Training dates are required");

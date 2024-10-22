@@ -175,8 +175,22 @@ const trainingType = useParams().type;
         }));
       }
     } else if (index === 2) {
+      console.log(details)
+      let hasError = false;
+      let newErrors = {};
+      if(!details?.current?.trainingProvider?.id){
+        newErrors.provider = "Please select a training provider";
+        hasError = true;
+      }
+      setErrors({...errors,provider: newErrors.provider})
+      if(!hasError){
       setFormData(details.current);
-      stepperRef.current.nextCallback();
+      stepperRef.current.nextCallback();     
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        provider: "",
+      }));
+      }
     }
   };
 
@@ -287,6 +301,7 @@ const trainingType = useParams().type;
                   formData={formData}
                   handleResponse={handleResponse}
                   providersData={providers}
+                  error={errors}
                 />
                 {<StepperButton back={true} next={true} index={2} />}
               </StepperPanel>

@@ -8,7 +8,7 @@ import { SectionHeading } from "../General/Section";
 import Select from "react-select";
 import { mapProviderListToOptionFormat } from "../../services/DataMapping/ProviderData";
 
-const TrainingCostForm = ({ formData, handleResponse, providersData }) => {
+const TrainingCostForm = ({ formData, handleResponse, providersData, error }) => {
   const [data, setFormData] = useState(formData);
   const [cost, setCost] = useState(data.trainingFee);
   const [totalCost, setTotalCost] = useState(0);
@@ -58,6 +58,8 @@ const TrainingCostForm = ({ formData, handleResponse, providersData }) => {
       <FormFieldItem
         label={"Training Provider"}
         col="col-12"
+        error={error?.provider}
+        required
         FieldComponent={
           <Select
             isLoading={providersData?.isLoading}
@@ -197,5 +199,6 @@ TrainingCostForm.propTypes = {
   formData: proptype.object.isRequired,
   handleResponse: proptype.func,
   providersData: proptype.object,
+  error: proptype.object,
 };
 export default TrainingCostForm;
