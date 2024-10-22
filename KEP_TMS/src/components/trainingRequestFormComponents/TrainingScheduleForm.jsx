@@ -13,16 +13,16 @@ import {
 import { TrainingDates } from "../../services/insertData";
 import { formatTotalTime, getTotalTime } from "../../utils/datetime/FormatDateTime";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
+import ErrorTemplate from "../General/ErrorTemplate";
 
 const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
   const [trainingSchedules, setTrainingSchedules] = useState(
     formData.trainingDates
   );
-  
   const [schedData, setSchedData] = useState(TrainingDates);
   const [error, setError] = useState();
   useEffect(() => {
-    setError(errors);
+    setError(errors?.schedules);
   }, [errors]);
 
   useEffect(() => {
@@ -118,6 +118,12 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
                 schedules={trainingSchedules}
                 onDelete={removeSchedule}
               />
+              {errors?.trainingSchedules?.length > 0 &&
+              errors?.trainingSchedules?.map(err=>{
+                return (
+              <ErrorTemplate key={err?.index} message={err?.value}/>
+                )
+              })}
             </Col>
             <Col className="col-12 col-lg-5">
               <Row>

@@ -75,7 +75,7 @@ const DetailsOverview = ({ data }) => {
         <Col className="col-6 col-md-3">
           <DetailItem
             label="Cut-off Date"
-            value={formatDateOnly(data?.cutOffDate)}
+            value={formatDateOnly(data?.cutOffDate ?? "N/A")}
           />
         </Col>
       </Row>

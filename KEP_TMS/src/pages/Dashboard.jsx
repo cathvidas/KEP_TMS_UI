@@ -86,6 +86,18 @@ const Dashboard = () => {
       icon: "pi pi-bookmark",
       status: "Closed",
     },
+    ...(SessionGetRole() === "SuperAdmin" || SessionGetRole() === "Admin"
+      ? [
+          {
+            label: "Outdated Requests",
+            color1: "#ff6bbd",
+            color2: "#ff6b6b",
+            value: data?.outDatedRequests,
+            icon: "pi pi-tag",
+            status: "OutDated",
+          },
+        ]
+      : []),
   ];
 
   const Content = () => {

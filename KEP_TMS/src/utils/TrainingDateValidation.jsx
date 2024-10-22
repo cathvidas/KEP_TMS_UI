@@ -28,4 +28,3 @@ export const ValidateSchedule = (schedule) => {
     return true;
   };
   
-

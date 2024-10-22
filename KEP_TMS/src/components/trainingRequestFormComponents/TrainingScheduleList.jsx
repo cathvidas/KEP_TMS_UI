@@ -42,10 +42,14 @@ const TrainingScheduleList = ({schedules, onDelete}) => {
               //dataKey={(_, rowIndex.)}
               rows={10}
             >
-              <Column field="date" header="Date"
-              body={
-                (rowData) => <span>{formatDateOnly(rowData.date)}</span>
-              }></Column>
+            <Column field="date" header="No"
+            body={
+              (_, {rowIndex}) => <>{rowIndex+1}</>
+            }></Column>
+            <Column field="date" header="Date"
+            body={
+              (rowData) => <span>{formatDateOnly(rowData.date)}</span>
+            }></Column>
               <Column
                 field="startTime"
                 header="Start Time"

@@ -12,6 +12,7 @@ import EmptyState from "./EmptyState";
 import { Button } from "primereact/button";
 import { Modal } from "react-bootstrap";
 const TrainingParticipantsForm = ({ formData, handleResponse, errors , departments}) => {
+
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -36,7 +37,6 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors , departmen
   useEffect(() => {
     setError(errors);
   }, [errors]);
-
   const [list, setList] = useState({
     users: [],
     providers: [],
@@ -227,11 +227,11 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors , departmen
       {error?.facilitators && (
         <small className="text-red">{error.facilitators}</small>
       )}
-      {data.trainingFacilitators.length > 0 ? (
+      {data.trainingFacilitators?.length > 0 ? (
         <>
           <span className="d-flex mb-2 justify-content-between">
             <span className="text-muted">
-              {data.trainingFacilitators.length} facilitators
+              {data.trainingFacilitators?.length} facilitators
             </span>
             <ActionButton
               variant={{ size: "btn-sm" }}

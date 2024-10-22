@@ -8,7 +8,7 @@ const userMapping = {
         data?.map(async (user) => {
           try {
             const userDetail = await userService.getUserById(user[property]);
-            if (propList && propList.length > 0) {
+            if (propList && propList?.length > 0) {
               let newData = { ...user };
               propList.forEach((element) => {
                 newData = {

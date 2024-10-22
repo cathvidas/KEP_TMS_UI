@@ -19,6 +19,7 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
       handleResponse(data);
     }
   }, [data]);
+  // console.log(formData)
   useEffect(() => {
     if (withEarlyRate) {
       const date = new Date();
@@ -33,7 +34,7 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
   }, [providersData]);
 
   useEffect(() => {
-    setTotalCost(data.trainingParticipants.length * cost);
+    setTotalCost(data.trainingParticipants?.length * cost);
     setFormData((prev) => ({
       ...prev,
       trainingFee: cost,

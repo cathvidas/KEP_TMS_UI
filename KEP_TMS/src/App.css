@@ -235,3 +235,18 @@ ul.p-list-menu {
     outline: none;
     border-color: #ccc;
 }
+
+
+/* Speed Dial CSS */
+.p-speeddial-action,
+.p-speeddial-action:hover {
+    color: #fff !important;
+}
+.p-speeddial-button.p-button.p-button-icon-only {
+    width: 3.4rem;
+    height: 3.4rem;
+}
+.p-speeddial-action.disabled{
+    color: #bbbaba  !important;
+    background-color: #333333ab;
+}

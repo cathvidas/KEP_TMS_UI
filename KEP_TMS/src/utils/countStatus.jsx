@@ -1,4 +1,5 @@
 import { OtherConstant, statusCode } from "../api/constants";
+import { checkTrainingIfOutDated } from "../services/inputValidation/validateTrainingSchedules";
 import { SessionGetEmployeeId } from "../services/sessions";
 
 const countStatus = (data, userRequest) => {
@@ -14,10 +15,14 @@ const countStatus = (data, userRequest) => {
     ongoing: 0,
     trainerAction: 0,
     assignedTraining: 0,
+    outDatedRequests: 0
   };
   userRequest.forEach((item) => {
     count.total++;
     // if()
+    if(checkTrainingIfOutDated(item) &&( item?.status?.id === statusCode.SUBMITTED || item?.status?.id === statusCode.FORAPPROVAL|| item?.status?.id === statusCode.APPROVED)){
+      count.outDatedRequests++;
+    }
     if (item?.status?.id === statusCode.APPROVED) {
       count.approved++;
     } else if (item.status.id === statusCode.FORAPPROVAL || item.status.id === statusCode.SUBMITTED) {

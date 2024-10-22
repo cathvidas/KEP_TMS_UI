@@ -15,7 +15,7 @@ const ApproverList = ({data }) => {
   const getStatus = (employeeBadge) => {
     const status = data?.routings?.filter((x) => x.assignedTo === employeeBadge); // Get status for this employee
   
-    if (status.length > 0 && status[0]?.statusId && data?.status?.id !== statusCode.SUBMITTED) {
+    if (status?.length > 0 && status[0]?.statusId && data?.status?.id !== statusCode.SUBMITTED) {
       return getStatusById(status[0]?.statusId);
     } 
     else {

@@ -40,6 +40,7 @@ const TrainingPage = () => {
     data,
     trainingForms?.data
   );
+  const navigate = useNavigate();
   const pageContent = [
     <OverviewSection
       key={0}
@@ -67,8 +68,12 @@ const TrainingPage = () => {
         // const reponse =  trainingRequestService.updateTrainingRequest({...mapTrainingRequestDetails(data), statusId: ""})
       }
     }
+    // if((data?.status?.id === statusCode.SUBMITTED && isTrainee)|| (data?.status?.id === statusCode.APPROVED && (isAdmin || isFacilitator)) || (data?.status?.id === statusCode.PUBLISHED && (isAdmin || isFacilitator)) ){
+    //   ""
+    // }else{
+    //   navigate(`/KEP_TMS/TrainingRequest/${data?.id}`)
+    // }
   }, [trainingForms?.data]);
-  const navigate = useNavigate();
   const items = [
     {
       label: "Menu",

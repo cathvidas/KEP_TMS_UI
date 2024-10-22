@@ -15,6 +15,8 @@ import { Dropdown } from "react-bootstrap";
 import { statusCode } from "../../api/constants";
 import countData from "../../utils/countData";
 import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
+import { checkTrainingIfOutDated } from "../../services/inputValidation/validateTrainingSchedules";
+import getStatusById from "../../utils/status/getStatusById";
 
 const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEdit = true , isAdmin}) => {
 
@@ -37,6 +39,13 @@ const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEd
   const handleButtonClick = (id, page) => {
     navigate(`/KEP_TMS/${page}/${id}`);
   };
+  const checkTrainingDates = (rowData)=>{
+    const detail = data?.find(item => item.id == rowData.id);
+    return checkTrainingIfOutDated(detail) &&
+    (detail?.status?.id === statusCode.SUBMITTED ||
+    detail?.status?.id === statusCode.FORAPPROVAL ||
+    detail?.status?.id === statusCode.APPROVED)
+  }
   const actionTemplate = (data) => {
     return (
       <div className="d-flex">
@@ -47,7 +56,7 @@ const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEd
           severity="success"
           className="rounded"
           text
-          onClick={() => handleButtonClick(data.id, data.status == "Published" || data.status == "Submitted" ? "Training":"TrainingRequest")}
+          onClick={() => handleButtonClick(data.id,checkTrainingDates(data) ? "TrainingRequest" : data.status == "Published" || data.status == "Submitted" ? "Training":"TrainingRequest")}
         />
         {allowEdit && 
         <Button
@@ -72,17 +81,18 @@ const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEd
     );
   };
   const approverColumnTemplate = (rowData) => {
-
+const isOutDated = checkTrainingDates(rowData)
     return (
       <>
         <div>
           <span>
             {" "}
-            {StatusColor({status: rowData.status, class: "p-1", style:{ fontSize: "0.55rem" }, showStatus:false})}
+            {isOutDated ? "":StatusColor({status: rowData.status, class: "p-1", style:{ fontSize: "0.55rem" }, showStatus:false})}
           </span>
           <span>
             {" "}
-            {rowData.status == "ForApproval"
+            {isOutDated ? <span className="badge text-white rounded px-2 py-1 " style={{background: "#c93939"}}>Outdated</span>  :
+            rowData.status == "ForApproval"
               ? "For " + rowData.approverPosition + " Approval"
               : rowData.status == "Approved"
               ? "Awaiting Trainer Action"
@@ -92,7 +102,7 @@ const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEd
           </span>
           <br />
           <b>
-            {
+            {isOutDated ? "":
               rowData.status == "Submitted"
               ?`${countData(rowData.trainingParticipants, "effectivenessId", 4)}/${rowData.totalParticipants} submitted`:
               rowData.status == "Published"

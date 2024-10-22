@@ -10,6 +10,7 @@ import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import { statusCode } from "../api/constants";
 import { MeterGroup } from 'primereact/metergroup';
+import { checkTrainingIfOutDated } from "../services/inputValidation/validateTrainingSchedules";
 const RequestList = () => {
   const { type } = useParams();
   const { data, error, loading } =
@@ -22,8 +23,23 @@ const RequestList = () => {
     value: getStatusCode(type),
   });
   useEffect(() => {
-    if (filter?.value) {
-      if(filter.label === "Pending"){
+    if(filter.label?.toUpperCase() === "OUTDATED"){
+      console.log(data)
+      let updatedList = [];
+      data.forEach((item) => {
+        if (
+          checkTrainingIfOutDated(item) &&
+          (item?.status?.id === statusCode.SUBMITTED ||
+            item?.status?.id === statusCode.FORAPPROVAL ||
+            item?.status?.id === statusCode.APPROVED)
+        ) {
+          updatedList.push(item);
+        }
+      });
+      setRequests(updatedList);
+    }
+   else if (filter?.value) {
+     if(filter.label === "Pending"){
         const updatedList = data.filter(
           (request) => request?.status?.id === statusCode.FORAPPROVAL || request?.status?.id === statusCode.SUBMITTED
         );
@@ -57,7 +73,7 @@ const RequestList = () => {
         ) : (
           <>
             {/* <div className="card flex justify-content-center"> */}
-              <MeterGroup values={values} max="200" />
+              {/* <MeterGroup values={values} max="200" /> */}
             {/* </div> */}
             <TRequestTable
               userType={"user"}

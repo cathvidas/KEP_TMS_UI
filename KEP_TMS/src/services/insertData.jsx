@@ -1,4 +1,3 @@
-import { TrainingType } from "../api/constants";
 import { SessionGetEmployeeId } from "./sessions";
 
 export const TrainingRequest =  {

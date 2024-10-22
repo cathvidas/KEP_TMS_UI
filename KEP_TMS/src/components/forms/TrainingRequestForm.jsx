@@ -20,7 +20,6 @@ import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
 import { Button } from "primereact/button";
 import validateTrainingDetails from "../../services/inputValidation/validateTrainingDetails";
-import { mapUserListAsync } from "../../services/DataMapping/UserListData";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import { statusCode, TrainingType } from "../../api/constants";
 import TrainingParticipantsForm from "../trainingRequestFormComponents/TrainingParticipantsForm";
@@ -31,51 +30,59 @@ import providerHook from "../../hooks/providerHook";
 import commonHook from "../../hooks/commonHook";
 import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
 import trainingRequestService from "../../services/trainingRequestService";
+import trainingRequestHook from "../../hooks/trainingRequestHook";
+import validateTrainingSchedules from "../../services/inputValidation/validateTrainingSchedules";
 export const TrainingRequestForm = () => {
-  
+  const trainingType = useParams().type;
+  const requestId = useParams().id;
   const programs = programHook.useAllPrograms();
   const categories = categoryHook.useAllCategories();
   const providers = providerHook.useAllProviders();
   const departments = commonHook.useAllDepartments();
-const trainingType = useParams().type;
-  const requestId = useParams().id;
   // var details = {};
   const details = useRef({});
+  const [isUpdate, setIsUpdate] = useState(false);
   var trainingSchedules = { trainingDates: [] };
   const [formData, setFormData] = useState(TrainingRequest);
   const navigate = useNavigate();
-  const handleResponse = useCallback(
-    (data) => {
-      details.current = data;
-    },
-    []
-  );
-
-  const getTrainingTypeId = ()=>{
-    if(trainingType === "Internal"){
+  const handleResponse = useCallback((data) => {
+    details.current = data;
+  }, []);
+  const getTrainingTypeId = () => {
+    if (trainingType === "Internal") {
       return TrainingType.INTERNAL;
     }
-    if(trainingType === "External"){
+    if (trainingType === "External") {
       return TrainingType.EXTERNAL;
     }
-  }
-  const handleTrainingDates = useCallback((data) => {
-    details.current.trainingDates = data;
-    trainingSchedules.trainingDates = data;
-  },[details]);
+  };
+  const handleTrainingDates = useCallback(
+    (data) => {
+      details.current.trainingDates = data;
+      trainingSchedules.trainingDates = data;
+    },
+    [details]
+  );
   const handleFormSubmission = async () => {
     try {
       const formmatedData = { ...validateTrainingRequestForm(formData) };
       if (trainingType.toUpperCase() === "UPDATE" && requestId) {
+        const changeStatus = formData?.status?.id === statusCode.PUBLISHED || formData?.status?.id === statusCode.CLOSED ||formData?.status?.id === statusCode.APPROVED ? false : true;
         const updateData = {
           ...formmatedData,
           updatedBy: SessionGetEmployeeId(),
+          statusId: changeStatus ?
+            calculateTotalHours(formmatedData?.trainingDates) >= 960
+              ? statusCode.SUBMITTED
+              : statusCode.FORAPPROVAL : formmatedData?.statusId,
         };
-        const response = await trainingRequestService.updateTrainingRequest(updateData);
+        const response = await trainingRequestService.updateTrainingRequest(
+          updateData
+        );
         if (response.isSuccess === true) {
           actionSuccessful(
             "updated",
-            "training request successfully submitted, please wait for approval"
+            "training request successfully submitted."
           );
           setTimeout(() => {
             navigate("/KEP_TMS/TrainingRequest/" + formmatedData.id);
@@ -88,11 +95,14 @@ const trainingType = useParams().type;
           ...formmatedData,
           requestorBadge: SessionGetEmployeeId(),
           trainingTypeId: getTrainingTypeId(),
-          statusId: calculateTotalHours(formmatedData?.trainingDates) >= 960
-          ? statusCode.SUBMITTED
-          : statusCode.FORAPPROVAL,
+          statusId:
+            calculateTotalHours(formmatedData?.trainingDates) >= 960
+              ? statusCode.SUBMITTED
+              : statusCode.FORAPPROVAL,
         };
-        const response = await trainingRequestService.createTrainingRequest(updateData);
+        const response = await trainingRequestService.createTrainingRequest(
+          updateData
+        );
         if (response.isSuccess === true) {
           actionSuccessful(
             "Success",
@@ -117,30 +127,23 @@ const trainingType = useParams().type;
   });
   const handleButtonOnClick = (index) => {
     if (index === 0) {
+      const validateDates = details.current?.status?.id === statusCode.PUBLISHED || details.current?.status?.id === statusCode.CLOSED ? false: true;
+      const schedulesIsValid = validateTrainingSchedules(details.current?.trainingDates, validateDates)
+      console.log(schedulesIsValid)
       const { hasErrors, newErrors } = validateTrainingDetails(details.current);
-      let schedulesValid = false;
       let detailsValid = !hasErrors;
-      // Check if schedules are valid
-      if (details.current.trainingDates?.length > 0) {
-        schedulesValid = true;
-      } else {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          schedules: "Please add schedules",
-        }));
-      }
-
       // Set errors for details
-      if (hasErrors) {
+      if (hasErrors || schedulesIsValid.hasErrors) {
         setErrors((prevErrors) => ({
           ...prevErrors,
           details: newErrors,
+          schedules: schedulesIsValid.newErrors,
         }));
       }
 
       // Proceed to next step only if both details and schedules are valid
-      if (detailsValid && schedulesValid) {
-        setFormData(details.current);
+      if (detailsValid && !schedulesIsValid.hasErrors) {
+        setFormData((prev)=>({...prev, ...details.current}));
         stepperRef.current.nextCallback();
         setErrors((prevErrors) => ({
           ...prevErrors,
@@ -150,6 +153,7 @@ const trainingType = useParams().type;
       }
       //stepperRef.current.nextCallback();
     } else if (index === 1) {
+      console.log(details.current)
       let hasErrors = false;
       let newErrors = { trainees: "", facilitators: "" };
       if (details.current.trainingParticipants?.length > 0) {
@@ -167,7 +171,8 @@ const trainingType = useParams().type;
       setErrors({ ...errors, participants: newErrors });
 
       if (!hasErrors) {
-        setFormData(details.current);
+        console.log(details.current, formData)
+        setFormData((prev)=>({...prev, ...details.current}));
         stepperRef.current.nextCallback();
         setErrors((prevErrors) => ({
           ...prevErrors,
@@ -175,45 +180,40 @@ const trainingType = useParams().type;
         }));
       }
     } else if (index === 2) {
-      console.log(details)
+      console.log(details.current)
       let hasError = false;
       let newErrors = {};
-      if(!details?.current?.trainingProvider?.id){
+      if (!details?.current?.trainingProvider?.id) {
         newErrors.provider = "Please select a training provider";
         hasError = true;
       }
-      setErrors({...errors,provider: newErrors.provider})
-      if(!hasError){
-      setFormData(details.current);
-      stepperRef.current.nextCallback();     
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        provider: "",
-      }));
+      setErrors({ ...errors, provider: newErrors.provider });
+      if (!hasError) {
+        setFormData((prev)=>({...prev, ...details.current}));
+        stepperRef.current.nextCallback();
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          provider: "",
+        }));
       }
     }
   };
 
-  //Get request data if param is UPDATE
+  const trainingRequestData = trainingRequestHook.useTrainingRequest(requestId ?? 0);
+  // Get request data if param is UPDATE
   useEffect(() => {
-    if (trainingType.toUpperCase() === "UPDATE" && requestId) {
-      const getRequest = async () => {
-        try {
-          const res = await trainingRequestService.getTrainingRequest(requestId);
-         const participants = await mapUserListAsync(res?.data?.trainingParticipants, "employeeBadge")
-         const facilitators = await mapUserListAsync(res?.data.trainingFacilitators, "facilitatorBadge")
-          if (res.data != null) {
-            setFormData({...res?.data, trainingParticipants: participants, trainingFacilitators: facilitators});
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      
-      getRequest();
+    if (
+      trainingType.toUpperCase() === "UPDATE" &&
+      trainingRequestData?.data
+    ) {
+      setFormData(trainingRequestData?.data);
+      setIsUpdate(true)
+    }else{
+      setIsUpdate(false)
+      setFormData(TrainingRequest);
     }
-  }, [trainingType]);
-  
+  }, [trainingType,trainingRequestData?.data, requestId]);
+
   const StepperButton = (button) => {
     return (
       <div className="flex pt-4 justify-content-between">
@@ -244,26 +244,36 @@ const trainingType = useParams().type;
             icon="pi pi-arrow-right"
             iconPos="right"
             severity="success"
-            onClick={() =>
-              confirmAction({ onConfirm: handleFormSubmission })
-            }
+            onClick={() => confirmAction({ onConfirm: handleFormSubmission })}
           />
         )}
       </div>
     );
   };
+  console.log(formData)
   return (
     <Card>
       <Card.Body>
         <Form method="POST">
           <h3 className="text-center theme-color">
-            New {trainingType} Training Request
+            {trainingType === "Update" ? "Update " + formData?.trainingType?.name : "New " + trainingType}{" "}
+            Training Request
           </h3>
+          {trainingType?.toUpperCase() === "UPDATE" && formData.id !== 0 &&
+          <h6 className="text-muted text-center mb-3">Request ID: {formData.id}</h6>}
+          <div className="position-absolute end-0 top-0 ">
+            <Button
+              type="button"
+              onClick={() => history.back()}
+              icon="pi pi-times"
+              text
+            />
+          </div>
           <div className="h6 d-flex gap-5 pb-4 justify-content-around border-bottom">
-            <span> Requestor: {SessionGetUserName()}</span>
-            <span> BadgeId: {SessionGetEmployeeId()}</span>
-            <span> Department: {SessionGetDepartment()}</span>
-            <span> Date: {formatDateTime(new Date())}</span>
+            <span> Requestor: {isUpdate ? formData?.requestor?.fullname : SessionGetUserName()}</span>
+            <span> Badge No: {isUpdate ? formData?.requestor?.employeeBadge:SessionGetEmployeeId()}</span>
+            <span> Department: {isUpdate ? formData?.requestor?.position: SessionGetDepartment()}</span>
+            <span> Date: {isUpdate ? formatDateTime(formData?.createdDate) : formatDateTime(new Date())}</span>
           </div>
           <div className="">
             <Stepper
@@ -286,8 +296,8 @@ const trainingType = useParams().type;
                   errors={errors?.schedules}
                 />
                 {<StepperButton next={true} index={0} />}
-              </StepperPanel>
-              <StepperPanel header="Participants">
+            </StepperPanel>
+                <StepperPanel header="Participants">
                 <TrainingParticipantsForm
                   formData={formData}
                   handleResponse={handleResponse}

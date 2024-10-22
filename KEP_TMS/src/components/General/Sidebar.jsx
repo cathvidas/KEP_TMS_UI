@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleLeft,
   faAngleRight,
-  faAward,
   faClipboardCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
@@ -79,7 +78,7 @@ const Sidebars = () => {
   return (
     <>
       <div
-        className={`bg-body position-sticky  sidebar top-0 min-vh-100 bottom-0 z-1 border-right z-2 ${
+        className={`bg-body position-sticky d-none d-md-block  sidebar top-0 min-vh-100 bottom-0 z-1 border-right z-2 ${
           expanded == "true" ? "expanded" : "collapsed"
         }`}
         style={{

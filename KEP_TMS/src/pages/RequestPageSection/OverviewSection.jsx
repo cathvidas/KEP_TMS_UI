@@ -17,9 +17,16 @@ import DetailsOverview from "../../components/TrainingPageComponents/DetailsOver
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import { useEffect, useRef, useState } from "react";
 import { Toast } from "primereact/toast";
+import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
+import getToastDetail from "../../services/common/getToastDetail";
+import { Tooltip } from "primereact/tooltip";
+import { SpeedDial } from "primereact/speeddial";
+import { confirmAction } from "../../services/sweetalert";
+import handleResponseAsync from "../../services/handleResponseAsync";
+import trainingRequestService from "../../services/trainingRequestService";
+import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
 import { statusCode } from "../../api/constants";
-import countData from "../../utils/countData";
-import { SessionGetEmployeeId } from "../../services/sessions";
+import SpeedDialButtonItemTemplate from "../../components/General/SpeedDialButtonItemTemplate";
 
 const OverviewSection = ({
   data,
@@ -28,6 +35,7 @@ const OverviewSection = ({
   showApprovers = false,
 }) => {
   const navigate = useNavigate();
+  console.log(data)
   const toast = useRef(null);
   const [reqStatus, setReqStatus] = useState({
     show: true,
@@ -35,172 +43,175 @@ const OverviewSection = ({
     summary: "",
     detail: {},
   });
-  const isTrainee = data?.trainingParticipants?.find(
-    (user) => user?.employeeBadge === SessionGetEmployeeId()
-  );
+  const cancelRequest = ()=>{
+    const formmatedData = { ...validateTrainingRequestForm(data),updatedBy: SessionGetEmployeeId(), statusId: statusCode.INACTIVE };
+    confirmAction({
+      title: "Are you sure?",
+      text: "Are you sure you want to cancel this training request?",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      confirmButtonColor: "#d33",
+      onConfirm: ()=> handleResponseAsync(
+        ()=> trainingRequestService.updateTrainingRequest(formmatedData)
+      )
+    })
+  }
   useEffect(() => {
-    const status = data?.status?.id;
-    const statusData = { ...reqStatus, statusId: status };
-    if (status == statusCode.FORAPPROVAL) {
-      statusData.detail = [data?.currentRouting?.fullname];
-      statusData.summary =
-        SessionGetEmployeeId() === data?.currentRouting?.employeeBadge
-          ? "Waiting for your Approval"
-          : `For ${data?.currentRouting?.position} Approval`;
-      statusData.severity = "info";
-    } else if (status == statusCode.APPROVED) {
-      statusData.summary = "Waiting for Facilitator's Action";
-      const isFacilitator = data?.trainingFacilitators?.some(
-        (f) => f.employeeBadge === SessionGetEmployeeId()
-      );
-      let facilitators = "";
-      data?.trainingFacilitators?.forEach((f) => {
-        facilitators += `${f?.fullname}, `;
-      });
-      statusData.severity = "info";
-      statusData.detail = isFacilitator
-        ? "Please add module or set an exam if required and publish the request"
-        : facilitators;
-    } else if (status == statusCode.SUBMITTED) {
-      statusData.summary = "Waiting for participants Effectiveness";
-      statusData.detail =
-        isTrainee && isTrainee?.effectivenessId === null
-          ? "Navigate to Report section and fill out the effectiveness form"
-          // : isTrainee?.effectivenessId?.sta
-          : `${countData(data.trainingParticipants, "effectivenessId", 4)}/${
-              data.totalParticipants
-            } submitted`;
-      statusData.severity = "warn";
-    } else {
-      statusData.show = false;
-      // statusData.summary = data?.status?.name;
-      // statusData.detail = "";
-      // statusData.severity = status == statusCode.SUBMITTED ? "warning" : status === statusCode.PUBLISHED? "success": "secondary" ;
-    }
-    setReqStatus(statusData);
+    const statsData = getToastDetail(
+      data,
+      SessionGetEmployeeId(),
+      () => cancelRequest(),
+      () => navigate("/KEP_TMS/Request/Update/" + data.id)
+    );
+    setReqStatus(statsData);
   }, [data]);
 
   const showSticky = () => {
-    if(reqStatus.show){
-    toast.current?.clear();
-    toast.current?.show({
-      severity: reqStatus?.severity,
-      summary: reqStatus?.summary,
-      detail: reqStatus?.detail,
-      sticky: true,
-    });}
+    if (reqStatus.show) {
+      toast.current?.clear();
+      toast.current?.show({
+        severity: reqStatus?.severity,
+        summary: reqStatus?.summary,
+        detail: reqStatus?.detail,
+        sticky: true,
+        content: reqStatus?.content
+      });
+    }
   };
-  return (<>
-  {
-showSticky()}
+  const toast2 = useRef(null);
+  const items = [
+    {
+        label: 'Update',
+        icon: 'pi pi-pencil',
+        command: () => navigate("/KEP_TMS/Request/Update/" + data.id)
+    },
+    {
+        label: 'Cancel Request',
+        icon: 'pi pi-trash',
+        command:cancelRequest,
+        template: SpeedDialButtonItemTemplate,
+        inactive: data?.status?.id === statusCode.INACTIVE? true: false
+    },
+    {
+        label: 'Status',
+        icon: 'pi pi-info-circle',
+        command: showSticky,
+        template: SpeedDialButtonItemTemplate,
+        disable:true,
+        inactive: true
+    },
+];
+  return (
+    <>
+      {showSticky()}
 
-        <Toast ref={toast} position="bottom-center" className="z-1"/>
-    <div className="card p-3 w-100">
-      <div>
-        <h3 className="text-center theme-color m-0">
-          New {data?.trainingType?.name} Training Request
-          <span
-            className="ms-3 text-secondary h6 mb-0 btn border-0"
-            title="Edit Request"
-            onClick={() => navigate("/KEP_TMS/Request/Update/" + data.id)}
-          >
-            <i className="pi pi-pencil"></i> Edit
-          </span>
-        </h3>
-        <h6 className="text-muted text-center mb-3">Request ID: {data.id}</h6>
-        <div className="position-absolute end-0 top-0 ">
-          <Button
-            type="button"
-            onClick={() => history.back()}
-            icon="pi pi-times"
-            text
-          />
-        </div>
-        <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
-          <span> Requestor: {data?.requestor?.fullname}</span>
-          <span> Badge No: {data?.requestor?.employeeBadge}</span>
-          <span> Department: {data?.requestor?.departmentName}</span>
-          <span> Date: {formatDateTime(data?.createdDate)}</span>
-          <span  onClick={showSticky}>
-            Status:{" "}
-            {StatusColor({
-              status: data?.status?.name,
-              class: "p-2 px-3 ",
-              showStatus: true,
-            })}
-          </span>
-        </div>
-      </div>
-      <div className="flex justify-content-between">
-        <SectionHeading
-          title="Details"
-          icon={<FontAwesomeIcon icon={faInfoCircle} />}
-        />
-      </div>
-      <DetailsOverview data={data} />
-      <br />
-      <SectionHeading
-        title="Training Schedules"
-        icon={<FontAwesomeIcon icon={faCalendar} />}
-      />
-      <TrainingScheduleList schedules={data.trainingDates} />
-      {showParticipants && (
-        <>
-          <br />
-          <SectionHeading
-            title="Participants"
-            icon={<FontAwesomeIcon icon={faUsers} />}
-          />
-          {data.trainingParticipants?.length > 0 ? (
-            <div className="w-100 overflow-hidden">
-              <small className="text-muted">
-                {data.trainingParticipants.length} participants{" "}
-              </small>
-              <UserList
-                leadingElement={true}
-                col="3"
-                userlist={data.trainingParticipants}
-                property={"name"}
-                // allowEffectiveness
-              />
-            </div>
-          ) : (
-            <EmptyState placeholder="No participants added" />
-          )}
-        </>
-      )}
-      {showFacilitators && (
-        <>
-          <br />
-          <SectionHeading
-            title="Facilitator"
-            icon={<FontAwesomeIcon icon={faUsers} />}
-          />
-          {data.trainingFacilitators?.length > 0 ? (
-            <UserList
-              leadingElement={true}
-              userlist={data.trainingFacilitators}
-              property={"name"}
+      <Toast ref={toast} position="bottom-center" className="z-1" />
+      <div className="card p-3 w-100">
+        <div>
+          <h3 className="text-center theme-color m-0">
+            {data?.trainingType?.name} Training Request
+          </h3>
+          <h6 className="text-muted text-center mb-3">Request ID: {data.id}</h6>
+          <div className="position-absolute end-0 top-0 ">
+            <Button
+              type="button"
+              onClick={() => history.back()}
+              icon="pi pi-times"
+              text
             />
-          ) : (
-            <EmptyState placeholder="No facilitator added" />
-          )}
-        </>
-      )}
-      {showApprovers && (
-        <>
-          <br />
-
-          <div className="">
+          </div>
+          <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
+            <span> REQUESTOR: {data?.requestor?.fullname}</span>
+            <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
+            <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
+            <span> DATE: {formatDateTime(data?.createdDate)}</span>
+            <span>
+              Status:{" "}
+              {StatusColor({
+                status: data?.status?.name,
+                class: "p-2 px-3 ",
+                showStatus: true,
+              })}
+            </span>
+          </div>
+        </div>
+        <div className="flex justify-content-between">
+          <SectionHeading
+            title="Details"
+            icon={<FontAwesomeIcon icon={faInfoCircle} />}
+          />
+        </div>
+        <DetailsOverview data={data} />
+        <br />
+        <SectionHeading
+          title="Training Schedules"
+          icon={<FontAwesomeIcon icon={faCalendar} />}
+        />
+        <TrainingScheduleList schedules={data.trainingDates} />
+        {showParticipants && (
+          <>
+            <br />
             <SectionHeading
-              title="Approvers"
+              title="Participants"
               icon={<FontAwesomeIcon icon={faUsers} />}
             />
-            <ApproverList data={data} />
-          </div>
-        </>
-      )}
-    </div></>
+            {data.trainingParticipants?.length > 0 ? (
+              <div className="w-100 overflow-hidden">
+                <small className="text-muted">
+                  {data.trainingParticipants?.length} participants{" "}
+                </small>
+                <UserList
+                  leadingElement={true}
+                  col="3"
+                  userlist={data.trainingParticipants}
+                  property={"name"}
+                  // allowEffectiveness
+                />
+              </div>
+            ) : (
+              <EmptyState placeholder="No participants added" />
+            )}
+          </>
+        )}
+        {showFacilitators && (
+          <>
+            <br />
+            <SectionHeading
+              title="Facilitator"
+              icon={<FontAwesomeIcon icon={faUsers} />}
+            />
+            {data.trainingFacilitators?.length > 0 ? (
+              <UserList
+                leadingElement={true}
+                userlist={data.trainingFacilitators}
+                property={"name"}
+              />
+            ) : (
+              <EmptyState placeholder="No facilitator added" />
+            )}
+          </>
+        )}
+        {showApprovers && (
+          <>
+            <br />
+
+            <div className="">
+              <SectionHeading
+                title="Approvers"
+                icon={<FontAwesomeIcon icon={faUsers} />}
+              />
+              <ApproverList data={data} />
+            </div>
+          </>
+        )}  
+      </div> 
+      {SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin" &&
+      <div className="position-absolute bottom-0  mb-3 me-4 end-0">
+                <Toast ref={toast2} />
+                <Tooltip target=".speeddial-bottom-right  .p-speeddial-action" position="left"/>
+                <SpeedDial model={items} direction="up" className="speeddial-bottom-right  end-0 bottom-0 " buttonClassName="p-button-default rounded-circle " />
+            </div>}
+    </>
   );
 };
 OverviewSection.propTypes = {

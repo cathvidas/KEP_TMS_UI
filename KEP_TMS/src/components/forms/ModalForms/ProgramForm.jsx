@@ -27,7 +27,7 @@ const ProgramForm = ({ handleShow, handleClose, selectedData }) => {
       formErrors.description = "Description is required";
     }
     setErrors(formErrors);
-    return Object.keys(formErrors).length === 0;
+    return Object.keys(formErrors)?.length === 0;
   };
 
   useEffect(() => {

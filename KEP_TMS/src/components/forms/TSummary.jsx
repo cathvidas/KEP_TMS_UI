@@ -33,10 +33,10 @@ const TrainingSummary = ({ formData }) => {
         title="Training Participants"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
-      {updatedData.trainingParticipants.length > 0 ? (
+      {updatedData.trainingParticipants?.length > 0 ? (
         <>
           <small className="text-muted">
-            {updatedData.trainingParticipants.length} participants{" "}
+            {updatedData.trainingParticipants?.length} participants{" "}
           </small>
           <UserList
             leadingElement={true}
@@ -53,7 +53,7 @@ const TrainingSummary = ({ formData }) => {
         title="Training Facilitator/s"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
-      {updatedData.trainingFacilitators.length > 0 ? (
+      {updatedData.trainingFacilitators?.length > 0 ? (
         <UserList
           leadingElement={true}
           userlist={updatedData.trainingFacilitators}

@@ -9,7 +9,7 @@ const Header = ({ title, IconComponent, showModal, setShowModal }) => {
   };
   return (
     <Navbar className="header navbar-expand-md d-flex w-100  bg-body z-1 shadow-sm px-4 ">
-      <a className="navbar-brand d-flex align-items-center fw-bold" href="#">
+      <a className="navbar-brand d-flex align-items-center " href="#" style={{fontWeight: 500}}>
         <span
           className="d-flex justify-content-center align-items-center bs-icon"
           style={{
@@ -33,27 +33,6 @@ const Header = ({ title, IconComponent, showModal, setShowModal }) => {
       >
         <ul className="nav nav-tabs gap-3 border-0">
           <li className="nav-item"></li>
-          {/* <li className="nav-item">
-            <span className="position-relative">
-              <input
-                type="search"
-                className="form-control pe-4"
-                placeholder="Search.."
-              />
-              <span className="position-absolute top-50 end-0 translate-middle">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1em"
-                  height="1em"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                  className="bi bi-search"
-                >
-                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"></path>
-                </svg>
-              </span>
-            </span>
-          </li> */}
           <li className="nav-item">
             <a
               className="nav-link active p-2 border d-flex align-items-center rounded h-100"
