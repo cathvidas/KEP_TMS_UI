@@ -1,4 +1,4 @@
-import { createExamApi, getExamByRequestIdApi, getTraineeExamApi, saveTraineeExamApi } from "../api/examApi";
+import { createExamApi, getExamByRequestIdApi, getTraineeExamApi, saveTraineeExamApi, updateExamApi } from "../api/examApi";
 
 const examService ={
     createExam: async (data)=>{
@@ -7,6 +7,13 @@ const examService ={
           throw new Error(response.message);
         }
         return response?.data;
+    },
+    updateExam: async (data)=>{
+        const response = await updateExamApi(data);
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response;
     },
     getExamByRequestId: async (id)=>{
         const response = await getExamByRequestIdApi(id);

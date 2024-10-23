@@ -179,7 +179,7 @@ const uploadCertificate = (e)=>{
         text: "Are you sure you want to upload this certificate?",
       onConfirm: () =>
         handleResponseAsync(
-          () => attachmentService.addAttachment(formData),
+          () => attachmentService.addAttachments(formData),
           null,
           null,
         ),

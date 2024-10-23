@@ -3,7 +3,7 @@ import examService from "../services/examService";
 import handleResponseAsync from "../services/handleResponseAsync";
 
 const examHook = {
-    useExamByRequestId: (id)=>{
+    useExamByRequestId: (id, trigger)=>{
         const [exams, setExams] = useState([]);
         const [error, setError] = useState(null);
         const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ const examHook = {
              );
            };
            getRequest();
-        },[id])
+        },[id, trigger])
         return {
             exams, error, loading
         }

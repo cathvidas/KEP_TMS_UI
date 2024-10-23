@@ -2,21 +2,26 @@ import proptype from "prop-types";
 import { useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 import { Button } from "primereact/button";
-import { FormFieldItem } from "../trainingRequestFormComponents/FormElements";
-import ErrorTemplate from "../General/ErrorTemplate";
-const TrainingExamForm = ({
-  handleOnChange,
+import { FormFieldItem } from "../../trainingRequestFormComponents/FormElements";
+import ErrorTemplate from "../../General/ErrorTemplate";
+const ExamQuestionForm = ({
+  showModal,
+  closeModal,
   defaultData,
-  setDefaultData,
-  formDetail,
-  setFormDetail
-
+handleSaveQuestion,
+handleUpdateQuestion
 }) => {
   const [option, setOption] = useState({ content: "", isCorrect: false });
   const [details, setDetails] = useState({ content: "", answerOptions: [] });
   const [errors, setErrors] = useState({});
+  const [isUpdate, setIsUpdate] = useState(false)
   useEffect(() => {
-    setDetails(defaultData?.defaultData);
+    if (defaultData) {
+      setDetails(defaultData?.data);
+      setIsUpdate(true);
+    } else {
+      setIsUpdate(false);
+    }
   }, [defaultData]);
   const handleRemoveOption = (index) => {
     const updatedFiles = { ...details };
@@ -45,30 +50,19 @@ const TrainingExamForm = ({
     if (!validForm) {
       setErrors(formErrors);
     } else {
-      setErrors({});
-
-      const oldData = JSON.parse(localStorage.getItem("examDetails"));
-      const examQuestions = oldData?.examQuestion ?? [];
-      if(formDetail?.buttonFunction != null){
-        formDetail.buttonFunction(details);
+      if(isUpdate){
+        handleUpdateQuestion({index: defaultData?.index, data:details})
       }else{
-      if (defaultData?.index != null) {
-        examQuestions[defaultData?.index] = { ...examQuestions[defaultData?.index], ...details };
-      } else {
-        examQuestions?.push(details);
-      }
-      localStorage.setItem(
-        "examDetails",
-        JSON.stringify({ ...oldData, examQuestion: examQuestions })
-      );}
-      handleOnChange();
-      setDetails({ content: "", answerOptions: [] });
-      setOption({ content: "", isCorrect: false });
-      setFormDetail({...formDetail, showForm: false});
-      setDefaultData();
+      handleSaveQuestion(details)}
+      removeFormData();
     }
   };
 
+  const removeFormData = ()=>{
+    setDetails({ content: "", answerOptions: [] });
+    setOption({ content: "", isCorrect: false });
+    setErrors({});
+  }
   const handleAddOption = () => {
     if (option?.content) {
       const newOptions = details?.answerOptions ?? [];
@@ -95,7 +89,7 @@ const TrainingExamForm = ({
   };
   return (
     <>
-      <Modal show={formDetail?.showModal} onHide={() => {setFormDetail({...formDetail, showModal: false}); setDefaultData()
+      <Modal show={showModal} onHide={() => {closeModal(); removeFormData()
       }}>
         <Modal.Header className="border-0" closeButton>
           <Modal.Title className={`h5 theme-color`}>{`${defaultData ? "Update" : "Add"} Item`} </Modal.Title>
@@ -131,9 +125,10 @@ const TrainingExamForm = ({
                           className="form-check-input"
                           type="checkbox"
                           checked={x?.isCorrect}
+                          id={`option${index}`}
                           onChange={() => setCorrectAnswer(index)}
                         />
-                        <label className="">{x?.content}</label>
+                        <label htmlFor={`option${index}`} className="">{x?.content}</label>
                         <Button
                           type="button"
                           icon="pi pi-times"
@@ -173,8 +168,8 @@ const TrainingExamForm = ({
         <Modal.Footer className="border-0">
           <Button
             type="button"
-            label="Cancel"
-            onClick={() => {setFormDetail({...formDetail, showModal: false});  setDefaultData()}}
+            label="Close"
+            onClick={() => {closeModal();  removeFormData()}}
             className="p-button-text rounded"
           />
           <Button
@@ -189,14 +184,11 @@ const TrainingExamForm = ({
     </>
   );
 };
-TrainingExamForm.propTypes = {
-  reqId: proptype.number.isRequired,
-  showForm: proptype.bool,
-  handleOnChange: proptype.func,
+ExamQuestionForm.propTypes = {
+  showModal: proptype.bool,
+  handleSaveQuestion: proptype.func,
   defaultData: proptype.object,
-  setShowForm: proptype.func,
-  setDefaultData: proptype.func,
-  formDetail: proptype.object,
-  setFormDetail: proptype.func
+  closeModal: proptype.func,
+  handleUpdateQuestion: proptype.func
 };
-export default TrainingExamForm;
+export default ExamQuestionForm;

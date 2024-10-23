@@ -3,6 +3,9 @@ import fetchFromApi from "./apiUtil";
 export const createExamApi = async (data) => {
   return await fetchFromApi(`/Exam/CreateExam`, "POST", data);
 };
+export const updateExamApi = async (data) => {
+  return await fetchFromApi(`/Exam/UpdateExam`, "PUT", data);
+};
 export const getExamByRequestIdApi = async (id) => {
   return await fetchFromApi(`/Exam/GetExamByRequestId?requestId=${id}`);
 };
