@@ -23,7 +23,7 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
           onClick={() => {setSelectedData(rowData);
             setShowForm(true);
           }}
-          disabled={rowData[reportType]?.statusName ? false : true}
+          disabled={rowData[reportType]?.id ? false : true}
         />
       </>
     );

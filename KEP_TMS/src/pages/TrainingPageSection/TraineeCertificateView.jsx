@@ -30,7 +30,6 @@ const TraineeCertificateView = ({data}) => {
   };
 
   const onTemplateUpload = (e) => {
-console.log(e)
     let _totalSize = 0;
 
     e.files.forEach((file) => {
@@ -167,7 +166,6 @@ console.log(e)
     className:
       "custom-cancel-btn p-button-danger p-button-rounded p-button-outlined  rounded-circle",
   };
-  console.log(data)
 const uploadCertificate = (e)=>{
     const file = e.files[0];
     if (file) {

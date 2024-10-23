@@ -69,7 +69,6 @@ export const checkTrainingIfOutDated = (data)=>{
   }else if(validateDate(data?.trainingStartDate)?.isToday){
     const startDate = sortSchedules(data?.trainingDates)[0];
     isOutDated = validateTime(startDate?.startTime, startDate?.endTime)?.isPast ;
-  // console.log(validateTime(startDate?.startTime, startDate?.endTime), startDate?.startTime, startDate?.endTime, startDate)
   }
   return isOutDated;
 }

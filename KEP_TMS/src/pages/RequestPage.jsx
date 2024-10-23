@@ -25,7 +25,6 @@ const TrainingRequestPage = () => {
   const { data, loading } = trainingRequestHook.useTrainingRequest(
     parseInt(id)
   );
-// console.log(data)
 //   useEffect(()=>{
 //     if((data?.status?.id === statusCode.SUBMITTED && isTrainee)|| (data?.status?.id === statusCode.APPROVED && (isAdmin || isFacilitator)) || (data?.status?.id === statusCode.PUBLISHED && (isAdmin || isFacilitator))){
      

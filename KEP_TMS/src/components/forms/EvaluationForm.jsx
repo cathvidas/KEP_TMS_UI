@@ -124,7 +124,6 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
     }
   },
 [defaultValue])
-console.log(defaultValue)
 let newLogs = [];
 newLogs.push({
   label: `Created by ${userData?.fullname ?? defaultValue?.auditTrail?.createdBy}`,

@@ -21,7 +21,6 @@ const Dashboard = () => {
   const approval = commonHook.useAllAssignedForApproval(
     SessionGetEmployeeId()
   );
-  console.log(approval)
   const values = [
     ...(approval?.data?.overallCount > 0
       ? [
@@ -131,7 +130,7 @@ const Dashboard = () => {
                     <div className="flex justify-content-between gap-5">
                       <div className="flex flex-column gap-1">
                         <span className="text-secondary h5">{item.label}</span>
-                        <span className="font-bold h4">{item.value}</span>
+                        <span className="font-bold h4">{item.value ?? 0}</span>
                       </div>
                       <span
                         className="p-3 ratio ratio-1x1 d-flex justify-content-center align-items-center text-center rounded-circle"

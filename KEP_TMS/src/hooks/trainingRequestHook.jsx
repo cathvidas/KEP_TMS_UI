@@ -254,8 +254,6 @@ const trainingRequestHook = {
             async () =>
               await Promise.all(
                 datalist?.map(async (item) => {
-                  
-                  console.log(item)
                   const report = item?.reportId
                     ? await trainingReportService.getTrainingReportById(
                         item.reportId

@@ -16,10 +16,8 @@ import { statusCode } from "../../api/constants";
 import countData from "../../utils/countData";
 import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
 import { checkTrainingIfOutDated } from "../../services/inputValidation/validateTrainingSchedules";
-import { SessionGetEmployeeId } from "../../services/sessions";
 
 const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEdit = true , isAdmin, isRequestor, isTrainee, isFacilitator}) => {
-console.log(isAdmin, isRequestor)
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -281,5 +279,8 @@ TRequestTable.propTypes = {
   handleActionFilter: proptype.func,
   allowEdit: proptype.bool,
   isAdmin: proptype.bool,
+  isRequestor: proptype.bool,
+  isFacilitator: proptype.bool,
+  isTrainee: proptype.bool,
 };
 export default TRequestTable;

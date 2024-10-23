@@ -41,6 +41,7 @@ const TrainingPage = () => {
     data,
     trainingForms?.data
   );
+  console.log(isTrainee)
   const navigate = useNavigate();
   const pageContent = [
     <OverviewSection
@@ -49,6 +50,8 @@ const TrainingPage = () => {
       showParticipants={isFacilitator === true ? isFacilitator : isAdmin}
       showFacilitators={isAdmin}
       showApprovers={isAdmin}
+      isAdmin={isAdmin}
+      isTrainee={isTrainee}
     />,
     <ModuleView key={1} reqId={data.id} />,
     <ExamView key={2} data={data}/>,

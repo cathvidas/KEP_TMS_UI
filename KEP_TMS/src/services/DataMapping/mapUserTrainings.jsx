@@ -1,7 +1,6 @@
 import { statusCode } from "../../api/constants";
 
 const mapUserTrainings = (data, id)=>{
-  console.log(data)
   const entity = {
     attended: [],
     facilitated: [],

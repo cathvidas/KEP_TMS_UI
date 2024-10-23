@@ -19,7 +19,6 @@ const PendingView = ({ data, formData }) => {
     setFormType(formProperty)
     setShowForm(true)
   }
-  console.log(formData)
   const columnItems = [
     {
       field: "id",

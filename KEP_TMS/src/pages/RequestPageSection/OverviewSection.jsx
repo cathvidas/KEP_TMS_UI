@@ -25,7 +25,7 @@ import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import trainingRequestService from "../../services/trainingRequestService";
 import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
-import { statusCode } from "../../api/constants";
+import { statusCode, UserTypeValue } from "../../api/constants";
 import SpeedDialButtonItemTemplate from "../../components/General/SpeedDialButtonItemTemplate";
 
 const OverviewSection = ({
@@ -33,9 +33,11 @@ const OverviewSection = ({
   showParticipants = false,
   showFacilitators = false,
   showApprovers = false,
+  isAdmin,
+  isFacilitator,
+  isTrainee
 }) => {
   const navigate = useNavigate();
-  console.log(data)
   const toast = useRef(null);
   const [reqStatus, setReqStatus] = useState({
     show: true,
@@ -124,6 +126,7 @@ const OverviewSection = ({
             <span> REQUESTOR: {data?.requestor?.fullname}</span>
             <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
             <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
+            {SessionGetRole() === UserTypeValue.SUPER_ADMIN || SessionGetRole() === UserTypeValue.ADMIN || }
             <span> DATE: {formatDateTime(data?.createdDate)}</span>
             <span>
               Status:{" "}

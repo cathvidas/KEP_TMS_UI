@@ -6,9 +6,7 @@ import { SessionGetRole } from "../sessions";
 
 const getToastDetail = (data, user, cancelRequest, updateRequest)=>{
   const isAdmin = SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin" ? true : false;
-    const isTrainee = data?.trainingParticipants?.find(
-        (user) => user?.employeeBadge === user
-      ); 
+    const isTrainee = data?.trainingParticipants?.find(item => item?.employeeBadge === user); 
       const isFacilitator = data?.trainingFacilitators?.some(
         (f) => f.employeeBadge === user
       );

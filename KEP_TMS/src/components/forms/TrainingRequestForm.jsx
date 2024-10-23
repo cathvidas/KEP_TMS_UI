@@ -129,7 +129,6 @@ export const TrainingRequestForm = () => {
     if (index === 0) {
       const validateDates = details.current?.status?.id === statusCode.PUBLISHED || details.current?.status?.id === statusCode.CLOSED ? false: true;
       const schedulesIsValid = validateTrainingSchedules(details.current?.trainingDates, validateDates)
-      console.log(schedulesIsValid)
       const { hasErrors, newErrors } = validateTrainingDetails(details.current);
       let detailsValid = !hasErrors;
       // Set errors for details
@@ -153,7 +152,6 @@ export const TrainingRequestForm = () => {
       }
       //stepperRef.current.nextCallback();
     } else if (index === 1) {
-      console.log(details.current)
       let hasErrors = false;
       let newErrors = { trainees: "", facilitators: "" };
       if (details.current.trainingParticipants?.length > 0) {
@@ -171,7 +169,6 @@ export const TrainingRequestForm = () => {
       setErrors({ ...errors, participants: newErrors });
 
       if (!hasErrors) {
-        console.log(details.current, formData)
         setFormData((prev)=>({...prev, ...details.current}));
         stepperRef.current.nextCallback();
         setErrors((prevErrors) => ({
@@ -180,7 +177,6 @@ export const TrainingRequestForm = () => {
         }));
       }
     } else if (index === 2) {
-      console.log(details.current)
       let hasError = false;
       let newErrors = {};
       if (!details?.current?.trainingProvider?.id) {
@@ -250,7 +246,6 @@ export const TrainingRequestForm = () => {
       </div>
     );
   };
-  console.log(formData)
   return (
     <Card>
       <Card.Body>
