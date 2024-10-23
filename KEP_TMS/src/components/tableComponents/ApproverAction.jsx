@@ -1,38 +1,10 @@
 import { Button } from "primereact/button";
 import { SessionGetEmployeeId } from "../../services/sessions";
-import {
-  actionFailed,
-  actionSuccessful,
-  confirmAction,
-} from "../../services/sweetalert";
-import { statusCode } from "../../api/constants";
-import handleResponseAsync from "../../services/handleResponseAsync";
-import trainingRequestService from "../../services/trainingRequestService";
 import { useNavigate } from "react-router-dom";
 import proptype from "prop-types";
+import handleApproveRequest from "../../services/handlers/handleApproveRequest";
 const ApproverAction = ({ reqId, onFinish, hasView = false }) => {
   const navigate = useNavigate();
-  const handleApproveRequest = async (data) => {
-    const newData = {
-      requestId: data.id,
-      employeeBadge: SessionGetEmployeeId(),
-      statusId: data.statusId,
-      updatedBy: SessionGetEmployeeId(),
-    };
-    handleResponseAsync(
-      () => trainingRequestService.approveTrainingRequest(newData),
-      (e) =>
-        {actionSuccessful(
-          "Success",
-          data?.statusId === statusCode.DISAPPROVED
-            ? "Successfully disapproved the request"
-            : e.message
-        );
-        onFinish()},
-      (error) =>
-        actionFailed("Error Approving Training Request", error?.message)
-    );
-  };
   return (
     <div className="d-flex">
       {hasView && (
@@ -48,18 +20,8 @@ const ApproverAction = ({ reqId, onFinish, hasView = false }) => {
       )}
       <Button
         type="button"
-        icon="pi pi-thumbs-up
-"
-        onClick={() =>
-          confirmAction({
-            title: "Approve Request",
-            text: `Are you sure you want to approve this request?`,
-            confirmButtonText: "Approve",
-            cancelButtonText: "No",
-            onConfirm: handleApproveRequest,
-            param: { id: reqId, statusId: statusCode.APPROVED },
-          })
-        }
+        icon="pi pi-thumbs-up"
+        onClick={() =>handleApproveRequest({id: reqId, approve: true, onFinish: onFinish, user: SessionGetEmployeeId() })}
         size="small"
         className="rounded"
         text
@@ -72,17 +34,7 @@ const ApproverAction = ({ reqId, onFinish, hasView = false }) => {
         className="rounded"
         severity="danger"
         text
-        onClick={() =>
-          confirmAction({
-            title: "Disapprove Request",
-            text: `Are you sure you want to disapprove this request?`,
-            confirmButtonText: "Disapproved",
-            cancelButtonText: "No",
-            confirmButtonColor: "#d33",
-            onConfirm: handleApproveRequest,
-            param: { id: reqId, statusId: statusCode.DISAPPROVED },
-          })
-        }
+        onClick={() =>handleApproveRequest({id: reqId, approve: false, onFinish: onFinish, user: SessionGetEmployeeId() })}
       />
     </div>
   );

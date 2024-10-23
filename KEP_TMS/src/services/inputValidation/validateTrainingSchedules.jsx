@@ -1,5 +1,5 @@
 import sortSchedules from "../../utils/SortSchedule";
-export const validateTime = (startTime, endTime) => {
+export const validateTime = (startTime) => {
   const date = new Date();
   const hours = date.getHours();
   const minutes = date.getMinutes();

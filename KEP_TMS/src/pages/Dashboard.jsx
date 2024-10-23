@@ -157,7 +157,7 @@ const Dashboard = () => {
             </Row>
           </>
         )}
-        {/* <TRequestTable filterType={"UserRole"} setLoading={()=>setLoading(false)}/> */}
+        {/* <TrainingRequestTableList filterType={"UserRole"} setLoading={()=>setLoading(false)}/> */}
       </div>
     );
   };

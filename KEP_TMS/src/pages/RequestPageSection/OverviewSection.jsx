@@ -25,7 +25,7 @@ import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import trainingRequestService from "../../services/trainingRequestService";
 import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
-import { statusCode, UserTypeValue } from "../../api/constants";
+import { statusCode } from "../../api/constants";
 import SpeedDialButtonItemTemplate from "../../components/General/SpeedDialButtonItemTemplate";
 
 const OverviewSection = ({
@@ -34,8 +34,7 @@ const OverviewSection = ({
   showFacilitators = false,
   showApprovers = false,
   isAdmin,
-  isFacilitator,
-  isTrainee
+  userReports
 }) => {
   const navigate = useNavigate();
   const toast = useRef(null);
@@ -62,11 +61,12 @@ const OverviewSection = ({
     const statsData = getToastDetail(
       data,
       SessionGetEmployeeId(),
+      userReports ?? null,
       () => cancelRequest(),
       () => navigate("/KEP_TMS/Request/Update/" + data.id)
     );
     setReqStatus(statsData);
-  }, [data]);
+  }, [data, userReports]);
 
   const showSticky = () => {
     if (reqStatus.show) {
@@ -126,8 +126,8 @@ const OverviewSection = ({
             <span> REQUESTOR: {data?.requestor?.fullname}</span>
             <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
             <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
-            {SessionGetRole() === UserTypeValue.SUPER_ADMIN || SessionGetRole() === UserTypeValue.ADMIN || }
-            <span> DATE: {formatDateTime(data?.createdDate)}</span>
+            <span> DATE: {formatDateTime(data?.createdDate)}</span> 
+            {(isAdmin || SessionGetEmployeeId() === data?.requestorBadge) &&
             <span>
               Status:{" "}
               {StatusColor({
@@ -135,7 +135,7 @@ const OverviewSection = ({
                 class: "p-2 px-3 ",
                 showStatus: true,
               })}
-            </span>
+            </span>}
           </div>
         </div>
         <div className="flex justify-content-between">
@@ -223,5 +223,7 @@ OverviewSection.propTypes = {
   showParticipants: proptype.bool,
   showFacilitators: proptype.bool,
   showApprovers: proptype.bool,
+  isAdmin: proptype.bool,
+  userReports: proptype.object
 };
 export default OverviewSection;

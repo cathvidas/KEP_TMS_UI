@@ -70,17 +70,28 @@ const checkIfFacilitator= ()=>{
   const Content = () => {
     const pages = [
       <>
-        <OverviewSection data={data} showParticipants showFacilitators showApprovers/>
+        <OverviewSection
+          data={data}
+          showParticipants
+          showFacilitators
+          showApprovers={
+            SessionGetRole() === UserTypeValue.ADMIN ||
+            SessionGetRole() === UserTypeValue.SUPER_ADMIN ||
+            SessionGetEmployeeId() === data?.requestorBadge
+              ? true
+              : false
+          }
+        />
       </>,
       <>
-        <ModuleSection data={data}/>
+        <ModuleSection data={data} />
       </>,
       <>
-        <ExamSection data={data}/>
+        <ExamSection data={data} />
       </>,
       <>
-      <TraineeReportView/>
-      </>
+        <TraineeReportView />
+      </>,
     ];
     useEffect(() => {
       if (page === "Modules") {
@@ -93,7 +104,7 @@ const checkIfFacilitator= ()=>{
        else {
         setCurrentContent(0);
       }
-    }, [page]);
+    }, []);
     const handlePublish = () => {
       const newData = {...validateTrainingRequestForm(data),
         statusId: statusCode.PUBLISHED,

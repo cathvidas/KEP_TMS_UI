@@ -1,7 +1,7 @@
 import { OtherConstant, statusCode } from "../api/constants"
 import Layout from "../components/General/Layout"
 import { SectionBanner } from "../components/General/Section"
-import TRequestTable from "../components/General/TRequestTable"
+import TrainingRequestTableList from "../components/List/TrainingRequestTableList"
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner"
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable"
 import trainingRequestHook from "../hooks/trainingRequestHook"
@@ -16,7 +16,7 @@ const Trainings =()=>{
    {loading ? <><SkeletonBanner/><SkeletonDataTable/></>:<>
       <SectionBanner title="Assigned Trainings" subtitle="List of trainings assigned to you"/>
 
-      <TRequestTable data={updatedData} headingTitle="Training List" isTrainee allowEdit={false}/></>}
+      <TrainingRequestTableList data={updatedData} headingTitle="Training List" isTrainee allowEdit={false}/></>}
       </div>
         
     )

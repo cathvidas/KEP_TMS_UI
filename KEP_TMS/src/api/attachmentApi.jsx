@@ -6,3 +6,6 @@ export const getModuleAttachmentByIdApi = async (id) => {
 export const addAttachmentApi = async (formData) => {
   return await fetchFromApi("/Attachment/AddAttachments","POST", formData, {'Content-Type': 'multipart/form-data'});
 }
+export const deleteAttachmentApi = async (id) =>{
+    return await fetchFromApi(`/Attachment/DeleteAttachment`, "DELETE", {id: id});
+}

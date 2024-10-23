@@ -41,7 +41,6 @@ const TrainingPage = () => {
     data,
     trainingForms?.data
   );
-  console.log(isTrainee)
   const navigate = useNavigate();
   const pageContent = [
     <OverviewSection
@@ -51,7 +50,7 @@ const TrainingPage = () => {
       showFacilitators={isAdmin}
       showApprovers={isAdmin}
       isAdmin={isAdmin}
-      isTrainee={isTrainee}
+      userReports={isTrainee ? trainingForms?.data?.find(item=>item?.userDetail?.employeeBadge === SessionGetEmployeeId()) : null}
     />,
     <ModuleView key={1} reqId={data.id} />,
     <ExamView key={2} data={data}/>,
@@ -61,23 +60,7 @@ const TrainingPage = () => {
     <TraineeCertificateView key={6} data={data} />,
     <ActivityLogView key={7} logs={logs} />,
   ];
-  useEffect(() => {
-    if (data?.status?.id === statusCode.SUBMITTED) {
-      const hasPendings = trainingForms?.data?.some(
-        (item) =>
-          item?.effectivenessDetail?.currentRouting?.statusId !=
-          statusCode.APPROVED
-      );
-      if (!hasPendings) {
-        // const reponse =  trainingRequestService.updateTrainingRequest({...mapTrainingRequestDetails(data), statusId: ""})
-      }
-    }
-    // if((data?.status?.id === statusCode.SUBMITTED && isTrainee)|| (data?.status?.id === statusCode.APPROVED && (isAdmin || isFacilitator)) || (data?.status?.id === statusCode.PUBLISHED && (isAdmin || isFacilitator)) ){
-    //   ""
-    // }else{
-    //   navigate(`/KEP_TMS/TrainingRequest/${data?.id}`)
-    // }
-  }, [trainingForms?.data]);
+  
   const items = [
     {
       label: "Menu",

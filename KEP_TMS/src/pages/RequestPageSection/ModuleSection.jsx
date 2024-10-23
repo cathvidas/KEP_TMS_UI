@@ -3,7 +3,7 @@ import { SectionHeading } from "../../components/General/Section";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faNoteSticky } from "@fortawesome/free-solid-svg-icons";
 import EmptyState from "../../components/trainingRequestFormComponents/EmptyState";
-import { Col, Modal, ModalBody, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { Button } from "primereact/button";
 import { ButtonGroup } from "primereact/buttongroup";
 import UploadModuleForm from "../../components/forms/UploadModuleForm";
@@ -13,6 +13,7 @@ import handleResponseAsync from "../../services/handleResponseAsync";
 import moduleService from "../../services/moduleService";
 import PDFViewer from "../../components/General/PDFViewer";
 import { useNavigate } from "react-router-dom";
+import { confirmAction } from "../../services/sweetalert";
 
 const ModuleSection = ({ data }) => {
   const [showForm, setShowForm] = useState(false);
@@ -36,6 +37,24 @@ const ModuleSection = ({ data }) => {
     };
     getRequest();
   };
+  const removeModule = (id) => {
+    confirmAction({
+      title: "Remove Module",
+      message: "Are you sure you want to remove this module?",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      onConfirm: () =>
+        handleResponseAsync(
+          () => moduleService.deleteModule(id),
+          () => {
+            setModuleList(moduleList.filter((x) => x.id !== selected.id));
+            setSelected({});
+          },
+          null,
+          () => setLoading(false)
+        ),
+    });
+  };
   return (
     <>
       <SectionHeading
@@ -50,7 +69,7 @@ const ModuleSection = ({ data }) => {
             <UploadModuleForm
               reqId={data?.id}
               setShowForm={() => setShowForm(false)}
-              handleRefresh={() => window.location.reload()}
+              handleRefresh={refreshData}
               // handleRefresh={() => navigate(`/KEP_TMS/TrainingRequest/${data?.id}/Modules`)}
             />
           ) : moduleList?.length > 0 ? (
@@ -92,6 +111,7 @@ const ModuleSection = ({ data }) => {
                               severity="danger"
                               icon="pi pi-trash"
                               className="p-0 rounded"
+                              onClick={""}
                             />
                           </ButtonGroup>{" "}
                         </div>
@@ -106,14 +126,13 @@ const ModuleSection = ({ data }) => {
                               size="small"
                               icon="pi pi-link"
                               label={a?.fileName}
-                              onClick={() =>{
+                              onClick={() => {
                                 setSelected({
                                   ...a,
                                   url: `http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${a.id}`,
                                 });
                                 setShowPDF(true);
-                              }
-                              }
+                              }}
                             />
                           ))}
                         </div>
@@ -122,7 +141,11 @@ const ModuleSection = ({ data }) => {
                   );
                 })}
               </Row>
-              <PDFViewer data={selected} handleShow={showPDF} handleClose={setShowPDF}/>
+              <PDFViewer
+                data={selected}
+                handleShow={showPDF}
+                handleClose={setShowPDF}
+              />
             </>
           ) : (
             <>

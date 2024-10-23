@@ -1,4 +1,4 @@
-import { addAttachmentApi, getModuleAttachmentByIdApi } from "../api/attachmentApi";
+import { addAttachmentApi, deleteAttachmentApi, getModuleAttachmentByIdApi } from "../api/attachmentApi";
 
 const attachmentService = {
     getModuleAttachmentById: async (id)=>{
@@ -10,6 +10,13 @@ const attachmentService = {
             throw new Error(response.message);
         }
         return response?.data;
+    },
+    deleteAttachment: async (id) => {
+        const response = await deleteAttachmentApi(id);
+        if(response.status!== 1){
+            throw new Error(response.message);
+        }
+        return response;
     }
 }
 export default attachmentService;
