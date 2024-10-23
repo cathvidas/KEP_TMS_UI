@@ -4,6 +4,7 @@ import handleResponseAsync from "../services/handleResponseAsync";
 import trainingRequestService from "../services/trainingRequestService";
 import trainingReportService from "../services/trainingReportService";
 import effectivenessService from "../services/effectivenessService";
+import { checkTrainingIfOutDated } from "../services/inputValidation/validateTrainingSchedules";
 
 const commonHook = {
   useAllDepartments: () => {
@@ -36,12 +37,13 @@ const commonHook = {
             await effectivenessService.getApproverAssignedEffectiveness(id);
           const reports =
             await trainingReportService.getApproverAssignedReports(id);
+            const updatedRequest = requests?.filter(item => !checkTrainingIfOutDated(item?.trainingRequest))
           setData({
-            requests: requests,
+            requests: updatedRequest,
             effectiveness: effectiveness,
             reports: reports,
             overallCount:
-              requests.length + effectiveness.length + reports.length,
+              updatedRequest.length + effectiveness.length + reports.length,
           });
         } catch (error) {
           setError(error.message);

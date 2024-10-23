@@ -8,6 +8,7 @@ import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting"
 import ApproverAction from "../../components/tableComponents/ApproverAction";
 import CommonTable from "../../components/General/CommonTable";
 import trainingRequestService from "../../services/trainingRequestService";
+import { checkTrainingIfOutDated } from "../../services/inputValidation/validateTrainingSchedules";
 
 const ForApprovalRequest = () => {
   const [request, setRequest] = useState([]);
@@ -16,7 +17,9 @@ const ForApprovalRequest = () => {
     const getRequest = async () => {
       try {
         const res = await trainingRequestService.getTrainingRequestByApprover(SessionGetEmployeeId());
-        const mappedData = mapForApprovalRequestToTableData(res);
+      
+    const updatedRequest = res?.filter(item => !checkTrainingIfOutDated(item?.trainingRequest))
+        const mappedData = mapForApprovalRequestToTableData(updatedRequest);
         const updated = await Promise.all(
           mappedData.map(async (x) => {
             const user = await getUserApi(x.requestorId);
@@ -81,11 +84,11 @@ const ForApprovalRequest = () => {
       header: "Total Fee",
       body: (rowData) => <>{formatCurrency(rowData.totalFee)}</>
     },
-    {
-      field: "endDate",
-      header: "Total Fee",
-      body: (rowData) => <>{StatusColor({status: rowData.status,showStatus:true})}</>
-    },
+    // {
+    //   field: "trainingTotalCost",
+    //   header: "Total Fee",
+    //   body: (rowData) => <>{StatusColor({status: rowData.status,showStatus:true})}</>
+    // },
     {
       field: "",
       header: "Action",

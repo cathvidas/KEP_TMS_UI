@@ -10,6 +10,7 @@ import trainingReportService from "../services/trainingReportService";
 import evaluationService from "../services/evaluationService";
 import effectivenessService from "../services/effectivenessService";
 import commonService from "../services/commonService";
+import examService from "../services/examService";
 
 const trainingRequestHook = {
   useTrainingRequest: (id) => {
@@ -204,7 +205,6 @@ const trainingRequestHook = {
                   approverId: user.employeeBadge,
                   approverPosition: user.position,
                 };
-
                 return {
                   ...request,
                   trainingFacilitators: facilitators,
@@ -254,12 +254,14 @@ const trainingRequestHook = {
             async () =>
               await Promise.all(
                 datalist?.map(async (item) => {
+                  
+                  console.log(item)
                   const report = item?.reportId
                     ? await trainingReportService.getTrainingReportById(
                         item.reportId
                       )
                     : {};
-                  const evluation = item?.evaluationId
+                  const evaluation = item?.evaluationId
                     ? await evaluationService.getTrainingEvaluationById(
                         item.evaluationId
                       )
@@ -269,11 +271,13 @@ const trainingRequestHook = {
                         item.effectivenessId
                       )
                     : {};
+                    const exam = item?.traineeExamId ? await examService.getTraineeExam(item?.traineeExamId) : {};
                   return {
                     userDetail: item,
                     reportDetail: report,
                     effectivenessDetail: effectiveness,
-                    evaluationDetail: evluation,
+                    evaluationDetail: evaluation,
+                    examDetail: exam,
                   };
                 })
               ),

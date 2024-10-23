@@ -17,6 +17,7 @@ import trainingRequestHook from "../hooks/trainingRequestHook";
 import activityLogHook from "../hooks/activityLogHook";
 import ActivityLogView from "./TrainingPageSection/ActivityLogView";
 import TraineeCertificateView from "./TrainingPageSection/TraineeCertificateView";
+import { validateDate } from "../services/inputValidation/validateTrainingSchedules";
 const TrainingPage = () => {
   const { id, page } = useParams();
   const { data, error, loading } = trainingRequestHooks.useTrainingRequest(
@@ -129,7 +130,7 @@ const TrainingPage = () => {
                 isTrainee?.evaluationId === null))
               ? true
               : false,
-          disable: !isTrainee || data?.durationInHours < OtherConstant.EFFECTIVENESS_MINHOUR && data?.trainingEndDate < new Date() ? true : false ,
+          disable: !isTrainee || data?.durationInHours < OtherConstant.EFFECTIVENESS_MINHOUR && !validateDate(data?.trainingEndDate)?.isPast ? true : false ,
         },
         {
           label: "Certificate",
@@ -137,7 +138,7 @@ const TrainingPage = () => {
           command: () => navigate(`/KEP_TMS/Training/${id}/Certificate`),
           template: MenuItemTemplate,
           active: currentContent === 6 ? true : false,
-          disable: !isAdmin,
+          disable: (isTrainee || isAdmin) && validateDate(data?.trainingEndDate)?.isPast ? false : true,
         },
         {
           label: "Activity Log",
@@ -145,7 +146,7 @@ const TrainingPage = () => {
           command: () => navigate(`/KEP_TMS/Training/${id}/Logs`),
           template: MenuItemTemplate,
           active: currentContent === 7 ? true : false,
-          // disable: !isAdmin,
+           disable: !isAdmin,
         },
       ],
     },

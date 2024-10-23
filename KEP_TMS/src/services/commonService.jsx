@@ -20,7 +20,7 @@ const commonService = {
   getAuditTrail: async (transactId, activityIn) => {
     try {
       const response = transactId && await getAuditTrailApi(transactId, activityIn);
-      return response;
+      return response.status === 1 ? response?.data : {};
     } catch {
       return {};
     }

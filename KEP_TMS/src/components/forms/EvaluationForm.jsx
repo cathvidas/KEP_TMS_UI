@@ -13,6 +13,7 @@ import evaluationService from "../../services/evaluationService";
 import { Button } from "primereact/button";
 import ErrorTemplate from "../General/ErrorTemplate";
 import { formatDateTime } from "../../utils/datetime/Formatting";
+import ActivityLog from "../General/ActivityLog";
 const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
   const [annotation, setAnnotation] = useState(evaluationConstant.annotation);
   const [contentMethodology, setContentMethodology] = useState(evaluationConstant.contentMethodology);
@@ -121,9 +122,14 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
       setFacilitatorRating(defaultValue?.facilitatorsRating)
       setIsSubmitted(true)
     }
-    console.log(defaultValue, getFormData)
   },
 [defaultValue])
+console.log(defaultValue)
+let newLogs = [];
+newLogs.push({
+  label: `Created by ${userData?.fullname ?? defaultValue?.auditTrail?.createdBy}`,
+  date: formatDateTime(defaultValue?.createdDate),
+});
   return (
     <Card.Body>
       <div className="text-center  pb-3 mb-3 ">
@@ -142,7 +148,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
             value={getFacilitators()}
             className="col-12"
           />
-          <AutoCompleteField label="Date/Time" value={formatDateTime()} />
+          <AutoCompleteField label="Date/Time" value={formatDateTime(defaultValue?.createdDate)} />
           <AutoCompleteField label="Venue" value={data?.venue} />
         </Row>
         <br />
@@ -334,7 +340,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
         </Form.Group>
       </Form>
       <footer className="text-center mt-3 text-muted">Thank you for your time</footer>
-      {data?.trainingParticipants?.some(x=>x.employeeBadge === SessionGetEmployeeId()) && 
+      {data?.trainingParticipants?.some(x=>x.employeeBadge === SessionGetEmployeeId()) && !isSubmitted &&
       <div className="text-end mt-3">
         <Button
           type="button"
@@ -361,6 +367,8 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
           onClick={handleSubmit}
         />
       </div>}
+      {isSubmitted && 
+      <ActivityLog label="Activity Logs" items={newLogs} isDescending/>}
     </Card.Body>
   );
 };

@@ -97,8 +97,8 @@ const OverviewSection = ({
         icon: 'pi pi-info-circle',
         command: showSticky,
         template: SpeedDialButtonItemTemplate,
-        disable:true,
-        inactive: true
+        // disable:true,
+        // inactive: true
     },
 ];
   return (

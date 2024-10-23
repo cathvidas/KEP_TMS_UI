@@ -1,6 +1,5 @@
-import { formatDateOnly } from "../../utils/datetime/Formatting";
 import sortSchedules from "../../utils/SortSchedule";
-const validateTime = (startTime, endTime) => {
+export const validateTime = (startTime, endTime) => {
   const date = new Date();
   const hours = date.getHours();
   const minutes = date.getMinutes();
@@ -74,7 +73,7 @@ export const checkTrainingIfOutDated = (data)=>{
   }
   return isOutDated;
 }
-const validateDate = (date)=>{
+export const validateDate = (date)=>{
   date = new Date(date);
   const today = new Date();
   let isPast = false

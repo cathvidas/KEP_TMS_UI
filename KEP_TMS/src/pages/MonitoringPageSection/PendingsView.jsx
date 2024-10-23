@@ -59,8 +59,9 @@ const PendingView = ({ data, formData }) => {
       header: "Exam",
       body: (rowData) => (
         <>
-          {StatusColor({
-            status: rowData?.reportDetail?.statusName ?? "Pending",
+        {rowData?.examDetail?.id ? `${rowData?.examDetail?.totalScore}/${rowData?.examDetail?.traineeExamQuestion?.length}`:
+          StatusColor({
+            status: "Pending",
             showStatus: true,
           })}
         </>

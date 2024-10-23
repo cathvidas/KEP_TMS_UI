@@ -21,13 +21,14 @@ const Dashboard = () => {
   const approval = commonHook.useAllAssignedForApproval(
     SessionGetEmployeeId()
   );
+  console.log(approval)
   const values = [
     ...(approval?.data?.overallCount > 0
       ? [
           {
             label: "For Approval",
-            color1: "#ff6b6b",
-            color2: "#ff6b6b",
+            color1: "#60a5fa",
+            color2: "#60a5fa",
             value: approval?.data?.overallCount,
             icon: "pi pi-user-edit",
             status: "Approver",
@@ -62,20 +63,24 @@ const Dashboard = () => {
       icon: "pi pi-list-check",
       status: "Pending",
     },
-    {
-      label: "Approved Request",
-      color1: "#34d399",
-      color2: "#31bf77",
-      value: data.approved,
-      icon: "pi pi-check-circle",
-      status: "Approved",
-    },
+    ...(data?.outDatedRequests > 0
+      ? [
+          {
+            label: "Outdated Requests",
+            color1: "#ff6b6b",
+            color2: "#ff6b6b",
+            value: data?.outDatedRequests,
+            icon: "pi pi-clock",
+            status: "OutDated",
+          },
+        ]
+      : []),
     {
       label: "Published Request",
-      color1: "#60a5fa",
-      color2: "#60a5fa",
+      color1: "#34d399",
+      color2: "#31bf77",
       value: data.published ?? 0,
-      icon: "pi pi-clock",
+      icon: "pi pi-check-circle",
       status: "Published",
     },
     {
@@ -86,18 +91,6 @@ const Dashboard = () => {
       icon: "pi pi-bookmark",
       status: "Closed",
     },
-    ...(SessionGetRole() === "SuperAdmin" || SessionGetRole() === "Admin"
-      ? [
-          {
-            label: "Outdated Requests",
-            color1: "#ff6bbd",
-            color2: "#ff6b6b",
-            value: data?.outDatedRequests,
-            icon: "pi pi-tag",
-            status: "OutDated",
-          },
-        ]
-      : []),
   ];
 
   const Content = () => {

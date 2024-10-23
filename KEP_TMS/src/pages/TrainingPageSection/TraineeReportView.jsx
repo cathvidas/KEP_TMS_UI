@@ -77,8 +77,9 @@ const TraineeReportView = ({ data }) => {
               <hr className="m-0" />
               <EvaluationForm
                 data={data}
-                userData={userData}
+                userData={userData?.data}
                 onFinish={handleOnFinish}
+                defaultValue={evaluation?.data}
               />
             </StepperPanel>
           )}

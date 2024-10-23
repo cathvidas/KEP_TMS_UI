@@ -13,8 +13,9 @@ import { MeterGroup } from 'primereact/metergroup';
 import { checkTrainingIfOutDated } from "../services/inputValidation/validateTrainingSchedules";
 const RequestList = () => {
   const { type } = useParams();
+  const isAdmin = SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin" ? true : false;
   const { data, error, loading } =
-    SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin"
+    isAdmin
       ? trainingRequestHook.useAllTrainingRequests()
       : trainingRequestHook.useAllTrainingRequests(SessionGetEmployeeId());
   const [requests, setRequests] = useState();
@@ -24,7 +25,6 @@ const RequestList = () => {
   });
   useEffect(() => {
     if(filter.label?.toUpperCase() === "OUTDATED"){
-      console.log(data)
       let updatedList = [];
       data.forEach((item) => {
         if (
@@ -38,17 +38,17 @@ const RequestList = () => {
       });
       setRequests(updatedList);
     }
+    else if(filter.label === "Pending"){
+      const updatedList = data.filter(
+        (request) => !checkTrainingIfOutDated(request) && (request?.status?.id === statusCode.FORAPPROVAL || request?.status?.id === statusCode.SUBMITTED || request?.status?.id === statusCode.APPROVED)
+      );
+      setRequests(updatedList);
+    }
    else if (filter?.value) {
-     if(filter.label === "Pending"){
-        const updatedList = data.filter(
-          (request) => request?.status?.id === statusCode.FORAPPROVAL || request?.status?.id === statusCode.SUBMITTED
-        );
-        setRequests(updatedList);
-      }else{
         const updatedList = data.filter(
           (request) => request?.status?.id === filter.value
         );
-        setRequests(updatedList);}
+        setRequests(updatedList);
     } else {
       setRequests(data);
     }
@@ -80,6 +80,8 @@ const RequestList = () => {
               data={requests}
               filter={filter}
               handleActionFilter={setFilter}
+              isAdmin={isAdmin}
+              isRequestor
             />
           </>
         )}

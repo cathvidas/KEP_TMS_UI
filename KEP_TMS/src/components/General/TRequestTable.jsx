@@ -16,10 +16,10 @@ import { statusCode } from "../../api/constants";
 import countData from "../../utils/countData";
 import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
 import { checkTrainingIfOutDated } from "../../services/inputValidation/validateTrainingSchedules";
-import getStatusById from "../../utils/status/getStatusById";
+import { SessionGetEmployeeId } from "../../services/sessions";
 
-const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEdit = true , isAdmin}) => {
-
+const TRequestTable = ({ data, filter, headingTitle, handleActionFilter, allowEdit = true , isAdmin, isRequestor, isTrainee, isFacilitator}) => {
+console.log(isAdmin, isRequestor)
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -85,13 +85,13 @@ const isOutDated = checkTrainingDates(rowData)
     return (
       <>
         <div>
+        {isOutDated && <div className="text-danger flex gap-1"><i className="rounded pi pi-info-circle d-block"></i>Outdated</div>  }
           <span>
             {" "}
-            {isOutDated ? "":StatusColor({status: rowData.status, class: "p-1", style:{ fontSize: "0.55rem" }, showStatus:false})}
+            {StatusColor({status: rowData.status, class: "p-1", style:{ fontSize: "0.55rem" }, showStatus:false})}
           </span>
           <span>
-            {" "}
-            {isOutDated ? <span className="badge text-white rounded px-2 py-1 " style={{background: "#c93939"}}>Outdated</span>  :
+            {" "}{
             rowData.status == "ForApproval"
               ? "For " + rowData.approverPosition + " Approval"
               : rowData.status == "Approved"
@@ -102,7 +102,7 @@ const isOutDated = checkTrainingDates(rowData)
           </span>
           <br />
           <b>
-            {isOutDated ? "":
+            {
               rowData.status == "Submitted"
               ?`${countData(rowData.trainingParticipants, "effectivenessId", 4)}/${rowData.totalParticipants} submitted`:
               rowData.status == "Published"
@@ -115,14 +115,24 @@ const isOutDated = checkTrainingDates(rowData)
       </>
     );
   };
+  const traineeStatusTemplate = (rowData)=>
+    <>
+    <div>
+      {rowData.status == "Published" && <div className=" flex gap-1 text-secondary">Ongoing</div>  }
+      {rowData.status == "Submitted" && <div className="text-secondary  gap-1"><i className="rounded pi pi-info-circle "></i> Pending Effectiveness Report</div>  }
+      </div>
+    </>
+  
   const options = [
     { value: null, label: "All" },
-    { value: statusCode.FORAPPROVAL, label: "ForApproval" },
-    { value: statusCode.SUBMITTED, label: "Submitted" },
-    { value: statusCode.APPROVED, label: "Approved" },
+    // { value: statusCode.FORAPPROVAL, label: "ForApproval" },
+    // { value: statusCode.SUBMITTED, label: "Submitted" },
+    // { value: statusCode.APPROVED, label: "Approved" },
     { value: statusCode.DISAPPROVED, label: "Disapproved" },
     { value: statusCode.CLOSED, label: "Closed" },
     { value: statusCode.PUBLISHED, label: "Published" },
+    { value: "Pending", label: "Pending" },
+    { value: "Outdated", label: "Outdated" },
   ];
   const renderHeader = () => {
     return (
@@ -230,13 +240,25 @@ const isOutDated = checkTrainingDates(rowData)
                 return formatCurrency(product?.totalFee);
               }}
             ></Column>
+            {
+            (isAdmin || isRequestor || isFacilitator)&&
             <Column
               field="approverPosition"
               header="Current Status"
               sortable
               style={{ minWidth: "12rem" }}
               body={approverColumnTemplate}
-            ></Column>
+            ></Column>}
+            {
+            (isTrainee )&&
+            <Column
+              field="approverPosition"
+              header="Remarks"
+              sortable
+              style={{ minWidth: "12rem" }}
+              body={traineeStatusTemplate}
+            ></Column>}
+         
             {/* <Column
               field="status"
               header="Overall Status"

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { formatDateTime } from "../utils/datetime/Formatting";
-import { OtherConstant, statusCode } from "../api/constants";
 import getNameFromList from "../services/common/getNameFromList";
 import sortRoutingBySequence from "../services/common/sortRoutingsBySequence";
+import { statusCode } from "../api/constants";
 const activityLogHook = {
     useReportsActivityLog: (defaultValue, userData) => {
       const [logs, setLogs] = useState([]);
@@ -13,6 +13,8 @@ const activityLogHook = {
           label: `Created by ${userData?.fullname ?? defaultValue?.auditTrail?.createdBy}`,
           date: formatDateTime(defaultValue?.auditTrail?.createdDate),
         });
+
+        console.log(defaultValue)
         sortRoutingBySequence(defaultValue?.routings)
         defaultValue?.routings?.forEach((item) => {
           const isApproved =
@@ -34,7 +36,7 @@ const activityLogHook = {
         });
         setLogs(newLogs);
       }
-      },[defaultValue])
+      },[defaultValue, userData])
       return logs;
     },
     useTrainingRequestActivityLogs: (data, reportsData)=>{
