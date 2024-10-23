@@ -8,75 +8,134 @@ import handleResponseAsync from "../../services/handleResponseAsync";
 import moduleService from "../../services/moduleService";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import { getFileExtension } from "../../utils/fileUtils";
-const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
+import { attachmentType } from "../../api/constants";
+import attachmentService from "../../services/attachmentService";
+const UploadModuleForm = ({
+  reqId,
+  setShowForm,
+  handleRefresh,
+  defaultValue,
+  handleRemoveFile,
+}) => {
   const [files, setFiles] = useState([]);
+  const [savedFiles, setSavedFiles] = useState([]);
   const [details, setDetails] = useState({ Name: "", Description: "" });
   const [errors, setErrors] = useState({});
-
-  const handleFileUpload = (e) => { 
-    setErrors({...errors, file:  "" })
+  const [isUpdate, setIsUpdate] = useState(false);
+  console.log(defaultValue)
+  useEffect(() => {
+    if (defaultValue) {
+      setDetails({
+        Name: defaultValue?.name,
+        Description: defaultValue?.description,
+      });
+      setSavedFiles(defaultValue?.attachments);
+      setIsUpdate(true);
+    }
+    else(setIsUpdate(false))
+  }, [defaultValue]);
+  const handleFileUpload = (e) => {
+    setErrors({ ...errors, file: "" });
     const newFiles = Array.from(e.target.files);
     let validForm = true;
-    newFiles.forEach(file => {
+    newFiles.forEach((file) => {
       if (file.size > 5 * 1024 * 1024) {
-        setErrors({...errors, [file.name]: "File size should not exceed 5MB" });
+        setErrors({
+          ...errors,
+          [file.name]: "File size should not exceed 5MB",
+        });
         validForm = false;
       }
-      if (files.some(x => x.name === file.name)) {
-        setErrors({...errors, [file.name]: "File name already exists" });
+      if (files.some((x) => x.name === file.name)) {
+        setErrors({ ...errors, [file.name]: "File name already exists" });
         validForm = false;
       }
-      if (files.some(x => x.name === file.name
-        && x.size === file.size
-        && x.type === file.type)) {
-        setErrors({...errors, file: "File already added" });
+      if (
+        files.some(
+          (x) =>
+            x.name === file.name && x.size === file.size && x.type === file.type
+        )
+      ) {
+        setErrors({ ...errors, file: "File already added" });
         validForm = false;
-      }    
-      if(getFileExtension(file?.name)!=='pdf'){
-              setErrors({...errors, file:  "Upload only pdf files" })
-              validForm= false
-            }
+      }
+      if (getFileExtension(file?.name) !== "pdf") {
+        setErrors({ ...errors, file: "Upload only pdf files" });
+        validForm = false;
+      }
     });
-    
-    if(validForm){
-    setFiles([...files,...newFiles]);}
-  //  newFiles.map(x=>{
-  //     //write code that will show an error if the file is not in pdf format
-  //     if(!x.name.includes('pdf')){
-  //       setErrors({...errors, [x.file]:  "Upload only pdf files" })
-  //       return false
-  //     }
-  //     // setErrors({...errors, [x.file]: "File format not supported" })
-  //   })
-  //   setFiles([...files, ...newFiles]);
+
+    if (validForm) {
+      setFiles([...files, ...newFiles]);
+    }
   };
-  useEffect
   const handleRemoveSpecificFile = (index) => {
     const updatedFiles = [...files];
     updatedFiles.splice(index, 1);
     setFiles(updatedFiles);
   };
   const handleSubmit = () => {
-    const validate = validateForm();
-    if(validate){
-      const data = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        data.append("Files", files[i]); // 'files' is the key for each file (server must handle this as array)
-      }
-      // data.append('Files', files); // Append the file
-      data.append("RequestId", reqId);
-      data.append("Name", details.Name); // Append other fields
-      data.append("Description", details.Description);
-      data.append("CreatedBy", SessionGetEmployeeId());
-      handleResponseAsync(() => moduleService.createModule(data),
-    (e)=> {actionSuccessful("Success", e.message);
-      handleRefresh();
-    },
-    (e)=> actionSuccessful("Error", e.message),
-    // ()=> handleRefresh(), 
-    )
+    confirmAction({
+      title: "Upload Module",
+      message: "Are you sure you want to upload this module?",
+      onConfirm: () => {
+        const validate = validateForm();
+        if (validate) {
+          const data = new FormData();
+          for (let i = 0; i < files.length; i++) {
+            data.append("Files", files[i]); // 'files' is the key for each file (server must handle this as array)
+          }
+          // data.append('Files', files); // Append the file
+          data.append("RequestId", reqId);
+          data.append("Name", details.Name); // Append other fields
+          data.append("Description", details.Description);
+          data.append("CreatedBy", SessionGetEmployeeId());
+          handleResponseAsync(
+            () => moduleService.createModule(data),
+            (e) => {
+              actionSuccessful("Success", e.message);
+              handleRefresh();
+            },
+            (e) => actionSuccessful("Error", e.message)
+            // ()=> handleRefresh(),
+          );
+        }
+      },
+    });
+  };
+  const handleUpdateModule = () => {
+    const newData = {
+      id: defaultValue.id,
+      name: details.Name,
+      description: details.Description,
+      updatedBy: SessionGetEmployeeId(),
+    };
+    confirmAction({
+      title: "Update Module",
+      text: "Are you sure you want to update this module?",
+      onConfirm: () =>
+        handleResponseAsync(
+          () => moduleService.updateModule(newData),
+          () => {files?.length > 0 ? saveAttachments() : 
+            actionSuccessful("Success!", "Successfully updated the module");
+            handleRefresh();
+          }
+        ),
+    });
+  };
+  const saveAttachments = () => {
+    const formData = new FormData();
+    formData.append("ReferenceId", defaultValue.id);
+    formData.append("AttachmentType", attachmentType.MODULE);
+    formData.append("EmployeeBadge", SessionGetEmployeeId());
+    for (let i = 0; i < files.length; i++) {
+      formData.append("Files", files[i]); // 'files' is the key for each file (server must handle this as array)
     }
-    
+    handleResponseAsync(
+      () => attachmentService.addAttachments(formData),
+      ()=>{   actionSuccessful("Success!", "Successfully updated the module");
+        handleRefresh();}
+    )
   };
   const validateForm = () => {
     let formErrors = {};
@@ -89,7 +148,7 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
       formErrors.Description = "Description is required";
       validForm = false;
     }
-    if(files?.length === 0){
+    if (files?.length === 0) {
       formErrors.file = "Please select at least one file";
       validForm = false;
     }
@@ -103,7 +162,7 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
       <Card>
         <Card.Header className="d-flex align-items-center justify-content-between">
           <h5 className="m-0">Upload Module</h5>
-          <Button icon="pi pi-times" type="button" text onClick={setShowForm}/>
+          <Button icon="pi pi-times" type="button" text onClick={setShowForm} />
         </Card.Header>
         <CardBody>
           <Form>
@@ -142,8 +201,39 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
                 </>
               }
             />
+
+            {isUpdate && savedFiles?.length > 0 && (
+                <FormFieldItem
+                  label={"Old Attachment"}
+                  FieldComponent={
+                    <>    {files?.length > 0 && (
+                      <small className="text-muted ms-2">
+                        &#x28;{savedFiles?.length} {savedFiles?.length > 1 ? "files" : "file"}&#x29;
+                      </small>
+                    )}
+                    <div className="d-flex flex-wrap mb-2 gap-2">
+                      {savedFiles?.map((file, index) => (
+                        <div
+                          key={`savedfile${index}`}
+                          className="border bg-light rounded ps-2 d-flex align-items-center"
+                          style={{ width: "fit-content" }}
+                        >
+                          <span>{file.fileName}</span>
+                          <Button
+                            type="button"
+                            icon="pi pi-times"
+                            text
+                            onClick={() => handleRemoveFile(file.id)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    </>
+                  }
+                />
+            )}
             <FormFieldItem
-              label={"Attachment"}
+              label={isUpdate ? "New Attachment" : "Attachment"}
               error={errors.file}
               FieldComponent={
                 <>
@@ -151,13 +241,13 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
                     <>
                       {files?.length > 0 && (
                         <small className="text-muted ms-2">
-                          &#x28;{files?.length} files&#x29;
+                          &#x28;{files?.length} {files?.length > 1 ? "files" : "file"}&#x29;
                         </small>
                       )}
                       <div className="d-flex flex-wrap mb-2 gap-2">
                         {files?.map((file, index) => (
                           <div
-                            key={file.name}
+                            key={`file${index}`}
                             className="border bg-light rounded ps-2 d-flex align-items-center"
                             style={{ width: "fit-content" }}
                           >
@@ -189,17 +279,9 @@ const UploadModuleForm = ({ reqId , setShowForm, handleRefresh}) => {
                 size="small"
                 icon="pi pi-save"
                 type="button"
-                label="Save"
-                onClick={() =>
-                  confirmAction({
-                    title: "Upload Module",
-                    message: "Are you sure you want to upload this module?",
-                    // confirmLabel: "Yes",
-                    onConfirm: handleSubmit,
-                    // onCancel: () => setFiles([])
-                  })
-                }
-                />
+                label={isUpdate ? "Update" : "Save"}
+                onClick={isUpdate ? handleUpdateModule : handleSubmit}
+              />
             </div>
           </Form>
         </CardBody>
@@ -212,5 +294,7 @@ UploadModuleForm.propTypes = {
   reqId: proptype.number.isRequired,
   setShowForm: proptype.func,
   handleRefresh: proptype.func,
+  defaultValue: proptype.object,
+  handleRemoveFile: proptype.func,
 };
 export default UploadModuleForm;

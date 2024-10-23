@@ -1,4 +1,4 @@
-import { createModuleApi, deleteModuleApi, getModulesByRequestIdApi } from "../api/moduleApi";
+import { createModuleApi, deleteModuleApi, getModulesByRequestIdApi, updateModuleApi } from "../api/moduleApi";
 
 const moduleService = {
     getModulesByRequestId: async (id) => {
@@ -11,6 +11,13 @@ const moduleService = {
           throw new Error(response.message);
         }
         return response?.data;
+    },
+    updateModule: async (module) => {
+        const response = await updateModuleApi(module);
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response;
     },
     deleteModule: async (id) => {
         const response = await deleteModuleApi(id)     

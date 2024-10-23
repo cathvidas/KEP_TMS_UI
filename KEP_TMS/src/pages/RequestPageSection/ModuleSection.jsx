@@ -12,8 +12,8 @@ import SkeletonList from "../../components/Skeleton/SkeletonList";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import moduleService from "../../services/moduleService";
 import PDFViewer from "../../components/General/PDFViewer";
-import { useNavigate } from "react-router-dom";
-import { confirmAction } from "../../services/sweetalert";
+import { actionSuccessful, confirmAction } from "../../services/sweetalert";
+import attachmentService from "../../services/attachmentService";
 
 const ModuleSection = ({ data }) => {
   const [showForm, setShowForm] = useState(false);
@@ -21,8 +21,8 @@ const ModuleSection = ({ data }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selected, setSelected]= useState({});
+  const [selectedModule, setSelectedModule] = useState({})
   const [showPDF, setShowPDF]= useState(false);
-  const navigate = useNavigate();
   useEffect(() => {
     refreshData();
   }, []);
@@ -40,21 +40,33 @@ const ModuleSection = ({ data }) => {
   const removeModule = (id) => {
     confirmAction({
       title: "Remove Module",
-      message: "Are you sure you want to remove this module?",
+      text: "Are you sure you want to remove this module?",
       confirmButtonText: "Yes",
       cancelButtonText: "No",
       onConfirm: () =>
         handleResponseAsync(
           () => moduleService.deleteModule(id),
-          () => {
-            setModuleList(moduleList.filter((x) => x.id !== selected.id));
-            setSelected({});
-          },
+          ()=>actionSuccessful("Success", "Successfully removed the module"),
           null,
-          () => setLoading(false)
+          () => refreshData()
         ),
     });
   };
+  const removeAttachment = (id, action)=>{
+    handleResponseAsync(
+      () => attachmentService.deleteAttachment(id),
+      ()=>{""},
+     ()=>{""},
+      () => {refreshData();
+        action()
+      }
+    )
+  }
+  const getUpdatedDetail = ()=>{
+    const newData = moduleList.find((item)=>item.id === selectedModule.id)
+    setSelectedModule(newData)
+  }
+  console.log(selectedModule)
   return (
     <>
       <SectionHeading
@@ -68,8 +80,13 @@ const ModuleSection = ({ data }) => {
           {showForm ? (
             <UploadModuleForm
               reqId={data?.id}
+              defaultValue={selectedModule?.id ? selectedModule : null}
               setShowForm={() => setShowForm(false)}
-              handleRefresh={refreshData}
+              handleRefresh={()=>{
+                refreshData();
+                setShowForm(false);
+              }}
+              handleRemoveFile={(e)=>removeAttachment(e, getUpdatedDetail)}
               // handleRefresh={() => navigate(`/KEP_TMS/TrainingRequest/${data?.id}/Modules`)}
             />
           ) : moduleList?.length > 0 ? (
@@ -83,10 +100,13 @@ const ModuleSection = ({ data }) => {
                   size="small"
                   className="theme-btn rounded py-1"
                   label="Add New"
-                  onClick={() => setShowForm(true)}
+                  onClick={() => {
+                    setShowForm(true);
+                    setSelectedModule(null)
+                  }}
                 />
               </span>
-              <Row className="row-cols-lg-2 g-2 row-cols-1">
+              <Row className="1 g-2 row-cols-1">
                 {moduleList.map((x) => {
                   return (
                     <Col key={`module${x.id}`}>
@@ -103,6 +123,9 @@ const ModuleSection = ({ data }) => {
                               icon="pi pi-pencil"
                               severity="secondary"
                               className="p-0 rounded"
+                              onClick={()=>{setSelectedModule(x);
+                                setShowForm(true)
+                              }}
                             />
                             <Button
                               type="button"
@@ -111,16 +134,18 @@ const ModuleSection = ({ data }) => {
                               severity="danger"
                               icon="pi pi-trash"
                               className="p-0 rounded"
-                              onClick={""}
+                              onClick={()=>removeModule(x.id)}
                             />
                           </ButtonGroup>{" "}
                         </div>
                         <div className="px-4 p-2">
                           <p className="m-0">{x.description}</p>
-
+                              <div className="flex flex-wrap"></div>
                           {x?.attachments?.map((a) => (
+                            <ButtonGroup 
+                            className="me-2"
+                            key={`file${a.id}`}>
                             <Button
-                              key={`file${a.id}`}
                               type="button"
                               text
                               size="small"
@@ -134,6 +159,8 @@ const ModuleSection = ({ data }) => {
                                 setShowPDF(true);
                               }}
                             />
+                            <Button type="button" text severity="danger" icon="pi pi-trash" size="small" onClick={()=>removeAttachment(a.id)} />
+                              </ButtonGroup>
                           ))}
                         </div>
                       </div>
