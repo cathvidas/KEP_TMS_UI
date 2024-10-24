@@ -8,6 +8,7 @@ import getPassingScore from "../../utils/common/getPassingScore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSadTear, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 const ExamDetails = ({ handleClose, traineeExam, examDetail }) => {
+  console.log(examDetail)
   const [mappedDetail, setMappedDetail] = useState({});
   useEffect(() => {
     const questions = traineeExam?.traineeExamQuestion?.map((item) =>
@@ -47,19 +48,19 @@ const ExamDetails = ({ handleClose, traineeExam, examDetail }) => {
                 <StatusChart
                   series={
                     (traineeExam?.totalScore /
-                      examDetail?.examQuestion?.length) *
+                      examDetail?.questionLimit) *
                     100
                   }
                   label="Exam score"
-                  value={`${traineeExam?.totalScore}/${examDetail?.examQuestion?.length}`}
+                  value={`${traineeExam?.totalScore}/${examDetail?.questionLimit}`}
                   color={
-                    traineeExam?.totalScore >= getPassingScore(examDetail?.examQuestion?.length)
+                    traineeExam?.totalScore >= getPassingScore(examDetail?.questionLimit)
                       ? "#00a76f"
                       : "#dc3545"
                   }
                 />
               </div>
-              {traineeExam?.totalScore >= getPassingScore(examDetail?.examQuestion?.length)?
+              {traineeExam?.totalScore >= getPassingScore(examDetail?.questionLimit)?
               <h4 className="theme-color text-center"><FontAwesomeIcon icon={faFaceSmile}/> Passed </h4>:
               <h4 className="text-danger text-center"> <FontAwesomeIcon icon={faFaceSadTear}/> Failed </h4>
               }

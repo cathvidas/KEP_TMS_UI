@@ -11,8 +11,8 @@ function ExportBtn({ data }) {
   
     const mapFacilitator = (dataList) => {
       let facilitators = "";
-      dataList?.map((x, i) => {
-        facilitators += `(${i+1}) ${x?.fullname} `;
+      dataList?.map((x) => {
+        facilitators += `${x?.fullname}; `;
       });
       return facilitators;
     };

@@ -48,7 +48,6 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
       setWithEarlyRate(false);
     }
   }, [formData]);
-
   return (
     <>
       <SectionHeading

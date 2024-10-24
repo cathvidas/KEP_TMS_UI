@@ -10,12 +10,14 @@ import { SessionGetEmployeeId } from "../../services/sessions";
 import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import examService from "../../services/examService";
+import validateExamForm from "../../services/inputValidation/validateExamForm";
 const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
   const [data, setData] = useState({ title: "", examQuestion: [] });
   const [isUpdate, setIsUpdate] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
-  console.log( defaultData,data)
+  const [errors, setErrors] = useState({});
+  console.log( defaultData,data, reqId)
   useEffect(() => {
     if (defaultData) {
       setData(defaultData);
@@ -45,6 +47,9 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
   };
   
   const uploadExam = () => {
+    const validate = validateExamForm(data);
+    setErrors(validate?.errors);
+    if(validate?.isValid){
     const updatedData = {
       ...data,
       trainingRequestId: reqId,
@@ -63,13 +68,16 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
           (e) => actionFailed("Error!", e.message),
         );
       },
-    });
+    });}
   };
   const updateExam = () => {
+    const validate = validateExamForm(data);
+    setErrors(validate?.errors);
+    if(validate?.isValid){
     const updatedData = {
       ...data,
       examQuestions: data.examQuestion,
-      trainingRequestId: reqId,
+      trainingRequestId: data?.trainingRequestId,
       updatedBy: SessionGetEmployeeId(),
     };
     confirmAction({
@@ -85,8 +93,28 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
           (e) => actionFailed("Error!", e.message),
         );
       },
+    });}
+  };
+  const deleteExam = () => {
+    confirmAction({
+      title: "Remove Exam",
+      text: "Are you sure you want to remove this exam?",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      confirmButtonColor: "#d33",
+      onConfirm: () => {
+        handleResponseAsync(
+          () => examService.deleteExam(data.id),
+          (e) => {
+            actionSuccessful("Success!", e?.message);
+            handleRefresh();
+          },
+          (e) => actionFailed("Error!", e.message),
+        );
+      },
     });
   };
+  console.log(data, errors)
   return (
     <>
       <Card className="rounded shadow-sm card border overflow-hidden">
@@ -103,6 +131,7 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
         <Card.Body>
           <FormFieldItem
             label="Exam title"
+            error={errors?.title}
             FieldComponent={
               <Form.Control
                 type="text"
@@ -115,7 +144,23 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
             }
           />
           <FormFieldItem
+            label="No of Questions to display"
+            error={errors?.questionLimit}
+            FieldComponent={
+              <Form.Control
+                type="number"
+                placeholder="No"
+                value={data?.questionLimit}
+                min={0}
+                onChange={(e) =>
+                  setData((prev) => ({ ...prev, questionLimit: parseFloat(e.target.value) }))
+                }
+              />
+            }
+          />
+          <FormFieldItem
             label="Exam Questions"
+            error={errors?.examQuestion}
             FieldComponent={
               <>
                 {data?.examQuestion?.length > 0 ? (
@@ -214,7 +259,7 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
                 text
                 className="rounded py-1"
                 type="button"
-                  onClick={() => setData({})}
+                  onClick={isUpdate ? deleteExam : () => setData({})}
               />
               <Button
                 icon={isUpdate ? "pi pi-pen-to-square" : "pi pi-save"}

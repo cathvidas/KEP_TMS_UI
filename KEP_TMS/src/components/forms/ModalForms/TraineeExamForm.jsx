@@ -10,7 +10,6 @@ import getPassingScore from "../../../utils/common/getPassingScore";
 import { SessionGetEmployeeId } from "../../../services/sessions";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import examService from "../../../services/examService";
-import { actionFailed } from "../../../services/sweetalert";
 const TraineeExamForm = ({ data }) => {
   const [totalTime, setTotalTime] = useState(0);
   const [startExam, setStartExam] = useState(true);
@@ -29,7 +28,10 @@ const TraineeExamForm = ({ data }) => {
     const items = data?.examQuestion?.map((item) => {
       return { ...item, answerOptions: randomizeList(item?.answerOptions) };
     });
-    setRandomizeItem(randomizeList(items));
+    //set the first 5 items
+    const limitQuestions = randomizeList(items).slice(0, data.questionLimit);
+    setRandomizeItem(limitQuestions);
+    // setRandomizeItem(randomizeList(items));
   };
   useEffect(() => {
     const interval = setInterval(() => {
@@ -78,24 +80,26 @@ const TraineeExamForm = ({ data }) => {
     ]);
     saveExam(list, correctAnswers.length);
   };
-  const saveExam = (list,score)=>{
-    const mappedAnswer = list?.map(item=>{
+  const saveExam = (list, score) => {
+    const mappedAnswer = list?.map((item) => {
       return {
         examQuestionId: item.questionId,
-        traineeAnswer: [{answerOptionId: item.answer?.id}]
-      }
-    })
+        traineeAnswer: [{ answerOptionId: item.answer?.id }],
+      };
+    });
     const newData = {
       examId: data.id,
       totalScore: score,
       traineeExamQuestion: mappedAnswer,
-      traineeBadge: SessionGetEmployeeId()
-    }
+      traineeBadge: SessionGetEmployeeId(),
+    };
     handleResponseAsync(
-      ()=> examService.saveTraineeExam(newData),
-      ()=>{""},
-    )
-  }
+      () => examService.saveTraineeExam(newData),
+      () => {
+        "";
+      }
+    );
+  };
   const retakeExam = () => {
     randomizeExamQuestions();
     setStartExam(true);
@@ -214,21 +218,6 @@ const TraineeExamForm = ({ data }) => {
                       item.totalTime,
                       true
                     )}`}</Card.Body>
-                    {/* <Card.Body>
-                <ul>
-                  {item?.totalScore > 0 && randomizeItem?.map((question, index) => {
-                    const answer = question?.answerOptions?.find(
-                      (item) => item?.id === item.answer?.id
-                    );
-                    return (
-                      <li key={index}>
-                        <strong>{question?.content}:</strong>
-                        {answer?.content} - {answer?.isCorrect? "Correct" : "Wrong"}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </Card.Body> */}
                   </Card>
                 </>
               ))}

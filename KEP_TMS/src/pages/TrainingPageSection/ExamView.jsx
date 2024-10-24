@@ -36,7 +36,7 @@ const ExamView = ({ data }) => {
                 <Row className="row-cols-1 row-cols-md-2 row-cols-lg-4 g-0">
                   <Card
                     title={item?.title}
-                    subTitle={`${item?.examQuestion?.length} Questions`}
+                    subTitle={`${item?.questionLimit} items`}
                     footer={
                       <div className="text-center">
                         {getUser?.id ? traineeExam?.data?.examId === item?.id ? 
@@ -46,7 +46,7 @@ const ExamView = ({ data }) => {
                           icon="pi pi-eye"
                           size="small"
                           outlined
-                          className="rounded theme-color"    
+                          className="rounded theme-color"       
                            onClick={() => {
                             setShowTraineeExam(true);
                             setSelectedExam(item);

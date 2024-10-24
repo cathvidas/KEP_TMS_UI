@@ -208,7 +208,7 @@ const OverviewSection = ({
           </>
         )}  
       </div> 
-      {SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin" &&
+      {SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin" || data?.requestorBadge == SessionGetEmployeeId()&&
       <div className="position-absolute bottom-0  mb-3 me-4 end-0">
                 <Toast ref={toast2} />
                 <Tooltip target=".speeddial-bottom-right  .p-speeddial-action" position="left"/>
