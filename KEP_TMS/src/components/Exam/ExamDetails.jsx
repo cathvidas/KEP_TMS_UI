@@ -8,7 +8,6 @@ import getPassingScore from "../../utils/common/getPassingScore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSadTear, faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 const ExamDetails = ({ handleClose, traineeExam, examDetail }) => {
-  console.log(examDetail)
   const [mappedDetail, setMappedDetail] = useState({});
   useEffect(() => {
     const questions = traineeExam?.traineeExamQuestion?.map((item) =>
@@ -66,7 +65,7 @@ const ExamDetails = ({ handleClose, traineeExam, examDetail }) => {
               }
               <br />
               <h6>Exam Title: {mappedDetail?.title}</h6>
-              <p>Duration: 30 minutes</p>
+              {/* <p>Duration: 30 minutes</p> */}
               {/* <p>Passing Score: 70%</p> */}
               <p>Submitted: {formatDateTime(traineeExam?.createdDate)}</p>
             </Col>

@@ -1,17 +1,12 @@
-import { Col, Row } from "react-bootstrap";
 import { SectionHeading } from "../../components/General/Section";
 import proptype from "prop-types"
-import ModuleItem from "../../components/TrainingPageComponents/ModuleItem";
 import moduleHook from "../../hooks/moduleHook";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { Button } from "primereact/button";
 import SkeletonList from "../../components/Skeleton/SkeletonList";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import PDFViewer from "../../components/General/PDFViewer";
 const ModuleView = ({reqId})=>{
-    const [fileSrc, setFileSrc] = useState(null)
-    const navigate = useNavigate();
     const {  modules, error, loading} = moduleHook.useModulesByRequestId(reqId)
   const [selected, setSelected]= useState({});
   const [showPDF, setShowPDF]= useState(false);
@@ -29,7 +24,7 @@ const ModuleView = ({reqId})=>{
               {modules?.map((item, index) => {
                 return (
                   <AccordionTab key={`module${index}`} header={item.name}>
-                    <div className="">
+                    <div className="h-100">
                       <p className="m-0">{item.description}</p>
                       {item?.attachments?.map((file) => {
                         return (

@@ -3,16 +3,18 @@ import CommonTable from "../../components/General/CommonTable";
 import { SectionHeading } from "../../components/General/Section";
 import StatusColor from "../../components/General/StatusColor";
 import proptype from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import EvaluationForm from "../../components/forms/EvaluationForm";
 import { ActivityType } from "../../api/constants";
 import getStatusById from "../../utils/status/getStatusById";
-const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formData, typeId }) => {
+import { Column } from "primereact/column";
+const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formData, typeId, examDetail }) => {
     const [showForm, setShowForm] = useState(false);
     const [selectedData, setSelectedData] = useState({});
+    console.log(examDetail)
   const actionTemplate = (rowData) => {
     return (
       <>
@@ -60,7 +62,9 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
       body: (rowData) => (
         <>
           {StatusColor({
-            status: getStatusById(rowData[reportType]?.currentRouting?.statusId) ?? "Pending",
+            status:
+              getStatusById(rowData[reportType]?.currentRouting?.statusId) ??
+              "Pending",
             showStatus: true,
           })}
         </>
@@ -70,7 +74,12 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
       ? {
           field: "department",
           header: "Approver",
-          body: (rowData) => <>{rowData[reportType]?.currentRouting?.assignedDetail?.fullname ?? "N/A"}</>,
+          body: (rowData) => (
+            <>
+              {rowData[reportType]?.currentRouting?.assignedDetail?.fullname ??
+                "N/A"}
+            </>
+          ),
         }
       : [],
     {
@@ -80,6 +89,24 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
     },
   ];
 
+  useEffect(() => {
+    if (examDetail) {
+      columnItems.push({
+        field: "department",
+        header: "Status",
+        body: (rowData) => (
+          <>
+            {StatusColor({
+              status:
+                getStatusById(rowData[reportType]?.currentRouting?.statusId) ??
+                "Pending",
+              showStatus: true,
+            })}
+          </>
+        ),
+      });
+    }
+  }, []);
   return (
     <>
     {!showForm ?<>
@@ -140,5 +167,7 @@ MonitoringReportView.propTypes = {
   tableName: proptype.string,
   hasApprover: proptype.bool,
   formData: proptype.object,
+  typeId: proptype.number,
+  examDetail: proptype.array,
 };
 export default MonitoringReportView;

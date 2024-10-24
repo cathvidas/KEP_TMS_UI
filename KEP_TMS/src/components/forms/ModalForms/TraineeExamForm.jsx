@@ -10,7 +10,7 @@ import getPassingScore from "../../../utils/common/getPassingScore";
 import { SessionGetEmployeeId } from "../../../services/sessions";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import examService from "../../../services/examService";
-const TraineeExamForm = ({ data }) => {
+const TraineeExamForm = ({ data , examCount, closeForm, handleRefresh}) => {
   const [totalTime, setTotalTime] = useState(0);
   const [startExam, setStartExam] = useState(true);
   const [randomizeItem, setRandomizeItem] = useState([]);
@@ -19,8 +19,6 @@ const TraineeExamForm = ({ data }) => {
   const [chosenAnswer, setChosenAnswer] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [score, setScore] = useState({ showScore: false, score: 0 });
-  const [examLog, setExamLog] = useState([]);
-  const [viewLogs, setViewLogs] = useState(false);
   useEffect(() => {
     randomizeExamQuestions();
   }, [data]);
@@ -69,15 +67,6 @@ const TraineeExamForm = ({ data }) => {
       score: correctAnswers.length,
       average: aveScore,
     });
-    setExamLog([
-      ...examLog,
-      {
-        totalScore: correctAnswers.length,
-        date: new Date().toLocaleString(),
-        totalTime: timer,
-        average: aveScore,
-      },
-    ]);
     saveExam(list, correctAnswers.length);
   };
   const saveExam = (list, score) => {
@@ -96,6 +85,8 @@ const TraineeExamForm = ({ data }) => {
     handleResponseAsync(
       () => examService.saveTraineeExam(newData),
       () => {
+       localStorage.removeItem("examLog");
+       handleRefresh()
         "";
       }
     );
@@ -103,7 +94,6 @@ const TraineeExamForm = ({ data }) => {
   const retakeExam = () => {
     randomizeExamQuestions();
     setStartExam(true);
-    setViewLogs(false);
     setTimer(0);
     setCurrentIndex(0);
     setChosenAnswer(null);
@@ -111,6 +101,24 @@ const TraineeExamForm = ({ data }) => {
     setScore({ showScore: false, score: 0 });
   };
 
+  useEffect(()=>{
+    const mappedAnswer = answers?.map((item) => {
+      return {
+        examQuestionId: item.questionId,
+        traineeAnswer: [{ answerOptionId: item.answer?.id }],
+      };
+    });
+    const correctAnswers = answers.filter(
+      (item) => item.answer?.isCorrect === true
+    );
+    const newData = {
+      examId: data.id,
+      totalScore: correctAnswers?.length,
+      traineeExamQuestion: mappedAnswer,
+      traineeBadge: SessionGetEmployeeId(),
+    };
+    localStorage.setItem("examLog", JSON.stringify(newData));
+  },[startExam, answers,data.id, score])
   return (
     <>
       <Card>
@@ -187,40 +195,22 @@ const TraineeExamForm = ({ data }) => {
                 />
               </div>
               <h5>Total Time: {formatSeconds(totalTime, true)}</h5>
+              <h5>Takes: {examCount}</h5>
               <br />
               <Button
                 type="button"
                 className="me-2"
-                label="view logs"
+                label="Back"
                 icon="pi pi-arrow-left"
-                onClick={() => setViewLogs(true)}
+                onClick={closeForm}
               />
               <Button
                 type="button"
                 label="retake"
                 icon="pi pi-refresh"
                 onClick={retakeExam}
-                disabled={examLog.length >= 3}
+                disabled={examCount >= 3}
               />
-            </div>
-          )}
-          {viewLogs && (
-            <div>
-              <h5>Exam Logs</h5>
-              {examLog?.map((item) => (
-                <>
-                  <Card>
-                    <Card.Body>{`Date: ${item.date}, Total Score: ${
-                      item.totalScore
-                    }, Average Score: ${
-                      item.average
-                    }, Total Time: ${formatSeconds(
-                      item.totalTime,
-                      true
-                    )}`}</Card.Body>
-                  </Card>
-                </>
-              ))}
             </div>
           )}
         </Card.Body>
@@ -231,5 +221,8 @@ const TraineeExamForm = ({ data }) => {
 
 TraineeExamForm.propTypes = {
   data: proptype.object,
+  examCount: proptype.number,
+  closeForm: proptype.func,
+  handleRefresh: proptype.func,
 };
 export default TraineeExamForm;

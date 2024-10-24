@@ -38,13 +38,13 @@ handleUpdateQuestion
       formErrors.Question = "Question is required";
       validForm = false;
     }
-    if (details?.answerOptions?.length < 4) {
-      formErrors.option = "Please add at least four (4) options";
+    if (details?.answerOptions?.length < 2) {
+      formErrors.option = "Add at least two (2) options";
       validForm = false;
     }
     const answer = details?.answerOptions?.filter((x) => x.isCorrect === true);
     if (answer?.length === 0 && validForm) {
-      formErrors.answer = "Please select the correct answer.";
+      formErrors.answer = "Select the correct answer.";
       validForm = false;
     }
     if (!validForm) {

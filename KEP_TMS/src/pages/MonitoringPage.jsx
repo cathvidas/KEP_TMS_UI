@@ -8,6 +8,7 @@ import Layout from "../components/General/Layout";
 import trainingRequestHook from "../hooks/trainingRequestHook";
 import { ActivityType, OtherConstant } from "../api/constants";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
+import examHook from "../hooks/examHook";
 
 const MonitoringPage = () => {
   const { id, page } = useParams();
@@ -15,10 +16,12 @@ const MonitoringPage = () => {
     parseInt(id)
   );
   const trainingForms = trainingRequestHook.useAllParticipantsReports(data?.trainingParticipants ?? []) 
+  const examList = examHook.useAllTraineeExamByRequest(data?.id)
+  console.log(trainingForms, examList)
   const [currentContent, setCurrentContent] = useState(0);
   const pageContent = [
-      <PendingView key={0} data={data} formData={trainingForms}/>,
-      <MonitoringReportView key={2} data={data} formData={trainingForms} reportType="examDetail" />,
+      <PendingView key={0} data={data} formData={trainingForms} examDetail={examList?.data}/>,
+      <MonitoringReportView key={2} data={data} formData={trainingForms} reportType="examDetail" examDetail={examList?.data} />,
       <MonitoringReportView key={2} data={data} formData={trainingForms} reportType="effectivenessDetail" typeId={ActivityType.EFFECTIVENESS} hasApprover/>,
       <MonitoringReportView key={3} data={data} formData={trainingForms} reportType="reportDetail" typeId={ActivityType.REPORT} hasApprover/>,
       <MonitoringReportView key={4}data={data} formData={trainingForms} reportType="evaluationDetail" typeId={ActivityType.EVALUATION}/>,

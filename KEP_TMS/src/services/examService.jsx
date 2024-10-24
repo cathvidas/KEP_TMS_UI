@@ -1,4 +1,4 @@
-import { createExamApi, deleteExamApi, getExamByRequestIdApi, getTraineeExamApi, saveTraineeExamApi, updateExamApi } from "../api/examApi";
+import { createExamApi, deleteExamApi, getAllTraineeExamByExamIdApi, getExamByRequestIdApi, getTraineeExamApi, saveTraineeExamApi, updateExamApi } from "../api/examApi";
 
 const examService = {
   createExam: async (data) => {
@@ -36,6 +36,19 @@ const examService = {
   getTraineeExam: async (id) => {
     const response = await getTraineeExamApi(id);
     return response?.status === 1 ? response?.data : {};
+  },
+  getAllTraineeExamByExamId: async (id) => {
+    const response = await getAllTraineeExamByExamIdApi(id);
+    return response?.status === 1 ? response?.data : [];
+  },
+  saveStoredExamLog: async () => {
+    const examLog = JSON.parse(localStorage.getItem("examLog"));
+    if(examLog){
+    const response = await saveTraineeExamApi(examLog);
+    if (response.status === 1) {
+      localStorage.removeItem("examLog")
+    }
+    }
   },
 };
 export default examService;

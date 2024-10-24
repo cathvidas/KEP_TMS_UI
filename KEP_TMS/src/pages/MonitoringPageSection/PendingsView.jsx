@@ -10,7 +10,8 @@ import { Button } from "primereact/button";
 import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import EvaluationForm from "../../components/forms/EvaluationForm";
 import getStatusById from "../../utils/status/getStatusById";
-const PendingView = ({ data, formData }) => {
+import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
+const PendingView = ({ data, formData, examDetail }) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedData, setSelectedData] = useState({});
   const [formType, setFormType] = useState({});
@@ -18,6 +19,15 @@ const PendingView = ({ data, formData }) => {
     setSelectedData(data);
     setFormType(formProperty)
     setShowForm(true)
+  }
+  const traineeExamCount = (user) =>{
+    let count = 0;
+    examDetail?.map(e=>{
+    const res =  getTraineeExamDetail(e, user);
+    if(res?.submitted)
+      count++;
+    })
+    return count;
   }
   const columnItems = [
     {
@@ -58,7 +68,12 @@ const PendingView = ({ data, formData }) => {
       header: "Exam",
       body: (rowData) => (
         <>
-        {rowData?.examDetail?.id ? `${rowData?.examDetail?.totalScore}/${rowData?.examDetail?.traineeExamQuestion?.length}`:
+        {rowData?.examDetail?.id ? traineeExamCount(rowData?.userDetail?.employeeBadge) !== examDetail?.length ? `${traineeExamCount(rowData?.userDetail?.employeeBadge)}/${examDetail?.length}`
+        :   StatusColor({
+          color: "bg-success",
+          status: "Completed",
+          showStatus: true,
+        }):
           StatusColor({
             status: "Pending",
             showStatus: true,
@@ -159,5 +174,6 @@ const PendingView = ({ data, formData }) => {
 PendingView.propTypes = {
   data: proptype.object.isRequired,
   formData: proptype.object.isRequired,
+  examDetail: proptype.array,
 };
 export default PendingView;
