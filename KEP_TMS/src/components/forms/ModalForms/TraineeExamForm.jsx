@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ExamItem } from "../../Exam/ExamItem";
 import { Button } from "primereact/button";
-import { Card } from "react-bootstrap";
+import { Card, Modal } from "react-bootstrap";
 import { formatSeconds } from "../../../utils/datetime/Formatting";
 import proptype from "prop-types";
 import randomizeList from "../../../utils/sorting/randomizeList";
@@ -10,7 +10,7 @@ import getPassingScore from "../../../utils/common/getPassingScore";
 import { SessionGetEmployeeId } from "../../../services/sessions";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import examService from "../../../services/examService";
-const TraineeExamForm = ({ data , examCount, closeForm, handleRefresh}) => {
+const TraineeExamForm = ({ data, examCount, closeForm, handleRefresh }) => {
   const [totalTime, setTotalTime] = useState(0);
   const [startExam, setStartExam] = useState(true);
   const [randomizeItem, setRandomizeItem] = useState([]);
@@ -20,16 +20,25 @@ const TraineeExamForm = ({ data , examCount, closeForm, handleRefresh}) => {
   const [answers, setAnswers] = useState([]);
   const [score, setScore] = useState({ showScore: false, score: 0 });
   useEffect(() => {
+    window.addEventListener("beforeunload", alertUser, false);
+    return () => {
+      window.removeEventListener("beforeunload", alertUser, false);
+    };
+  }, []);
+  const alertUser = (e) => {
+    e.preventDefault();
+    e.returnValue = "saguifc";
+    return e.returnValue;
+  };
+  useEffect(() => {
     randomizeExamQuestions();
   }, [data]);
   const randomizeExamQuestions = () => {
     const items = data?.examQuestion?.map((item) => {
       return { ...item, answerOptions: randomizeList(item?.answerOptions) };
     });
-    //set the first 5 items
     const limitQuestions = randomizeList(items).slice(0, data.questionLimit);
     setRandomizeItem(limitQuestions);
-    // setRandomizeItem(randomizeList(items));
   };
   useEffect(() => {
     const interval = setInterval(() => {
@@ -76,6 +85,7 @@ const TraineeExamForm = ({ data , examCount, closeForm, handleRefresh}) => {
         traineeAnswer: [{ answerOptionId: item.answer?.id }],
       };
     });
+    setStartExam(false);
     const newData = {
       examId: data.id,
       totalScore: score,
@@ -85,9 +95,9 @@ const TraineeExamForm = ({ data , examCount, closeForm, handleRefresh}) => {
     handleResponseAsync(
       () => examService.saveTraineeExam(newData),
       () => {
-       localStorage.removeItem("examLog");
-       handleRefresh()
-        "";
+        localStorage.removeItem("examLog");
+        handleRefresh();
+        ("");
       }
     );
   };
@@ -100,29 +110,33 @@ const TraineeExamForm = ({ data , examCount, closeForm, handleRefresh}) => {
     setAnswers([]);
     setScore({ showScore: false, score: 0 });
   };
-
-  useEffect(()=>{
-    const mappedAnswer = answers?.map((item) => {
-      return {
-        examQuestionId: item.questionId,
-        traineeAnswer: [{ answerOptionId: item.answer?.id }],
-      };
-    });
+  useEffect(() => {
     const correctAnswers = answers.filter(
       (item) => item.answer?.isCorrect === true
     );
+    const updatedData = randomizeItem?.map((item) => {
+      const ans = answers?.find((e) => e.questionId === item?.id);
+      return {
+        examQuestionId: item.id,
+        traineeAnswer: [{ answerOptionId: ans ? ans.answer.id : null }],
+      };
+    });
     const newData = {
       examId: data.id,
       totalScore: correctAnswers?.length,
-      traineeExamQuestion: mappedAnswer,
+      traineeExamQuestion: updatedData,
       traineeBadge: SessionGetEmployeeId(),
     };
-    localStorage.setItem("examLog", JSON.stringify(newData));
-  },[startExam, answers,data.id, score])
+    if (startExam) {
+      localStorage.setItem("examLog", JSON.stringify(newData));
+    }
+  }, [startExam, answers, randomizeItem]);
   return (
     <>
-      <Card>
-        <Card.Body>
+      <Modal show fullscreen>
+        <Modal.Body>
+          {/* <Card> */}
+          {/* <Card.Body> */}
           <div className="flex flex-wrap justify-content-end gap-1 mb-3">
             <div className="me-auto">
               <h4 className="m-0">{data?.title}</h4>
@@ -195,7 +209,6 @@ const TraineeExamForm = ({ data , examCount, closeForm, handleRefresh}) => {
                 />
               </div>
               <h5>Total Time: {formatSeconds(totalTime, true)}</h5>
-              <h5>Takes: {examCount}</h5>
               <br />
               <Button
                 type="button"
@@ -204,17 +217,33 @@ const TraineeExamForm = ({ data , examCount, closeForm, handleRefresh}) => {
                 icon="pi pi-arrow-left"
                 onClick={closeForm}
               />
-              <Button
-                type="button"
-                label="retake"
-                icon="pi pi-refresh"
-                onClick={retakeExam}
-                disabled={examCount >= 3}
-              />
+              {score?.score < getPassingScore(randomizeItem.length) && (
+                <Button
+                  type="button"
+                  label="retake"
+                  icon="pi pi-refresh"
+                  onClick={retakeExam}
+                  disabled={examCount >= 3}
+                />
+              )}
             </div>
           )}
-        </Card.Body>
-      </Card>
+          {/* </Card.Body> */}
+          {/* </Card> */}
+        </Modal.Body>
+        {/* <Modal.Footer>
+          <Button variant="secondary"
+          //  onClick={() => setShowDialog(false)}
+           >
+            Cancel
+          </Button>
+          <Button variant="primary" 
+          // onClick={() => setShowExam(true)}
+            >
+            Take Exam
+          </Button>
+        </Modal.Footer> */}
+      </Modal>
     </>
   );
 };

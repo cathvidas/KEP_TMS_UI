@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ExamConfirmDialog from "../../components/Modal/ExamConfirmDialog";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
-import { Col, Row } from "react-bootstrap";
+import { Col, Modal, Row } from "react-bootstrap";
 import cardHeaderImg from "../../img/examHeader.png";
 import TraineeExamForm from "../../components/forms/ModalForms/TraineeExamForm";
 import examHook from "../../hooks/examHook";
@@ -23,14 +23,13 @@ const ExamView = ({ data }) => {
   );
   const [showTraineeExam, setShowTraineeExam] = useState(false);
   const examList = examHook.useAllTraineeExamByRequest(data?.id, trigger);
+
   useEffect(() => {
     const insertData = async () => {
       const examLog = JSON.parse(localStorage.getItem("examLog"));
+      localStorage.removeItem("examLog");
       if (examLog) {
-        const response = await saveTraineeExamApi(examLog);
-        if (response.status === 1) {
-          localStorage.removeItem("examLog");
-        }
+        await saveTraineeExamApi(examLog);
       }
     };
     insertData();
@@ -56,16 +55,16 @@ const getExamDetail =(data)=>{
             setShowTraineeExam(false);
             setSelectedExam({});
           }}
-          traineeExam={getExamDetail(selectedExam)?.detail[0]}
+          traineeExam={getExamDetail(selectedExam)?.detail}
           examDetail={selectedExam?.examDetail}
         />
-      ) : showExam ? (
+      ) : showExam ? (<>
         <TraineeExamForm
           data={selectedExam?.examDetail}
           examCount={getExamDetail(selectedExam)?.detail?.length}
           closeForm={() => setShowExam(false)}
           handleRefresh={() => setTrigger((prev) => prev + 1)}
-        />
+        /></>
       ) : (
         <>
           {examList?.loading ? (
@@ -144,7 +143,8 @@ const getExamDetail =(data)=>{
                         )}
                       </div>
                     }
-                  ></Card>
+                  >
+                  </Card>
                 </Col>
               ))}
             </Row>
@@ -156,6 +156,8 @@ const getExamDetail =(data)=>{
           />
         </>
       )}
+      
+
     </>
   );
 };

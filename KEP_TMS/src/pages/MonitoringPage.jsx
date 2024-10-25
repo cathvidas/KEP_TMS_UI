@@ -17,11 +17,10 @@ const MonitoringPage = () => {
   );
   const trainingForms = trainingRequestHook.useAllParticipantsReports(data?.trainingParticipants ?? []) 
   const examList = examHook.useAllTraineeExamByRequest(data?.id)
-  console.log(trainingForms, examList)
   const [currentContent, setCurrentContent] = useState(0);
   const pageContent = [
       <PendingView key={0} data={data} formData={trainingForms} examDetail={examList?.data}/>,
-      <MonitoringReportView key={2} data={data} formData={trainingForms} reportType="examDetail" examDetail={examList?.data} />,
+      <MonitoringReportView key={2} data={data} formData={trainingForms} reportType="examDetail" typeId={ActivityType.EXAM} examDetail={examList?.data} />,
       <MonitoringReportView key={2} data={data} formData={trainingForms} reportType="effectivenessDetail" typeId={ActivityType.EFFECTIVENESS} hasApprover/>,
       <MonitoringReportView key={3} data={data} formData={trainingForms} reportType="reportDetail" typeId={ActivityType.REPORT} hasApprover/>,
       <MonitoringReportView key={4}data={data} formData={trainingForms} reportType="evaluationDetail" typeId={ActivityType.EVALUATION}/>,

@@ -20,6 +20,7 @@ const PendingView = ({ data, formData, examDetail }) => {
     setFormType(formProperty)
     setShowForm(true)
   }
+  console.log(examDetail)
   const traineeExamCount = (user) =>{
     let count = 0;
     examDetail?.map(e=>{
@@ -68,16 +69,12 @@ const PendingView = ({ data, formData, examDetail }) => {
       header: "Exam",
       body: (rowData) => (
         <>
-        {rowData?.examDetail?.id ? traineeExamCount(rowData?.userDetail?.employeeBadge) !== examDetail?.length ? `${traineeExamCount(rowData?.userDetail?.employeeBadge)}/${examDetail?.length}`
+        {traineeExamCount(rowData?.userDetail?.employeeBadge) !== examDetail?.length ? `${traineeExamCount(rowData?.userDetail?.employeeBadge)}/${examDetail?.length}`
         :   StatusColor({
           color: "bg-success",
           status: "Completed",
           showStatus: true,
-        }):
-          StatusColor({
-            status: "Pending",
-            showStatus: true,
-          })}
+        })}
         </>
       ),
     },

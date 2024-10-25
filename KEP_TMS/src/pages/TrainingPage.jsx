@@ -18,6 +18,7 @@ import activityLogHook from "../hooks/activityLogHook";
 import ActivityLogView from "./TrainingPageSection/ActivityLogView";
 import TraineeCertificateView from "./TrainingPageSection/TraineeCertificateView";
 import { validateDate } from "../services/inputValidation/validateTrainingSchedules";
+import examHook from "../hooks/examHook";
 const TrainingPage = () => {
   const { id, page } = useParams();
   const { data, error, loading } = trainingRequestHooks.useTrainingRequest(
@@ -41,6 +42,7 @@ const TrainingPage = () => {
     data,
     trainingForms?.data
   );
+  const examList = examHook.useAllTraineeExamByRequest(data?.id)
   const navigate = useNavigate();
   const pageContent = [
     <OverviewSection
@@ -54,7 +56,7 @@ const TrainingPage = () => {
     />,
     <ModuleView key={1} reqId={data.id} />,
     <ExamView key={2} data={data}/>,
-    <PendingView key={3} data={data} formData={trainingForms} />,
+    <PendingView key={3} data={data} formData={trainingForms} examDetail={examList?.data}/>,
     <TraineeReportView key={4} data={data} />,
     <MonitoringReportView key={5} data={data} />,
     <TraineeCertificateView key={6} data={data} />,

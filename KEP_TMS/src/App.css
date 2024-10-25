@@ -95,6 +95,10 @@ table{
     background-color: var(--theme-color) !important;
     border-color: var(--theme-color) !important;
 }
+.form-check-input.red:checked {
+    background-color: #fd6363 !important;
+    border-color: #fd6363 !important;
+}
 
 .flex,
 .flex-between {
