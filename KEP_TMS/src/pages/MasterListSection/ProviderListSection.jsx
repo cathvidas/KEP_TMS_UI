@@ -89,7 +89,7 @@ const ProviderListSection = () => {
           icon="pi pi-plus"
           severity="success"
           className="rounded theme-bg"
-          label={"programs"}
+          label={"providers"}
           onClick={() => {setVisible({...visible, form:true})
             setSelectedData(null)
           }}
@@ -107,13 +107,13 @@ const ProviderListSection = () => {
       ) : (
         <>
           <SectionBanner
-            title={"Programs"}
-            subtitle="List of Training Programs"
+            title={"Providers"}
+            subtitle="List of Training Providers"
             ActionComponents={actionButton}
           />{" "}
           <CommonTable
             dataTable={data}
-            title="Programs"
+            title="Providers"
             columnItems={columnItems}
           />
           <ProviderForm

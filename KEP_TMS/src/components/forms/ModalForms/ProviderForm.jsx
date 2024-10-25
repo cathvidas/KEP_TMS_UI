@@ -118,7 +118,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
                     type="text"
                     name="name"
                     value={formData?.name ?? ""}
-                    placeholder="Program Name"
+                    placeholder="Provider Name"
                     onChange={handleOnChange}
                     required
                   />
