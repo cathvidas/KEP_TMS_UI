@@ -72,7 +72,7 @@ const TrainingRequestTableList = ({
           onClick={() =>
             handleButtonClick(
               data.id,
-              checkTrainingDates(data)
+              checkTrainingDates(data) || isFacilitator
                 ? "TrainingRequest"
                 : data.status == "Published" || data.status == "Submitted"
                 ? "Training"

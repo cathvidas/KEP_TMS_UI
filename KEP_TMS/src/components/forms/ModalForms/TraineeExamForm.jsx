@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ExamItem } from "../../Exam/ExamItem";
 import { Button } from "primereact/button";
-import { Card, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { formatSeconds } from "../../../utils/datetime/Formatting";
 import proptype from "prop-types";
 import randomizeList from "../../../utils/sorting/randomizeList";

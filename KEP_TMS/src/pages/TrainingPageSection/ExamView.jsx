@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ExamConfirmDialog from "../../components/Modal/ExamConfirmDialog";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
-import { Col, Modal, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import cardHeaderImg from "../../img/examHeader.png";
 import TraineeExamForm from "../../components/forms/ModalForms/TraineeExamForm";
 import examHook from "../../hooks/examHook";

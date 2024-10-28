@@ -1,3 +1,4 @@
+import "../../assets/css/sidebar.css"
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import proptype from "prop-types";
 import UserIcon from "./UserIcon";
