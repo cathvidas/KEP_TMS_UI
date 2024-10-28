@@ -1,4 +1,4 @@
-import { Card, CardBody, Form } from "react-bootstrap";
+import { Card, CardBody, Col, Form, Row } from "react-bootstrap";
 import { FormFieldItem } from "../trainingRequestFormComponents/FormElements";
 import { Button } from "primereact/button";
 import { useEffect, useState } from "react";
@@ -10,8 +10,13 @@ import { SessionGetEmployeeId } from "../../services/sessions";
 import { getFileExtension } from "../../utils/fileUtils";
 import { attachmentType } from "../../api/constants";
 import attachmentService from "../../services/attachmentService";
+import Select from "react-select";
+import { ModuleAvailability } from "../../services/constants/appConstants";
+import { combineDateTime } from "../../utils/datetime/FormatDateTime";
+import validateModuleForm from "../../services/inputValidation/validateModuleForm";
+import { CompareDates } from "../../utils/datetime/dateComparison";
 const UploadModuleForm = ({
-  reqId,
+  requestData,
   setShowForm,
   handleRefresh,
   defaultValue,
@@ -19,20 +24,43 @@ const UploadModuleForm = ({
 }) => {
   const [files, setFiles] = useState([]);
   const [savedFiles, setSavedFiles] = useState([]);
-  const [details, setDetails] = useState({ Name: "", Description: "" });
+  const [details, setDetails] = useState({ Name: "", Description: "", AvailableAt: null,  UnavailableAt: null});
   const [errors, setErrors] = useState({});
   const [isUpdate, setIsUpdate] = useState(false);
-  console.log(defaultValue)
+  const [isCustom, setIsCustom] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const availabilityOptions = [{label: "Default", value: ModuleAvailability.IMMEDIATELY},
+    {label: "Based On Training Dates", value: ModuleAvailability.TRAINING_DATES_BASED},
+    {label: "Custom Duration", value: ModuleAvailability.CUSTOM_DURATION},
+  ]
   useEffect(() => {
     if (defaultValue) {
       setDetails({
         Name: defaultValue?.name,
         Description: defaultValue?.description,
+        AvailableAt: defaultValue?.availableAt,
+        UnavailableAt: defaultValue?.unavailableAt,
       });
       setSavedFiles(defaultValue?.attachments);
+      if (
+        CompareDates(
+          defaultValue?.availableAt,
+          getTrainingDates()?.AvailableAt
+        ) &&
+        CompareDates(
+          defaultValue?.unavailableAt,
+          getTrainingDates()?.UnavailableAt
+        )
+      ) {
+        setSelectedOption(availabilityOptions[1]);
+      } else if (defaultValue?.availableAt && defaultValue?.unavailableAt) {
+        setSelectedOption(availabilityOptions[2]);
+        setIsCustom(true);
+      } else {
+        setSelectedOption(availabilityOptions[0]);
+      }
       setIsUpdate(true);
-    }
-    else(setIsUpdate(false))
+    } else setIsUpdate(false);
   }, [defaultValue]);
   const handleFileUpload = (e) => {
     setErrors({ ...errors, file: "" });
@@ -75,19 +103,20 @@ const UploadModuleForm = ({
     setFiles(updatedFiles);
   };
   const handleSubmit = () => {
-    confirmAction({
-      title: "Upload Module",
-      message: "Are you sure you want to upload this module?",
-      onConfirm: () => {
-        const validate = validateForm();
-        if (validate) {
+    const validate = validateModuleForm(details, selectedOption?.value, files, false);
+    if (validate.isValid) {
+      confirmAction({
+        title: "Upload Module",
+        message: "Are you sure you want to upload this module?",
+        onConfirm: () => {
           const data = new FormData();
           for (let i = 0; i < files.length; i++) {
-            data.append("Files", files[i]); // 'files' is the key for each file (server must handle this as array)
+            data.append("Files", files[i]); 
           }
-          // data.append('Files', files); // Append the file
-          data.append("RequestId", reqId);
-          data.append("Name", details.Name); // Append other fields
+          data.append("RequestId", requestData.id);
+          data.append("Name", details.Name);
+          data.append("AvailableAt", requestData?.AvailableAt);
+          data.append("UnavailableAt", requestData?.UnavailableAt);
           data.append("Description", details.Description);
           data.append("CreatedBy", SessionGetEmployeeId());
           handleResponseAsync(
@@ -99,15 +128,21 @@ const UploadModuleForm = ({
             (e) => actionSuccessful("Error", e.message)
             // ()=> handleRefresh(),
           );
-        }
-      },
-    });
+        },
+      });
+    } else {
+      setErrors(validate.formErrors);
+    }
   };
   const handleUpdateModule = () => {
+    const validate = validateModuleForm(details, selectedOption?.value, files);
+    if(validate.isValid){
     const newData = {
       id: defaultValue.id,
       name: details.Name,
       description: details.Description,
+      availableAt: details?.AvailableAt,
+      unavailableAt: details?.UnavailableAt,
       updatedBy: SessionGetEmployeeId(),
     };
     confirmAction({
@@ -121,7 +156,10 @@ const UploadModuleForm = ({
             handleRefresh();
           }
         ),
-    });
+    });}
+    else{
+      setErrors(validate?.formErrors)
+    }
   };
   const saveAttachments = () => {
     const formData = new FormData();
@@ -137,26 +175,26 @@ const UploadModuleForm = ({
         handleRefresh();}
     )
   };
-  const validateForm = () => {
-    let formErrors = {};
-    let validForm = true;
-    if (!details.Name) {
-      formErrors.Name = "Title is required";
-      validForm = false;
+  const getTrainingDates =()=> {
+    const AvailableAt = combineDateTime(requestData.trainingDates[0]?.date, requestData.trainingDates[0]?.startTime, true);
+    const UnavailableAt = combineDateTime(requestData.trainingDates[requestData.trainingDates?.length - 1]?.date, requestData.trainingDates[0]?.endTime, true);
+    return {AvailableAt, UnavailableAt}
+  }
+  const setModuleAvailability = (e) => {
+    const value= e.value;
+    if(value === ModuleAvailability.IMMEDIATELY){
+      setDetails((prev)=>({...prev, AvailableAt: null, UnavailableAt: null}))
     }
-    if (!details.Description) {
-      formErrors.Description = "Description is required";
-      validForm = false;
+    if(value === ModuleAvailability.TRAINING_DATES_BASED){
+      setDetails((prev)=>({...prev, ...getTrainingDates()}))
     }
-    if (files?.length === 0) {
-      formErrors.file = "Please select at least one file";
-      validForm = false;
+    if(value === ModuleAvailability.CUSTOM_DURATION){
+      setIsCustom(true)
+    }else{
+      setIsCustom(false)
     }
-    if (!validForm) {
-      setErrors(formErrors);
-    }
-    return validForm;
-  };
+    setSelectedOption(e);
+  }
   return (
     <>
       <Card>
@@ -167,6 +205,7 @@ const UploadModuleForm = ({
         <CardBody>
           <Form>
             {errors?.common && errors.common}
+            <Row>
             <FormFieldItem
               label={"Title"}
               required
@@ -201,7 +240,47 @@ const UploadModuleForm = ({
                 </>
               }
             />
-
+            <FormFieldItem
+              label={"Set Availability"}
+              error={errors.Description}
+              FieldComponent={
+                <>
+                <Select
+                options={availabilityOptions}
+                value={selectedOption ?? availabilityOptions[0]}
+                onChange={setModuleAvailability}
+                />
+                </>
+              }
+            />
+            {isCustom && <>
+            <FormFieldItem
+              label={"Start Date"}
+              error={errors.AvailableAt}
+              col={"col-sm-4"}
+              FieldComponent={
+                <> <input className="form-control" 
+                value={details.AvailableAt}
+                onChange={(e)=>setDetails({...details, AvailableAt:e.target.value})}
+                type="datetime-local" />
+                </>
+              }
+            />
+            <FormFieldItem
+              label={"End Date"}
+              error={errors.UnavailableAt}
+              col={"col-sm-4"}
+              FieldComponent={
+                <> <input className="form-control"
+                value={details.UnavailableAt}
+                onChange={(e)=>setDetails({...details, UnavailableAt:e.target.value})}
+                 type="datetime-local" />
+                </>
+              }
+            />
+            <Col className="col-12">
+            <hr className="mt-0" /></Col></>
+          }
             {isUpdate && savedFiles?.length > 0 && (
                 <FormFieldItem
                   label={"Old Attachment"}
@@ -271,7 +350,7 @@ const UploadModuleForm = ({
                   />
                 </>
               }
-            />
+            /></Row>
             <div className="text-end">
               <Button
                 variant="primary"
@@ -291,10 +370,10 @@ const UploadModuleForm = ({
 };
 
 UploadModuleForm.propTypes = {
-  reqId: proptype.number.isRequired,
   setShowForm: proptype.func,
   handleRefresh: proptype.func,
   defaultValue: proptype.object,
+  requestData: proptype.object,
   handleRemoveFile: proptype.func,
 };
 export default UploadModuleForm;

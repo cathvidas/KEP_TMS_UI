@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SectionHeading } from "../../components/General/Section";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faNoteSticky } from "@fortawesome/free-solid-svg-icons";
@@ -14,29 +14,33 @@ import moduleService from "../../services/moduleService";
 import PDFViewer from "../../components/General/PDFViewer";
 import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import attachmentService from "../../services/attachmentService";
+import ErrorTemplate from "../../components/General/ErrorTemplate";
+import { formatDateTime } from "../../utils/datetime/Formatting";
+import { CompareDateTimeWithToday } from "../../utils/datetime/dateComparison";
 
 const ModuleSection = ({ data }) => {
   const [showForm, setShowForm] = useState(false);
   const [moduleList, setModuleList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selected, setSelected]= useState({});
-  const [selectedModule, setSelectedModule] = useState({})
-  const [showPDF, setShowPDF]= useState(false);
-  useEffect(() => {
-    refreshData();
-  }, []);
-  const refreshData = () => {
+  const [selected, setSelected] = useState({});
+  const [selectedModule, setSelectedModule] = useState({});
+  const [showPDF, setShowPDF] = useState(false);
+  const refreshData = useCallback(() => {
     const getRequest = async () => {
       handleResponseAsync(
         () => moduleService.getModulesByRequestId(data?.id),
         (e) => setModuleList(e),
-        (e) => setError(e),
-        ()=>setLoading(false)
+        (e) => setError(e?.message),
+        () => setLoading(false)
       );
     };
     getRequest();
-  };
+  }, [data?.id]);
+
+  useEffect(() => {
+    refreshData();
+  }, [refreshData]);
   const removeModule = (id) => {
     confirmAction({
       title: "Remove Module",
@@ -46,27 +50,33 @@ const ModuleSection = ({ data }) => {
       onConfirm: () =>
         handleResponseAsync(
           () => moduleService.deleteModule(id),
-          ()=>actionSuccessful("Success", "Successfully removed the module"),
+          () => actionSuccessful("Success", "Successfully removed the module"),
           null,
           () => refreshData()
         ),
     });
   };
-  const removeAttachment = (id, action)=>{
-    handleResponseAsync(
-      () => attachmentService.deleteAttachment(id),
-      ()=>{""},
-     ()=>{""},
-      () => {refreshData();
-        action()
-      }
-    )
-  }
-  const getUpdatedDetail = ()=>{
-    const newData = moduleList.find((item)=>item.id === selectedModule.id)
-    setSelectedModule(newData)
-  }
-  console.log(selectedModule)
+  const removeAttachment = (id) => {
+    confirmAction({
+      title: "Remove Attachment",
+      text: "Are you sure you want to remove this attachment?",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      onConfirm: () =>
+        handleResponseAsync(
+          () => attachmentService.deleteAttachment(id),
+          null,
+          null,
+          () => {
+            refreshData();
+          }
+        ),
+    });
+  };
+  useEffect(() => {
+    const newData = moduleList.find((item) => item.id === selectedModule?.id);
+    setSelectedModule(newData);
+  }, [moduleList, selectedModule]);
   return (
     <>
       <SectionHeading
@@ -75,19 +85,21 @@ const ModuleSection = ({ data }) => {
       />
       {loading ? (
         <SkeletonList />
+      ) : error ? (
+        <ErrorTemplate message={error} />
       ) : (
         <>
           {showForm ? (
             <UploadModuleForm
+              requestData={data}
               reqId={data?.id}
               defaultValue={selectedModule?.id ? selectedModule : null}
               setShowForm={() => setShowForm(false)}
-              handleRefresh={()=>{
+              handleRefresh={() => {
                 refreshData();
                 setShowForm(false);
               }}
-              handleRemoveFile={(e)=>removeAttachment(e, getUpdatedDetail)}
-              // handleRefresh={() => navigate(`/KEP_TMS/TrainingRequest/${data?.id}/Modules`)}
+              handleRemoveFile={(e) => removeAttachment(e)}
             />
           ) : moduleList?.length > 0 ? (
             <>
@@ -102,7 +114,7 @@ const ModuleSection = ({ data }) => {
                   label="Add New"
                   onClick={() => {
                     setShowForm(true);
-                    setSelectedModule(null)
+                    setSelectedModule(null);
                   }}
                 />
               </span>
@@ -112,9 +124,58 @@ const ModuleSection = ({ data }) => {
                     <Col key={`module${x.id}`}>
                       <div className="shadow-sm overflow-hidden card">
                         <div className="theme-bg-light p-2 px-3 d-flex align-items-center justify-content-between">
-                          <small className="text-muted fw-bold text-uppercase">
-                            {x.name}
-                          </small>
+                          <div>
+                            <small className="text-muted fw-bold text-uppercase">
+                              {x.name}
+                            </small>
+                            {(x?.availableAt || x.unavailableAt) && (
+                              <small className="d-block text-muted">
+                                <i
+                                  className="pi pi-clock"
+                                  style={{ fontSize: "0.8rem" }}
+                                ></i>{" "}
+                                Duration:{" "}
+                                {`${formatDateTime(
+                                  x.availableAt
+                                )} - ${formatDateTime(x.unavailableAt)} `}
+                                {CompareDateTimeWithToday(x.availableAt)
+                                  ?.isPast &&
+                                CompareDateTimeWithToday(x.unavailableAt)
+                                  ?.isFuture ? (
+                                  <span
+                                    className={`text-success rounded-pill px-2`}
+                                  >
+                                    <i
+                                      className="pi pi-check-circle"
+                                      style={{ fontSize: "0.8rem" }}
+                                    ></i>{" "}
+                                    Active
+                                  </span>
+                                ) : CompareDateTimeWithToday(x.unavailableAt)
+                                    ?.isPast ? (
+                                  <span
+                                    className={`text-danger rounded-pill px-2`}
+                                  >
+                                    <i
+                                      className="pi pi-times-circle"
+                                      style={{ fontSize: "0.8rem" }}
+                                    ></i>{" "}
+                                    Expired
+                                  </span>
+                                ) : (
+                                  <span
+                                    className={`text-warning rounded-pill px-2`}
+                                  >
+                                    {/* <i
+                                      className="pi pi-check-circle"
+                                      style={{ fontSize: "0.8rem" }}
+                                    ></i>{" "} */}
+                                    Inactive
+                                  </span>
+                                )}
+                              </small>
+                            )}
+                          </div>
                           <ButtonGroup>
                             <Button
                               type="button"
@@ -123,8 +184,9 @@ const ModuleSection = ({ data }) => {
                               icon="pi pi-pencil"
                               severity="secondary"
                               className="p-0 rounded"
-                              onClick={()=>{setSelectedModule(x);
-                                setShowForm(true)
+                              onClick={() => {
+                                setSelectedModule(x);
+                                setShowForm(true);
                               }}
                             />
                             <Button
@@ -134,33 +196,38 @@ const ModuleSection = ({ data }) => {
                               severity="danger"
                               icon="pi pi-trash"
                               className="p-0 rounded"
-                              onClick={()=>removeModule(x.id)}
+                              onClick={() => removeModule(x.id)}
                             />
                           </ButtonGroup>{" "}
                         </div>
                         <div className="px-4 p-2">
                           <p className="m-0">{x.description}</p>
-                              <div className="flex flex-wrap"></div>
+                          <div className="flex flex-wrap"></div>
                           {x?.attachments?.map((a) => (
-                            <ButtonGroup 
-                            className="me-2"
-                            key={`file${a.id}`}>
-                            <Button
-                              type="button"
-                              text
-                              size="small"
-                              icon="pi pi-link"
-                              label={a?.fileName}
-                              onClick={() => {
-                                setSelected({
-                                  ...a,
-                                  url: `http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${a.id}`,
-                                });
-                                setShowPDF(true);
-                              }}
-                            />
-                            <Button type="button" text severity="danger" icon="pi pi-trash" size="small" onClick={()=>removeAttachment(a.id)} />
-                              </ButtonGroup>
+                            <ButtonGroup className="me-2" key={`file${a.id}`}>
+                              <Button
+                                type="button"
+                                text
+                                size="small"
+                                icon="pi pi-link"
+                                label={a?.fileName}
+                                onClick={() => {
+                                  setSelected({
+                                    ...a,
+                                    url: `http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${a.id}`,
+                                  });
+                                  setShowPDF(true);
+                                }}
+                              />
+                              <Button
+                                type="button"
+                                text
+                                severity="danger"
+                                icon="pi pi-trash"
+                                size="small"
+                                onClick={() => removeAttachment(a.id)}
+                              />
+                            </ButtonGroup>
                           ))}
                         </div>
                       </div>
