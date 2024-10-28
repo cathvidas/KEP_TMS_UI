@@ -163,7 +163,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
               <h5 className="text-start text-secondary">Address Details</h5>
               <FormFieldItem
                 label="Building"
-                col={"col-md-4"}
+                col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
                     value={formData?.address?.building ?? ""}
@@ -177,7 +177,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
               />
               <FormFieldItem
                 label="Street"
-                col={"col-md-4"}
+                col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
                     value={formData?.address?.street ?? ""}
@@ -191,7 +191,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
               />
               <FormFieldItem
                 label="Barangay"
-                col={"col-md-4"}
+                col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
                     value={formData?.address?.barangay ?? ""}
@@ -218,7 +218,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
                 }
               />
               <FormFieldItem
-                label="Municipality"
+                label="City/Municipality"
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
@@ -227,7 +227,21 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
                     className="form-control"
                     type="text"
                     name="city_Municipality"
-                    placeholder="Municipality"
+                    placeholder="City or Municipality"
+                  />
+                }
+              />
+               <FormFieldItem
+                label="Province"
+                col={"col-md-6"}
+                FieldComponent={
+                  <Form.Control
+                    value={formData?.address?.province ?? ""}
+                    onChange={(e) => handleOnChange(e, true)}
+                    className="form-control"
+                    type="text"
+                    name="province"
+                    placeholder="Province"
                   />
                 }
               />
