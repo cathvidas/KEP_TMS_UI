@@ -1,3 +1,4 @@
+import "../assets/css/login.css"
 import {
   Container,
   Row,
@@ -59,7 +60,7 @@ const Login = () => {
                     <h4 style={{ color: "#2eb396" }}>
                       Training Management System
                     </h4>
-                    <p className="w-lg-50">Please log in your credentials</p>
+                    <p className="w-lg-50 mb-3">Please log in your credentials</p>
                   </Col>
                   <Form
                     className="text-center w-100"

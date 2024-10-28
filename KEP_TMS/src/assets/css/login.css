@@ -1,0 +1,18 @@
+.login-bg {
+    position: absolute;
+    height: 65vh;
+    background-color: #fff;
+    aspect-ratio: 1/1;
+    border-radius: 20%;
+    transform: rotate(45deg);
+}
+
+.login-bg.left {
+    top: -100px;
+    left: -100px;
+}
+
+.login-bg.right {
+    bottom: -100px;
+    right: -100px;
+}
