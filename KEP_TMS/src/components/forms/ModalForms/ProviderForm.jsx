@@ -2,8 +2,12 @@ import { Row, Col, Form, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import proptype from "prop-types";
 import { Button } from "primereact/button";
-import { actionFailed, actionSuccessful, confirmAction } from "../../../services/sweetalert";
-import ErrorTemplate from "../../General/ErrorTemplate"
+import {
+  actionFailed,
+  actionSuccessful,
+  confirmAction,
+} from "../../../services/sweetalert";
+import ErrorTemplate from "../../General/ErrorTemplate";
 import Select from "react-select";
 import { statusCode } from "../../../api/constants";
 import providerConstant from "../../../services/constants/providerConstant";
@@ -12,25 +16,32 @@ import categoryHook from "../../../hooks/categoryHook";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import providerService from "../../../services/providerService";
 import { SessionGetEmployeeId } from "../../../services/sessions";
-const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
+const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
   const [formData, setFormData] = useState(providerConstant);
   const [errors, setErrors] = useState({});
   const categories = categoryHook.useAllCategories();
-  const [options, setOptions] = useState({status:[
-    { label: "Active", value: statusCode.ACTIVE },
-    { label: "Inactive", value: statusCode.INACTIVE },
-  ], category: []});
+  const [options, setOptions] = useState({
+    status: [
+      { label: "Active", value: statusCode.ACTIVE },
+      { label: "Inactive", value: statusCode.INACTIVE },
+    ],
+    category: [],
+  });
   useEffect(() => {
-      const categoriesOptions = categories?.data?.map((category) => {
-        return { label: category.name, value: category.id };
-      });
-      setOptions({ ...options, category: categoriesOptions });
+    const categoriesOptions = categories?.data?.map((category) => {
+      return { label: category.name, value: category.id };
+    });
+    setOptions({ ...options, category: categoriesOptions });
   }, [categories.data]);
   const handleOnChange = (e, isAddress = false) => {
-    if(isAddress){
-      setFormData({...formData, address: {...formData.address, [e.target.name]: e.target.value }});
-    }else{
-    setFormData({ ...formData, [e.target.name]: e.target.value });}
+    if (isAddress) {
+      setFormData({
+        ...formData,
+        address: { ...formData.address, [e.target.name]: e.target.value },
+      });
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
   };
   const validateForm = () => {
     let formErrors = {};
@@ -51,7 +62,6 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
     return isValid;
   };
 
-
   useEffect(() => {
     if (selectedData != null) {
       const category = options?.category?.find(
@@ -60,18 +70,23 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
       const status = options?.status?.find(
         (option) => option.label === selectedData?.statusName
       );
-      const updatedData = { ...selectedData, categoryId: category?.value , statusId: status?.value };
+      const updatedData = {
+        ...selectedData,
+        categoryId: category?.value,
+        statusId: status?.value,
+      };
       setFormData(updatedData);
-    }else{
-      setFormData(providerConstant)
+    } else {
+      setFormData(providerConstant);
     }
-  }, [selectedData]);
-  
+  }, [selectedData, options]);
+
   const handleSubmit = () => {
     const isUpdate = selectedData != null;
     const updatedFormData = {
       ...formData,
-      [isUpdate ? 'updatedBy' : 'createdBy']: SessionGetEmployeeId(),statusId: isUpdate ? formData.statusId : statusCode.ACTIVE
+      [isUpdate ? "updatedBy" : "createdBy"]: SessionGetEmployeeId(),
+      statusId: isUpdate ? formData.statusId : statusCode.ACTIVE,
     };
     const isValid = validateForm();
     if (isValid) {
@@ -83,15 +98,22 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
             : "Are you sure you want to add this program?",
         confirmButtonText: "Yes",
         cancelButtonText: "No",
-        onConfirm: ()=>{
+        onConfirm: () => {
           handleResponseAsync(
-            ()=> selectedData != null ? providerService.updateProvider(updatedFormData): providerService.createProvider(updatedFormData),
-            (e)=>actionSuccessful("Success!", e?.message),
-            (e)=>actionFailed("Error!", e?.message),
-          )
+            () =>
+              selectedData != null
+                ? providerService.updateProvider(updatedFormData)
+                : providerService.createProvider(updatedFormData),
+            (e) => {
+              actionSuccessful("Success!", e?.message);
+              handleClose();
+              onFinish();
+            },
+            (e) => actionFailed("Error!", e?.message)
+          );
         },
       });
-    } 
+    }
   };
   return (
     <>
@@ -166,7 +188,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.building ?? ""}
+                    value={formData?.address?.building}
                     onChange={(e) => handleOnChange(e, true)}
                     name="building"
                     className="form-control"
@@ -180,7 +202,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.street ?? ""}
+                    value={formData?.address?.street}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -194,7 +216,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.barangay ?? ""}
+                    value={formData?.address?.barangay}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -208,7 +230,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.landmark ?? ""}
+                    value={formData?.address?.landmark}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -222,7 +244,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.city_Municipality ?? ""}
+                    value={formData?.address?.city_Municipality}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -231,12 +253,12 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
                   />
                 }
               />
-               <FormFieldItem
+              <FormFieldItem
                 label="Province"
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.province ?? ""}
+                    value={formData?.address?.province}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -250,7 +272,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.country ?? ""}
+                    value={formData?.address?.country}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -264,7 +286,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.postalCode ?? ""}
+                    value={formData?.address?.postalCode}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -320,5 +342,6 @@ ProviderForm.propTypes = {
   handleShow: proptype.bool.isRequired,
   handleClose: proptype.func,
   selectedData: proptype.object,
+  onFinish: proptype.func,
 };
 export default ProviderForm;

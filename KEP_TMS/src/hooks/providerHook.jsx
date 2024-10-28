@@ -3,7 +3,7 @@ import handleResponseAsync from "../services/handleResponseAsync";
 import providerService from "../services/providerService";
 
 const providerHook = {
-  useAllProviders: () => {
+  useAllProviders: (trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ const providerHook = {
         );
       };
       getPrograms();
-    }, []);
+    }, [trigger]);
     return { data, error, loading };
   },
   useProviderById: (id) => {

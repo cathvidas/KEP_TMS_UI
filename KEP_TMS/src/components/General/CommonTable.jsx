@@ -15,7 +15,7 @@ const CommonTable = ({
   header
 }) => {
   const [filters, setFilters] = useState({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS }
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const onGlobalFilterChange = (e) => {
@@ -23,7 +23,7 @@ const CommonTable = ({
     let _filters = { ...filters };
 
     _filters["global"].value = value;
-
+console.log(_filters)
     setFilters(_filters);
     setGlobalFilterValue(value);
   };

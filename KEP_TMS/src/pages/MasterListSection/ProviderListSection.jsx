@@ -1,29 +1,45 @@
 import { Button } from "primereact/button";
-import ProgramForm from "../../components/forms/ModalForms/ProgramForm";
 import { SectionBanner } from "../../components/General/Section";
 import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
-import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
-import handleResponseAsync from "../../services/handleResponseAsync";
-import programService from "../../services/programService";
 import { Modal } from "react-bootstrap";
 import providerHook from "../../hooks/providerHook";
 import ProviderForm from "../../components/forms/ModalForms/ProviderForm";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
+import { checkIfNullOrEmpty } from "../../utils/stringUtil";
 
 const ProviderListSection = () => {
-  const [visible, setVisible] = useState({detail: false, form: false});
-  const { data, loading } = providerHook.useAllProviders();
+  const [trigger, setTrigger] = useState(0);
+  const [visible, setVisible] = useState({ detail: false, form: false });
+  const { data, loading } = providerHook.useAllProviders(trigger);
   const [selectedData, setSelectedData] = useState({});
-  const actionTemplate = (rowData)=><>
-  <div className="d-flex"> 
-  <Button type="button" size="small" text icon="pi pi-eye" severity="help" className="rounded-circle" onClick={()=>handleOnclick(rowData.id)}/>
-  <Button type="button" size="small" text icon="pi pi-pen-to-square" className="rounded-circle" onClick={()=>handleOnclick(rowData.id, true)}/>
-  {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
-  </div>
-  </>
+  const actionTemplate = (rowData) => (
+    <>
+      <div className="d-flex">
+        <Button
+          type="button"
+          size="small"
+          text
+          icon="pi pi-eye"
+          severity="help"
+          className="rounded-circle"
+          onClick={() => handleOnclick(rowData.id)}
+        />
+        <Button
+          type="button"
+          size="small"
+          text
+          icon="pi pi-pen-to-square"
+          className="rounded-circle"
+          onClick={() => handleOnclick(rowData.id, true)}
+        />
+        {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
+      </div>
+    </>
+  );
+  console.log(data);
   const handleOnclick = (id, isUpdate = false) => {
     const selected = data.find((x) => x.id === id);
     setSelectedData(selected);
@@ -31,19 +47,14 @@ const ProviderListSection = () => {
       isUpdate ? { detail: false, form: true } : { detail: true, form: false }
     );
   };
-  const handleDelete = (id) => {
-      confirmAction({
-        title: "Confirm Deletion",
-        text: `Are you sure you want to delete this Program?`,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        onConfirm:()=> handleResponseAsync(
-          ()=>programService.deleteProgram(id),
-          ()=>actionSuccessful("Success!", "Program deleted successfully"),
-          (e)=>actionFailed("Error!", e.message)
-        ),
-      })
-  }
+  const formatDetail = (value, hasTrailingElement = true) => {
+    return checkIfNullOrEmpty(value)
+      ? hasTrailingElement
+        ? value + ","
+        : value
+      : "";
+  };
+  console.log(checkIfNullOrEmpty(undefined));
   const columnItems = [
     {
       field: "id",
@@ -64,12 +75,19 @@ const ProviderListSection = () => {
     {
       field: "Address",
       header: "Address",
+      filterField: "concatenatedString",
       body: (rowData) => (
-        <>{`${rowData?.address?.building}, 
-        ${rowData?.address?.street}, ${rowData?.address?.barangay}, 
-        ${rowData?.address?.landmark}, ${rowData?.address?.city_Municipality}, 
-        ${rowData?.address?.landmark}, ${rowData?.address?.province}, 
-        ${rowData?.address?.country}, ${rowData?.address?.postalCode}`}</>
+        <>{`${formatDetail(rowData?.address?.building)}
+        ${formatDetail(rowData.address.street)} ${formatDetail(
+          rowData?.address?.barangay
+        )}
+        ${formatDetail(rowData?.address?.landmark)} ${formatDetail(
+          rowData?.address?.city_Municipality
+        )} ${formatDetail(rowData?.address?.province)} 
+        ${formatDetail(rowData?.address?.country)} ${formatDetail(
+          rowData?.address?.postalCode,
+          false
+        )}`}</>
       ),
     },
     {
@@ -91,8 +109,9 @@ const ProviderListSection = () => {
           severity="success"
           className="rounded theme-bg"
           label={"providers"}
-          onClick={() => {setVisible({...visible, form:true})
-            setSelectedData(null)
+          onClick={() => {
+            setVisible({ ...visible, form: true });
+            setSelectedData(null);
           }}
         />
       </div>
@@ -121,13 +140,14 @@ const ProviderListSection = () => {
             handleShow={visible.form}
             handleClose={() => setVisible({ ...visible, form: false })}
             selectedData={selectedData}
+            onFinish={() => setTrigger((prev) => prev + 1)}
           />
           <Modal
             show={visible.detail}
             onHide={() => setVisible({ ...visible, detail: false })}
             size={"md"}
           >
-            <Modal.Header  closeButton>
+            <Modal.Header closeButton>
               <Modal.Title className={`h5 theme-color`}>
                 Provider Details
               </Modal.Title>
@@ -138,14 +158,31 @@ const ProviderListSection = () => {
               <h6>Category: </h6>
               <p>{selectedData?.categoryName}</p>
               <h6>Address: </h6>
-              <p><i>Building: </i> {selectedData?.address?.building}</p>
-              <p><i>Street: </i> {selectedData?.address?.street}</p>
-              <p><i>Barangay: </i> {selectedData?.address?.barangay}</p>
-              <p><i>Landmark: </i> {selectedData?.address?.landmark}</p>
-              <p><i>City/Municipality: </i> {selectedData?.address?.city_Municipality}</p>
-              <p><i>Province: </i> {selectedData?.address?.province}</p>
-              <p><i>Country: </i> {selectedData?.address?.country}</p>
-              <p><i>Postal Code: </i> {selectedData?.address?.postalCode}</p>
+              <p>
+                <i>Building: </i> {selectedData?.address?.building}
+              </p>
+              <p>
+                <i>Street: </i> {selectedData?.address?.street}
+              </p>
+              <p>
+                <i>Barangay: </i> {selectedData?.address?.barangay}
+              </p>
+              <p>
+                <i>Landmark: </i> {selectedData?.address?.landmark}
+              </p>
+              <p>
+                <i>City/Municipality: </i>{" "}
+                {selectedData?.address?.city_Municipality}
+              </p>
+              <p>
+                <i>Province: </i> {selectedData?.address?.province}
+              </p>
+              <p>
+                <i>Country: </i> {selectedData?.address?.country}
+              </p>
+              <p>
+                <i>Postal Code: </i> {selectedData?.address?.postalCode}
+              </p>
               <h6>Status: </h6>
               <p>{selectedData?.statusName}</p>
               <h6 className="m-0">Created: </h6>
@@ -165,14 +202,14 @@ const ProviderListSection = () => {
                 label="Close"
                 text
                 className="rounded mr-2"
-                onClick={() => setVisible({...visible, detail:false})}
+                onClick={() => setVisible({ ...visible, detail: false })}
               />
               <Button
                 type="button"
                 label="Edit"
                 icon="pi pi-pen-to-square"
                 className="rounded"
-                onClick={() => setVisible({form:true, detail:false})}
+                onClick={() => setVisible({ form: true, detail: false })}
               />
             </Modal.Footer>
           </Modal>
