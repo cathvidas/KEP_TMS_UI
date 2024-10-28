@@ -52,12 +52,24 @@ export const FormatDate = (dateString) => {
     return difference;
   }
 
-  export const formatTotalTime = (difference)=>{
-   // Convert the difference to hours and minutes
-   const hours = Math.floor(difference / 60);
-   const minutes = difference % 60;
-   return `${hours > 0 ? hours + (hours < 2 ? " hour" : " hours") : ""} ${
-    hours > 0 && minutes > 0 ? "and" : ""
-  } ${minutes > 0 ? minutes + (minutes < 2 ? " minute" : " minutes"): ""}`;
+  export const formatTotalTime = (difference) => {
+    // Convert the difference to hours and minutes
+    const hours = Math.floor(difference / 60);
+    const minutes = difference % 60;
+    return `${hours > 0 ? hours + (hours < 2 ? " hour" : " hours") : ""} ${
+      hours > 0 && minutes > 0 ? "and" : ""
+    } ${minutes > 0 ? minutes + (minutes < 2 ? " minute" : " minutes") : ""}`;
+  };
 
+  export const combineDateTime = (date, time, isLocalDateTime)=>{
+    const [year, month, day] = date.split("-");
+    const [hours, minutes] = time.split(":").map(Number);
+    const dateObj = new Date(year, month - 1, day, hours, minutes);
+
+    if(isLocalDateTime) {
+      //format like this 1997-07-16T19:20:15
+      return dateObj.toISOString().split("T")[0] + "T" + time;
+      // return dateObj.toISOString().split("T")[0] + " " + time;
+    }
+    return dateObj;
   }
