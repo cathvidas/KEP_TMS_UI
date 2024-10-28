@@ -10,6 +10,7 @@ const providerConstant = {
     postalCode: "",
     country: "",
     landmark: "",
+    province: "",
   },
   contactNumber: "",
   categoryId: 0,
