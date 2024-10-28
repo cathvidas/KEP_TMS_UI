@@ -25,14 +25,6 @@ const TrainingRequestPage = () => {
   const { data, loading } = trainingRequestHook.useTrainingRequest(
     parseInt(id)
   );
-//   useEffect(()=>{
-//     if((data?.status?.id === statusCode.SUBMITTED && isTrainee)|| (data?.status?.id === statusCode.APPROVED && (isAdmin || isFacilitator)) || (data?.status?.id === statusCode.PUBLISHED && (isAdmin || isFacilitator))){
-     
-//       navigate(`/KEP_TMS/Training/${data?.id}`)
-//     }else{
-//       // navigate(`/KEP_TMS/TrainingRequest/${data?.id}`)
-//     }
-//   }, [data])
   const [currentContent, setCurrentContent] = useState();
   const items = [
     {
@@ -121,15 +113,23 @@ const checkIfFacilitator= ()=>{
         }
       })
     }
+    const isNotPublished = ()=>{
+      return data?.status?.id !== statusCode.FORAPPROVAL || data?.status?.id !== statusCode.SUBMITTED;
+    }
+    const showMenu = ()=>{
+      return data.status?.id === statusCode.APPROVED && (checkIfFacilitator() === true || SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.SUPER_ADMIN) || checkIfFacilitator()
+    }
     return (
       <>  <div className={`d-flex g-0`}>
-          {(data.status?.id === statusCode.APPROVED && (checkIfFacilitator() === true || SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.SUPER_ADMIN)) && (<>
-            <MenuContainer itemList={items} action={ <Button type="button" label="Publish" size="small" severity="info" className="rounded py-1 ms-3" onClick={handlePublish}/>}/>
+          {showMenu() && (<>
+            <MenuContainer itemList={items} action={ 
+              <Button type="button" label="Publish" size="small" severity="info" className="rounded py-1 ms-3" onClick={handlePublish}/>
+              } isPublished={isNotPublished()}/>
             </>
           )}
           <div
             className={`${
-              data.status?.id === statusCode.APPROVED && "border-start"
+              showMenu() && "border-start"
             } p-3 pb-5 col`}
             style={{ minHeight: "calc(100vh - 50px)" }}
           >
