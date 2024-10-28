@@ -68,6 +68,7 @@ const ProviderListSection = () => {
         <>{`${rowData?.address?.building}, 
         ${rowData?.address?.street}, ${rowData?.address?.barangay}, 
         ${rowData?.address?.landmark}, ${rowData?.address?.city_Municipality}, 
+        ${rowData?.address?.landmark}, ${rowData?.address?.province}, 
         ${rowData?.address?.country}, ${rowData?.address?.postalCode}`}</>
       ),
     },
@@ -141,7 +142,8 @@ const ProviderListSection = () => {
               <p><i>Street: </i> {selectedData?.address?.street}</p>
               <p><i>Barangay: </i> {selectedData?.address?.barangay}</p>
               <p><i>Landmark: </i> {selectedData?.address?.landmark}</p>
-              <p><i>Municipality: </i> {selectedData?.address?.city_Municipality}</p>
+              <p><i>City/Municipality: </i> {selectedData?.address?.city_Municipality}</p>
+              <p><i>Province: </i> {selectedData?.address?.province}</p>
               <p><i>Country: </i> {selectedData?.address?.country}</p>
               <p><i>Postal Code: </i> {selectedData?.address?.postalCode}</p>
               <h6>Status: </h6>
