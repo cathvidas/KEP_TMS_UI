@@ -94,18 +94,21 @@ const ForApprovalReport = () => {
   };
   const disapproveReport = (e) => {    
     confirmAction({
-    title:  "DisApprove Training Report",
-    text:"Are you sure you want to disapprove and return this Training Report?",
+    title:  "Return Training Report",
+    text:"Are you sure you want to disapproved and return this Training Report?",
     confirmButtonText:  "Yes",
     cancelButtonText: "Cancel",
     confirmButtonColor:"#d33",
     onConfirm: () => {
       handleResponseAsync(() =>
         trainingReportService.approveTrainingReport({
-          updatedBy: SessionGetEmployeeId(),
-          statusId: statusCode.DISAPPROVED,
-          annotation:e,
-          id: selectedData?.trainingReport?.id
+          transactId: selectedData?.trainingReport?.id,
+          ApprovedBy: SessionGetEmployeeId(),
+          activityIn: ActivityType.REPORT,
+          // updatedBy: SessionGetEmployeeId(),
+          // statusId: statusCode.DISAPPROVED,
+          // activityRemarks:e,
+          // id: selectedData?.trainingReport?.id
         })
       );
     },
@@ -158,7 +161,17 @@ const ForApprovalReport = () => {
         title="Programs"
         columnItems={columnItems}
       />
-      <Modal show={showModal} onHide={() => setShowModal(false)} fullscreen>
+      
+      <AnnotationBox
+        header="Annotation"
+        label="Remarks"
+        description="Please provide an annotation explaining the reason for returning this report."
+        show={showAnnotation}
+        onClose={() => setShowAnnotation(false)}
+        confirmButton={{label: "Return Report"}}
+        onSubmit={disapproveReport}
+      />
+      <Modal show={showModal} onHide={() => setShowModal(false)} fullscreen style={showAnnotation && {zIndex: 1050}}>
         <Modal.Header closeButton>
           <Modal.Title className="theme-color h5">
             Training Effectiveness Details
@@ -206,15 +219,6 @@ const ForApprovalReport = () => {
                } 
         </Modal.Footer>
       </Modal>
-      <AnnotationBox
-        header="sa"
-        label="Remarks"
-        description="Please provide an annotation explaining the reason for returning this report."
-        show={showAnnotation}
-        onClose={() => setShowAnnotation(false)}
-        confirmButton={{label: "Return Report"}}
-        onSubmit={disapproveReport}
-      />
     </div>
   );
 };

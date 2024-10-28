@@ -44,10 +44,6 @@ export const FormatDate = (dateString) => {
     // Calculate the difference in minutes
     const difference = endTotalMinutes - startTotalMinutes;
 
-    // Convert the difference to hours and minutes
-    const hours = Math.floor(difference / 60);
-    const minutes = difference % 60;
-
     // Format and return the total time
     return difference;
   }
