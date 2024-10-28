@@ -19,10 +19,12 @@ import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
 import ActivityLog from "../General/ActivityLog";
 import activityLogHook from "../../hooks/activityLogHook";
+import { statusCode } from "../../api/constants";
 
 const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitted, currentRouting, auditTrail}) => {
   const [formData, setFormData] = useState(trainingreportConstant);
   const [errors, setErrors] = useState({});
+  const [isUpdate, setIsUpdate] = useState(false);
   const getFormData = {
     ...formData,
     trainingRequestId: data.id,
@@ -33,8 +35,9 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     setFormData({ ...formData, [name]: value });
   };
   useEffect(()=>{
-    if(defaultValue && isSubmitted){
+    if(defaultValue){
       setFormData({...defaultValue});
+        setIsUpdate(defaultValue?.status === getStatusById(statusCode.DISAPPROVED))
     }
   }, [defaultValue, isSubmitted])
   const handleSubmit = () => {
@@ -44,10 +47,10 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
         onConfirm: ()=>handleResponseAsync(()=>
           trainingReportService.createTrainingReport(getFormData),
         (e)=>{actionSuccessful("Training report created successfully", e.message)
-          window.location.reload();
+          onFinish();
         },
          (e)=>actionFailed("Error creating training report", e.message),
-         ()=>onFinish()
+    
         ),
       });
     }
@@ -198,7 +201,7 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
           </Col>
         </Row>  
         <br />     
-        {data?.trainingParticipants?.some(x=>x.employeeBadge === SessionGetEmployeeId()) && !defaultValue&&
+        {data?.trainingParticipants?.some(x=>x.employeeBadge === SessionGetEmployeeId()) && (!defaultValue || isUpdate)&&
         <div className="text-end mt-3">
           <Button
             type="button"

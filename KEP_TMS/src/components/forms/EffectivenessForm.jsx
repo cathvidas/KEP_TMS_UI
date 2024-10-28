@@ -100,9 +100,7 @@ const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting
             () => effectivenessService.createTrainingEffectiveness(getFormData),
             (e) => {
               actionSuccessful("Success!", e?.message);
-              setInterval(() => {
-                window.location.reload();
-              }, 1000);
+              onFinish();
             },
             (e) => actionFailed("Error!", e.message),
           ),

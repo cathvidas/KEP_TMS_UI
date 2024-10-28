@@ -3,6 +3,12 @@ import fetchFromApi from "./apiUtil"
 export const approveTrainingFormApi = async (data) => {
     return await fetchFromApi(`Services/ApproveReportOrEffectiveness`, "POST", data, {'Content-Type': 'multipart/form-data'})
 }
+export const disapproveActivityApi = async (data) => {
+    return await fetchFromApi(
+      `Services/DisapproveReportOrEffectiveness?transactId=${data.transactId}&activityIn=${data.activityIn}&updatedBy=${data.updatedBy}&remarks=${data.remarks}`,
+      "POST"
+    );
+}
 export const getAllDepartmentsApi = async()=>{
     return await fetchFromApi("Comboboxes/GetDepartments");
 }

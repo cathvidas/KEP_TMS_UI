@@ -13,6 +13,7 @@ import trainingReportHook from "../../hooks/trainingReportHook";
 import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import AnnotationBox from "../../components/General/AnnotationBox";
 import trainingReportService from "../../services/trainingReportService";
+import commonService from "../../services/commonService";
 
 const ForApprovalReport = () => {
   const [trigger, setTrigger] = useState(0);
@@ -101,15 +102,16 @@ const ForApprovalReport = () => {
     confirmButtonColor:"#d33",
     onConfirm: () => {
       handleResponseAsync(() =>
-        trainingReportService.approveTrainingReport({
+        commonService.disapproveActivity({
           transactId: selectedData?.trainingReport?.id,
-          ApprovedBy: SessionGetEmployeeId(),
+          updatedBy: SessionGetEmployeeId(),
           activityIn: ActivityType.REPORT,
-          // updatedBy: SessionGetEmployeeId(),
-          // statusId: statusCode.DISAPPROVED,
-          // activityRemarks:e,
-          // id: selectedData?.trainingReport?.id
-        })
+          remarks:e,
+        }), ()=>{actionSuccessful("Success!", "successfully returned report");
+          setTimeout(() => {
+            setTrigger(trigger+1)
+          }, 1000);
+        }
       );
     },
   });

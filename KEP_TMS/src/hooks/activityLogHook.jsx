@@ -3,6 +3,7 @@ import { formatDateTime } from "../utils/datetime/Formatting";
 import getNameFromList from "../services/common/getNameFromList";
 import sortRoutingBySequence from "../services/common/sortRoutingsBySequence";
 import { statusCode } from "../api/constants";
+import { extractChanges } from "../utils/stringUtil";
 const activityLogHook = {
     useReportsActivityLog: (defaultValue, userData) => {
       const [logs, setLogs] = useState([]);
@@ -18,6 +19,9 @@ const activityLogHook = {
         defaultValue?.routings?.forEach((item) => {
           const isApproved =
             item?.statusId === statusCode.APPROVED ? true : false;
+            const isDisapproved =
+              item?.statusId === statusCode.DISAPPROVED ? true : false;
+              const changes = JSON.parse(item?.changes);
           if (isApproved) {
             newLogs.push({
               label: `Routed to ${item.assignedName ?? item.assignedTo}`,
@@ -25,12 +29,14 @@ const activityLogHook = {
               severity: "default",
             });
           }
+          const remarks = extractChanges(changes?.Remarks?? "");
           newLogs.push({
             label: isApproved
-              ? `Approved by ${item.assignedName ?? item.assignedTo}`
+              ? `Approved by ${item.assignedName ?? item.assignedTo}`:
+              isDisapproved ? `Returned by ${item.assignedName ?? item.assignedTo} ${remarks?.toValue && "with a message '" + remarks.toValue + "'"} `
               : `Routed to ${item.assignedName ?? item.assignedTo}`,
             date: formatDateTime(isApproved ? item.updatedDate : item?.createdDate),
-            severity: isApproved ? "success" : "default",
+            severity: isApproved ? "success" : isDisapproved ? "danger" : "default",
           });
         });
         setLogs(newLogs);

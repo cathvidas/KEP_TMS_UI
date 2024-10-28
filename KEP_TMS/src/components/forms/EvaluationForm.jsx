@@ -59,10 +59,9 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
           handleResponseAsync(
             () => evaluationService.createTrainingEvaluation(getFormData),
             (e) => {actionSuccessful("Success", e.message);
-              window.location.reload();
+              onFinish();
             },
             (e) => actionFailed("Error", e.message),
-            ()=>onFinish()
           )
         }
       })
@@ -377,5 +376,6 @@ EvaluationForm.propTypes = {
   userData: proptype.object,
   courseId: proptype.string,
   defaultValue: proptype.object,
+  onFinish: proptype.func
 };
 export default EvaluationForm;

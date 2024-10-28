@@ -11,7 +11,7 @@ const AnnotationBox = ({header,label, description,placeholder, onSubmit, show, o
         setError("Annotation cannot be empty");
       } else {
         setError("");
-        onsubmit(annotation)
+        onSubmit(annotation)
       }
     };
     return (
