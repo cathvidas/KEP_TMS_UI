@@ -42,8 +42,9 @@ const ProgramListSection = () => {
   //     })
   // }
   const columnItems = [{
-    field: "id",
-    header: "ID",
+    // field: "id",
+    header: "No",
+    body: (_, {rowIndex}) => rowIndex + 1,
   }, {
     field: "name",
     header: "Name",
@@ -86,7 +87,9 @@ const ProgramListSection = () => {
           <SkeletonBanner />
           <SkeletonDataTable />
         </>
-      ) : (
+      ) : error ? 
+      <p>Error while processing your request</p>
+      : (
         <>
           <SectionBanner
             title={"Programs"}

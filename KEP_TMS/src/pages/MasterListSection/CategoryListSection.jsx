@@ -60,8 +60,9 @@ const CategoryListSection = () => {
   // };
   const columnItems = [
     {
-      field: "id",
-      header: "ID",
+      field: "",
+      header: "No",
+      body: (_, { rowIndex }) => <>{rowIndex + 1}</>,
     },
     {
       field: "name",
