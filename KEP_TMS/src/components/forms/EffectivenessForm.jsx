@@ -138,7 +138,7 @@ const EffectivenessForm = ({
           <div className=" flex justify-content-between  mb-2">
             <div className="flex">
               <i className="pi pi-check-circle text-success"></i>
-              Submitted: {auditTrail?.length > 0 ? formatDateTime(auditTrail[0]?.createdDate): "N/A"}</div>
+              Submitted: {formatDateTime(auditTrail?.createdDate) ?? "N/A"}</div>
             <div>
               Status: &nbsp;
               {StatusColor({

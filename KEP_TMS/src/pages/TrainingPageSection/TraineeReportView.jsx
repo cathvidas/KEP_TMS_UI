@@ -116,7 +116,7 @@ console.log(formIndex)
       formData={effectiveness?.data}
       onFinish={handleOnFinish}
       currentRouting={effectiveness?.data?.currentRouting}
-      auditTrail={effectiveness?.data?.auditTrail[0]}
+      auditTrail={effectiveness?.data?.auditTrail?.length > 0 && effectiveness?.data?.auditTrail[0]}
     />
       }
       {
