@@ -32,6 +32,8 @@ const countStatus = (data, userRequest) => {
       count.closed++;
     } else if (item.status.id === statusCode.PUBLISHED) {
       count.published++;
+    }else if (item.status.id === statusCode.DISAPPROVED) {
+      count.rejected++;
     }
   });  
   data.forEach((item) => {  
@@ -55,7 +57,7 @@ const countStatus = (data, userRequest) => {
     if(isFacilitator &&((item?.status?.id === statusCode.APPROVED && !checkTrainingIfOutDated(item)) || item?.status?.id === statusCode.PUBLISHED)){
       count.trainerAction++;
     }
-    if(isParticipant  && ((item?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR && !checkTrainingIfOutDated(item))|| item?.status?.id === statusCode.PUBLISHED)){
+    if(isParticipant  && ((item?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR && item?.status?.id === statusCode.SUBMITTED && !checkTrainingIfOutDated(item))|| item?.status?.id === statusCode.PUBLISHED)){
       count.assignedTraining++;
     }
   });

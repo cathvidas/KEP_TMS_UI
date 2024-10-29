@@ -30,6 +30,7 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     trainingRequestId: data.id,
     traineeBadge: SessionGetEmployeeId()
   };
+  console.log(formData, defaultValue)
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -73,6 +74,7 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     setErrors(formErrors);
     return isValid;
   };
+  // console.log(defaultValue, auditTrail)
 const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
   return (
     <Card.Body>
@@ -224,7 +226,9 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
         </div>}
       </Form>
       {isSubmitted && 
-      <ActivityLog label="Activity Logs" items={logs} isDescending/>}
+      <>
+      <hr />
+      <ActivityLog label="Activity Logs" items={logs} isDescending/></>}
     </Card.Body>
   );
 };

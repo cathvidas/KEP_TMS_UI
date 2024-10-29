@@ -74,14 +74,22 @@ const Dashboard = () => {
           },
         ]
       : []),
-    {
-      label: "Published Request",
-      color1: "#34d399",
-      color2: "#31bf77",
-      value: data.published ?? 0,
-      icon: "pi pi-check-circle",
-      status: "Published",
-    },
+      {
+        label: "Returned Request",
+        color1: "#d33434",
+        color2: "#31bf77",
+        value: data.published ?? 0,
+        icon: "pi pi-times-circle",
+        status: "Disapproved",
+      },
+      {
+        label: "Published Request",
+        color1: "#34d399",
+        color2: "#31bf77",
+        value: data.published ?? 0,
+        icon: "pi pi-check-circle",
+        status: "Published",
+      },
     {
       label: "Closed Request",
       color1: "#c084fc",
@@ -91,7 +99,7 @@ const Dashboard = () => {
       status: "Closed",
     },
   ];
-
+console.log(data)
   const Content = () => {
     return (
       <div className="p-3">

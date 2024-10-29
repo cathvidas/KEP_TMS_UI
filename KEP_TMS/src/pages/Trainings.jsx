@@ -11,7 +11,7 @@ import { SessionGetEmployeeId } from "../services/sessions"
 
 const Trainings =()=>{
   const {data, loading} = trainingRequestHook.useParticipantTrainings(SessionGetEmployeeId());
-  const updatedData = data?.filter(item=> (item?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR  && (!checkTrainingIfOutDated(item))) || item?.status?.id === statusCode.PUBLISHED);
+  const updatedData = data?.filter(item=> (item?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR && item?.status?.id === statusCode.SUBMITTED && (!checkTrainingIfOutDated(item))) || item?.status?.id === statusCode.PUBLISHED);
     const Content =() =>(<div className="p-3">
    {loading ? <><SkeletonBanner/><SkeletonDataTable/></>:<>
       <SectionBanner title="Assigned Trainings" subtitle="List of trainings assigned to you"/>

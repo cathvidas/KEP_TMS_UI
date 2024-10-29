@@ -12,8 +12,8 @@ import { Skeleton } from 'primereact/skeleton';
           <Skeleton width="5rem" className="mb-2"></Skeleton>
           <div className='flex'>
           {/* <Skeleton width="10rem" height="" className='mb-2'></Skeleton> */}
-          <Skeleton width="10rem" height="3rem" className="mb-2"></Skeleton>
-          <Skeleton width="10rem" height="3rem" className=""></Skeleton></div>
+          <Skeleton width="10rem" height="3rem" ></Skeleton>
+          <Skeleton width="10rem" height="3rem" ></Skeleton></div>
         </div>
       </>
     );

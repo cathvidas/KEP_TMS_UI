@@ -18,6 +18,7 @@ import handleResponseAsync from "../services/handleResponseAsync.jsx";
 import trainingRequestService from "../services/trainingRequestService.jsx";
 import { Button } from "primereact/button";
 import { validateTrainingRequestForm } from "../services/inputValidation/validateTrainingRequestForm.jsx";
+import activityLogHook from "../hooks/activityLogHook.jsx";
 
 const TrainingRequestPage = () => {
   const navigate = useNavigate();
@@ -26,6 +27,13 @@ const TrainingRequestPage = () => {
     parseInt(id)
   );
   const [currentContent, setCurrentContent] = useState();
+  
+  const trainingForms = trainingRequestHook.useAllParticipantsReports(
+    data?.trainingParticipants ?? []
+  );
+  const logs = activityLogHook.useTrainingRequestActivityLogs(
+    data
+  );
   const items = [
     {
         label: 'Menu',
@@ -73,6 +81,7 @@ const checkIfFacilitator= ()=>{
               ? true
               : false
           }
+          logs={logs}
         />
       </>,
       <>

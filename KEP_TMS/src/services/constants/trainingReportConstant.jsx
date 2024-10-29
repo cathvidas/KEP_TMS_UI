@@ -4,6 +4,5 @@ const trainingreportConstant = {
   trainingTakeaways: "",
   actionPlan: "",
   timeframe: "",
-  createdBy: "",
 };
 export default trainingreportConstant;

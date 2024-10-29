@@ -24,6 +24,7 @@ import ActivityLog from "../General/ActivityLog";
 import activityLogHook from "../../hooks/activityLogHook";
 import validateTrainingEffectiveness from "../../services/inputValidation/validateTrainingEffectiveness";
 import "../../assets/css/effectivenessForm.css";
+import { statusCode } from "../../api/constants";
 const EffectivenessForm = ({
   data,
   userData,
@@ -41,6 +42,7 @@ const EffectivenessForm = ({
   const [projectPerformanceEvaluation, setProjectPerformanceEvaluation] =
     useState([effectivenessConstant.projectPerformanceEvaluation]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
   useEffect(() => {
     if (formData) {
       const effectivenessData = formData;
@@ -56,7 +58,11 @@ const EffectivenessForm = ({
         ]
       );
       setIsSubmitted(true);
+      if(formData?.statusName === getStatusById(statusCode.DISAPPROVED)){
+        setIsUpdate(true)
+      }
     }
+    console.log(formData)
   }, [formData]);
   const getFacilitators = () => {
     let facilitators = "";
@@ -69,7 +75,8 @@ const EffectivenessForm = ({
     employeeBadge: SessionGetEmployeeId(),
     trainingProgramId: data?.trainingProgram?.id,
     trainingTypeId: data?.trainingType?.id,
-    totalTrainingHours: data?.durationInHours,
+    totalTrainingHours: 17,
+    // totalTrainingHours: data?.durationInHours,
     evaluationDate: formatDateOnly(new Date(), "dash"),
     trainingRequestId: data.id,
     annotation: annotation,
@@ -101,7 +108,7 @@ const EffectivenessForm = ({
     var date = new Date(data?.trainingEndDate);
     return formatDateOnly(date.setMonth(date.getMonth() + 6));
   }, [data?.trainingEndDate]);
-  const handleSubmit = () => {
+  const handleSubmit = (isUpdate) => {
     const { formErrors, isValid } = validateTrainingEffectiveness(
       getFormData,
       performanceCharacteristics,
@@ -111,13 +118,14 @@ const EffectivenessForm = ({
     setErrors(formErrors);
     if (isValid) {
       confirmAction({
-        title: "Confirm Submission",
-        message: "Are you sure you want to submit this form?",
-        confirmButtonText: "Submit",
+        title: isUpdate ? "Update Form" : "Confirm Submission",
+        message: `Are you sure you want to ${isUpdate ? "update" : "submit"} this form?`,
+        confirmButtonText: isUpdate ? "Update":"Submit",
         cancelButtonText: "Cancel",
         onConfirm: () =>
           handleResponseAsync(
-            () => effectivenessService.createTrainingEffectiveness(getFormData),
+            () =>isUpdate ? effectivenessService.updateTrainingEffectiveness({...getFormData, updatedBy: SessionGetEmployeeId(), id: formData.id}):
+             effectivenessService.createTrainingEffectiveness(getFormData),
             (e) => {
               actionSuccessful("Success!", e?.message);
               onFinish();
@@ -252,7 +260,7 @@ const EffectivenessForm = ({
                           onChange={(e) =>
                             handlePerfCharacterOnChange(e, index)
                           }
-                          readOnly={isSubmitted}
+                          readOnly={isSubmitted && !isUpdate}
                         ></textarea>
                       </td>
                       <td style={{ verticalAlign: "middle" }}>
@@ -264,11 +272,11 @@ const EffectivenessForm = ({
                             handlePerfCharacterOnChange(e, index)
                           }
                           cancel={false}
-                          readOnly={isSubmitted}
+                          readOnly={isSubmitted && !isUpdate}
                         />
                       </td>
                       {performanceCharacteristics?.length > 1 &&
-                        !isSubmitted && (
+                        (!isSubmitted || isUpdate) && (
                           <Button
                             type="button"
                             style={{ display: "none" }}
@@ -292,7 +300,7 @@ const EffectivenessForm = ({
               {errors?.performanceCharacteristics && (
                 <ErrorTemplate message={errors?.performanceCharacteristics} />
               )}
-              {performanceCharacteristics?.length < 3 && !isSubmitted && (
+              {performanceCharacteristics?.length < 3 && (!isSubmitted || isUpdate) && (
                 <Button
                   type="button"
                   text
@@ -381,7 +389,7 @@ const EffectivenessForm = ({
                           projectPerformanceEvaluation[index]?.content ?? ""
                         }
                         onChange={(e) => handlePerfEvaluationOnChange(e, index)}
-                        readOnly={isSubmitted}
+                        readOnly={isSubmitted && !isUpdate}
                       ></textarea>
                     </td>
                     <td
@@ -397,7 +405,7 @@ const EffectivenessForm = ({
                         name="performanceBeforeTraining"
                         onChange={(e) => handlePerfEvaluationOnChange(e, index)}
                         cancel={false}
-                        readOnly={isSubmitted}
+                        readOnly={isSubmitted && !isUpdate}
                       />
                       <small className="mt-1 d-block">
                         {isSubmitted
@@ -420,7 +428,7 @@ const EffectivenessForm = ({
                         name="projectedPerformance"
                         onChange={(e) => handlePerfEvaluationOnChange(e, index)}
                         cancel={false}
-                        readOnly={isSubmitted}
+                        readOnly={isSubmitted && !isUpdate}
                       />
                       <small className="mt-1 d-block">
                         {isSubmitted
@@ -476,7 +484,7 @@ const EffectivenessForm = ({
                       </small>
                     </td>
                     {projectPerformanceEvaluation?.length > 1 &&
-                      !isSubmitted && (
+                      (!isSubmitted || isUpdate) && (
                         <Button
                           type="button"
                           style={{ display: "none" }}
@@ -499,7 +507,7 @@ const EffectivenessForm = ({
               {errors?.projectPerformanceEvaluation && (
                 <ErrorTemplate message={errors?.projectPerformanceEvaluation} />
               )}
-              {projectPerformanceEvaluation?.length < 3 && !isSubmitted && (
+              {projectPerformanceEvaluation?.length < 3 && (!isSubmitted || isUpdate) && (
                 <Button
                   type="button"
                   text
@@ -529,14 +537,14 @@ const EffectivenessForm = ({
           </Form.Group>
           {isSubmitted && (
             <>
-              <br />
+              <hr />
               <ActivityLog label="Activity Logs" items={logs} isDescending />
             </>
           )}
           {data?.trainingParticipants?.some(
             (x) => x.employeeBadge === SessionGetEmployeeId()
           ) &&
-            !isSubmitted && (
+          (!isSubmitted || isUpdate) && (
               <div className="text-end mt-3">
                 <Button
                   type="button"
@@ -555,11 +563,11 @@ const EffectivenessForm = ({
                 />
                 <Button
                   type="button"
-                  icon="pi pi-cloud-upload"
-                  label="Submit Form"
+                  icon={isUpdate ? "pi pi-pencil" : "pi pi-cloud-upload"}
+                  label={isUpdate ? "Update Form" : "Submit Form"}
                   className="rounded ms-2"
                   severity="success"
-                  onClick={handleSubmit}
+                  onClick={isUpdate ? ()=>handleSubmit(true):()=>handleSubmit(false) }
                 />
               </div>
             )}

@@ -20,7 +20,7 @@ const ForApprovalReport = () => {
   const { data } =
     trainingReportHook.useApproverAssignedReports(SessionGetEmployeeId(), trigger);
   const [showModal, setShowModal] = useState(false);
-  const [selectedData, setSElectedData] = useState({});
+  const [selectedData, setSelectedData] = useState({});
   const requestData = selectedData?.trainingReport?.trainingRequest;
   const userData = userHook.useUserById(
     selectedData?.trainingReport?.traineeBadge
@@ -38,7 +38,7 @@ const ForApprovalReport = () => {
           severity="success"
           className="rounded-circle"
           onClick={() => {
-            setSElectedData(rowData);
+            setSelectedData(rowData);
             setShowModal(true);
           }}
         />
@@ -58,7 +58,7 @@ const ForApprovalReport = () => {
           severity="danger"
           className="rounded-circle"
           onClick={() => {
-            setSElectedData(rowData);
+            setSelectedData(rowData);
             setShowAnnotation(true);
           }}
         />
@@ -163,24 +163,29 @@ const ForApprovalReport = () => {
         title="Programs"
         columnItems={columnItems}
       />
-      
+
       <AnnotationBox
         header="Annotation"
         label="Remarks"
         description="Please provide an annotation explaining the reason for returning this report."
         show={showAnnotation}
         onClose={() => setShowAnnotation(false)}
-        confirmButton={{label: "Return Report"}}
+        confirmButton={{ label: "Return Report" }}
         onSubmit={disapproveReport}
       />
-      <Modal show={showModal} onHide={() => setShowModal(false)} fullscreen style={showAnnotation && {zIndex: 1050}}>
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        fullscreen
+        style={showAnnotation && { zIndex: 1050 }}
+      >
         <Modal.Header closeButton>
           <Modal.Title className="theme-color h5">
             Training Effectiveness Details
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-4 px-5">
-          {selectedData?.loading ? (
+          {report?.loading ? (
             "Loading..."
           ) : (
             <TrainingReportForm
@@ -189,36 +194,69 @@ const ForApprovalReport = () => {
               defaultValue={report?.data}
               isSubmitted
               currentRouting={report?.data?.currentRouting}
-              auditTrail={report?.data?.auditTrail}
+              auditTrail={
+                report?.data?.auditTrail?.length > 0 &&
+                report?.data?.auditTrail[0]
+              }
             />
           )}
         </Modal.Body>
         <Modal.Footer>
-        {report?.data?.currentRouting?.assignedTo === SessionGetEmployeeId() && 
-            report?.data?.currentRouting?.statusId === statusCode.FORAPPROVAL ? <>
+          {report?.data?.currentRouting?.assignedTo ===
+            SessionGetEmployeeId() &&
+          report?.data?.currentRouting?.statusId === statusCode.FORAPPROVAL ? (
+            <>
+              <Button
+                size="small"
+                label="Disapprove"
+                icon="pi pi-thumbs-down"
+                className="rounded"
+                severity="danger"
+                text
+                onClick={() => {
+                  setSelectedData(selectedData);
+                  setShowAnnotation(true);
+                }}
+              />
+              <Button
+                size="small"
+                label="Approve"
+                icon="pi pi-thumbs-up"
+                className="rounded"
+                onClick={() =>
+                  approveReport(selectedData?.trainingReport?.id, true)
+                }
+              />{" "}
+            </>
+          ) : report?.data?.routings?.find(
+              (item) =>
+                item?.assignedTo === SessionGetEmployeeId() &&
+                item?.statusId === statusCode.APPROVED
+            ) ? (
             <Button
+              type="button"
               size="small"
-              label="Disapprove"
-              icon="pi pi-thumbs-down"
-              className="rounded"
-              severity="danger"
-              text onClick={() =>
-              {
-                setSElectedData(selectedData);
-                setShowAnnotation(true);}
-              }
+              label="Approved"
+              icon="pi pi-check"
+              className="rounded theme-color"
+              text
             />
-            <Button
-              size="small"
-              label="Approve"
-              icon="pi pi-thumbs-up"
-              className="rounded"
-              onClick={() =>
-                approveReport(selectedData?.trainingReport?.id, true)
-              }
-            /> </> :  report?.data?.routings?.find(item=>item?.assignedTo === SessionGetEmployeeId() && item?.statusId === statusCode.APPROVED) ? <Button type="button" size="small" label="Approved" icon="pi pi-check" className="rounded theme-color" text /> : null&&
-              <Button type="button" size="small" label="Approved" icon="pi pi-check" className="rounded theme-color" text />
-               } 
+          ) : (
+            report?.data?.routings?.find(
+              (item) =>
+                item?.assignedTo === SessionGetEmployeeId() &&
+                item?.statusId === statusCode.DISAPPROVED
+            ) && (
+              <Button
+                type="button"
+                size="small"
+                label="Returned"
+                icon="pi pi-check"
+                className="rounded text-danger"
+                text
+              />
+            )
+          )}
         </Modal.Footer>
       </Modal>
     </div>

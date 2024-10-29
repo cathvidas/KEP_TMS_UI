@@ -12,9 +12,9 @@ export const getAllEffectivenessApi = async ()=>{
 export const getApproverAssignedEffectivenessApi = async (id)=>{
     return await fetchFromApi(`Services/GetAssignedEffectiveness?assignedTo=${id}`);
 }
-export const updateEffectivenessStatusApi = async (data)=>{
-    return await fetchFromApi(`Services/updateEffectivenessStatus`, "PUT", data);
+export const updateEffectivenessApi = async (data)=>{
+    return await fetchFromApi(`Services/updateTrainingEffectiveness`, "PUT", data);
 }
-export const updateEffectivenessStatus = async (data)=>{
-    return await fetchFromApi(`Services/updateEffectivenessStatus`, "PUT", data);
+export const updateProjectPerformanceEvaluationApi = async (data)=>{
+    return await fetchFromApi(`TrainingEffectiveness/UpdateProjectPerformanceEvaluation`, "PUT", data);
 }

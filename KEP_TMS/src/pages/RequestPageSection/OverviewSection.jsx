@@ -27,6 +27,10 @@ import trainingRequestService from "../../services/trainingRequestService";
 import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
 import { statusCode } from "../../api/constants";
 import SpeedDialButtonItemTemplate from "../../components/General/SpeedDialButtonItemTemplate";
+import ActivityLog from "../../components/General/ActivityLog";
+import activityLogHook from "../../hooks/activityLogHook";
+import RequestAuditTrailLogsItem from "../../components/TrainingPageComponents/RequestAuditTrailLogsItem";
+import { Dialog } from "primereact/dialog";
 
 const OverviewSection = ({
   data,
@@ -34,10 +38,12 @@ const OverviewSection = ({
   showFacilitators = false,
   showApprovers = false,
   isAdmin,
-  userReports
+  userReports,
+  logs
 }) => {
   const navigate = useNavigate();
   const toast = useRef(null);
+  const [showLogModal, setShowLogModal] = useState(false);
   const [reqStatus, setReqStatus] = useState({
     show: true,
     statusId: 0,
@@ -102,6 +108,14 @@ const OverviewSection = ({
         // disable:true,
         // inactive: true
     },
+    {
+        label: 'Logs',
+        icon: 'pi pi-info-circle',
+        command: ()=>setShowLogModal(true),
+        template: SpeedDialButtonItemTemplate,
+        // disable:true,
+        // inactive: true
+    },
 ];
   return (
     <>
@@ -126,16 +140,17 @@ const OverviewSection = ({
             <span> REQUESTOR: {data?.requestor?.fullname}</span>
             <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
             <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
-            <span> DATE: {formatDateTime(data?.createdDate)}</span> 
-            {(isAdmin || SessionGetEmployeeId() === data?.requestorBadge) &&
-            <span>
-              Status:{" "}
-              {StatusColor({
-                status: data?.status?.name,
-                class: "p-2 px-3 ",
-                showStatus: true,
-              })}
-            </span>}
+            <span> DATE: {formatDateTime(data?.createdDate)}</span>
+            {(isAdmin || SessionGetEmployeeId() === data?.requestorBadge) && (
+              <span>
+                Status:{" "}
+                {StatusColor({
+                  status: data?.status?.name,
+                  class: "p-2 px-3 ",
+                  showStatus: true,
+                })}
+              </span>
+            )}
           </div>
         </div>
         <div className="flex justify-content-between">
@@ -206,14 +221,44 @@ const OverviewSection = ({
               <ApproverList data={data} />
             </div>
           </>
-        )}  
-      </div> 
-      {SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin" || data?.requestorBadge == SessionGetEmployeeId()&&
-      <div className="position-absolute bottom-0  mb-3 me-4 end-0">
-                <Toast ref={toast2} />
-                <Tooltip target=".speeddial-bottom-right  .p-speeddial-action" position="left"/>
-                <SpeedDial model={items} direction="up" className="speeddial-bottom-right  end-0 bottom-0 " buttonClassName="p-button-default rounded-circle " />
-            </div>}
+        )}
+        {logs && (
+          <>
+            <hr />
+            <ActivityLog isDescending label={"Activity Logs"} items={logs} />
+          </>
+        )}
+      </div>
+      {SessionGetRole() === "Admin" ||
+        SessionGetRole() === "SuperAdmin" ||
+        (data?.requestorBadge == SessionGetEmployeeId() && (
+          <div className="position-absolute bottom-0  mb-3 me-4 end-0">
+            <Toast ref={toast2} />
+            <Tooltip
+              target=".speeddial-bottom-right  .p-speeddial-action"
+              position="left"
+            />
+            <SpeedDial
+              model={items}
+              direction="up"
+              className="speeddial-bottom-right  end-0 bottom-0 "
+              buttonClassName="p-button-default rounded-circle "
+            />
+          </div>
+        ))}
+      <Dialog
+        header="History Log"
+        visible={showLogModal}
+        maximizable
+        style={{ width: "50vw" }}
+        onHide={() => {
+          if (!showLogModal) return;
+          setShowLogModal(false);
+        }}
+      >
+        <hr className="mt-0" />
+        <RequestAuditTrailLogsItem data={data} />
+      </Dialog>
     </>
   );
 };

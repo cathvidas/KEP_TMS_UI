@@ -20,13 +20,15 @@ import TraineeCertificateView from "./TrainingPageSection/TraineeCertificateView
 import examHook from "../hooks/examHook";
 import { CompareDateWithToday } from "../utils/datetime/dateComparison";
 const TrainingPage = () => {
+  const [trigger, setTrigger] = useState(0);
   const { id, page } = useParams();
-  const { data, error, loading } = trainingRequestHooks.useTrainingRequest(
-    parseInt(id)
-  );
+  const { data, error, loading } = trainingRequestHooks.useTrainingRequest(parseInt(id), trigger);
   const isFacilitator = data?.trainingFacilitators?.some(
     (item) => item?.employeeBadge === SessionGetEmployeeId()
   );
+  const refreshData = ()=>{
+    setTrigger((prev)=>prev+1)
+  }
   const isAdmin =
     SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin"
       ? true
@@ -57,7 +59,7 @@ const TrainingPage = () => {
     <ModuleView key={1} reqId={data.id} />,
     <ExamView key={2} data={data}/>,
     <PendingView key={3} data={data} formData={trainingForms} examDetail={examList?.data}/>,
-    <TraineeReportView key={4} data={data} />,
+    <TraineeReportView key={4} data={data} refreshData={refreshData}/>,
     <MonitoringReportView key={5} data={data} />,
     <TraineeCertificateView key={6} data={data} />,
     <ActivityLogView key={7} logs={logs} />,

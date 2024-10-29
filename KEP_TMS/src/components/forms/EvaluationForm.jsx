@@ -13,7 +13,6 @@ import evaluationService from "../../services/evaluationService";
 import { Button } from "primereact/button";
 import ErrorTemplate from "../General/ErrorTemplate";
 import { formatDateTime } from "../../utils/datetime/Formatting";
-import ActivityLog from "../General/ActivityLog";
 const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
   const [annotation, setAnnotation] = useState(evaluationConstant.annotation);
   const [contentMethodology, setContentMethodology] = useState(evaluationConstant.contentMethodology);
@@ -366,8 +365,6 @@ console.log(defaultValue)
           onClick={handleSubmit}
         />
       </div>}
-      {isSubmitted && 
-      <ActivityLog label="Activity Logs" items={newLogs} isDescending/>}
     </Card.Body>
   );
 };

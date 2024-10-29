@@ -13,7 +13,7 @@ import commonService from "../services/commonService";
 import examService from "../services/examService";
 
 const trainingRequestHook = {
-  useTrainingRequest: (id) => {
+  useTrainingRequest: (id,trigger) => {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -37,13 +37,14 @@ const trainingRequestHook = {
             const requestor = await userService.getUserById(
               response.requestorBadge
             );
+            const auditTrail = await commonService.getAuditTrail(id, ActivityType.REQUEST);
             const routings =
               await commonService.getRoutingActivityWithAuditTrail(
                 response.id,
                 ActivityType.REQUEST
               );
             const approver =
-              await trainingRequestService.getCurrentRoutingActivity(
+              await commonService.getCurrentRouting(
                 response.id,
                 ActivityType.REQUEST
               );
@@ -58,6 +59,7 @@ const trainingRequestHook = {
               routings,
               approvers,
               currentRouting: currentRouting,
+              auditTrail
             });
             setLoading(false)
           },
@@ -65,7 +67,7 @@ const trainingRequestHook = {
         );
       };
       getRequest();
-    }, [id]);
+    }, [id, trigger]);
     return {
       data,
       error,
@@ -92,7 +94,7 @@ const trainingRequestHook = {
                   "facilitatorBadge"
                 );
                 const approver =
-                  await trainingRequestService.getCurrentRoutingActivity(
+                  await commonService.getCurrentRouting(
                     request.id,
                     ActivityType.REQUEST
                   );
@@ -193,7 +195,7 @@ const trainingRequestHook = {
                   "facilitatorBadge"
                 );
                 const approver =
-                  await trainingRequestService.getCurrentRoutingActivity(
+                  await commonService.getCurrentRouting(
                     request.id,
                     ActivityType.REQUEST
                   );

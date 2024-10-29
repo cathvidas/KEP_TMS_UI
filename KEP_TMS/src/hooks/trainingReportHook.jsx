@@ -4,10 +4,9 @@ import trainingReportService from "../services/trainingReportService";
 
 const trainingReportHook = {
   useTrainingReportById: (id, trigger) => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-
     useEffect(() => {
       const getRequest = async () => {
         handleResponseAsync(

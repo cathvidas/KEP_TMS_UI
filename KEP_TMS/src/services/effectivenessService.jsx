@@ -5,6 +5,8 @@ import {
   getAllEffectivenessApi,
   getApproverAssignedEffectivenessApi,
   getEffectivenessByIdApi,
+  updateEffectivenessApi,
+  updateProjectPerformanceEvaluationApi,
 } from "../api/effectivenessApi";
 import commonService from "./commonService";
 import userMapping from "./DataMapping/userMapping";
@@ -12,6 +14,20 @@ import userService from "./userService";
 const effectivenessService = {
   createTrainingEffectiveness: async (data) => {
     const response = await createTrainingEffectivenessApi(data);
+    if(response.status !== 1){
+      throw new Error(response.message);
+    }
+    return response;
+  },
+  updateTrainingEffectiveness: async (data) => {
+    const response = await updateEffectivenessApi(data);
+    if(response.status !== 1){
+      throw new Error(response.message);
+    }
+    return response;
+  },
+  updateProjectPerformanceEvaluation: async (data) => {
+    const response = await updateProjectPerformanceEvaluationApi(data);
     if(response.status !== 1){
       throw new Error(response.message);
     }

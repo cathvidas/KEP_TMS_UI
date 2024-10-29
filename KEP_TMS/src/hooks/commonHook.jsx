@@ -35,9 +35,11 @@ const commonHook = {
             await trainingRequestService.getTrainingRequestByApprover(id);
           const effectiveness =
             await effectivenessService.getApproverAssignedEffectiveness(id);
+            console.log(effectiveness)
           const reports =
             await trainingReportService.getApproverAssignedReports(id);
-            const updatedRequest = requests?.filter(item => !checkTrainingIfOutDated(item?.trainingRequest))
+            const updatedRequest = requests?.filter(item => checkTrainingIfOutDated(item?.trainingRequest) === false)
+            console.log(updatedRequest)
           setData({
             requests: updatedRequest,
             effectiveness: effectiveness,

@@ -20,7 +20,6 @@ const PendingView = ({ data, formData, examDetail }) => {
     setFormType(formProperty)
     setShowForm(true)
   }
-  console.log(examDetail)
   const traineeExamCount = (user) =>{
     let count = 0;
     examDetail?.map(e=>{

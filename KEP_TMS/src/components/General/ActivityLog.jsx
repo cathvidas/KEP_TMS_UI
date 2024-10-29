@@ -1,16 +1,20 @@
 import { Badge } from "primereact/badge";
 import proptype from "prop-types";
 import sortArrayInDescending from "../../utils/sorting/sortArrayInDescending";
+import { Button } from "primereact/button";
+import { useState } from "react";
 
-const ActivityLog = ({ items, label, isDescending, sort }) => {
+const ActivityLog = ({ items, label, isDescending, show = true}) => {
   const arrayList = isDescending ? sortArrayInDescending(items) : items;
-
+  const [isShow, setIsShow] = useState(show);
   return (
     <>
-      <h6>{label}</h6>
-    {isDescending 
-      }
-      {arrayList?.map((item, index) => (
+      <div className="flex gap-0">
+        {label && <h6 className="mb-1">{label}</h6>}
+        <Button className="py-0" size="small" type="button" text icon={isShow ? "pi pi-eye-slash" : "pi pi-eye"} onClick={()=>setIsShow(!isShow)}/>
+      </div>
+      {isDescending}
+      {isShow && arrayList?.map((item, index) => (
         <>
           <div className="flex">
             <div className="text-muted" style={{ width: "125px" }}>
@@ -37,13 +41,14 @@ const ActivityLog = ({ items, label, isDescending, sort }) => {
             </div>
             <div className="col">
               <small>
-              {item?.icon && (
-                <i
-                  style={{ color: item?.color, fontSize: ".8rem" }}
-                  className={item?.icon}
-                ></i>
-              )}{" "}
-              {item?.label}</small>
+                {item?.icon && (
+                  <i
+                    style={{ color: item?.color, fontSize: ".8rem" }}
+                    className={item?.icon}
+                  ></i>
+                )}{" "}
+                {item?.label}
+              </small>
             </div>
           </div>
         </>
@@ -55,5 +60,6 @@ ActivityLog.propTypes = {
   items: proptype.array,
   label: proptype.string,
   isDescending: proptype.bool,
+  show: proptype.bool,
 };
 export default ActivityLog;

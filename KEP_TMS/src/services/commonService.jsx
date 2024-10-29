@@ -1,4 +1,4 @@
-import { disapproveActivityApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getRoutingActivityWithAuditTrailApi } from "../api/commonApi";
+import { disapproveActivityApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getCurrentRoutingActivityApi, getRoutingActivityWithAuditTrailApi } from "../api/commonApi";
 
 const commonService = {
   getAllDepartments: async () => {
@@ -19,27 +19,38 @@ const commonService = {
   },
   getAuditTrail: async (transactId, activityIn) => {
     try {
-      const response = transactId && await getAuditTrailApi(transactId, activityIn);
+      const response =
+        transactId && (await getAuditTrailApi(transactId, activityIn));
       return response.status === 1 ? response?.data : {};
     } catch {
       return {};
     }
   },
+  getCurrentRouting: async (transactId, activityIn) => {
+    try {
+      const response = await getCurrentRoutingActivityApi(transactId, activityIn);
+      return response;
+    } catch {
+      return {};
+    }
+  },
   getRoutingActivityWithAuditTrail: async (transactId, activityIn) => {
-      const response = transactId && await getRoutingActivityWithAuditTrailApi(transactId, activityIn);
-      return response?.status === 1 ? response?.data : [];
+    const response =
+      transactId &&
+      (await getRoutingActivityWithAuditTrailApi(transactId, activityIn));
+    return response?.status === 1 ? response?.data : [];
   },
-  getApprovedForms: async (assignedTo, activityIn)=>{
+  getApprovedForms: async (assignedTo, activityIn) => {
     const response = await getApprovedFormsApi(assignedTo, activityIn);
-    return response.status === 1? response?.data : [];
+    return response.status === 1 ? response?.data : [];
   },
-  disapproveActivity: async (data)=>{
+  disapproveActivity: async (data) => {
     const response = await disapproveActivityApi(data);
-    if(response.status !== 1){
+    if (response.status !== 1) {
       throw new Error(response.message);
     }
     return response;
-  }
+  },
 };
 
 export default commonService;

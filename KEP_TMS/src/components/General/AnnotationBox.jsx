@@ -21,7 +21,7 @@ const AnnotationBox = ({header,label, description,placeholder, onSubmit, show, o
             <Modal.Title className="theme-color h5">{header}</Modal.Title>
           </Modal.Header>
           <Modal.Body className="py-0 pt-2">
-            <p>{description}</p>
+            <p className="mb-2">{description}</p>
             <FormFieldItem
               label={label}
               required

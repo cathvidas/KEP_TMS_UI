@@ -5,6 +5,8 @@ import { SessionGetEmployeeId, SessionGetRole } from "../sessions";
 import getStatusById from "../../utils/status/getStatusById";
 import ToastTemplate from "../../components/General/ToastTemplate";
 import handleApproveRequest from "../handlers/handleApproveRequest";
+import sortRoutingBySequence from "./sortRoutingsBySequence";
+import { extractChanges } from "../../utils/stringUtil";
 
 const getToastDetail = (
   data,
@@ -13,6 +15,7 @@ const getToastDetail = (
   cancelRequest,
   updateRequest
 ) => {
+  console.log(userReports)
   const reloadPage = ()=>{
     setTimeout(()=>{
       window.location.reload()
@@ -93,21 +96,21 @@ const getToastDetail = (
       ? "Please add module or exam if necessary and publish the request"
       : facilitators;
   } else if (status == statusCode.SUBMITTED) {
-    if (userReports && userReports?.effectivenessDetail?.id !== 0) {
+    if (userReports && userReports?.effectivenessDetail?.id > 0) {
       const effStatus = userReports?.effectivenessDetail?.statusName;
-      statusData.summary = "Training Effectiveness Submitted";
+      statusData.summary =effStatus === getStatusById(statusCode.DISAPPROVED) ? "Training Effectiveness Disapproved": "Training Effectiveness Submitted";
       statusData.detail =
         effStatus === getStatusById(statusCode.FORAPPROVAL)
           ? `Waiting for approval by ${userReports?.effectivenessDetail?.currentRouting?.assignedDetail?.fullname}`
           : effStatus === getStatusById(statusCode.DISAPPROVED)
-          ? "Please wait for further details."
+          ? "Your training effectiveness form was not approved. Navigate to report section to view more details."
           : "Please wait for further details.";
       statusData.severity =
-        effStatus === getStatusById(statusCode.FORAPPROVAL)
-          ? "info"
+        effStatus === getStatusById(statusCode.DISAPPROVED)
+          ? "error"
           : effStatus === getStatusById(statusCode.APPROVED)
           ? "success"
-          : "error";
+          : "warning";
     } else {
       statusData.summary = "Waiting for participants Effectiveness";
       statusData.detail =
@@ -119,7 +122,32 @@ const getToastDetail = (
             } submitted`;
       statusData.severity = "warn";
     }
-  } else {
+  } else if (status == statusCode.DISAPPROVED) {
+    sortRoutingBySequence(data?.routings)
+    const filteredData = data?.routings?.filter(item=>item.statusId === statusCode.DISAPPROVED);
+    const current = filteredData[0];
+    const disApproverData = data?.approvers?.find(item=> item?.employeeBadge === current?.assignedTo);
+    
+    const changes = JSON.parse(current?.changes);
+    const remarks = extractChanges(changes?.Remarks?? "");
+    statusData.summary = "Training Request Disapproved";
+    statusData.detail = `Training Request was disapproved by ${disApproverData?.fullname ?? current?.assignedTo} with a message '${remarks?.toValue}.'`;
+    statusData.severity = "error";
+    statusData.content =
+      isAdmin || data?.requestorBadge === SessionGetEmployeeId()
+        ? () => (
+          <ToastTemplate icon="pi pi-times-circle" summary={statusData.summary} detail={statusData.detail} 
+          leftButtonLabel="Cancel request" leftButtonSeverity="danger"
+          leftButtonIcon="pi pi-times-circle"
+          leftButtonCommand={cancelRequest}
+          rightButtonLabel="Update"
+          rightButtonIcon="pi pi-pencil"
+          rightButtonCommand={updateRequest}
+          />
+          )
+        : "";
+  } 
+  else {
     statusData.show = false;
     // statusData.summary = data?.status?.name;
     // statusData.detail = "";
