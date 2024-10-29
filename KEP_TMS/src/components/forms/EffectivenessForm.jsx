@@ -1,10 +1,17 @@
 import { Card, Col, Form, Row, Table } from "react-bootstrap";
 import AutoCompleteField from "./common/AutoCompleteField";
 import proptype from "prop-types";
-import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
+import {
+  formatDateOnly,
+  formatDateTime,
+} from "../../utils/datetime/Formatting";
 import { useCallback, useEffect, useState } from "react";
 import { Rating } from "primereact/rating";
-import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
+import {
+  actionFailed,
+  actionSuccessful,
+  confirmAction,
+} from "../../services/sweetalert";
 import { Button } from "primereact/button";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import effectivenessService from "../../services/effectivenessService";
@@ -16,14 +23,21 @@ import getStatusById from "../../utils/status/getStatusById";
 import ActivityLog from "../General/ActivityLog";
 import activityLogHook from "../../hooks/activityLogHook";
 import validateTrainingEffectiveness from "../../services/inputValidation/validateTrainingEffectiveness";
-import "../../assets/css/effectivenessForm.css"
-const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting, auditTrail}) => {
+import "../../assets/css/effectivenessForm.css";
+const EffectivenessForm = ({
+  data,
+  userData,
+  formData,
+  onFinish,
+  currentRouting,
+  auditTrail,
+}) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
   const [annotation, setAnnotation] = useState("");
-  const [performanceCharacteristics, setPerformanceCharacteristics] = useState(
-    [effectivenessConstant.performanceCharacteristics]
-  );
+  const [performanceCharacteristics, setPerformanceCharacteristics] = useState([
+    effectivenessConstant.performanceCharacteristics,
+  ]);
   const [projectPerformanceEvaluation, setProjectPerformanceEvaluation] =
     useState([effectivenessConstant.projectPerformanceEvaluation]);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -32,12 +46,14 @@ const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting
       const effectivenessData = formData;
       setAnnotation(effectivenessData?.annotation);
       setPerformanceCharacteristics(
-        effectivenessData?.performanceCharacteristics ??
-          [effectivenessConstant.performanceCharacteristics]
+        effectivenessData?.performanceCharacteristics ?? [
+          effectivenessConstant.performanceCharacteristics,
+        ]
       );
       setProjectPerformanceEvaluation(
-        effectivenessData?.projectPerformanceEvaluation ??
-        [effectivenessConstant.projectPerformanceEvaluation]
+        effectivenessData?.projectPerformanceEvaluation ?? [
+          effectivenessConstant.projectPerformanceEvaluation,
+        ]
       );
       setIsSubmitted(true);
     }
@@ -84,10 +100,14 @@ const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting
   const getAfterTrainingDate = useCallback(() => {
     var date = new Date(data?.trainingEndDate);
     return formatDateOnly(date.setMonth(date.getMonth() + 6));
-  },[data?.trainingEndDate]);
-
+  }, [data?.trainingEndDate]);
   const handleSubmit = () => {
-    const {formErrors,isValid} = validateTrainingEffectiveness(getFormData, performanceCharacteristics, projectPerformanceEvaluation, isAfter);
+    const { formErrors, isValid } = validateTrainingEffectiveness(
+      getFormData,
+      performanceCharacteristics,
+      projectPerformanceEvaluation,
+      isAfter
+    );
     setErrors(formErrors);
     if (isValid) {
       confirmAction({
@@ -102,24 +122,23 @@ const EffectivenessForm = ({ data, userData, formData , onFinish, currentRouting
               actionSuccessful("Success!", e?.message);
               onFinish();
             },
-            (e) => actionFailed("Error!", e.message),
+            (e) => actionFailed("Error!", e.message)
           ),
       });
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     setIsAfter(getAfterTrainingDate() >= formatDateOnly(new Date(), "dash"));
-  },[getAfterTrainingDate])
-const logs = activityLogHook.useReportsActivityLog(formData, userData);
+  }, [getAfterTrainingDate]);
+  const logs = activityLogHook.useReportsActivityLog(formData, userData);
   return (
     <>
       <Card.Body>
         {isSubmitted && (
           <div className=" flex justify-content-between  mb-2">
-            <div>
-              Submitted:{" "}
-              {formatDateTime(auditTrail?.createdDate)}
-            </div>
+            <div className="flex">
+              <i className="pi pi-check-circle text-success"></i>
+              Submitted: {auditTrail?.length > 0 ? formatDateTime(auditTrail[0]?.createdDate): "N/A"}</div>
             <div>
               Status: &nbsp;
               {StatusColor({
@@ -214,47 +233,81 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                 </tr>
               </thead>
               <tbody>
-                {performanceCharacteristics?.map((_, index) => (<>
-                  <tr key={`character${index}`} className="position-relative performanceTable">
-                    <th scope="row" className="text-center">{index + 1}</th>
-                    <td>
-                      <textarea
-                        className="no-focus w-100 border-0"
-                        name="content"
-                        value={performanceCharacteristics[index]?.content ?? ""}
-                        onChange={(e) => handlePerfCharacterOnChange(e, index)}
-                        readOnly={isSubmitted}
-                      ></textarea>
-                    </td>
-                    <td style={{ verticalAlign: "middle" }}>
-                      <Rating
-                        className="justify-content-center"
-                        value={performanceCharacteristics[index]?.rating}
-                        name="rating"
-                        onChange={(e) => handlePerfCharacterOnChange(e, index)}
-                        cancel={false}
-                        readOnly={isSubmitted}
-                      />
-                    </td>
-                  {performanceCharacteristics?.length > 1 && !isSubmitted &&
-                    <Button type="button" style={{display: "none"}} icon="pi pi-trash" text 
-                    className="perf-button position-absolute end-0 top-50 translate-middle-y me-3 text-danger " severity="danger"
-                    onClick={()=>setPerformanceCharacteristics((prev) => [...prev].filter((_, i) => i!== index))}
-                    />}
-                  </tr>
-                   
-                   </>
+                {performanceCharacteristics?.map((_, index) => (
+                  <>
+                    <tr
+                      key={`character${index}`}
+                      className="position-relative performanceTable"
+                    >
+                      <th scope="row" className="text-center">
+                        {index + 1}
+                      </th>
+                      <td>
+                        <textarea
+                          className="no-focus w-100 border-0"
+                          name="content"
+                          value={
+                            performanceCharacteristics[index]?.content ?? ""
+                          }
+                          onChange={(e) =>
+                            handlePerfCharacterOnChange(e, index)
+                          }
+                          readOnly={isSubmitted}
+                        ></textarea>
+                      </td>
+                      <td style={{ verticalAlign: "middle" }}>
+                        <Rating
+                          className="justify-content-center"
+                          value={performanceCharacteristics[index]?.rating}
+                          name="rating"
+                          onChange={(e) =>
+                            handlePerfCharacterOnChange(e, index)
+                          }
+                          cancel={false}
+                          readOnly={isSubmitted}
+                        />
+                      </td>
+                      {performanceCharacteristics?.length > 1 &&
+                        !isSubmitted && (
+                          <Button
+                            type="button"
+                            style={{ display: "none" }}
+                            icon="pi pi-trash"
+                            text
+                            className="perf-button position-absolute end-0 top-50 translate-middle-y me-3 text-danger "
+                            severity="danger"
+                            onClick={() =>
+                              setPerformanceCharacteristics((prev) =>
+                                [...prev].filter((_, i) => i !== index)
+                              )
+                            }
+                          />
+                        )}
+                    </tr>
+                  </>
                 ))}
               </tbody>
             </Table>
             <div className="flex">
-            {errors?.performanceCharacteristics && (
-              <ErrorTemplate message={errors?.performanceCharacteristics} />
-            )}
-            {performanceCharacteristics?.length < 3 && !isSubmitted &&
-            <Button type="button" text icon="pi pi-plus" label="Add row" className="ms-auto"
-             onClick={()=>setPerformanceCharacteristics([...performanceCharacteristics, effectivenessConstant.performanceCharacteristics])} />
-            }</div>
+              {errors?.performanceCharacteristics && (
+                <ErrorTemplate message={errors?.performanceCharacteristics} />
+              )}
+              {performanceCharacteristics?.length < 3 && !isSubmitted && (
+                <Button
+                  type="button"
+                  text
+                  icon="pi pi-plus"
+                  label="Add row"
+                  className="ms-auto"
+                  onClick={() =>
+                    setPerformanceCharacteristics([
+                      ...performanceCharacteristics,
+                      effectivenessConstant.performanceCharacteristics,
+                    ])
+                  }
+                />
+              )}
+            </div>
           </Form.Group>
           <br />
           <Form.Group>
@@ -277,7 +330,9 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                 <label className="fw-bold" style={{ fontSize: "0.8rem" }}>
                   Evaluator:
                 </label>
-                <span className="flex-grow-1 border-0 border-bottom">{userData?.superiorName} - {userData?.superiorBadge}</span>
+                <span className="flex-grow-1 border-0 border-bottom">
+                  {userData?.superiorName} - {userData?.superiorBadge}
+                </span>
               </Col>
             </Row>
             <Table className="mt-2 table-bordered m-0">
@@ -312,8 +367,11 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                 </tr>
               </thead>
               <tbody>
-                {projectPerformanceEvaluation?.map((_,index) => (
-                  <tr key={`evaluation${index}`} className="position-relative performanceTable">
+                {projectPerformanceEvaluation?.map((_, index) => (
+                  <tr
+                    key={`evaluation${index}`}
+                    className="position-relative performanceTable"
+                  >
                     <th scope="row">{index + 1}</th>
                     <td>
                       <textarea
@@ -326,7 +384,10 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                         readOnly={isSubmitted}
                       ></textarea>
                     </td>
-                    <td className="text-center" style={{ verticalAlign: "middle" }}>
+                    <td
+                      className="text-center"
+                      style={{ verticalAlign: "middle" }}
+                    >
                       <Rating
                         className="justify-content-center"
                         value={
@@ -338,10 +399,18 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                         cancel={false}
                         readOnly={isSubmitted}
                       />
-                      <small className="mt-1 d-block">{isSubmitted ? formatDateTime(auditTrail?.createdDate): projectPerformanceEvaluation[index]
-                            ?.performanceBeforeTraining !== 0 && formatDateTime(new Date())}</small>
+                      <small className="mt-1 d-block">
+                        {isSubmitted
+                          ? formatDateTime(auditTrail?.createdDate)
+                          : projectPerformanceEvaluation[index]
+                              ?.performanceBeforeTraining !== 0 &&
+                            formatDateTime(new Date())}
+                      </small>
                     </td>
-                    <td className="text-center" style={{ verticalAlign: "middle" }}>
+                    <td
+                      className="text-center"
+                      style={{ verticalAlign: "middle" }}
+                    >
                       <Rating
                         className="justify-content-center"
                         value={
@@ -353,9 +422,18 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                         cancel={false}
                         readOnly={isSubmitted}
                       />
-                      <small className="mt-1 d-block">{isSubmitted ? formatDateTime(auditTrail?.createdDate): projectPerformanceEvaluation[index]?.projectedPerformance !== 0 && formatDateTime(new Date())}</small>
+                      <small className="mt-1 d-block">
+                        {isSubmitted
+                          ? formatDateTime(auditTrail?.createdDate)
+                          : projectPerformanceEvaluation[index]
+                              ?.projectedPerformance !== 0 &&
+                            formatDateTime(new Date())}
+                      </small>
                     </td>
-                    <td className="text-center" style={{ verticalAlign: "middle" }}>
+                    <td
+                      className="text-center"
+                      style={{ verticalAlign: "middle" }}
+                    >
                       <Rating
                         className="justify-content-center"
                         value={
@@ -366,10 +444,18 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                         cancel={false}
                         disabled={!isAfter}
                       />
-                      <small className="mt-1 d-block">{isSubmitted ?  "": projectPerformanceEvaluation[index]?.actualPerformance !== 0 && formatDateTime(new Date())}</small>
-                   
+                      <small className="mt-1 d-block">
+                        {isSubmitted
+                          ? ""
+                          : projectPerformanceEvaluation[index]
+                              ?.actualPerformance !== 0 &&
+                            formatDateTime(new Date())}
+                      </small>
                     </td>
-                    <td className="text-center" style={{ verticalAlign: "middle" }}>
+                    <td
+                      className="text-center"
+                      style={{ verticalAlign: "middle" }}
+                    >
                       <Rating
                         className="justify-content-center"
                         value={
@@ -381,28 +467,54 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                         cancel={false}
                         disabled={!isAfter}
                       />
-                      <small className="mt-1 d-block">{isSubmitted ? "": projectPerformanceEvaluation[index]?.evaluatedActualPerformance !== 0 && formatDateTime(new Date())}</small>
-                   
-                    </td>    
-                    {projectPerformanceEvaluation?.length > 1  && !isSubmitted &&
-                    <Button type="button" style={{display: "none"}} icon="pi pi-trash" text 
-                    className="perf-button position-absolute end-0 top-50 translate-middle-y me-3 text-danger " severity="danger"
-                    onClick={()=>setProjectPerformanceEvaluation((prev) => [...prev].filter((_, i) => i!== index))}
-                    />}
+                      <small className="mt-1 d-block">
+                        {isSubmitted
+                          ? ""
+                          : projectPerformanceEvaluation[index]
+                              ?.evaluatedActualPerformance !== 0 &&
+                            formatDateTime(new Date())}
+                      </small>
+                    </td>
+                    {projectPerformanceEvaluation?.length > 1 &&
+                      !isSubmitted && (
+                        <Button
+                          type="button"
+                          style={{ display: "none" }}
+                          icon="pi pi-trash"
+                          text
+                          className="perf-button position-absolute end-0 top-50 translate-middle-y me-3 text-danger "
+                          severity="danger"
+                          onClick={() =>
+                            setProjectPerformanceEvaluation((prev) =>
+                              [...prev].filter((_, i) => i !== index)
+                            )
+                          }
+                        />
+                      )}
                   </tr>
                 ))}
               </tbody>
             </Table>
             <div className="flex">
-            {errors?.projectPerformanceEvaluation && (
-              <ErrorTemplate message={errors?.projectPerformanceEvaluation} />
-            )}
-            {projectPerformanceEvaluation?.length < 3 && !isSubmitted &&
-            <Button type="button" text icon="pi pi-plus" label="Add row" className="ms-auto"
-             onClick={()=>setProjectPerformanceEvaluation([...projectPerformanceEvaluation, effectivenessConstant.projectPerformanceEvaluation])} />}
-             </div>
-        
-           
+              {errors?.projectPerformanceEvaluation && (
+                <ErrorTemplate message={errors?.projectPerformanceEvaluation} />
+              )}
+              {projectPerformanceEvaluation?.length < 3 && !isSubmitted && (
+                <Button
+                  type="button"
+                  text
+                  icon="pi pi-plus"
+                  label="Add row"
+                  className="ms-auto"
+                  onClick={() =>
+                    setProjectPerformanceEvaluation([
+                      ...projectPerformanceEvaluation,
+                      effectivenessConstant.projectPerformanceEvaluation,
+                    ])
+                  }
+                />
+              )}
+            </div>
           </Form.Group>
           <br />
           <Form.Group>
@@ -415,10 +527,12 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
               disabled={!isAfter}
             ></textarea>
           </Form.Group>
-          {isSubmitted &&
-          <>
-          <br />
-          <ActivityLog label="Activity Logs" items={logs} isDescending/></>}
+          {isSubmitted && (
+            <>
+              <br />
+              <ActivityLog label="Activity Logs" items={logs} isDescending />
+            </>
+          )}
           {data?.trainingParticipants?.some(
             (x) => x.employeeBadge === SessionGetEmployeeId()
           ) &&
@@ -431,12 +545,12 @@ const logs = activityLogHook.useReportsActivityLog(formData, userData);
                   className="rounded"
                   severity="secondary"
                   onClick={() => {
-                    setPerformanceCharacteristics(
-                      [effectivenessConstant.performanceCharacteristics]
-                    );
-                    setProjectPerformanceEvaluation(
-                      [effectivenessConstant.projectPerformanceEvaluation]
-                    );
+                    setPerformanceCharacteristics([
+                      effectivenessConstant.performanceCharacteristics,
+                    ]);
+                    setProjectPerformanceEvaluation([
+                      effectivenessConstant.projectPerformanceEvaluation,
+                    ]);
                   }}
                 />
                 <Button
@@ -461,6 +575,5 @@ EffectivenessForm.propTypes = {
   onFinish: proptype.func,
   currentRouting: proptype.object,
   auditTrail: proptype.object,
-
 };
 export default EffectivenessForm;

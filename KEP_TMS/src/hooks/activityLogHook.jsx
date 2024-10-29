@@ -12,7 +12,7 @@ const activityLogHook = {
         let newLogs = [];
         newLogs.push({
           label: `Created by ${userData?.fullname ?? defaultValue?.auditTrail?.createdBy}`,
-          date: formatDateTime(defaultValue?.auditTrail?.createdDate),
+          date: defaultValue?.auditTrail?.length > 0 ?  formatDateTime(defaultValue?.auditTrail[0]?.createdDate) : "",
         });
 
         sortRoutingBySequence(defaultValue?.routings)

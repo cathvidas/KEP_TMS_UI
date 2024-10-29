@@ -128,6 +128,7 @@ newLogs.push({
   label: `Created by ${userData?.fullname ?? defaultValue?.auditTrail?.createdBy}`,
   date: formatDateTime(defaultValue?.createdDate),
 });
+console.log(defaultValue)
   return (
     <Card.Body>
       <div className="text-center  pb-3 mb-3 ">
@@ -146,7 +147,7 @@ newLogs.push({
             value={getFacilitators()}
             className="col-12"
           />
-          <AutoCompleteField label="Date/Time" value={formatDateTime(defaultValue?.createdDate)} />
+          <AutoCompleteField label="Date/Time" value={isSubmitted ?formatDateTime(defaultValue?.createdDate) : formatDateTime(new Date())} />
           <AutoCompleteField label="Venue" value={data?.venue} />
         </Row>
         <br />

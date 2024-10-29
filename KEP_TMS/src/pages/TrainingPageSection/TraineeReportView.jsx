@@ -24,7 +24,7 @@ const TraineeReportView = ({ data }) => {
   const evaluation = getUser?.evaluationId? evaluationHook.useEvaluationById(getUser.evaluationId, trigger):{};
   const [formIndex, setFormIndex] = useState(0);
   const [reportStatus, setReportStatus] = useState({
-    show: true,
+    show: false,
     statusId: 0,
     summary: "s",
     detail: "sh",
@@ -58,30 +58,30 @@ const TraineeReportView = ({ data }) => {
   },[effectiveness?.data, report?.data, evaluation?.data])
   useEffect(() => {
     if(formIndex === 0){
-      setReportStatus({
-        show: true,
-        statusId: statusCode.PUBLISHED,
-        summary: "Effectiveness Form Submitted Successfully",
-        detail: "Effectiveness Form submitted successfully",
-        severity: "success",
-      });
+      // setReportStatus({
+      //   show: true,
+      //   statusId: statusCode.PUBLISHED,
+      //   summary: "Effectiveness Form Submitted Successfully",
+      //   detail: "Effectiveness Form submitted successfully",
+      //   severity: "success",
+      // });
     }
     else if (formIndex === 1) {
-      setReportStatus({
-        show: true,
-        statusId: statusCode.PUBLISHED,
-        summary: "Training Report Submitted Successfully",
-        detail: "Training Report submitted successfully",
-        severity: "success",
-      });
+      // setReportStatus({
+      //   show: true,
+      //   statusId: statusCode.PUBLISHED,
+      //   summary: "Training Report Submitted Successfully",
+      //   detail: "Training Report submitted successfully",
+      //   severity: "success",
+      // });
     }else if(formIndex === 2) {
-      setReportStatus({
-        show: true,
-        statusId: statusCode.SUBMITTED,
-        summary: "Training Evaluation Submitted Successfully",
-        detail: "Training Report submitted successfully",
-        severity: "success",
-      });
+      // setReportStatus({
+      //   show: true,
+      //   statusId: statusCode.SUBMITTED,
+      //   summary: "Training Evaluation Submitted Successfully",
+      //   detail: "Training Report submitted successfully",
+      //   severity: "success",
+      // });
     }
   }, [formIndex]);
   const items = [
@@ -116,7 +116,7 @@ console.log(formIndex)
       formData={effectiveness?.data}
       onFinish={handleOnFinish}
       currentRouting={effectiveness?.data?.currentRouting}
-      auditTrail={effectiveness?.data?.auditTrail}
+      auditTrail={effectiveness?.data?.auditTrail[0]}
     />
       }
       {
