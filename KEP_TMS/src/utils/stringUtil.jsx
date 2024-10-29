@@ -1,8 +1,8 @@
 export const checkIfNullOrEmpty = (stringData)=>{
-    if(stringData){
-      return true
+    if(stringData && stringData.trim()){
+      return false
     }
-    return false
+    return true
   }
 
 export const extractChanges = (data)=>{

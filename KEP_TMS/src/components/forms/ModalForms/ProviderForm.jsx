@@ -16,6 +16,7 @@ import categoryHook from "../../../hooks/categoryHook";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import providerService from "../../../services/providerService";
 import { SessionGetEmployeeId } from "../../../services/sessions";
+import { checkIfNullOrEmpty } from "../../../utils/stringUtil";
 const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
   const [formData, setFormData] = useState(providerConstant);
   const [errors, setErrors] = useState({});
@@ -63,7 +64,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
   };
 
   useEffect(() => {
-    if (selectedData != null) {
+    if (selectedData) {
       const category = options?.category?.find(
         (option) => option.label === selectedData?.categoryName
       );
@@ -80,7 +81,6 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
       setFormData(providerConstant);
     }
   }, [selectedData, options]);
-
   const handleSubmit = () => {
     const isUpdate = selectedData != null;
     const updatedFormData = {
@@ -115,6 +115,9 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
       });
     }
   };
+  const getDetail = (value)=>{
+    return !checkIfNullOrEmpty(value) ? value : "";
+  }
   return (
     <>
       {" "}
@@ -188,7 +191,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.building}
+                    value={getDetail(formData?.address?.building)}
                     onChange={(e) => handleOnChange(e, true)}
                     name="building"
                     className="form-control"
@@ -202,7 +205,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.street}
+                    value={getDetail(formData?.address?.street)}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -216,7 +219,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.barangay}
+                    value={getDetail(formData?.address?.barangay)}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -230,7 +233,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.landmark}
+                    value={getDetail(formData?.address?.landmark)}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -244,7 +247,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.city_Municipality}
+                    value={getDetail(formData?.address?.city_Municipality)}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -258,7 +261,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.province}
+                    value={getDetail(formData?.address?.province)}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -272,7 +275,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.country}
+                    value={getDetail(formData?.address?.country)}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"
@@ -286,7 +289,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                 col={"col-md-6"}
                 FieldComponent={
                   <Form.Control
-                    value={formData?.address?.postalCode}
+                    value={getDetail(formData?.address?.postalCode)}
                     onChange={(e) => handleOnChange(e, true)}
                     className="form-control"
                     type="text"

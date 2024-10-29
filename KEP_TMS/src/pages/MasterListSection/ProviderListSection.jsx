@@ -25,7 +25,7 @@ const ProviderListSection = () => {
           icon="pi pi-eye"
           severity="help"
           className="rounded-circle"
-          onClick={() => handleOnclick(rowData.id)}
+          onClick={() => handleOnclick(rowData)}
         />
         <Button
           type="button"
@@ -33,28 +33,40 @@ const ProviderListSection = () => {
           text
           icon="pi pi-pen-to-square"
           className="rounded-circle"
-          onClick={() => handleOnclick(rowData.id, true)}
+          onClick={() => handleOnclick(rowData, true)}
         />
         {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
       </div>
     </>
   );
-  console.log(data);
-  const handleOnclick = (id, isUpdate = false) => {
-    const selected = data.find((x) => x.id === id);
-    setSelectedData(selected);
+  const handleOnclick = (rowData, isUpdate = false) => {
+    setSelectedData(rowData);
     setVisible(
       isUpdate ? { detail: false, form: true } : { detail: true, form: false }
     );
   };
-  const formatDetail = (value, hasTrailingElement = true) => {
-    return checkIfNullOrEmpty(value)
-      ? hasTrailingElement
-        ? value + ","
-        : value
-      : "";
+  const concatenateValue = (oldValue, newValue)=>{
+    if(!checkIfNullOrEmpty(oldValue) && !checkIfNullOrEmpty(newValue)){
+      return `${oldValue}, ${newValue}`;
+    }else if(!checkIfNullOrEmpty(oldValue) && checkIfNullOrEmpty(newValue)){
+      return oldValue;
+    }else if(checkIfNullOrEmpty(oldValue) && !checkIfNullOrEmpty(newValue)){
+      return newValue;
+    }
+    return "";
+  }
+  const formatAddressDetail = (rowData) => {
+    let value = "";
+    value = concatenateValue(value, rowData?.address?.building);
+    value = concatenateValue(value, rowData.address.street);
+    value = concatenateValue(value, rowData?.address?.barangay);
+    value = concatenateValue(value, rowData?.address?.landmark);
+    value = concatenateValue(value, rowData?.address?.city_Municipality);
+    value = concatenateValue(value, rowData?.address?.province);
+    value = concatenateValue(value, rowData?.address?.country);
+    value = concatenateValue(value, rowData?.address?.postalCode);
+    return !checkIfNullOrEmpty(value) ? value : "N/A";
   };
-  console.log(checkIfNullOrEmpty(undefined));
   const columnItems = [
     {
       field: "id",
@@ -77,17 +89,7 @@ const ProviderListSection = () => {
       header: "Address",
       filterField: "concatenatedString",
       body: (rowData) => (
-        <>{`${formatDetail(rowData?.address?.building)}
-        ${formatDetail(rowData.address.street)} ${formatDetail(
-          rowData?.address?.barangay
-        )}
-        ${formatDetail(rowData?.address?.landmark)} ${formatDetail(
-          rowData?.address?.city_Municipality
-        )} ${formatDetail(rowData?.address?.province)} 
-        ${formatDetail(rowData?.address?.country)} ${formatDetail(
-          rowData?.address?.postalCode,
-          false
-        )}`}</>
+        <>{formatAddressDetail(rowData)}</>
       ),
     },
     {
