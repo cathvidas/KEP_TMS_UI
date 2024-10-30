@@ -17,7 +17,7 @@ const UserPage = ()=>{
     const {page, id} = useParams();
     const navigate= useNavigate();
     const [currentContent, setCurrentContent] = useState(0);
-    const {data, error, loading} = userHook.useAllUsersAndEmployee();
+    const {data, loading} = userHook.useAllUsersAndEmployee();
     const [options, setOptions] = useState({options:{}, loading: true})
     const roles = commonHook.useAllRoles();
     const departments = commonHook.useAllDepartments();
@@ -68,9 +68,7 @@ const UserPage = ()=>{
     }, [data, roles?.loading, departments?.loading, positions?.loading, empTypes?.loading]);
     
     const items = [{
-        label: "Users",
         items:[
-          { separator: true, template: MenuItemTemplate },
             {label: "All Users", icon: "pi pi-eye", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users"), active: currentContent === 1 ?true: false},
             {label: "Trainees", icon: "pi pi-users", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users/Trainee"), active: currentContent === 2 ?true: false },
             {label: "Approvers", icon: "pi pi-users", template: MenuItemTemplate, command: ()=>navigate("/KEP_TMS/Users/Approver"),active: currentContent === 3 ?true: false},
@@ -111,14 +109,14 @@ const UserPage = ()=>{
                   <Button
                     type="button"
                     label="Add User"
-                    className="theme-bg rounded"
+                    className="theme-bg rounded py-1"
                     icon="pi pi-plus"
                     onClick={() => setShowForm(true)}
                   />
                 }
               />
               <div
-                className={`border-start p-3 pb-5 flex-grow-1`}
+                className={`p-3 pb-5 flex-grow-1`}
                 style={{ minHeight: "calc(100vh - 50px)" }}
               >
                 {loading ? <SkeletonDataTable /> : pageContent[currentContent]}

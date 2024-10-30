@@ -11,7 +11,7 @@ import { Modal } from "react-bootstrap";
 import userHook from "../../hooks/userHook";
 import trainingReportHook from "../../hooks/trainingReportHook";
 import TrainingReportForm from "../../components/forms/TrainingReportForm";
-import AnnotationBox from "../../components/General/AnnotationBox";
+import CommentBox from "../../components/General/CommentBox";
 import trainingReportService from "../../services/trainingReportService";
 import commonService from "../../services/commonService";
 
@@ -166,10 +166,9 @@ const ForApprovalReport = () => {
         columnItems={columnItems}
       />
 
-      <AnnotationBox
-        header="Annotation"
-        label="Remarks"
-        description="Please provide an annotation explaining the reason for returning this report."
+      <CommentBox
+        header="Comments"
+        description="Please provide a comment explaining the reason for returning this report."
         show={showAnnotation}
         onClose={() => setShowAnnotation(false)}
         confirmButton={{ label: "Return Report" }}

@@ -27,18 +27,12 @@ const TrainingRequestPage = () => {
     parseInt(id)
   );
   const [currentContent, setCurrentContent] = useState();
-  
-  const trainingForms = trainingRequestHook.useAllParticipantsReports(
-    data?.trainingParticipants ?? []
-  );
   const logs = activityLogHook.useTrainingRequestActivityLogs(
     data
   );
   const items = [
     {
-        label: 'Menu',
         items: [
-          { separator: true, template: MenuItemTemplate },
             {
                 label: 'Overview',
                 icon: 'pi pi-info-circle',
@@ -131,15 +125,13 @@ const checkIfFacilitator= ()=>{
     return (
       <>  <div className={`d-flex g-0`}>
           {showMenu() && (<>
-            <MenuContainer itemList={items} action={ 
+            <MenuContainer itemList={items} action={ !isNotPublished() &&
               <Button type="button" label="Publish" size="small" severity="info" className="rounded py-1 ms-3" onClick={handlePublish}/>
-              } isPublished={isNotPublished()}/>
+              }/>
             </>
           )}
           <div
-            className={`${
-              showMenu() && "border-start"
-            } p-3 pb-5 col`}
+            className={`p-3 pb-5 col`}
             style={{ minHeight: "calc(100vh - 50px)" }}
           >
             {loading ? <SkeletonList/> : pages[currentContent]}

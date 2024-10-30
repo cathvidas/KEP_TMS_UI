@@ -14,7 +14,7 @@ import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import trainingRequestHook from "../../hooks/trainingRequestHook";
 import userHook from "../../hooks/userHook";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
-import AnnotationBox from "../../components/General/AnnotationBox";
+import CommentBox from "../../components/General/CommentBox";
 import commonService from "../../services/commonService";
 
 const ForApprovaleffectiveness = () => {
@@ -188,10 +188,10 @@ const ForApprovaleffectiveness = () => {
           />
         </>
       )}
-      <AnnotationBox
-        header="Annotation"
-        label="Remarks"
-        description="Please provide an annotation explaining the reason for returning this report."
+      <CommentBox
+        header="Comments"
+        // label="Remarks"
+        description="Please provide a comment explaining the reason for returning this report."
         show={showAnnotation}
         onClose={() => setShowAnnotation(false)}
         confirmButton={{ label: "Return Effectiveness" }}

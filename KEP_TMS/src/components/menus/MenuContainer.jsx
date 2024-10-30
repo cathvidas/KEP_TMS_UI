@@ -3,7 +3,7 @@ import { Menu } from "primereact/menu";
 import proptype from "prop-types"
 import "../../assets/css/customPrimeReact.css"
 import { useState } from "react";
-const MenuContainer = ({itemList, action, isPublished}) =>{ 
+const MenuContainer = ({itemList, action, label}) =>{ 
     const [visible, setVisible] = useState(true);
     return (
       <>
@@ -11,7 +11,7 @@ const MenuContainer = ({itemList, action, isPublished}) =>{
           {visible ? (
             <>
               <div className="flex justify-content-between pt-2 border-bottom">
-                <h6 className="m-0 text-muted p-2">Menu</h6>
+                <h6 className="m-0 text-muted p-2">{label ?? "Menu"}</h6>
                 <Button
                   type="button"
                   className=" p-0"
@@ -25,7 +25,8 @@ const MenuContainer = ({itemList, action, isPublished}) =>{
                 className="border-0 custom w-100"
                 style={{ background: "rgb(251, 253, 252)" }}
               />
-              {!isPublished && action}
+              <div className="mx-auto text-center">
+              {action}</div>
             </>
           ) : (
             <div className="position-absolute z-1 bg-white mt-1 rounded">
@@ -46,6 +47,6 @@ const MenuContainer = ({itemList, action, isPublished}) =>{
 MenuContainer.propTypes ={
     itemList: proptype.array.isRequired,
     action: proptype.element,
-    isPublished: proptype.bool
+    label: proptype.string
 }
 export default MenuContainer;

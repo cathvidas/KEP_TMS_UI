@@ -3,12 +3,12 @@ import { Modal } from "react-bootstrap";
 import { FormFieldItem } from "../trainingRequestFormComponents/FormElements";
 import { Button } from "primereact/button";
 import { useState } from "react";
-const AnnotationBox = ({header,label, description,placeholder, onSubmit, show, onClose, confirmButton}) => {
+const CommentBox = ({header,label, description,placeholder, onSubmit, show, onClose, confirmButton}) => {
     const [annotation, setAnnotation] = useState("")
     const [error, setError] = useState("")
     const verify = () => {
       if (annotation.trim() === "") {
-        setError("Annotation cannot be empty");
+        setError("This field is required");
       } else {
         setError("");
         onSubmit(annotation)
@@ -61,7 +61,7 @@ const AnnotationBox = ({header,label, description,placeholder, onSubmit, show, o
       </>
     );
 }
-AnnotationBox.propTypes = {
+CommentBox.propTypes = {
     header: proptype.string,
     description: proptype.string,
     onSubmit: proptype.func,
@@ -74,4 +74,4 @@ AnnotationBox.propTypes = {
         severity: proptype.string
     })
 }
-export default AnnotationBox;
+export default CommentBox;

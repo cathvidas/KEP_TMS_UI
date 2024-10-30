@@ -23,9 +23,7 @@ const ApproverPage = () => {
   );
   const items = [
     {
-      label: "For Approval",
       items: [
-        { separator: true, template: MenuItemTemplate },
         {
           label: "Requests",
           icon: "pi pi-list-check",
@@ -101,7 +99,7 @@ const ApproverPage = () => {
   }, [page, type]);
   const Content = () => (
     <div className={`d-flex g-0`}>
-      <MenuContainer itemList={items} />
+      <MenuContainer itemList={items}/>
       <div
         className={`border-start p-3 pb-5 flex-grow-1`}
         style={{ minHeight: "calc(100vh - 50px)" }}
@@ -116,7 +114,7 @@ const ApproverPage = () => {
       <Layout
         BodyComponent={Content}
         header={{
-          title: "For Approvals",
+          title: "For Approval",
           icon: <i className="pi pi-pen-to-square"></i>,
         }}
       />
