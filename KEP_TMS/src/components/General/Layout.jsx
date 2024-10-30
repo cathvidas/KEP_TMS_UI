@@ -14,6 +14,7 @@ const Layout = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [showmenu, setshowmenu] = useState(true);
+  const [showHeader, setShowHeader] = useState(true);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
   useEffect(() => {
@@ -43,15 +44,15 @@ const Layout = ({
             <Sidebars />
             <div className="flex-grow-1 d-flex flex-column d-block expand-transition overflow-hidden vh-100">
               <div className="d-flex">
+                {!header?.hide &&
                 <Header
                   title={header?.title}
                   IconComponent={header?.icon}
                   setShowModal={setShowModal}
-                />
+                />}
               </div>
               <div className="overflow-auto flex-grow-1" style={{background: "#fbfdfc"}}>
                 {BodyComponent && <BodyComponent />}
-                
               </div>
             </div>
           </div>

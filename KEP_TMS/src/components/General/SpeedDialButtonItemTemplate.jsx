@@ -3,7 +3,6 @@ const SpeedDialButtonItemTemplate = (data) => {
     <>
     {!data?.disable && 
       <a
-        href="#"
         role="menuitem"
         className={`p-speeddial-action ${data?.inactive && "disabled"}`}
         aria-label={data?.label}

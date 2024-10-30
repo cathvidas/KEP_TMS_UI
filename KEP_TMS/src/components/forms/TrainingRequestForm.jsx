@@ -40,7 +40,6 @@ export const TrainingRequestForm = () => {
   const categories = categoryHook.useAllCategories();
   const providers = providerHook.useAllProviders();
   const departments = commonHook.useAllDepartments();
-  // var details = {};
   const details = useRef({});
   const [isUpdate, setIsUpdate] = useState(false);
   var trainingSchedules = { trainingDates: [] };

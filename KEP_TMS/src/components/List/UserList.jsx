@@ -16,7 +16,8 @@ export const UserList = ({
   scrollHeight,
   column,
   allowEffectiveness = false,
-  sortable= false
+  sortable= false,
+  selectionMode
 }) => {
   // const [filters, setFilters] = useState(filterTemp);
   const [selected, setSelected] = useState(null);
@@ -63,7 +64,7 @@ export const UserList = ({
             size="small"
             stripedRows
          //   tableStyle={{ minWidth: "30rem" }}
-            selectionMode={true}
+            selectionMode={selectionMode}
             selection={trailingElement?.input === true ? selected : false}
             onSelectionChange={(e) => setSelected(e.value)}
             filters={filterTemp}

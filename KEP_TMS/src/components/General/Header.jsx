@@ -18,9 +18,9 @@ const Header = ({ title, IconComponent, showModal, setShowModal }) => {
           }}
         >
           {IconComponent && IconComponent}
-          <span className="ms-2 " style={{ color: "#00a76f" }}>
+          <small className="ms-2 " style={{ color: "#00a76f" }}>
             {title}
-          </span>
+          </small>
         </span>
       </a>
       <button className="navbar-toggler" data-bs-toggle="collapse">

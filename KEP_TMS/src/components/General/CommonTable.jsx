@@ -6,13 +6,14 @@ import { InputIcon } from "primereact/inputicon";
 import { useState } from "react";
 import { FilterMatchMode } from "primereact/api";
 import { InputText } from "primereact/inputtext";
-
+import "../../assets/css/customPrimeReact.css"
 
 const CommonTable = ({
   dataTable,
   columnItems,
   tableName,
-  header
+  header,
+  HeaderComponent
 }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -23,23 +24,25 @@ const CommonTable = ({
     let _filters = { ...filters };
 
     _filters["global"].value = value;
-console.log(_filters)
     setFilters(_filters);
     setGlobalFilterValue(value);
   };
   const renderHeader = () => {
     return (
-      <div className="flex flex-wrap gap-2 justify-content-between align-items-center">
-        <h6 className="m-0">{tableName ?? "Recent Trainings"}</h6>
+      <div className="flex flex-wrap">
+        <h6 className="m-0  ">{tableName ?? ""}</h6>
         {/*         
         <Button type="button" icon="pi pi-file" rounded onClick={() => exportCSV(false)} data-pr-tooltip="CSV" />
         <Button type="button" icon="pi pi-pencil" text onClick={handleExport} /> */}
-        <IconField iconPosition="left">
-          <InputIcon className="pi pi-search" />
+        {HeaderComponent && 
+        <HeaderComponent /> }
+        <IconField iconPosition="left" className="ms-auto" >
+          <InputIcon className="pi pi-search ms-1" />
           <InputText
             value={globalFilterValue}
             onChange={onGlobalFilterChange}
-            placeholder="Keyword Search"
+            placeholder="Search"
+            className="rounded-pill"
           />
         </IconField>
       </div>
@@ -51,7 +54,7 @@ console.log(_filters)
         {dataTable?.length > 0 ?
         <DataTable
           // ref={dt}
-
+          className="customTable"
           header={header??renderHeader}
           filters={filters}
           value={dataTable}
