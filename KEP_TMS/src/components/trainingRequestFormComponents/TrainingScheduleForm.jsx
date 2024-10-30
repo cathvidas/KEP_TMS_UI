@@ -14,12 +14,14 @@ import { TrainingDates } from "../../services/insertData";
 import { formatTotalTime, getTotalTime } from "../../utils/datetime/FormatDateTime";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 import ErrorTemplate from "../General/ErrorTemplate";
+import { Button } from "primereact/button";
 
 const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
   const [trainingSchedules, setTrainingSchedules] = useState(
     formData.trainingDates
   );
   const [schedData, setSchedData] = useState(TrainingDates);
+  const [isUpdate, setIsUpdate] = useState({value:false, index: null});
   const [error, setError] = useState();
   useEffect(() => {
     setError(errors?.schedules);
@@ -58,16 +60,19 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
   const handleTrainingSched = () => {
     // First, validate the schedule data
     const validate = ValidateSchedule(schedData);
-
+    let updatedSChedules = isUpdate.value ? trainingSchedules?.filter((_, i) => i !== isUpdate.index) : trainingSchedules;
     if (validate !== true) {
       // If validation fails, show the validation error
       setError(validate);
-    } else if (TrainingDateValidations(trainingSchedules, schedData)) {
+    } else if (TrainingDateValidations(updatedSChedules, schedData)) {
       // If there's a conflict in the schedule, set the error message
       setError("Conflicting schedule");
     } else {
       // If everything is valid, add the new schedule to the list
-      setTrainingSchedules((prevSchedules) => [...prevSchedules, schedData]);
+      setTrainingSchedules([...updatedSChedules, schedData]); 
+      if(isUpdate.value){
+        setIsUpdate({value: false, index: null});
+      }
       setError("");
       // Clear the form/reset schedData
       setSchedData(TrainingDates);
@@ -78,7 +83,11 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
     const updatedSchedules = trainingSchedules.filter((item, i) => i !== index);
     setTrainingSchedules(updatedSchedules);
   };
-
+  const updateSchedule = (index) => {
+    const updatedSchedules = trainingSchedules.find((_,i) => i === index);
+    setSchedData(updatedSchedules);
+    setIsUpdate({value: true, index: index});
+  };
   return (
     <>
       <Row className="mt-2">
@@ -117,13 +126,14 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
               <TrainingScheduleList
                 schedules={trainingSchedules}
                 onDelete={removeSchedule}
+                onUpdate={updateSchedule}
               />
               {errors?.trainingSchedules?.length > 0 &&
-              errors?.trainingSchedules?.map(err=>{
-                return (
-              <ErrorTemplate key={err?.index} message={err?.value}/>
-                )
-              })}
+                errors?.trainingSchedules?.map((err) => {
+                  return (
+                    <ErrorTemplate key={err?.index} message={err?.value} />
+                  );
+                })}
             </Col>
             <Col className="col-12 col-lg-5">
               <Row>
@@ -135,7 +145,7 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
                     className="form-control"
                     type="date"
                     name="date"
-                    min={formatDateOnly(new Date(), 'dash')}
+                    min={formatDateOnly(new Date(), "dash")}
                     value={schedData?.date}
                     onChange={handleInputChange}
                     // required
@@ -181,19 +191,35 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
                 </>
               )}
               {error && <small className="text-red">{error} </small>}
-              <div className="d-flex">
-                <button
-                  className="btn mt-2 ms-auto   btn-primary"
+              <div className="d-flex mt-2">
+                {isUpdate?.value && (
+                  <Button
+                    type="button"
+                    className="ms-auto me-2 rounded"
+                    icon="pi pi-plus"
+                    text
+                    label="Add New"
+                    size="small"
+                    onClick={() => {
+                      setIsUpdate({ value: false, index: null });
+                      setSchedData(TrainingDates)
+                    }}
+                  />
+                )}
+                <Button
                   type="button"
+                  className={`${!isUpdate?.value && "ms-auto"} rounded`}
+                  icon="pi pi-save"
+                  text
+                  label={isUpdate?.value ? "Update schedule" : "Save schedule"}
+                  size="small"
                   style={{
                     color: "rgb(101,85,143)",
                     background: "rgba(101,85,143,0.12)",
                     borderStyle: "none",
                   }}
                   onClick={handleTrainingSched}
-                >
-                  <i className="icon ion-plus"></i>&nbsp;Add schedule
-                </button>
+                />
               </div>
             </Col>
           </Row>

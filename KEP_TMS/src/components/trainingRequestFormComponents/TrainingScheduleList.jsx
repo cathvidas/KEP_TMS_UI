@@ -1,29 +1,34 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FormatDate, FormatTime, formatTotalTime, getTotalTime } from "../../utils/datetime/FormatDateTime";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FormatTime, formatTotalTime, getTotalTime } from "../../utils/datetime/FormatDateTime";
 import proptype from 'prop-types'
 import { Button } from "primereact/button";
-import sortSchedules from "../../utils/SortSchedule";
 import { DataTable } from "primereact/datatable";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Column } from "primereact/column";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
 
-const TrainingScheduleList = ({schedules, onDelete}) => {
+const TrainingScheduleList = ({schedules, onDelete, onUpdate}) => {
   const [schedData, setSchedData] = useState([]);
   useEffect(()=>{
     setSchedData(schedules);
   }, [schedules])
   const actionBodyComponent = (rowData, rowIndex) => (
     <div className="d-flex">
-      <Button
-      type="button"
-        icon="pi pi-trash"
-        severity="danger"
-        className="rounded p-button-text"
-        onClick={()=>onDelete(rowIndex.rowIndex)}
-      />
+    <Button
+    type="button"
+      icon="pi pi-pencil"
+      size="small"
+      className="rounded p-button-text"
+      onClick={()=>onUpdate(rowIndex.rowIndex)}
+    />
+    <Button
+    type="button"
+      icon="pi pi-trash"
+      size="small"
+      severity="danger"
+      className="rounded p-button-text"
+      onClick={()=>onDelete(rowIndex.rowIndex)}
+    />
     </div>
   );
 
@@ -88,5 +93,6 @@ const TrainingScheduleList = ({schedules, onDelete}) => {
 TrainingScheduleList.propTypes={
     schedules: proptype.array,
     onDelete: proptype.func,
+    onUpdate: proptype.func,
  };
 export default TrainingScheduleList
