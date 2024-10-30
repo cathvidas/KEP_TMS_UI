@@ -20,6 +20,7 @@ import getStatusById from "../../utils/status/getStatusById";
 import ActivityLog from "../General/ActivityLog";
 import activityLogHook from "../../hooks/activityLogHook";
 import { statusCode } from "../../api/constants";
+import getStatusCode from "../../utils/status/getStatusCode";
 
 const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitted, currentRouting, auditTrail}) => {
   const [formData, setFormData] = useState(trainingreportConstant);
@@ -30,27 +31,35 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     trainingRequestId: data.id,
     traineeBadge: SessionGetEmployeeId()
   };
-  console.log(formData, defaultValue)
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
   useEffect(()=>{
     if(defaultValue){
-      setFormData({...defaultValue});
+      const updatedData = {id: defaultValue?.id,trainingTakeaways: defaultValue?.trainingTakeaways,
+        actionPlan: defaultValue.actionPlan,
+        timeframe: defaultValue.timeframe,
+        statusId: getStatusCode(defaultValue.status),
+        activityRemarks: defaultValue.activityRemarks}
+      setFormData({...updatedData});
         setIsUpdate(defaultValue?.status === getStatusById(statusCode.DISAPPROVED))
     }
   }, [defaultValue, isSubmitted])
+  
+  console.log(defaultValue, getFormData)
   const handleSubmit = () => {
     const isValid = validateForm();
     if (isValid) {
       confirmAction({
-        onConfirm: ()=>handleResponseAsync(()=>
+        title: isUpdate ? 'Update Report' : "Submit Report",
+        onConfirm: ()=>handleResponseAsync(()=> isUpdate ?
+          trainingReportService.updateTrainingReport({...getFormData, updatedBy: SessionGetEmployeeId()}):
           trainingReportService.createTrainingReport(getFormData),
-        (e)=>{actionSuccessful("Training report created successfully", e.message)
+        (e)=>{actionSuccessful("Success", e.message)
           onFinish();
         },
-         (e)=>actionFailed("Error creating training report", e.message),
+         (e)=>actionFailed(`Error ${isUpdate ? 'updating' : 'submitting'} training report`, e.message),
     
         ),
       });
@@ -156,7 +165,7 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
                 name="trainingTakeaways"
                 value={formData?.trainingTakeaways ?? ""}
                 onChange={handleOnChange}
-                readOnly={isSubmitted}
+                readOnly={isSubmitted && !isUpdate}
               ></textarea>
             }
           />
@@ -176,7 +185,7 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
                 name="actionPlan"
                 value={formData?.actionPlan ?? ""}
                 onChange={handleOnChange}
-                readOnly={isSubmitted}
+                readOnly={isSubmitted && !isUpdate}
               ></textarea>
 
            
@@ -196,7 +205,7 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
                 name="timeframe"
                 value={formData?.timeframe ?? ""}
                 onChange={handleOnChange}
-                readOnly={isSubmitted}
+                readOnly={isSubmitted && !isUpdate}
               ></textarea>
 
             </div>
@@ -217,8 +226,8 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
           />
           <Button
             type="button"
-            icon="pi pi-cloud-upload"
-            label="Submit Form"
+            icon={isUpdate ? "pi pi-pencil":"pi pi-cloud-upload"}
+            label={isUpdate ? "Update Form": "Submit Form"}
             className="rounded ms-2"
             severity="success"
             onClick={handleSubmit}

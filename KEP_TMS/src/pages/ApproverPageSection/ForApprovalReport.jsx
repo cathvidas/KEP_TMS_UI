@@ -107,9 +107,11 @@ const ForApprovalReport = () => {
           updatedBy: SessionGetEmployeeId(),
           activityIn: ActivityType.REPORT,
           remarks:e,
-        }), ()=>{actionSuccessful("Success!", "successfully returned report");
+        }), 
+        ()=>{actionSuccessful("Success!", "successfully returned report");
           setTimeout(() => {
-            setTrigger(trigger+1)
+            setTrigger(trigger+1);
+            setShowAnnotation(false)
           }, 1000);
         }
       );

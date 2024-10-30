@@ -5,6 +5,7 @@ import {
   getAllTrainingReportsApi,
   getApproverAssignedReportsApi,
   getTrainingReportByIdApi,
+  updateTrainingReportApi,
 } from "../api/trainingReportApi";
 import commonService from "./commonService";
 import userMapping from "./DataMapping/userMapping";
@@ -13,6 +14,13 @@ import userService from "./userService";
 const trainingReportService = {
   createTrainingReport: async (data) => {
     const response = await createTrainingReportApi(data);
+    if(response.status !== 1){
+      throw new Error(response.message);
+    }
+    return response?.data;
+  },
+  updateTrainingReport: async (data) => {
+    const response = await updateTrainingReportApi(data);
     if(response.status !== 1){
       throw new Error(response.message);
     }
