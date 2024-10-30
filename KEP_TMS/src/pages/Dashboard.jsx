@@ -76,9 +76,9 @@ const Dashboard = () => {
       : []),
       {
         label: "Returned Request",
-        color1: "#d33434",
+        color1: "#d36034",
         color2: "#31bf77",
-        value: data.published ?? 0,
+        value: data.rejected ?? 0,
         icon: "pi pi-times-circle",
         status: "Disapproved",
       },
@@ -99,7 +99,6 @@ const Dashboard = () => {
       status: "Closed",
     },
   ];
-console.log(data)
   const Content = () => {
     return (
       <div className="p-3">

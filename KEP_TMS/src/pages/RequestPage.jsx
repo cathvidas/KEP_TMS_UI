@@ -154,8 +154,8 @@ const checkIfFacilitator= ()=>{
       <Layout
         BodyComponent={Content}
         header={{
-          title: "Request Detail",
-          icon: <FontAwesomeIcon icon={faFile} />,
+          title:"Training Request Detail",
+          // icon: <FontAwesomeIcon icon={faFile} />,
         }}
       />
     </>

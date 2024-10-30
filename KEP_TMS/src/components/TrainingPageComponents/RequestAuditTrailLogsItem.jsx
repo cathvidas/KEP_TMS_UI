@@ -3,7 +3,7 @@ import { formatDateTime } from "../../utils/datetime/Formatting";
 import { checkIfNullOrEmpty } from "../../utils/stringUtil";
 
 const RequestAuditTrailLogsItem = ({data})=>{
-    const logs = activityLogHook.useRequestAuditTrailActivityLogs(data?.auditTrail)
+    const logs = activityLogHook.useRequestAuditTrailActivityLogs(data?.auditTrail).filter(item=>item?.changes)
     console.log(logs)
     const checkIfHasValue = (item)=>{
         return  item?.value && item?.value !== "{}"
@@ -17,7 +17,7 @@ const RequestAuditTrailLogsItem = ({data})=>{
             <h6 className="mb-0" style={{ fontSize: "0.9rem" }}>
               {item.label}:
             </h6>
-            <small className="text-muted">{item?.value}</small>
+            <small className="text-muted">{item?.value?.toString()}</small>
           </div>
           }
         </>
@@ -25,9 +25,8 @@ const RequestAuditTrailLogsItem = ({data})=>{
     }
     return (
       <>
-        {logs?.map(
+        {logs?.length > 0 ? logs?.map(
           (item) =>
-            item?.changes && (
               <>
                 <div className="flex flex-wrap">
                   <h6 className="mb-0" style={{ fontSize: "0.9rem" }}>
@@ -70,8 +69,10 @@ const RequestAuditTrailLogsItem = ({data})=>{
                 />
                 <hr />
               </>
-            )
-        )}
+           
+        )
+        : <p>No logs available</p>
+      }
       </>
     );
 }

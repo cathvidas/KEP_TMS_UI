@@ -19,7 +19,7 @@ const activityLogHook = {
               ? formatDateTime(defaultValue?.auditTrail[0]?.createdDate)
               : "",
         });
-
+console.log(defaultValue)
         sortRoutingBySequence(defaultValue?.routings);
         defaultValue?.routings?.forEach((item) => {
           const isApproved =
@@ -105,7 +105,6 @@ const activityLogHook = {
           // }
         }
         // Routings
-        console.log(data);
         if (data?.status?.id != statusCode.SUBMITTED) {
           sortRoutingBySequence(data?.routings);
           data?.routings?.forEach((item) => {

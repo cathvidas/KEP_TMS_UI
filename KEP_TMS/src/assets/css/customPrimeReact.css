@@ -1,0 +1,7 @@
+.custom.p-menu .p-submenu-header {
+    padding: unset;
+}
+.customTable.p-datatable .p-datatable-header{
+    background: unset;
+    border: unset;
+}

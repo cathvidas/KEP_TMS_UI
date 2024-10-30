@@ -87,5 +87,24 @@ const effectivenessHook = {
     }, [datalist]);
     return { data, error, loading };
   },
+  useAllAssignedEffectivenessEvalutaion :()=>{
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequests = async () => {
+        handleResponseAsync(
+          () => effectivenessService.getAllEffectiveness(),
+          (e) => {
+
+            setData(e)},
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      getRequests();
+    }, []);
+    return { data, error, loading };
+  }
 };
 export default effectivenessHook;

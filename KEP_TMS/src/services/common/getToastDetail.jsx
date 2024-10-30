@@ -128,7 +128,7 @@ const getToastDetail = (
     const current = filteredData[0];
     const disApproverData = data?.approvers?.find(item=> item?.employeeBadge === current?.assignedTo);
     
-    const changes = JSON.parse(current?.changes);
+    const changes = current && JSON.parse(current?.changes);
     const remarks = extractChanges(changes?.Remarks?? "");
     statusData.summary = "Training Request Disapproved";
     statusData.detail = `Training Request was disapproved by ${disApproverData?.fullname ?? current?.assignedTo} with a message '${remarks?.toValue}.'`;

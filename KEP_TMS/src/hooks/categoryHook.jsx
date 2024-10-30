@@ -3,7 +3,7 @@ import handleResponseAsync from "../services/handleResponseAsync";
 import categoryService from "../services/categoryService";
 
 const categoryHook = {
-  useAllCategories: () => {
+  useAllCategories: (trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ const categoryHook = {
         );
       };
       getPrograms();
-    }, []);
+    }, [trigger]);
     return { data, error, loading };
   },
   useCategoryById: (id) => {

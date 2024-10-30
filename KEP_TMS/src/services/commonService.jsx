@@ -35,10 +35,13 @@ const commonService = {
     }
   },
   getRoutingActivityWithAuditTrail: async (transactId, activityIn) => {
+    try{
     const response =
       transactId &&
       (await getRoutingActivityWithAuditTrailApi(transactId, activityIn));
-    return response?.status === 1 ? response?.data : [];
+    return response}catch{
+      return []
+    }
   },
   getApprovedForms: async (assignedTo, activityIn) => {
     const response = await getApprovedFormsApi(assignedTo, activityIn);

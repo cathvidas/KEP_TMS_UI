@@ -15,7 +15,7 @@ import { UserList } from "../../components/List/UserList";
 import EmptyState from "../../components/trainingRequestFormComponents/EmptyState";
 import DetailsOverview from "../../components/TrainingPageComponents/DetailsOverview";
 import { formatDateTime } from "../../utils/datetime/Formatting";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Toast } from "primereact/toast";
 import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import getToastDetail from "../../services/common/getToastDetail";
@@ -74,8 +74,9 @@ const OverviewSection = ({
     setReqStatus(statsData);
   }, [data, userReports]);
 
-  const showSticky = () => {
+  const showSticky = useCallback(() => {
     if (reqStatus.show) {
+      setReqStatus({...reqStatus, show: false});
       toast.current?.clear();
       toast.current?.show({
         severity: reqStatus?.severity,
@@ -85,7 +86,7 @@ const OverviewSection = ({
         content: reqStatus?.content
       });
     }
-  };
+  },[reqStatus])
   const toast2 = useRef(null);
   const items = [
     {
@@ -103,9 +104,9 @@ const OverviewSection = ({
     {
         label: 'Status',
         icon: 'pi pi-info-circle',
-        command: showSticky,
+        command: ()=>showSticky,
         template: SpeedDialButtonItemTemplate,
-        // disable:true,
+        disable:true,
         // inactive: true
     },
     {
@@ -117,6 +118,9 @@ const OverviewSection = ({
         // inactive: true
     },
 ];
+useEffect(()=>{
+  // showSticky()
+},[showSticky])
   return (
     <>
       {showSticky()}
@@ -229,9 +233,9 @@ const OverviewSection = ({
           </>
         )}
       </div>
-      {SessionGetRole() === "Admin" ||
+      {(SessionGetRole() === "Admin" ||
         SessionGetRole() === "SuperAdmin" ||
-        (data?.requestorBadge == SessionGetEmployeeId() && (
+        data?.requestorBadge == SessionGetEmployeeId()) && (
           <div className="position-absolute bottom-0  mb-3 me-4 end-0">
             <Toast ref={toast2} />
             <Tooltip
@@ -245,16 +249,17 @@ const OverviewSection = ({
               buttonClassName="p-button-default rounded-circle "
             />
           </div>
-        ))}
+        )}
       <Dialog
         header="History Log"
         visible={showLogModal}
         maximizable
-        style={{ width: "50vw" }}
+        style={{ width: "50vw", minHeight: '50vh'}}
         onHide={() => {
           if (!showLogModal) return;
           setShowLogModal(false);
         }}
+        
       >
         <hr className="mt-0" />
         <RequestAuditTrailLogsItem data={data} />

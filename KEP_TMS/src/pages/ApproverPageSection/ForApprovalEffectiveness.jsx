@@ -123,14 +123,13 @@ const ForApprovaleffectiveness = () => {
           () => {
             actionSuccessful("Success!", "successfully returned report");
             setTimeout(() => {
-              setTrigger(trigger + 1);
+              setTrigger((prev)=>prev + 1);
             }, 1000);
           }
         );
       },
     });
   };
-  console.log(data)
   const columnItems = [
     {
       field: "id",
