@@ -11,7 +11,8 @@ import { formatDateOnly } from "../../utils/datetime/Formatting";
 
 const CategoryListSection = () => {
   const [visible, setVisible] = useState({ detail: false, form: false });
-  const { data, loading } = categoryHook.useAllCategories();
+  const [trigger, setTrigger] = useState(0)
+  const { data, loading } = categoryHook.useAllCategories(trigger);
   const [selectedData, setSelectedData] = useState({});
   const actionTemplate = (rowData) => (
     <>
@@ -94,8 +95,9 @@ const CategoryListSection = () => {
           type="button"
           icon="pi pi-plus"
           severity="success"
-          className="rounded theme-bg"
-          label={"programs"}
+          className="rounded theme-bg py-1"
+          text
+          label={"category"}
           onClick={() => {
             setVisible({ ...visible, form: true });
             setSelectedData(null);
@@ -119,14 +121,19 @@ const CategoryListSection = () => {
             ActionComponents={actionButton}
           />{" "}
           <CommonTable
+          tableName="Training Categories"
             dataTable={data}
             title="Programs"
             columnItems={columnItems}
+            // HeaderComponent={actionButton}
           />
           <CategoryForm
             handleShow={visible.form}
             handleClose={() => setVisible({ ...visible, form: false })}
             selectedData={selectedData}
+            onFinish={()=>{setTrigger((prev)=>prev+1);
+              setVisible({ ...visible, form: false })
+            }}
           />
           <Modal
             show={visible.detail}

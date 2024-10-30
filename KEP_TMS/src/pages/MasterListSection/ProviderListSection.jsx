@@ -109,7 +109,7 @@ const ProviderListSection = () => {
           type="button"
           icon="pi pi-plus"
           severity="success"
-          className="rounded theme-bg"
+          className="rounded theme-bg py-1"
           label={"providers"}
           onClick={() => {
             setVisible({ ...visible, form: true });
@@ -134,6 +134,7 @@ const ProviderListSection = () => {
             ActionComponents={actionButton}
           />{" "}
           <CommonTable
+          tableName={"Provider List"}
             dataTable={data}
             title="Providers"
             columnItems={columnItems}

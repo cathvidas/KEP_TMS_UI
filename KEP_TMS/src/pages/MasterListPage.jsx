@@ -17,7 +17,6 @@ const MasterListPage = () => {
   const navigate = useNavigate();
   const items = [
     {
-      label: "Menu",
       items: [
         {
           label: "Category",
@@ -98,7 +97,7 @@ const MasterListPage = () => {
       <div className="d-flex ">
         <MenuContainer itemList={items} />
         <div
-          className="flex-fill overflow-auto border-start p-3"
+          className="flex-fill overflow-auto p-3"
           style={{ minHeight: "calc(100vh - 50px)" }}
         >
           {pageContent[currentContent]}

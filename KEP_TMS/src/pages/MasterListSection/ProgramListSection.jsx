@@ -71,7 +71,7 @@ const ProgramListSection = () => {
           type="button"
           icon="pi pi-plus"
           severity="success"
-          className="rounded theme-bg"
+          className="rounded theme-bg py-1 "
           label={"programs"}
           onClick={() => {setVisible({...visible, form:true})
             setSelectedData(null)
@@ -97,6 +97,7 @@ const ProgramListSection = () => {
             ActionComponents={actionButton}
           />{" "}
           <CommonTable
+          tableName={"Training Programs"}
             dataTable={data}
             title="Programs"
             columnItems={columnItems}
