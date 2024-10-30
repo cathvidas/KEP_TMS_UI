@@ -4,20 +4,13 @@ import proptype from "prop-types";
 import UserIcon from "./UserIcon";
 import Swal from "sweetalert2";
 import icon2 from "/src/img/logo-nobg.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleLeft,
-  faAngleRight,
-  faClipboardCheck,
-} from "@fortawesome/free-solid-svg-icons";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { useState } from "react";
 import { SessionGetRole } from "../../services/sessions";
 
-const NavItem = ({ item, icon, title, expanded }) => {
+const NavItem = ({ item, icon, title }) => {
   const locations = useLocation();
   const getClassNames = (page) =>
-    `nav-link p-3 link-body-emphasis rounded-0  ${
+    `nav-link py-2 px-2 link-body-emphasis rounded-0  ${
       locations.pathname === page ? "link-light active" : "text-secondary"
     }`;
 
@@ -27,15 +20,21 @@ const NavItem = ({ item, icon, title, expanded }) => {
     </Tooltip>
   );
   return (
-    <li className="nav-item">
-      <OverlayTrigger
-        placement="right"
-        overlay={expanded !== "true" ? tooltip : <></>}
-      >
-        <Link className={getClassNames(item)} to={item} aria-current="page">
-          {icon && <>{icon}</>}
-          {expanded == "true" && title && (
-            <span className="text-start ms-3 ">{title}</span>
+    <li className="">
+      <OverlayTrigger placement="right" overlay={tooltip}>
+        <Link
+          className={getClassNames(item)}
+          style={{ padding: "2rem" , borderBottom: "1px solid #f1f1f1 "}}
+          to={item}
+          aria-current="page"
+        >
+          {icon && (
+            <div className="flex gap-1 flex-column text-center">
+              <i className={icon} style={{ fontSize: "1.4rem" }}></i>{" "}
+              <small style={{ fontSize: ".7rem", lineHeight: ".8rem", fontWeight: 500 }}>
+                {title}
+              </small>
+            </div>
           )}
         </Link>
       </OverlayTrigger>
@@ -43,18 +42,7 @@ const NavItem = ({ item, icon, title, expanded }) => {
   );
 };
 const Sidebars = () => {
-  const [expanded, setExpanded] = useState(localStorage.getItem("s-expand"));
   const navigate = useNavigate();
-  const toggleSidebar = () => {
-    var x = localStorage.getItem("s-expand");
-    if (x == "true") {
-      localStorage.setItem("s-expand", "false");
-      setExpanded("false");
-    } else {
-      localStorage.setItem("s-expand", "true");
-      setExpanded("true");
-    }
-  };
 
   const firstname = sessionStorage.getItem("firstname");
   const lastname = sessionStorage.getItem("lastname");
@@ -79,90 +67,56 @@ const Sidebars = () => {
   return (
     <>
       <div
-        className={`bg-body position-sticky d-none d-md-block  sidebar top-0 min-vh-100 bottom-0 z-1 border-right z-2 ${
-          expanded == "true" ? "expanded" : "collapsed"
-        }`}
+        className={`bg-body position-sticky d-none d-md-block  sidebar top-0 min-vh-100 bottom-0 z-1 border-right z-2 `}
         style={{
           borderRight:
             "var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)",
           height: "100vh",
+          width: "5rem"
         }}
       >
-        <div
-          className="d-flex position-absolute top-0 z-3 mt-3 bg-body"
-          style={{ right: "-12px" }}
-        >
-          <div
-            className="p-2 p-0 border d-flex justify-content-center rounded"
-            style={{ color: "var(--bs-secondary)" }}
-            onClick={toggleSidebar}
-          >
-            {expanded == "true" ? (
-              <FontAwesomeIcon icon={faAngleLeft} />
-            ) : (
-              <FontAwesomeIcon icon={faAngleRight} />
-            )}
-          </div>
-        </div>
         <div className="d-flex w-100 flex-column h-100  top-0 bottom-0">
           <Link
             className="fw-bold lh-1 theme-color flex text-decoration-none py-3 px-3 pe-4 d-flex"
+            // style={{borderBottom: "1px solid #f1f1f1 "}}
             href="/"
           >
             <img src={icon2} width="43" />
-            {expanded === "true" && (
-              <small style={{ whiteSpace: "nowrap" }}>
-                KNOWLES TRAINING <br /> REQUEST SYSTEM
-              </small>
-            )}
           </Link>
           <ul className="nav nav-pills flex-column nav-flush w-100 mb-auto">
             <NavItem
               item={"/KEP_TMS/Dashboard"}
               title="Home"
-              expanded={expanded}
-              icon={<i className="pi pi-home"></i>}
+              icon={"pi pi pi-home"}
             />
             <NavItem
               item={"/KEP_TMS/RequestList"}
               title="Training Requests"
-              expanded={expanded}
-              icon={<i className="pi pi-clipboard"></i>}
+              icon="pi pi-clipboard"
             />
             <NavItem
               item="/KEP_TMS/Trainings"
               title="Assigned Trainings"
-              expanded={expanded}
-              icon={<FontAwesomeIcon icon={faClipboardCheck} />}
+              icon="pi pi-address-book"
             />
             {SessionGetRole() === "Facilitator" &&
             <NavItem
               item="/KEP_TMS/AssignedTrainings"
               title="Facilitated Trainings"
-              expanded={expanded}
-              icon={<i className="pi pi-list-check"></i>}
+              icon="pi pi-list-check"
             />}
             <NavItem
               item={"/KEP_TMS/List/ForApproval"}
               title="For Approval"
-              expanded={expanded}
-              icon={<i className="pi pi-pen-to-square"></i>}
+              icon="pi pi-pen-to-square"
             />
-
-            {/* <NavItem
-                  item={"/KEP_TMS//TrainingRequest"}
-                  title="For Approval"
-                  expanded={expanded}
-                  icon={<FontAwesomeIcon icon={faCheckToSlot} />}
-                /> */}
             {(SessionGetRole() === "Admin" ||
               SessionGetRole() === "SuperAdmin") && (
                 <>
                   <NavItem
                     item="/KEP_TMS/MasterList"
                     title="Master List"
-                    expanded={expanded}
-                    icon={<i className="pi pi-list"></i>}
+                    icon="pi pi-list"
                   />
                   {/* <NavItem
                     item="/KEP_TMS/CertificatesPage"
@@ -179,22 +133,18 @@ const Sidebars = () => {
                   <NavItem
                     item="/KEP_TMS/Users"
                     title="Users"
-                    expanded={expanded}
-                    icon={<i className="pi pi-users"></i>}
+                    icon="pi pi-users"
                   />
                 </>
               )}
           </ul>
-          <div className={`dropdown p-3 d-flex ${expanded != "true" && "align-items-center"} flex-column nav-flush`}>
+          <div className={`dropdown p-3 d-flex flex-column nav-flush`}>
             <Link
-              className=" link-body-emphasis d-flex px-3 align-items-center text-decoration-none"
+              className=" link-body-emphasis d-flex mx-auto align-items-center text-decoration-none"
               aria-expanded="false"
               role="button"
             >
               <UserIcon Name={lastname + "," + firstname} />   
-              {expanded == "true" && (
-              <span className="text-start ms-3 ">{lastname + "," + firstname}</span>
-            )}
             </Link>
             <Link
               className=" link-body-emphasis p-3 d-flex align-items-center "
@@ -203,9 +153,6 @@ const Sidebars = () => {
               onClick={handleSignOut}
             >
               <i className="pi pi-sign-out"/>
-            {expanded == "true" && (
-              <span className="text-start ms-3 ">Log out</span>
-            )}
             </Link>
             
             {/* <Link
