@@ -48,13 +48,17 @@ const EffectivenessForm = ({
       const effectivenessData = formData;
       setAnnotation(effectivenessData?.annotation);
       setPerformanceCharacteristics(
-        effectivenessData?.performanceCharacteristics ?? [
-          effectivenessConstant.performanceCharacteristics,
+        effectivenessData?.performanceCharacteristics?.map(({content, id, rating,effectivenessId})=>({
+          content, id, rating, effectivenessId
+        })) ?? [
+          effectivenessConstant.performanceCharacteristics
         ]
       );
       setProjectPerformanceEvaluation(
-        effectivenessData?.projectPerformanceEvaluation ?? [
-          effectivenessConstant.projectPerformanceEvaluation,
+        effectivenessData?.projectPerformanceEvaluation?.map(({actualPerformance,content,effectivenessId,evaluatedActualPerformance,id,performanceBeforeTraining,projectedPerformance})=>({
+          actualPerformance,content,effectivenessId,evaluatedActualPerformance,id,performanceBeforeTraining,projectedPerformance
+        })) ?? [
+          effectivenessConstant.projectPerformanceEvaluation
         ]
       );
       setIsSubmitted(true);
@@ -62,7 +66,6 @@ const EffectivenessForm = ({
         setIsUpdate(true)
       }
     }
-    console.log(formData)
   }, [formData]);
   const getFacilitators = () => {
     let facilitators = "";
@@ -118,6 +121,7 @@ const EffectivenessForm = ({
     setErrors(formErrors);
     if (isValid) {
       confirmAction({
+        showLoaderOnConfirm: true,
         title: isUpdate ? "Update Form" : "Confirm Submission",
         message: `Are you sure you want to ${isUpdate ? "update" : "submit"} this form?`,
         confirmButtonText: isUpdate ? "Update":"Submit",
@@ -409,10 +413,10 @@ const EffectivenessForm = ({
                       />
                       <small className="mt-1 d-block">
                         {isSubmitted
-                          ? formatDateTime(auditTrail?.createdDate)
+                          ? formatDateOnly(auditTrail?.createdDate)
                           : projectPerformanceEvaluation[index]
                               ?.performanceBeforeTraining !== 0 &&
-                            formatDateTime(new Date())}
+                            formatDateOnly(new Date())}
                       </small>
                     </td>
                     <td
@@ -432,10 +436,10 @@ const EffectivenessForm = ({
                       />
                       <small className="mt-1 d-block">
                         {isSubmitted
-                          ? formatDateTime(auditTrail?.createdDate)
+                          ? formatDateOnly(auditTrail?.createdDate)
                           : projectPerformanceEvaluation[index]
                               ?.projectedPerformance !== 0 &&
-                            formatDateTime(new Date())}
+                            formatDateOnly(new Date())}
                       </small>
                     </td>
                     <td

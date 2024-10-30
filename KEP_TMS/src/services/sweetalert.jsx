@@ -10,9 +10,11 @@ export const confirmAction = (prop) => {
     cancelButtonColor:prop.cancelButtonColor?? "#dcdcdc",
     confirmButtonText: prop.confirmButtonText??"Submit",
     cancelButtonText: prop.cancelButtonText??"Cancel",
-    reverseButtons: true
+    reverseButtons: true,
   }).then((result) => {
     if (result.isConfirmed) {
+      if(prop.showLoaderOnConfirm){
+      actionDelay();}
       if(prop?.param){
         prop.onConfirm(prop?.param);
       }else{
@@ -28,9 +30,14 @@ export const actionDelay = () => {
     Swal.fire({
         title: 'Please wait',
         text: 'This action will take some time.',
-        icon: 'info',
         showConfirmButton: false,
-        timer: 3000
+        // timer: 3000,
+        timerProgressBar: true,
+        allowOutsideClick: false,
+        didOpen:  () => {
+          Swal.showLoading()
+        }
+
     });
 }
 

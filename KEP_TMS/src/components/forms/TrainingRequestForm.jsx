@@ -237,7 +237,8 @@ export const TrainingRequestForm = () => {
             icon="pi pi-arrow-right"
             iconPos="right"
             severity="success"
-            onClick={() => confirmAction({ onConfirm: handleFormSubmission })}
+            onClick={() => confirmAction({
+              showLoaderOnConfirm: true, onConfirm: handleFormSubmission })}
           />
         )}
       </div>
