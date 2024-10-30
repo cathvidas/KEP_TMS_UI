@@ -77,9 +77,9 @@ const Sidebars = () => {
       >
         <div className="d-flex w-100 flex-column h-100  top-0 bottom-0">
           <Link
-            className="fw-bold lh-1 theme-color flex text-decoration-none py-3 px-3 pe-4 d-flex"
+            className="fw-bold lh-1 theme-color flex text-decoration-none py-1 px-3 pe-4 d-flex"
             // style={{borderBottom: "1px solid #f1f1f1 "}}
-            href="/"
+            to={"/KEP_TMS/Dashboard"}
           >
             <img src={icon2} width="43" />
           </Link>
