@@ -2,7 +2,6 @@ import { SectionBanner } from "../../components/General/Section";
 import { useEffect, useState } from "react";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import { getUserApi } from "../../api/userApi";
-import StatusColor from "../../components/General/StatusColor";
 import { mapForApprovalRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
 import ApproverAction from "../../components/tableComponents/ApproverAction";
@@ -105,7 +104,7 @@ const ForApprovalRequest = () => {
   return (
     <div className="p-3">
     <SectionBanner
-      title="For Approvals"
+      title="For Approval Training Requests"
       subtitle="List of Trainings waiting for Approval"
     />
     <CommonTable dataTable={request} columnItems={columnItems} tableName="Training Requests"/>

@@ -13,7 +13,9 @@ const CommonTable = ({
   columnItems,
   tableName,
   header,
-  HeaderComponent
+  HeaderComponent,
+  hideHeader,
+  hidePaginator,
 }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -55,13 +57,13 @@ const CommonTable = ({
         <DataTable
           // ref={dt}
           className="customTable"
-          header={header??renderHeader}
+          header={!hideHeader ? header ?? renderHeader : ""}
           filters={filters}
           value={dataTable}
           size="small"
           scrollable
           scrollHeight="flex"
-          paginator
+          paginator={!hidePaginator}
           stripedRows
           dataKey={"id"}
           rows={10}
@@ -90,5 +92,8 @@ CommonTable.propTypes = {
   columnItems: proptype.array,
   tableName: proptype.string,
   header: proptype.func,
+  HeaderComponent: proptype.any,
+  hideHeader: proptype.bool,
+  hidePaginator: proptype.bool,
 };
 export default CommonTable;

@@ -1,4 +1,4 @@
-import { approveTrainingFormApi, getCurrentRoutingActivityApi } from "../api/commonApi";
+import { approveTrainingFormApi } from "../api/commonApi";
 import { ActivityType } from "../api/constants";
 import {
   createTrainingReportApi,

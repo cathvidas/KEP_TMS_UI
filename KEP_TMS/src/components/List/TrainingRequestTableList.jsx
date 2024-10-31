@@ -19,6 +19,7 @@ import {
   formatDateOnly,
 } from "../../utils/datetime/Formatting";
 import { checkTrainingIfOutDated } from "../../services/inputValidation/validateTrainingSchedules";
+import TooltipTemplate from "../General/TooltipTemplate";
 
 const TrainingRequestTableList = ({
   data,
@@ -225,15 +226,15 @@ const TrainingRequestTableList = ({
           )}
         </span>
         <IconField iconPosition="left">
-          <InputIcon className="pi pi-search" />
+          <InputIcon className="pi pi-search ms-1" />
           <InputText
             value={globalFilterValue}
             onChange={onGlobalFilterChange}
             placeholder="Keyword Search"
+            className="rounded-pill"
           />
         </IconField>
-
-        <ExportBtn data={data} />
+        <TooltipTemplate title="Export" placement="left" item={<ExportBtn data={data} />} />
       </div>
     );
   };
@@ -252,7 +253,8 @@ const TrainingRequestTableList = ({
           dataKey="id"
           filters={filters}
           header={header}
-          // emptyMessage="No data found."
+          emptyMessage="No data found."
+          className="customTable"
           sortMode="multiple"
         >
           <Column field="id" header="Id" sortable></Column>

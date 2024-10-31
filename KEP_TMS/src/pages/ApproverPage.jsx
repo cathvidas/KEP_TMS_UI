@@ -18,7 +18,7 @@ const ApproverPage = () => {
     <ForApprovaleffectiveness key={1} />,
     <ForApprovalReport key={2}/>,
   ];
-  const {data, error, loading} = commonHook.useAllAssignedForApproval(
+  const {data} = commonHook.useAllAssignedForApproval(
     SessionGetEmployeeId()
   );
   const items = [
@@ -101,7 +101,7 @@ const ApproverPage = () => {
     <div className={`d-flex g-0`}>
       <MenuContainer itemList={items}/>
       <div
-        className={`border-start p-3 pb-5 flex-grow-1`}
+        className={`p-3 pb-5 flex-grow-1`}
         style={{ minHeight: "calc(100vh - 50px)" }}
       >
         {pageContent[currentContent]}

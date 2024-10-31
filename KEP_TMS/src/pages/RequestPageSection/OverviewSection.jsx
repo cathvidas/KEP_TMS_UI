@@ -27,10 +27,9 @@ import trainingRequestService from "../../services/trainingRequestService";
 import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
 import { statusCode } from "../../api/constants";
 import SpeedDialButtonItemTemplate from "../../components/General/SpeedDialButtonItemTemplate";
-import ActivityLog from "../../components/General/ActivityLog";
-import activityLogHook from "../../hooks/activityLogHook";
 import RequestAuditTrailLogsItem from "../../components/TrainingPageComponents/RequestAuditTrailLogsItem";
 import { Dialog } from "primereact/dialog";
+import ActivityList from "../../components/List/ActivityList";
 
 const OverviewSection = ({
   data,
@@ -118,12 +117,9 @@ const OverviewSection = ({
         // inactive: true
     },
 ];
-useEffect(()=>{
-  // showSticky()
-},[showSticky])
   return (
     <>
-      {showSticky()}
+      {/* {showSticky()} */}
 
       <Toast ref={toast} position="bottom-center" className="z-1" />
       <div className="card p-3 w-100">
@@ -229,7 +225,8 @@ useEffect(()=>{
         {logs && (
           <>
             <hr />
-            <ActivityLog isDescending label={"Activity Logs"} items={logs} />
+            {/* <ActivityLog isDescending label={"Activity Logs"} items={logs} /> */}
+            <ActivityList data={logs?.filter(item=>item.show)} label={"Activities"}/>
           </>
         )}
       </div>
@@ -274,6 +271,7 @@ OverviewSection.propTypes = {
   showFacilitators: proptype.bool,
   showApprovers: proptype.bool,
   isAdmin: proptype.bool,
-  userReports: proptype.object
+  userReports: proptype.object,
+  logs: proptype.array,
 };
 export default OverviewSection;

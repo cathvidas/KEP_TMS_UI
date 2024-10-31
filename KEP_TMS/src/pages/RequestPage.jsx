@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile } from "@fortawesome/free-solid-svg-icons";
 import Layout from "../components/General/Layout.jsx";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,6 +17,7 @@ import trainingRequestService from "../services/trainingRequestService.jsx";
 import { Button } from "primereact/button";
 import { validateTrainingRequestForm } from "../services/inputValidation/validateTrainingRequestForm.jsx";
 import activityLogHook from "../hooks/activityLogHook.jsx";
+import { checkTrainingIfOutDated } from "../services/inputValidation/validateTrainingSchedules.jsx";
 
 const TrainingRequestPage = () => {
   const navigate = useNavigate();
@@ -124,7 +123,7 @@ const checkIfFacilitator= ()=>{
     }
     return (
       <>  <div className={`d-flex g-0`}>
-          {showMenu() && (<>
+          {showMenu() && !checkTrainingIfOutDated(data) && (<>
             <MenuContainer itemList={items} action={ !isNotPublished() &&
               <Button type="button" label="Publish" size="small" severity="info" className="rounded py-1 ms-3" onClick={handlePublish}/>
               }/>

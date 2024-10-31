@@ -178,8 +178,8 @@ const ForApprovaleffectiveness = () => {
       ) : (
         <>
           <SectionBanner
-            title="Training Request Effectiveness"
-            subtitle="List of for Approval"
+            title="Training Effectiveness"
+            subtitle="List of for Approval Training Effectiveness"
           />
           <CommonTable
             dataTable={data}

@@ -19,7 +19,6 @@ const activityLogHook = {
               ? formatDateTime(defaultValue?.auditTrail[0]?.createdDate)
               : "",
         });
-console.log(defaultValue)
         sortRoutingBySequence(defaultValue?.routings);
         defaultValue?.routings?.forEach((item) => {
           const isApproved =
@@ -60,13 +59,18 @@ console.log(defaultValue)
   },
   useTrainingRequestActivityLogs: (data, reportsData) => {
     const [logs, setLogs] = useState([]);
+    console.log(data)
     useEffect(() => {
       if (data) {
         let newLogs = [];
         newLogs.push({
+          name: data?.requestor?.fullname,
+          process: "New",
+          remark: "N/A",
           label: "Created",
           date: data?.createdDate,
           severity: "secondary",
+          show: true,
         });
         //effectiveness
         if (reportsData) {
@@ -108,24 +112,31 @@ console.log(defaultValue)
         if (data?.status?.id != statusCode.SUBMITTED) {
           sortRoutingBySequence(data?.routings);
           data?.routings?.forEach((item) => {
+            console.log(item?.statusId)
             const isApproved =
-              item?.statusId === statusCode.APPROVED ? true : false;
+              item?.statusId === statusCode.APPROVED;
             const isDisapproved =
-              item?.statusId === statusCode.DISAPPROVED ? true : false;
+              item?.statusId === statusCode.DISAPPROVED;
+            const changes = JSON.parse(item?.changes);
+            const remarks = extractChanges(changes?.Remarks ?? "");
             if (isApproved || isDisapproved) {
               newLogs.push({
+                name: getNameFromList(data?.approvers, item?.assignedTo) ?? item.assignedTo,
+                process: getNameFromList(data?.approvers, item?.assignedTo, false)?.position,
                 label: `Routed to ${
                   getNameFromList(data?.approvers, item?.assignedTo) ??
                   item.assignedTo
                 }`,
                 date: formatDateTime(item?.updatedDate),
                 severity: "default",
+                show: true,
+                remark: isApproved ? "Approved" : isDisapproved ? remarks?.toValue ?? "Disapproved": "N/A"
               });
             }
 
-            const changes = JSON.parse(item?.changes);
-            const remarks = extractChanges(changes?.Remarks ?? "");
             newLogs.push({
+              name: getNameFromList(data?.approvers, item?.assignedTo)?.position ?? item.assignedTo,
+              process: getNameFromList(data?.approvers, item?.assignedTo, false)?.position + " Approval",
               label: isApproved
                 ? `Approved by ${
                     getNameFromList(data?.approvers, item?.assignedTo) ??
@@ -148,6 +159,7 @@ console.log(defaultValue)
                   ? item.updatedDate
                   : item?.createdDate
               ),
+              show: false,
               severity: isApproved
                 ? "success"
                 : isDisapproved

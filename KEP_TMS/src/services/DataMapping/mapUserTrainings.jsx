@@ -1,28 +1,48 @@
 import { statusCode } from "../../api/constants";
+import {
+  CompareDateWithToday,
+  CompareTimeWithToday,
+} from "../../utils/datetime/dateComparison";
 
-const mapUserTrainings = (data, id)=>{
+const mapUserTrainings = (data, id) => {
   const entity = {
     attended: [],
     facilitated: [],
-    ongoing: [],
     requested: [],
+    ongoing: []
   };
-  data?.forEach((item) => {
-    if(item?.requestorBadge === id){
-        entity.requested.push(item);
+  const filterData = data?.filter(
+    (item) =>
+      (CompareDateWithToday(item?.trainingEndDate)?.isPast ||
+        (CompareDateWithToday(item?.trainingEndDate)?.isToday &&
+        item?.trainingDates?.lenght > 0
+          ? CompareTimeWithToday(
+              item?.trainingDates[item?.trainingDates?.lenght - 1]?.endTime
+            )?.isPast
+          : "")) &&
+      (item?.status?.id === statusCode.CLOSED ||
+        item?.status?.id === statusCode.PUBLISHED)
+  );
+  filterData?.forEach((item) => {
+    if (item?.requestorBadge === id) {
+      entity.requested.push(item);
     }
-    const isParticipant = item?.trainingParticipants?.find((participant) => participant?.employeeBadge === id);
-    if(isParticipant && new Date(item?.trainingEndDate) < new Date()){
-        entity.attended.push(item);
-        if(item?.status?.id !== statusCode.CLOSED){
-            entity.ongoing.push(item);
-        }
+    const isParticipant = item?.trainingParticipants?.find(
+      (participant) => participant?.employeeBadge === id
+    );
+    if (isParticipant) {
+      entity.attended.push(item);
+      if (item?.status?.id !== statusCode.CLOSED) {
+        entity.ongoing.push(item);
+      }
     }
-    const isFacilitator = item?.trainingFacilitators?.find((facilitator) => facilitator?.facilitatorBadge === id);
-    if(isFacilitator  && new Date(item?.trainingEndDate) < new Date()){
-        entity.facilitated.push(item);
+    const isFacilitator = item?.trainingFacilitators?.find(
+      (facilitator) => facilitator?.facilitatorBadge === id
+    );
+    if (isFacilitator) {
+      entity.facilitated.push(item);
     }
   });
   return entity;
-}
+};
 export default mapUserTrainings;

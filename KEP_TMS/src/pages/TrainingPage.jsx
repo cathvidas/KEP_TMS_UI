@@ -19,6 +19,7 @@ import ActivityLogView from "./TrainingPageSection/ActivityLogView";
 import TraineeCertificateView from "./TrainingPageSection/TraineeCertificateView";
 import examHook from "../hooks/examHook";
 import { CompareDateWithToday } from "../utils/datetime/dateComparison";
+import { checkTrainingIfOutDated } from "../services/inputValidation/validateTrainingSchedules";
 const TrainingPage = () => {
   const [trigger, setTrigger] = useState(0);
   const { id, page } = useParams();
@@ -165,7 +166,8 @@ const TrainingPage = () => {
   const bodyContent = () => {
     return (
       <div className={`d-flex g-0`} >
-        <MenuContainer itemList={items} />
+        {!checkTrainingIfOutDated(data) &&
+        <MenuContainer itemList={items} />}
         <div
           className={` p-3 pb-5 flex-grow-1`}
           style={{ minHeight: "calc(100vh - 60px)" }}

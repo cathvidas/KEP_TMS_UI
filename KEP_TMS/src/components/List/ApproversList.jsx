@@ -60,10 +60,23 @@ const ApproverList = ({data }) => {
       >
         <Column header="No" body={(_, { rowIndex }) => rowIndex + 1} />
         <Column field="fullname" header="Name"></Column>
-        <Column field="employeeBadge" header="Badge No"></Column>
-        <Column field="departmentName" header="Department"></Column>
-        <Column header="Approved Date" body={(rowData)=><>{getApprovedDate(rowData.employeeBadge) ? formatDateTime(getApprovedDate(rowData.employeeBadge)):"N/A"}</>}></Column>
+        {/* <Column field="employeeBadge" header="Badge No"></Column> */}
+        <Column
+          field="position"
+          header="Title"
+          body={(rowData) => <>{rowData?.position + " Approval"}</>}
+        ></Column>
         <Column header="Status" body={statusTemplate}></Column>
+        <Column
+          header="Approved Date"
+          body={(rowData) => (
+            <>
+              {getApprovedDate(rowData.employeeBadge)
+                ? formatDateTime(getApprovedDate(rowData.employeeBadge))
+                : "N/A"}
+            </>
+          )}
+        ></Column>
         <Column header="Action" body={actionBodyTemplate}></Column>
       </DataTable>
       <EmailForm handleShow={visible} handleClose={() => setVisible(false)} />
