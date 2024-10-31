@@ -20,7 +20,7 @@ export const SessionGetUserId = () => {
 };
 
 export const SessionSetReference=(data)=>{
-  sessionStorage.setItem("fullname", `${data.lastname}, ${data.firstname}`);
+  sessionStorage.setItem("fullname", data.fullname);
   sessionStorage.setItem("username", data.username);
   sessionStorage.setItem("firstname", data.firstname);
   sessionStorage.setItem("lastname", data.lastname);
