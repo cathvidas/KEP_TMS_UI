@@ -1,11 +1,11 @@
-import "../../assets/css/sidebar.css"
+import "../../assets/css/sidebar.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import proptype from "prop-types";
 import UserIcon from "./UserIcon";
 import Swal from "sweetalert2";
 import icon2 from "/src/img/logo-nobg.png";
-import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { SessionGetRole } from "../../services/sessions";
+import TooltipTemplate from "./TooltipTemplate";
 
 const NavItem = ({ item, icon, title }) => {
   const locations = useLocation();
@@ -14,30 +14,34 @@ const NavItem = ({ item, icon, title }) => {
       locations.pathname === page ? "link-light active" : "text-secondary"
     }`;
 
-  const tooltip = (
-    <Tooltip>
-      <span>{title}</span>
-    </Tooltip>
-  );
   return (
     <li className="">
-      <OverlayTrigger placement="right" overlay={tooltip}>
-        <Link
-          className={getClassNames(item)}
-          style={{ padding: "2rem" , borderBottom: "1px solid #f1f1f1 "}}
-          to={item}
-          aria-current="page"
-        >
-          {icon && (
-            <div className="flex gap-1 flex-column text-center">
-              <i className={icon} style={{ fontSize: "1.4rem" }}></i>{" "}
-              <small style={{ fontSize: ".7rem", lineHeight: ".8rem", fontWeight: 500 }}>
-                {title}
-              </small>
-            </div>
-          )}
-        </Link>
-      </OverlayTrigger>
+      <TooltipTemplate
+        title={title}
+        item={
+          <Link
+            className={getClassNames(item)}
+            style={{ padding: "2rem", borderBottom: "1px solid #f8f8f8 " }}
+            to={item}
+            aria-current="page"
+          >
+            {icon && (
+              <div className="flex gap-1 flex-column text-center">
+                <i className={icon} style={{ fontSize: "1.4rem" }}></i>{" "}
+                <small
+                  style={{
+                    fontSize: ".7rem",
+                    lineHeight: ".8rem",
+                    fontWeight: 500,
+                  }}
+                >
+                  {title}
+                </small>
+              </div>
+            )}
+          </Link>
+        }
+      />
     </li>
   );
 };
@@ -46,6 +50,7 @@ const Sidebars = () => {
 
   const firstname = sessionStorage.getItem("firstname");
   const lastname = sessionStorage.getItem("lastname");
+  const fullname = sessionStorage.getItem("fullname");
 
   const handleSignOut = () => {
     Swal.fire({
@@ -72,13 +77,12 @@ const Sidebars = () => {
           borderRight:
             "var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)",
           height: "100vh",
-          width: "5rem"
+          width: "5rem",
         }}
       >
         <div className="d-flex w-100 flex-column h-100  top-0 bottom-0">
           <Link
             className="fw-bold lh-1 theme-color flex text-decoration-none py-1 px-3 pe-4 d-flex"
-            // style={{borderBottom: "1px solid #f1f1f1 "}}
             to={"/KEP_TMS/Dashboard"}
           >
             <img src={icon2} width="43" />
@@ -99,12 +103,13 @@ const Sidebars = () => {
               title="Assigned Trainings"
               icon="pi pi-address-book"
             />
-            {SessionGetRole() === "Facilitator" &&
-            <NavItem
-              item="/KEP_TMS/AssignedTrainings"
-              title="Facilitated Trainings"
-              icon="pi pi-list-check"
-            />}
+            {SessionGetRole() === "Facilitator" && (
+              <NavItem
+                item="/KEP_TMS/AssignedTrainings"
+                title="Facilitated Trainings"
+                icon="pi pi-list-check"
+              />
+            )}
             <NavItem
               item={"/KEP_TMS/List/ForApproval"}
               title="For Approval"
@@ -112,31 +117,30 @@ const Sidebars = () => {
             />
             {(SessionGetRole() === "Admin" ||
               SessionGetRole() === "SuperAdmin") && (
-                <>
-                  <NavItem
-                    item="/KEP_TMS/MasterList"
-                    title="Master List"
-                    icon="pi pi-list"
-                  />
+              <>
+                <NavItem
+                  item="/KEP_TMS/MasterList"
+                  title="Master List"
+                  icon="pi pi-list"
+                />
                   {/* <NavItem
-                    item="/KEP_TMS/CertificatesPage"
-                    title="Certificates"
-                    expanded={expanded}
-                    icon={<FontAwesomeIcon icon={faAward} />}
-                  />
-                  <NavItem
                     item="/KEP_TMS/AnalyticsPage"
                     title="Analytics"
                     expanded={expanded}
                     icon={<i className="pi pi-chart-bar"></i>}
                   /> */}
-                  <NavItem
-                    item="/KEP_TMS/Users"
-                    title="Users"
-                    icon="pi pi-users"
-                  />
-                </>
-              )}
+                <NavItem
+                  item="/KEP_TMS/Users"
+                  title="Users"
+                  icon="pi pi-users"
+                />
+              </>
+            )}
+            <NavItem
+                item="/KEP_TMS/CertificatesPage"
+                title="Certificates"
+                icon={"pi pi-trophy"}
+              />
           </ul>
           <div className={`dropdown p-3 d-flex flex-column nav-flush`}>
             <Link
@@ -144,7 +148,7 @@ const Sidebars = () => {
               aria-expanded="false"
               role="button"
             >
-              <UserIcon Name={lastname + "," + firstname} />   
+              <UserIcon Name={fullname ?? lastname + "," + firstname} />
             </Link>
             <Link
               className=" link-body-emphasis p-3 d-flex align-items-center "
@@ -152,35 +156,8 @@ const Sidebars = () => {
               role="button"
               onClick={handleSignOut}
             >
-              <i className="pi pi-sign-out"/>
+              <i className="pi pi-sign-out" />
             </Link>
-            
-            {/* <Link
-              className="dropdown-toggle link-body-emphasis d-flex align-items-center text-decoration-none"
-              aria-expanded="false"
-              data-bs-toggle="dropdown"
-              role="button"
-            >
-              <UserIcon Name={lastname + "," + firstname} />
-            </Link>
-            <div
-              className="dropdown-menu shadow text-small"
-              data-popper-placement="top-start"
-            >
-              <Link className="dropdown-item" href="#">
-                New project...
-              </Link>
-              <Link className="dropdown-item" href="#">
-                Settings
-              </Link>
-              <Link className="dropdown-item" href="#">
-                Profile
-              </Link>
-              <div className="dropdown-divider"></div>
-              <Link className="dropdown-item" onClick={handleSignOut}>
-                Sign out
-              </Link>
-            </div> */}
           </div>
         </div>
       </div>
@@ -190,7 +167,7 @@ const Sidebars = () => {
 
 NavItem.propTypes = {
   item: proptype.string.isRequired,
-  icon: proptype.object,
+  icon: proptype.string,
   title: proptype.string,
   expanded: proptype.string,
 };
