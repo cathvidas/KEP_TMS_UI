@@ -172,9 +172,10 @@ const uploadCertificate = (e)=>{
     const formData = new FormData();
     formData.append("ReferenceId", data?.id);
     formData.append("AttachmentType", attachmentType.CERTIFICATE);
-    formData.append("EmployeeBadge", SessionGetEmployeeId());
+    // formData.append("EmployeeBadge", SessionGetEmployeeId());
     formData.append("Files", file);
     confirmAction({
+      showLoaderOnConfirm: true,
         title: "Upload Certificate",
         text: "Are you sure you want to upload this certificate?",
       onConfirm: () =>

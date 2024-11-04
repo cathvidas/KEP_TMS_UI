@@ -1,3 +1,7 @@
+export const ApiConstant = {
+  BASE_URL: "http://localhost:5030/api",
+  // BASE_URL: "http://kep-testenvw16:2024/api",
+}
 export const statusCode = {
   INACTIVE: 1,
   ACTIVE: 2,

@@ -47,7 +47,6 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     }
   }, [defaultValue, isSubmitted])
   
-  console.log(defaultValue, getFormData)
   const handleSubmit = () => {
     const isValid = validateForm();
     if (isValid) {
@@ -83,7 +82,6 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     setErrors(formErrors);
     return isValid;
   };
-  // console.log(defaultValue, auditTrail)
 const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
   return (
     <Card.Body>

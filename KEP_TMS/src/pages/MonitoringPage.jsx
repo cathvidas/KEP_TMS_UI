@@ -27,9 +27,7 @@ const MonitoringPage = () => {
   ];
   const navigate = useNavigate();
   const monitoringMenuItem = [  {
-    label: "Menu",
     items: [     
-      { separator: true, template: MenuItemTemplate },
       {
         label: "Overview",
         icon: "pi pi-info-circle",
@@ -84,7 +82,7 @@ const MonitoringPage = () => {
       <div className={`d-flex g-0`}>
         <MenuContainer itemList={monitoringMenuItem} />
         <div
-          className={`border-start p-3 pb-5 flex-grow-1`}
+          className={`p-3 pb-5 flex-grow-1`}
           style={{ minHeight: "calc(100vh - 50px)" }}
         >
           {loading ? (

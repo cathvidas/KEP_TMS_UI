@@ -166,8 +166,7 @@ const TrainingPage = () => {
   const bodyContent = () => {
     return (
       <div className={`d-flex g-0`} >
-        {!checkTrainingIfOutDated(data) &&
-        <MenuContainer itemList={items} />}
+        <MenuContainer itemList={items} />
         <div
           className={` p-3 pb-5 flex-grow-1`}
           style={{ minHeight: "calc(100vh - 60px)" }}

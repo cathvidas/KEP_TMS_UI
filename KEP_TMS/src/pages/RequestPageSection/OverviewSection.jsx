@@ -30,7 +30,9 @@ import SpeedDialButtonItemTemplate from "../../components/General/SpeedDialButto
 import RequestAuditTrailLogsItem from "../../components/TrainingPageComponents/RequestAuditTrailLogsItem";
 import { Dialog } from "primereact/dialog";
 import ActivityList from "../../components/List/ActivityList";
-
+import handleGeneratePdf from "../../services/common/handleGeneratePdf";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 const OverviewSection = ({
   data,
   showParticipants = false,
@@ -117,122 +119,129 @@ const OverviewSection = ({
         // inactive: true
     },
 ];
+const reportTemplateRef = useRef(null);
   return (
     <>
-      {/* {showSticky()} */}
-
       <Toast ref={toast} position="bottom-center" className="z-1" />
-      <div className="card p-3 w-100">
-        <div>
-          <h3 className="text-center theme-color m-0">
-            {data?.trainingType?.name} Training Request
-          </h3>
-          <h6 className="text-muted text-center mb-3">Request ID: {data.id}</h6>
-          <div className="position-absolute end-0 top-0 ">
-            <Button
-              type="button"
-              onClick={() => history.back()}
-              icon="pi pi-times"
-              text
-            />
-          </div>
-          <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
-            <span> REQUESTOR: {data?.requestor?.fullname}</span>
-            <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
-            <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
-            <span> DATE: {formatDateTime(data?.createdDate)}</span>
-            {(isAdmin || SessionGetEmployeeId() === data?.requestorBadge) && (
-              <span>
-                Status:{" "}
-                {StatusColor({
-                  status: data?.status?.name,
-                  class: "p-2 px-3 ",
-                  showStatus: true,
-                })}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="flex justify-content-between">
-          <SectionHeading
-            title="Details"
-            icon={<FontAwesomeIcon icon={faInfoCircle} />}
-          />
-        </div>
-        <DetailsOverview data={data} />
-        <br />
-        <SectionHeading
-          title="Training Schedules"
-          icon={<FontAwesomeIcon icon={faCalendar} />}
-        />
-        <TrainingScheduleList schedules={data.trainingDates} />
-        {showParticipants && (
-          <>
-            <br />
-            <SectionHeading
-              title="Participants"
-              icon={<FontAwesomeIcon icon={faUsers} />}
-            />
-            {data.trainingParticipants?.length > 0 ? (
-              <div className="w-100 overflow-hidden">
-                <small className="text-muted">
-                  {data.trainingParticipants?.length} participants{" "}
-                </small>
-                <UserList
-                  leadingElement={true}
-                  col="3"
-                  userlist={data.trainingParticipants}
-                  property={"name"}
-                  // allowEffectiveness
-                />
-              </div>
-            ) : (
-              <EmptyState placeholder="No participants added" />
-            )}
-          </>
-        )}
-        {showFacilitators && (
-          <>
-            <br />
-            <SectionHeading
-              title="Facilitator"
-              icon={<FontAwesomeIcon icon={faUsers} />}
-            />
-            {data.trainingFacilitators?.length > 0 ? (
-              <UserList
-                leadingElement={true}
-                userlist={data.trainingFacilitators}
-                property={"name"}
-              />
-            ) : (
-              <EmptyState placeholder="No facilitator added" />
-            )}
-          </>
-        )}
-        {showApprovers && (
-          <>
-            <br />
+        {/* {showSticky()} */}
 
-            <div className="">
+        <div className="card p-3 w-100">
+      <div ref={reportTemplateRef}>
+          <div>
+            <h3 className="text-center theme-color m-0">
+              {data?.trainingType?.name} Training Request
+            </h3>
+            <h6 className="text-muted text-center mb-3">
+              Request ID: {data.id}
+            </h6>
+            <div className="position-absolute end-0 top-0 ">
+              <Button
+                type="button"
+                onClick={() => history.back()}
+                icon="pi pi-times"
+                text
+              />
+            </div>
+            <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
+              <span> REQUESTOR: {data?.requestor?.fullname}</span>
+              <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
+              <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
+              <span> DATE: {formatDateTime(data?.createdDate)}</span>
+              {(isAdmin || SessionGetEmployeeId() === data?.requestorBadge) && (
+                <span>
+                  Status:{" "}
+                  {StatusColor({
+                    status: data?.status?.name,
+                    class: "p-2 px-3 ",
+                    showStatus: true,
+                  })}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="flex justify-content-between">
+            <SectionHeading
+              title="Details"
+              icon={<FontAwesomeIcon icon={faInfoCircle} />}
+            />
+          </div>
+          <DetailsOverview data={data} />
+          <br />
+          <SectionHeading
+            title="Training Schedules"
+            icon={<FontAwesomeIcon icon={faCalendar} />}
+          />
+          <TrainingScheduleList schedules={data.trainingDates} />
+          {showParticipants && (
+            <>
+              <br />
               <SectionHeading
-                title="Approvers"
+                title="Participants"
                 icon={<FontAwesomeIcon icon={faUsers} />}
               />
-              <ApproverList data={data} />
-            </div>
-          </>
-        )}
-        {logs && (
-          <>
-            <hr />
-            {/* <ActivityLog isDescending label={"Activity Logs"} items={logs} /> */}
-            <ActivityList data={logs?.filter(item=>item.show)} label={"Activities"}/>
-          </>
-        )}
-      </div>
-      {(SessionGetRole() === "Admin" ||
-        SessionGetRole() === "SuperAdmin" ||
-        data?.requestorBadge == SessionGetEmployeeId()) && (
+              {data.trainingParticipants?.length > 0 ? (
+                <div className="w-100 overflow-hidden">
+                  <small className="text-muted">
+                    {data.trainingParticipants?.length} participants{" "}
+                  </small>
+                  <UserList
+                    leadingElement={true}
+                    col="3"
+                    userlist={data.trainingParticipants}
+                    property={"name"}
+                    // allowEffectiveness
+                  />
+                </div>
+              ) : (
+                <EmptyState placeholder="No participants added" />
+              )}
+            </>
+          )}
+          {showFacilitators && (
+            <>
+              <br />
+              <SectionHeading
+                title="Facilitator"
+                icon={<FontAwesomeIcon icon={faUsers} />}
+              />
+              {data.trainingFacilitators?.length > 0 ? (
+                <UserList
+                  leadingElement={true}
+                  userlist={data.trainingFacilitators}
+                  property={"name"}
+                />
+              ) : (
+                <EmptyState placeholder="No facilitator added" />
+              )}
+            </>
+          )}
+          {showApprovers && (
+            <>
+              <br />
+
+              <div className="">
+                <SectionHeading
+                  title="Approvers"
+                  icon={<FontAwesomeIcon icon={faUsers} />}
+                />
+                <ApproverList data={data} />
+              </div>
+            </>
+          )}
+          {logs && (
+            <>
+              <hr />
+              {/* <ActivityLog isDescending label={"Activity Logs"} items={logs} /> */}
+              <ActivityList
+                data={logs?.filter((item) => item.show)}
+                label={"Activities"}
+              />
+            </>
+          )}
+        </div>
+        {(SessionGetRole() === "Admin" ||
+          SessionGetRole() === "SuperAdmin" ||
+          data?.requestorBadge == SessionGetEmployeeId()) && (
           <div className="position-absolute bottom-0  mb-3 me-4 end-0">
             <Toast ref={toast2} />
             <Tooltip
@@ -247,20 +256,25 @@ const OverviewSection = ({
             />
           </div>
         )}
-      <Dialog
-        header="History Log"
-        visible={showLogModal}
-        maximizable
-        style={{ width: "50vw", minHeight: '50vh'}}
-        onHide={() => {
-          if (!showLogModal) return;
-          setShowLogModal(false);
-        }}
-        
-      >
-        <hr className="mt-0" />
-        <RequestAuditTrailLogsItem data={data} />
-      </Dialog>
+      </div>
+        <Dialog
+          header="History Log"
+          visible={showLogModal}
+          maximizable
+          style={{ width: "50vw", minHeight: "50vh" }}
+          onHide={() => {
+            if (!showLogModal) return;
+            setShowLogModal(false);
+          }}
+        >
+          <hr className="mt-0" />
+          <RequestAuditTrailLogsItem data={data} />
+        </Dialog>
+      {/* <Button label="export" onClick={exportToPDF}/> */}
+      <Button
+        label="export"
+        onClick={() => handleGeneratePdf(reportTemplateRef.current)}
+      />
     </>
   );
 };

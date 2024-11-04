@@ -9,3 +9,6 @@ export const addAttachmentsApi = async (formData) => {
 export const deleteAttachmentApi = async (id) =>{
     return await fetchFromApi(`/Attachment/DeleteAttachment`, "DELETE", {id: id});
 }
+export const getAttachmentByReferenceApi = async (referenceId, attachmentType, employeeBadge) => {
+  return await fetchFromApi(`/Attachment/GetAttachmentByReferenceId?${referenceId ? "referenceId=" + referenceId + "&" : ""}attachmentType=${attachmentType}${employeeBadge ? "&employeeBadge=" + employeeBadge :""}`);
+}

@@ -21,3 +21,6 @@ export const updateTrainingRequestApi = async (data)=>{
 export const getTrainingRequestByApproverApi = async (id) =>{
     return await fetchFromApi(`Services/GetAssignedRequests?assignedTo=${id}`);
 }
+export const getTrainingRequestByTraineeIdApi = async (id) =>{
+    return await fetchFromApi(`TrainingRequest/GetByParticipant?participantBadge=${id}`);
+}

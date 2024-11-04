@@ -5,7 +5,7 @@ import {
   formatDateOnly,
   formatDateTime,
 } from "../../utils/datetime/Formatting";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState,useRef } from "react";
 import { Rating } from "primereact/rating";
 import {
   actionFailed,
@@ -25,6 +25,7 @@ import activityLogHook from "../../hooks/activityLogHook";
 import validateTrainingEffectiveness from "../../services/inputValidation/validateTrainingEffectiveness";
 import "../../assets/css/effectivenessForm.css";
 import { statusCode } from "../../api/constants";
+import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 const EffectivenessForm = ({
   data,
   userData,
@@ -32,6 +33,7 @@ const EffectivenessForm = ({
   onFinish,
   currentRouting,
   auditTrail,
+  exportForm
 }) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
@@ -143,6 +145,12 @@ const EffectivenessForm = ({
     setIsAfter(getAfterTrainingDate() >= formatDateOnly(new Date(), "dash"));
   }, [getAfterTrainingDate]);
   const logs = activityLogHook.useReportsActivityLog(formData, userData);
+  const reportTemplateRef = useRef(null);
+  useEffect(() =>{
+    (exportForm)=>{
+      exportForm(reportTemplateRef.current);
+    }
+  },[reportTemplateRef])
   return (
     <>
       <Card.Body>
@@ -162,11 +170,13 @@ const EffectivenessForm = ({
             </div>
           </div>
         )}
+        
+        <Form>
+        <div ref={reportTemplateRef}>
         <div className="text-center  pb-3 mb-3 ">
-          <h5 className="m-0">TRAINING EFFECTIVENESS MONITORING FORM</h5>
+          <h5 className="m-0 w-100">TRAINING EFFECTIVENESS MONITORING FORM</h5>
           <small className="text-muted">Knowles Electronics Philippines</small>
         </div>
-        <Form>
           <Row>
             <AutoCompleteField
               label="Name of Employee"
@@ -538,13 +548,7 @@ const EffectivenessForm = ({
               placeholder="Comments/Remarks"
               disabled={!isAfter}
             ></textarea>
-          </Form.Group>
-          {isSubmitted && (
-            <>
-              <hr />
-              <ActivityLog label="Activity Logs" items={logs} isDescending />
-            </>
-          )}
+          </Form.Group></div>
           {data?.trainingParticipants?.some(
             (x) => x.employeeBadge === SessionGetEmployeeId()
           ) &&
@@ -576,6 +580,17 @@ const EffectivenessForm = ({
               </div>
             )}
         </Form>
+        
+      <Button
+        label="export"
+        onClick={() => handleGeneratePdf(reportTemplateRef.current)}
+      />
+        {isSubmitted && (
+            <>
+              <hr />
+              <ActivityLog label="Activity Logs" items={logs} isDescending />
+            </>
+          )}
       </Card.Body>
     </>
   );

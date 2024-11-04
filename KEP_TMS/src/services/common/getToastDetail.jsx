@@ -15,7 +15,6 @@ const getToastDetail = (
   cancelRequest,
   updateRequest
 ) => {
-  console.log(userReports)
   const reloadPage = ()=>{
     setTimeout(()=>{
       window.location.reload()

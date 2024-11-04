@@ -54,18 +54,16 @@ const CertificateForm = ({showModal, hideModal, onFinish, trainingOptions}) => {
                 "ReferenceId",
                 oldTraining ? SessionGetEmployeeId() : formData?.trainingName
               );
+            }else {
+              newData.append("EmployeeBadge", SessionGetEmployeeId());
             }
             newData.append("AttachmentType", attachmentType.CERTIFICATE);
             newData.append("Detail", formData.certificateDetail);
-
-            newData.append("EmployeeBadge", SessionGetEmployeeId());
             files.forEach((file) => {
               newData.append("files", file);
             });
             var object = {};
             newData.forEach((value, key) => object[key] = value);
-var json = JSON.stringify(object);
-            console.log(JSON.stringify(json), formData.certificateDetail);
             confirmAction({
                 showLoaderOnConfirm: true,
                 text: "Are you sure you want to upload this certificate?",
@@ -81,7 +79,6 @@ var json = JSON.stringify(object);
           }
 
       }
-      console.log(formData);
   return (
     <>
       <Modal show={showModal} onHide={hideModal}>

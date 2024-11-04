@@ -1,6 +1,6 @@
 import { getCurrentRoutingActivityApi } from "../api/commonApi";
 import { statusCode } from "../api/constants";
-import { approveTrainingRequestApi, createTrainingRequestApi, getAllTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestsByRequestorApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
+import { approveTrainingRequestApi, createTrainingRequestApi, getAllTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestByTraineeIdApi, getTrainingRequestsByRequestorApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
 
 const trainingRequestService = {
   approveTrainingRequest: async (data) => {
@@ -37,6 +37,10 @@ const trainingRequestService = {
   getTrainingRequestByApprover: async (id) => {
     const response = await getTrainingRequestByApproverApi(id);
     return response;
+  },
+  getTrainingRequestByTraineeId: async (id) => {
+    const response = await getTrainingRequestByTraineeIdApi(id);
+    return response?.status === 1 ? response?.data : [];
   },
   getTrainingRequestByParticipant: async (id, role) => {
     const response = await getAllTrainingRequestsApi(id);

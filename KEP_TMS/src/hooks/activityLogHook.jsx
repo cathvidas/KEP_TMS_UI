@@ -59,7 +59,6 @@ const activityLogHook = {
   },
   useTrainingRequestActivityLogs: (data, reportsData) => {
     const [logs, setLogs] = useState([]);
-    console.log(data)
     useEffect(() => {
       if (data) {
         let newLogs = [];
@@ -112,7 +111,6 @@ const activityLogHook = {
         if (data?.status?.id != statusCode.SUBMITTED) {
           sortRoutingBySequence(data?.routings);
           data?.routings?.forEach((item) => {
-            console.log(item?.statusId)
             const isApproved =
               item?.statusId === statusCode.APPROVED;
             const isDisapproved =

@@ -1,11 +1,10 @@
 import axios from "axios";
+import { ApiConstant } from "./constants";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:5030/api",
-  // baseURL: "http://kep-testenvw16:2024/api",
+  baseURL: ApiConstant.BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
 export default apiClient;
-// http://kep-testenvw16:1010/KEP_TMS
