@@ -5,7 +5,7 @@ import {
   formatDateOnly,
   formatDateTime,
 } from "../../utils/datetime/Formatting";
-import { useCallback, useEffect, useState,useRef } from "react";
+import { useCallback, useEffect, useState, useRef, forwardRef } from "react";
 import { Rating } from "primereact/rating";
 import {
   actionFailed,
@@ -26,6 +26,20 @@ import validateTrainingEffectiveness from "../../services/inputValidation/valida
 import "../../assets/css/effectivenessForm.css";
 import { statusCode } from "../../api/constants";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
+import { useReactToPrint } from "react-to-print";
+const ReportTemplate = forwardRef((props, ref) => (
+  <div ref={ref}>
+    <div className="text-center pb-3 mb-3">
+      <h5 className="m-0 w-100" style={{ fontKerning: "none" }}>
+        TRAINING EFFECTIVENESS MONITORING FORM
+      </h5>
+      <small className="text-muted">Knowles Electronics Philippines</small>
+    </div>
+  </div>
+));
+ReportTemplate.displayName = "ReportTemplate";
+
+
 const EffectivenessForm = ({
   data,
   userData,
@@ -33,7 +47,7 @@ const EffectivenessForm = ({
   onFinish,
   currentRouting,
   auditTrail,
-  exportForm
+  exportForm,
 }) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
@@ -50,22 +64,39 @@ const EffectivenessForm = ({
       const effectivenessData = formData;
       setAnnotation(effectivenessData?.annotation);
       setPerformanceCharacteristics(
-        effectivenessData?.performanceCharacteristics?.map(({content, id, rating,effectivenessId})=>({
-          content, id, rating, effectivenessId
-        })) ?? [
-          effectivenessConstant.performanceCharacteristics
-        ]
+        effectivenessData?.performanceCharacteristics?.map(
+          ({ content, id, rating, effectivenessId }) => ({
+            content,
+            id,
+            rating,
+            effectivenessId,
+          })
+        ) ?? [effectivenessConstant.performanceCharacteristics]
       );
       setProjectPerformanceEvaluation(
-        effectivenessData?.projectPerformanceEvaluation?.map(({actualPerformance,content,effectivenessId,evaluatedActualPerformance,id,performanceBeforeTraining,projectedPerformance})=>({
-          actualPerformance,content,effectivenessId,evaluatedActualPerformance,id,performanceBeforeTraining,projectedPerformance
-        })) ?? [
-          effectivenessConstant.projectPerformanceEvaluation
-        ]
+        effectivenessData?.projectPerformanceEvaluation?.map(
+          ({
+            actualPerformance,
+            content,
+            effectivenessId,
+            evaluatedActualPerformance,
+            id,
+            performanceBeforeTraining,
+            projectedPerformance,
+          }) => ({
+            actualPerformance,
+            content,
+            effectivenessId,
+            evaluatedActualPerformance,
+            id,
+            performanceBeforeTraining,
+            projectedPerformance,
+          })
+        ) ?? [effectivenessConstant.projectPerformanceEvaluation]
       );
       setIsSubmitted(true);
-      if(formData?.statusName === getStatusById(statusCode.DISAPPROVED)){
-        setIsUpdate(true)
+      if (formData?.statusName === getStatusById(statusCode.DISAPPROVED)) {
+        setIsUpdate(true);
       }
     }
   }, [formData]);
@@ -125,13 +156,21 @@ const EffectivenessForm = ({
       confirmAction({
         showLoaderOnConfirm: true,
         title: isUpdate ? "Update Form" : "Confirm Submission",
-        message: `Are you sure you want to ${isUpdate ? "update" : "submit"} this form?`,
-        confirmButtonText: isUpdate ? "Update":"Submit",
+        message: `Are you sure you want to ${
+          isUpdate ? "update" : "submit"
+        } this form?`,
+        confirmButtonText: isUpdate ? "Update" : "Submit",
         cancelButtonText: "Cancel",
         onConfirm: () =>
           handleResponseAsync(
-            () =>isUpdate ? effectivenessService.updateTrainingEffectiveness({...getFormData, updatedBy: SessionGetEmployeeId(), id: formData.id}):
-             effectivenessService.createTrainingEffectiveness(getFormData),
+            () =>
+              isUpdate
+                ? effectivenessService.updateTrainingEffectiveness({
+                    ...getFormData,
+                    updatedBy: SessionGetEmployeeId(),
+                    id: formData.id,
+                  })
+                : effectivenessService.createTrainingEffectiveness(getFormData),
             (e) => {
               actionSuccessful("Success!", e?.message);
               onFinish();
@@ -145,12 +184,18 @@ const EffectivenessForm = ({
     setIsAfter(getAfterTrainingDate() >= formatDateOnly(new Date(), "dash"));
   }, [getAfterTrainingDate]);
   const logs = activityLogHook.useReportsActivityLog(formData, userData);
-  const reportTemplateRef = useRef(null);
-  useEffect(() =>{
-    (exportForm)=>{
-      exportForm(reportTemplateRef.current);
+  const reportTemplateRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => reportTemplateRef.current || null, // Default to null if ref is undefined
+    onBeforeGetContent: () => {
+      console.log("Preparing to print..."); // Optional debug log
+    },
+    onAfterPrint: () => {
+      console.log("Printing complete"); // Optional debug log
     }
-  },[reportTemplateRef])
+  });
+
   return (
     <>
       <Card.Body>
@@ -158,7 +203,8 @@ const EffectivenessForm = ({
           <div className=" flex justify-content-between  mb-2">
             <div className="flex">
               <i className="pi pi-check-circle text-success"></i>
-              Submitted: {formatDateTime(auditTrail?.createdDate) ?? "N/A"}</div>
+              Submitted: {formatDateTime(auditTrail?.createdDate) ?? "N/A"}
+            </div>
             <div>
               Status: &nbsp;
               {StatusColor({
@@ -172,124 +218,348 @@ const EffectivenessForm = ({
         )}
         
         <Form>
-        <div ref={reportTemplateRef}>
-        <div className="text-center  pb-3 mb-3 ">
-          <h5 className="m-0 w-100">TRAINING EFFECTIVENESS MONITORING FORM</h5>
-          <small className="text-muted">Knowles Electronics Philippines</small>
-        </div>
-          <Row>
-            <AutoCompleteField
-              label="Name of Employee"
-              value={userData?.fullname}
-              className="col-6"
-            />
-            <AutoCompleteField
-              label="Badge No"
-              value={userData?.employeeBadge}
-            />
-            <AutoCompleteField
-              label="Position"
-              value={userData?.position}
-              className="col-6"
-            />
-            <AutoCompleteField
-              label="Department"
-              value={userData?.departmentName}
-            />
-            <AutoCompleteField
-              label="Training / Program"
-              value={data?.trainingProgram?.name}
-              className="col-12"
-            />
-            <AutoCompleteField
-              label="Facilitator/s"
-              value={getFacilitators()}
-              className="col-12"
-            />
-            <AutoCompleteField
-              label="Training Date/s"
-              value={`${formatDateOnly(
-                data?.trainingStartDate
-              )} - ${formatDateOnly(data?.trainingEndDate)}`}
-              className="col-6"
-            />
-            <AutoCompleteField
-              label="Total Training Hours"
-              value={data?.durationInHours?.toString()}
-            />
-            <AutoCompleteField
-              label="Training Category"
-              value={data?.trainingCategory?.name}
-              className="col-12"
-            />
-          </Row>
-          <br />
-          <small>
-            <b>
-              Part I and II to be filled out by the trainee with the concurrence
-              of the immediate manager BEFORE the training
-            </b>
-          </small>
-          <br />
-          <label>
-            <b>Rating Scale:</b>{" "}
-          </label>
-          <Form.Group>
-            <b>
-              I. What are the specific performance characteristics that you
-              would like to develop by attending this training?
-            </b>
-            <Table className="table-bordered m-0">
-              <thead>
-                <tr>
-                  <th
-                    colSpan={2}
-                    className="theme-bg-light text-muted text-center"
-                  >
-                    Performance Characteristics
-                  </th>
-                  <th className="theme-bg-light text-muted text-center">
-                    Self-assessment/ Rating
-                  </th>
-                  {/* <th></th> */}
-                </tr>
-              </thead>
-              <tbody>
-                {performanceCharacteristics?.map((_, index) => (
-                  <>
+            <div ref={reportTemplateRef}>
+              <div className="text-center  pb-3 mb-3 ">
+                <h5 className="m-0 w-100 title" style={{ fontFamily: "sans-serif" }}>
+                  TRAINING EFFECTIVENESS MONITORING FORM <i className="pi pi-check" />
+                </h5>
+                <small className="text-muted">
+                  Knowles Electronics Philippines
+                </small>
+              </div>
+            <Row>
+              <AutoCompleteField
+                label="Name of Employee"
+                value={userData?.fullname}
+                className="col-6"
+              />
+              <AutoCompleteField
+                label="Badge No"
+                value={userData?.employeeBadge}
+              />
+              <AutoCompleteField
+                label="Position"
+                value={userData?.position}
+                className="col-6"
+              />
+              <AutoCompleteField
+                label="Department"
+                value={userData?.departmentName}
+              />
+              <AutoCompleteField
+                label="Training / Program"
+                value={data?.trainingProgram?.name}
+                className="col-12"
+              />
+              <AutoCompleteField
+                label="Facilitator/s"
+                value={getFacilitators()}
+                className="col-12"
+              />
+              <AutoCompleteField
+                label="Training Date/s"
+                value={`${formatDateOnly(
+                  data?.trainingStartDate
+                )} - ${formatDateOnly(data?.trainingEndDate)}`}
+                className="col-6"
+              />
+              <AutoCompleteField
+                label="Total Training Hours"
+                value={data?.durationInHours?.toString()}
+              />
+              <AutoCompleteField
+                label="Training Category"
+                value={data?.trainingCategory?.name}
+                className="col-12"
+              />
+            </Row>
+            <br />
+            <small>
+              <b>
+                Part I and II to be filled out by the trainee with the
+                concurrence of the immediate manager BEFORE the training
+              </b>
+            </small>
+            <br />
+            <label>
+              <b>Rating Scale:</b>{" "}
+            </label>
+            <Form.Group>
+              <b>
+                I. What are the specific performance characteristics that you
+                would like to develop by attending this training?
+              </b>
+              <Table className="custom-table-bordered m-0" style={{}}>
+                <thead>
+                  <tr>
+                    <th
+                      colSpan={2}
+                      className="theme-bg-light text-muted text-center"
+                    >
+                      Performance Characteristics
+                    </th>
+                    <th className="theme-bg-light text-muted text-center">
+                      Self-assessment/ Rating
+                    </th>
+                    {/* <th></th> */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {performanceCharacteristics?.map((_, index) => (
+                    <>
+                      <tr
+                        key={`character${index}`}
+                        className="position-relative performanceTable"
+                      >
+                        <th scope="row" className="text-center">
+                          {index + 1}
+                        </th>
+                        <td>
+                          <textarea
+                            className="no-focus w-100 border-0"
+                            name="content"
+                            value={
+                              performanceCharacteristics[index]?.content ?? ""
+                            }
+                            onChange={(e) =>
+                              handlePerfCharacterOnChange(e, index)
+                            }
+                            readOnly={isSubmitted && !isUpdate}
+                          ></textarea>
+                        </td>
+                        <td style={{ verticalAlign: "middle" }}>
+                          <Rating
+                            className="justify-content-center"
+                            value={performanceCharacteristics[index]?.rating}
+                            name="rating"
+                            onChange={(e) =>
+                              handlePerfCharacterOnChange(e, index)
+                            }
+                            cancel={false}
+                            readOnly={isSubmitted && !isUpdate}
+                          />
+                        </td>
+                        {performanceCharacteristics?.length > 1 &&
+                          (!isSubmitted || isUpdate) && (
+                            <Button
+                              type="button"
+                              style={{ display: "none" }}
+                              icon="pi pi-trash"
+                              text
+                              className="perf-button position-absolute end-0 top-50 translate-middle-y me-3 text-danger "
+                              severity="danger"
+                              onClick={() =>
+                                setPerformanceCharacteristics((prev) =>
+                                  [...prev].filter((_, i) => i !== index)
+                                )
+                              }
+                            />
+                          )}
+                      </tr>
+                    </>
+                  ))}
+                </tbody>
+              </Table>
+              <div className="flex">
+                {errors?.performanceCharacteristics && (
+                  <ErrorTemplate message={errors?.performanceCharacteristics} />
+                )}
+                {performanceCharacteristics?.length < 3 &&
+                  (!isSubmitted || isUpdate) && (
+                    <Button
+                      type="button"
+                      text
+                      icon="pi pi-plus"
+                      label="Add row"
+                      className="ms-auto"
+                      onClick={() =>
+                        setPerformanceCharacteristics([
+                          ...performanceCharacteristics,
+                          effectivenessConstant.performanceCharacteristics,
+                        ])
+                      }
+                    />
+                  )}
+              </div>
+            </Form.Group>
+            <br />
+            <Form.Group>
+              <b>
+                II. List the Projects/Task/Assignment the trainee is currently
+                undertaking or will be undertaking where the Knowledge and
+                skills developed from training will be applied.
+              </b>
+              <Row>
+                <Col className={`d-flex gap-2 align-items-end`}>
+                  <label className="fw-bold" style={{ fontSize: "0.8rem" }}>
+                    Target Date of Evaluation{" "}
+                    <i> (specify date - 6 months after the training):</i>
+                  </label>
+                  <span className="flex-grow-1 border-0 border-bottom">
+                    {getAfterTrainingDate().toString()}
+                  </span>
+                </Col>
+                <Col className={`d-flex gap-2 align-items-end`}>
+                  <label className="fw-bold" style={{ fontSize: "0.8rem" }}>
+                    Evaluator:
+                  </label>
+                  <span className="flex-grow-1 border-0 border-bottom">
+                    {userData?.superiorName} - {userData?.superiorBadge}
+                  </span>
+                </Col>
+              </Row>
+              <Table className="mt-2 table-bordered m-0">
+                <thead>
+                  <tr>
+                    <th
+                      colSpan={2}
+                      className="theme-bg-light text-muted text-center"
+                      style={{ minWidth: "20rem" }}
+                    >
+                      Project / Task / Assignment
+                    </th>
+                    <td className="theme-bg-light text-muted text-center">
+                      <b> Performance Before Training </b> &#x28;to be filled up
+                      before the training&#x29;
+                    </td>
+                    <td className="theme-bg-light text-muted text-center">
+                      <b> Projected Performance </b> &#x28;to be filled up
+                      before the training&#x29;
+                    </td>
+                    <td className="theme-bg-light text-muted text-center">
+                      <b> Actual Performance </b> &#x28;to be filled up after
+                      the training&#x29;
+                    </td>
+                    <td className="theme-bg-light text-muted text-center">
+                      <b>
+                        {" "}
+                        Actual Performance evaluated by the immediate manager &
+                        date
+                      </b>
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {projectPerformanceEvaluation?.map((_, index) => (
                     <tr
-                      key={`character${index}`}
+                      key={`evaluation${index}`}
                       className="position-relative performanceTable"
                     >
-                      <th scope="row" className="text-center">
-                        {index + 1}
-                      </th>
+                      <th scope="row">{index + 1}</th>
                       <td>
                         <textarea
                           className="no-focus w-100 border-0"
                           name="content"
                           value={
-                            performanceCharacteristics[index]?.content ?? ""
+                            projectPerformanceEvaluation[index]?.content ?? ""
                           }
                           onChange={(e) =>
-                            handlePerfCharacterOnChange(e, index)
+                            handlePerfEvaluationOnChange(e, index)
                           }
                           readOnly={isSubmitted && !isUpdate}
                         ></textarea>
                       </td>
-                      <td style={{ verticalAlign: "middle" }}>
+                      <td
+                        className="text-center"
+                        style={{ verticalAlign: "middle" }}
+                      >
                         <Rating
                           className="justify-content-center"
-                          value={performanceCharacteristics[index]?.rating}
-                          name="rating"
+                          value={
+                            projectPerformanceEvaluation[index]
+                              ?.performanceBeforeTraining
+                          }
+                          name="performanceBeforeTraining"
                           onChange={(e) =>
-                            handlePerfCharacterOnChange(e, index)
+                            handlePerfEvaluationOnChange(e, index)
                           }
                           cancel={false}
                           readOnly={isSubmitted && !isUpdate}
                         />
+                        <small className="mt-1 d-block">
+                          {isSubmitted
+                            ? formatDateOnly(auditTrail?.createdDate)
+                            : projectPerformanceEvaluation[index]
+                                ?.performanceBeforeTraining !== 0 &&
+                              formatDateOnly(new Date())}
+                        </small>
                       </td>
-                      {performanceCharacteristics?.length > 1 &&
+                      <td
+                        className="text-center"
+                        style={{ verticalAlign: "middle" }}
+                      >
+                        <Rating
+                          className="justify-content-center"
+                          value={
+                            projectPerformanceEvaluation[index]
+                              ?.projectedPerformance
+                          }
+                          name="projectedPerformance"
+                          onChange={(e) =>
+                            handlePerfEvaluationOnChange(e, index)
+                          }
+                          cancel={false}
+                          readOnly={isSubmitted && !isUpdate}
+                        />
+                        <small className="mt-1 d-block">
+                          {isSubmitted
+                            ? formatDateOnly(auditTrail?.createdDate)
+                            : projectPerformanceEvaluation[index]
+                                ?.projectedPerformance !== 0 &&
+                              formatDateOnly(new Date())}
+                        </small>
+                      </td>
+                      <td
+                        className="text-center"
+                        style={{ verticalAlign: "middle" }}
+                      >
+                        <Rating
+                          className="justify-content-center"
+                          value={
+                            projectPerformanceEvaluation[index]
+                              ?.actualPerformance
+                          }
+                          name="actualPerformance"
+                          onChange={(e) =>
+                            handlePerfEvaluationOnChange(e, index)
+                          }
+                          cancel={false}
+                          disabled={!isAfter}
+                        />
+                        <small className="mt-1 d-block">
+                          {isSubmitted
+                            ? ""
+                            : projectPerformanceEvaluation[index]
+                                ?.actualPerformance !== 0 &&
+                              formatDateTime(new Date())}
+                        </small>
+                      </td>
+                      <td
+                        className="text-center"
+                        style={{ verticalAlign: "middle" }}
+                      >
+                        <Rating
+                          className="justify-content-center"
+                          value={
+                            projectPerformanceEvaluation[index]
+                              ?.evaluatedActualPerformance
+                          }
+                          name="evaluatedActualPerformance"
+                          onChange={(e) =>
+                            handlePerfEvaluationOnChange(e, index)
+                          }
+                          cancel={false}
+                          disabled={!isAfter}
+                        />
+                        <small className="mt-1 d-block">
+                          {isSubmitted
+                            ? ""
+                            : projectPerformanceEvaluation[index]
+                                ?.evaluatedActualPerformance !== 0 &&
+                              formatDateTime(new Date())}
+                        </small>
+                      </td>
+                      {projectPerformanceEvaluation?.length > 1 &&
                         (!isSubmitted || isUpdate) && (
                           <Button
                             type="button"
@@ -299,260 +569,56 @@ const EffectivenessForm = ({
                             className="perf-button position-absolute end-0 top-50 translate-middle-y me-3 text-danger "
                             severity="danger"
                             onClick={() =>
-                              setPerformanceCharacteristics((prev) =>
+                              setProjectPerformanceEvaluation((prev) =>
                                 [...prev].filter((_, i) => i !== index)
                               )
                             }
                           />
                         )}
                     </tr>
-                  </>
-                ))}
-              </tbody>
-            </Table>
-            <div className="flex">
-              {errors?.performanceCharacteristics && (
-                <ErrorTemplate message={errors?.performanceCharacteristics} />
-              )}
-              {performanceCharacteristics?.length < 3 && (!isSubmitted || isUpdate) && (
-                <Button
-                  type="button"
-                  text
-                  icon="pi pi-plus"
-                  label="Add row"
-                  className="ms-auto"
-                  onClick={() =>
-                    setPerformanceCharacteristics([
-                      ...performanceCharacteristics,
-                      effectivenessConstant.performanceCharacteristics,
-                    ])
-                  }
-                />
-              )}
-            </div>
-          </Form.Group>
-          <br />
-          <Form.Group>
-            <b>
-              II. List the Projects/Task/Assignment the trainee is currently
-              undertaking or will be undertaking where the Knowledge and skills
-              developed from training will be applied.
-            </b>
-            <Row>
-              <Col className={`d-flex gap-2 align-items-end`}>
-                <label className="fw-bold" style={{ fontSize: "0.8rem" }}>
-                  Target Date of Evaluation{" "}
-                  <i> (specify date - 6 months after the training):</i>
-                </label>
-                <span className="flex-grow-1 border-0 border-bottom">
-                  {getAfterTrainingDate().toString()}
-                </span>
-              </Col>
-              <Col className={`d-flex gap-2 align-items-end`}>
-                <label className="fw-bold" style={{ fontSize: "0.8rem" }}>
-                  Evaluator:
-                </label>
-                <span className="flex-grow-1 border-0 border-bottom">
-                  {userData?.superiorName} - {userData?.superiorBadge}
-                </span>
-              </Col>
-            </Row>
-            <Table className="mt-2 table-bordered m-0">
-              <thead>
-                <tr>
-                  <th
-                    colSpan={2}
-                    className="theme-bg-light text-muted text-center"
-                    style={{ minWidth: "20rem" }}
-                  >
-                    Project / Task / Assignment
-                  </th>
-                  <td className="theme-bg-light text-muted text-center">
-                    <b> Performance Before Training </b> &#x28;to be filled up
-                    before the training&#x29;
-                  </td>
-                  <td className="theme-bg-light text-muted text-center">
-                    <b> Projected Performance </b> &#x28;to be filled up before
-                    the training&#x29;
-                  </td>
-                  <td className="theme-bg-light text-muted text-center">
-                    <b> Actual Performance </b> &#x28;to be filled up after the
-                    training&#x29;
-                  </td>
-                  <td className="theme-bg-light text-muted text-center">
-                    <b>
-                      {" "}
-                      Actual Performance evaluated by the immediate manager &
-                      date
-                    </b>
-                  </td>
-                </tr>
-              </thead>
-              <tbody>
-                {projectPerformanceEvaluation?.map((_, index) => (
-                  <tr
-                    key={`evaluation${index}`}
-                    className="position-relative performanceTable"
-                  >
-                    <th scope="row">{index + 1}</th>
-                    <td>
-                      <textarea
-                        className="no-focus w-100 border-0"
-                        name="content"
-                        value={
-                          projectPerformanceEvaluation[index]?.content ?? ""
-                        }
-                        onChange={(e) => handlePerfEvaluationOnChange(e, index)}
-                        readOnly={isSubmitted && !isUpdate}
-                      ></textarea>
-                    </td>
-                    <td
-                      className="text-center"
-                      style={{ verticalAlign: "middle" }}
-                    >
-                      <Rating
-                        className="justify-content-center"
-                        value={
-                          projectPerformanceEvaluation[index]
-                            ?.performanceBeforeTraining
-                        }
-                        name="performanceBeforeTraining"
-                        onChange={(e) => handlePerfEvaluationOnChange(e, index)}
-                        cancel={false}
-                        readOnly={isSubmitted && !isUpdate}
-                      />
-                      <small className="mt-1 d-block">
-                        {isSubmitted
-                          ? formatDateOnly(auditTrail?.createdDate)
-                          : projectPerformanceEvaluation[index]
-                              ?.performanceBeforeTraining !== 0 &&
-                            formatDateOnly(new Date())}
-                      </small>
-                    </td>
-                    <td
-                      className="text-center"
-                      style={{ verticalAlign: "middle" }}
-                    >
-                      <Rating
-                        className="justify-content-center"
-                        value={
-                          projectPerformanceEvaluation[index]
-                            ?.projectedPerformance
-                        }
-                        name="projectedPerformance"
-                        onChange={(e) => handlePerfEvaluationOnChange(e, index)}
-                        cancel={false}
-                        readOnly={isSubmitted && !isUpdate}
-                      />
-                      <small className="mt-1 d-block">
-                        {isSubmitted
-                          ? formatDateOnly(auditTrail?.createdDate)
-                          : projectPerformanceEvaluation[index]
-                              ?.projectedPerformance !== 0 &&
-                            formatDateOnly(new Date())}
-                      </small>
-                    </td>
-                    <td
-                      className="text-center"
-                      style={{ verticalAlign: "middle" }}
-                    >
-                      <Rating
-                        className="justify-content-center"
-                        value={
-                          projectPerformanceEvaluation[index]?.actualPerformance
-                        }
-                        name="actualPerformance"
-                        onChange={(e) => handlePerfEvaluationOnChange(e, index)}
-                        cancel={false}
-                        disabled={!isAfter}
-                      />
-                      <small className="mt-1 d-block">
-                        {isSubmitted
-                          ? ""
-                          : projectPerformanceEvaluation[index]
-                              ?.actualPerformance !== 0 &&
-                            formatDateTime(new Date())}
-                      </small>
-                    </td>
-                    <td
-                      className="text-center"
-                      style={{ verticalAlign: "middle" }}
-                    >
-                      <Rating
-                        className="justify-content-center"
-                        value={
-                          projectPerformanceEvaluation[index]
-                            ?.evaluatedActualPerformance
-                        }
-                        name="evaluatedActualPerformance"
-                        onChange={(e) => handlePerfEvaluationOnChange(e, index)}
-                        cancel={false}
-                        disabled={!isAfter}
-                      />
-                      <small className="mt-1 d-block">
-                        {isSubmitted
-                          ? ""
-                          : projectPerformanceEvaluation[index]
-                              ?.evaluatedActualPerformance !== 0 &&
-                            formatDateTime(new Date())}
-                      </small>
-                    </td>
-                    {projectPerformanceEvaluation?.length > 1 &&
-                      (!isSubmitted || isUpdate) && (
-                        <Button
-                          type="button"
-                          style={{ display: "none" }}
-                          icon="pi pi-trash"
-                          text
-                          className="perf-button position-absolute end-0 top-50 translate-middle-y me-3 text-danger "
-                          severity="danger"
-                          onClick={() =>
-                            setProjectPerformanceEvaluation((prev) =>
-                              [...prev].filter((_, i) => i !== index)
-                            )
-                          }
-                        />
-                      )}
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-            <div className="flex">
-              {errors?.projectPerformanceEvaluation && (
-                <ErrorTemplate message={errors?.projectPerformanceEvaluation} />
-              )}
-              {projectPerformanceEvaluation?.length < 3 && (!isSubmitted || isUpdate) && (
-                <Button
-                  type="button"
-                  text
-                  icon="pi pi-plus"
-                  label="Add row"
-                  className="ms-auto"
-                  onClick={() =>
-                    setProjectPerformanceEvaluation([
-                      ...projectPerformanceEvaluation,
-                      effectivenessConstant.projectPerformanceEvaluation,
-                    ])
-                  }
-                />
-              )}
-            </div>
-          </Form.Group>
-          <br />
-          <Form.Group>
-            <b>III. Comments / Remarks</b>
-            <i> &#x28;to be filled up after the training&#x29; :</i>
-            <textarea
-              className="form-control"
-              rows={3}
-              placeholder="Comments/Remarks"
-              disabled={!isAfter}
-            ></textarea>
-          </Form.Group></div>
+                  ))}
+                </tbody>
+              </Table>
+              <div className="flex">
+                {errors?.projectPerformanceEvaluation && (
+                  <ErrorTemplate
+                    message={errors?.projectPerformanceEvaluation}
+                  />
+                )}
+                {projectPerformanceEvaluation?.length < 3 &&
+                  (!isSubmitted || isUpdate) && (
+                    <Button
+                      type="button"
+                      text
+                      icon="pi pi-plus"
+                      label="Add row"
+                      className="ms-auto"
+                      onClick={() =>
+                        setProjectPerformanceEvaluation([
+                          ...projectPerformanceEvaluation,
+                          effectivenessConstant.projectPerformanceEvaluation,
+                        ])
+                      }
+                    />
+                  )}
+              </div>
+            </Form.Group>
+            <br />
+            <Form.Group>
+              <b>III. Comments / Remarks</b>
+              <i> &#x28;to be filled up after the training&#x29; :</i>
+              <textarea
+                className="form-control"
+                rows={3}
+                placeholder="Comments/Remarks"
+                disabled={!isAfter}
+              ></textarea>
+            </Form.Group>
+          </div>
           {data?.trainingParticipants?.some(
             (x) => x.employeeBadge === SessionGetEmployeeId()
           ) &&
-          (!isSubmitted || isUpdate) && (
+            (!isSubmitted || isUpdate) && (
               <div className="text-end mt-3">
                 <Button
                   type="button"
@@ -575,22 +641,27 @@ const EffectivenessForm = ({
                   label={isUpdate ? "Update Form" : "Submit Form"}
                   className="rounded ms-2"
                   severity="success"
-                  onClick={isUpdate ? ()=>handleSubmit(true):()=>handleSubmit(false) }
+                  onClick={
+                    isUpdate
+                      ? () => handleSubmit(true)
+                      : () => handleSubmit(false)
+                  }
                 />
               </div>
             )}
         </Form>
-        
-      <Button
-        label="export"
-        onClick={() => handleGeneratePdf(reportTemplateRef.current)}
-      />
+
+        <Button
+          label="export"
+          onClick={() => handleGeneratePdf(reportTemplateRef.current)}
+          // onClick={handlePrint}
+        />
         {isSubmitted && (
-            <>
-              <hr />
-              <ActivityLog label="Activity Logs" items={logs} isDescending />
-            </>
-          )}
+          <>
+            <hr />
+            <ActivityLog label="Activity Logs" items={logs} isDescending />
+          </>
+        )}
       </Card.Body>
     </>
   );

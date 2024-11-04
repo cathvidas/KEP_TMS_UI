@@ -4,7 +4,9 @@ const handleGeneratePdf = (e) => {
     var newElement = document.createElement("div");
     newElement.style.width = 960 + "px";
     newElement.appendChild(e.cloneNode(true)); 
-    
+    pdf.setFont("Helvetica"); 
+    newElement.className = "pdf-export"; // Apply PDF-specific CSS
+    console.log(newElement)
     pdf.html(newElement, {
       html2canvas: {
         scale: 0.6,

@@ -4,7 +4,9 @@
     --theme-bg-light: #f8f9fa;
     --theme-bg-light2: #e5e5e5;
 }
-
+*{
+    font-family: sans-serif;
+}
 .bg-body body {
     background: #fbfdfc;
 }
@@ -224,3 +226,23 @@ ul.p-list-menu {
 .css-13cymwt-control {
     border-color: var(--bs-border-color) !important;
 }
+
+.pdf-export {
+    font-size: 9pt;  /* Slightly smaller font for fitting more content */
+    line-height: 1.3; /* Increased line height for readability */
+    padding: 4px;
+    width: 95%; /* To fit within page margins */
+  }
+  
+  .pdf-export table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  
+
+
+  /* Table css */
+  .pdf-export table.table-bordered{
+    border: "2px solid #dee2e6" !important;
+  }
