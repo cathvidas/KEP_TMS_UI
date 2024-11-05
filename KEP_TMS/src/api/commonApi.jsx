@@ -33,3 +33,7 @@ export const getCurrentRoutingActivityApi = async (transactId, activityIn) =>{
 export const getApprovedFormsApi = async (assignedTo, activityIn) =>{
     return await fetchFromApi(`/Services/GetApprovedForms?assignedTo=${assignedTo}&activityIn=${activityIn}`);
 }
+export const getActivityApproversApi = async (id, activityIn) =>{
+    return await fetchFromApi(`/Services/GetApprovers?userBadge=${id}&requestType=${activityIn}`);
+}
+

@@ -37,8 +37,9 @@ const trainingReportService = {
       const routingWithDetail = await userMapping.mapUserIdList(routings, "assignedTo", [{label: "assignedName",value:"fullname"}]);
       const currentRouting = await commonService.getCurrentRouting(response?.data?.id, ActivityType.REPORT);
       const approverDetail =await userService.getUserById(currentRouting?.assignedTo)
-      const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.REPORT)
-      return {...response?.data, routings: routingWithDetail, currentRouting: {...currentRouting, assignedDetail: approverDetail}, auditTrail};
+      const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.REPORT);
+      const approvers = await commonService.getActivityApprovers(response?.data?.createdBy, ActivityType.REPORT);
+      return {...response?.data, routings: routingWithDetail, currentRouting: {...currentRouting, assignedDetail: approverDetail}, auditTrail, approvers};
     }
     return {};
   },

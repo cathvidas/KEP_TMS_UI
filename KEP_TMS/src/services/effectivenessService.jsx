@@ -40,8 +40,9 @@ const effectivenessService = {
       const routingWithDetail = await userMapping.mapUserIdList(routings, "assignedTo", [{label: "assignedName",value:"fullname"}]);
       const currentRouting = await getCurrentRoutingActivityApi(response?.data?.id, ActivityType.EFFECTIVENESS);
       const approverDetail =await userService.getUserById(currentRouting?.assignedTo)
-      const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.EFFECTIVENESS)
-      return {...response?.data, routings: routingWithDetail, currentRouting: {...currentRouting, assignedDetail: approverDetail}, auditTrail};
+      const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.EFFECTIVENESS);
+      const approvers = await commonService.getActivityApprovers(response?.data?.createdBy, ActivityType.EFFECTIVENESS);
+      return {...response?.data, routings: routingWithDetail, currentRouting: {...currentRouting, assignedDetail: approverDetail}, auditTrail, approvers};
     }
     return {};
   },

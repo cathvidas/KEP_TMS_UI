@@ -1,4 +1,5 @@
-import { disapproveActivityApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getCurrentRoutingActivityApi, getRoutingActivityWithAuditTrailApi } from "../api/commonApi";
+import { disapproveActivityApi, getActivityApproversApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getCurrentRoutingActivityApi, getRoutingActivityWithAuditTrailApi } from "../api/commonApi";
+import userService from "./userService";
 
 const commonService = {
   getAllDepartments: async () => {
@@ -25,6 +26,16 @@ const commonService = {
     } catch {
       return {};
     }
+  },
+  getActivityApprovers: async (id, activityIn) => {
+      const response =await getActivityApproversApi(id, activityIn);
+      if(response?.status === 1) {
+        const updatedData = await Promise.all(response?.data?.map(async (item) => {
+          return await userService.getUserById(item?.employeeBadge);
+        }))
+        return updatedData;
+      }
+      return [];
   },
   getCurrentRouting: async (transactId, activityIn) => {
     try {
