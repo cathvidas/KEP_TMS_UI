@@ -67,6 +67,7 @@ const ForApprovalReport = () => {
   );
   const approveReport = (id, isApprove) => {
     confirmAction({
+      showLoaderOnConfirm: true,
       title: isApprove
         ? "Approve Training Report"
         : "DisApprove Training Report",
@@ -95,6 +96,7 @@ const ForApprovalReport = () => {
   };
   const disapproveReport = (e) => {    
     confirmAction({
+    showLoaderOnConfirm:true,
     title:  "Return Training Report",
     text:"Are you sure you want to disapproved and return this Training Report?",
     confirmButtonText:  "Yes",
