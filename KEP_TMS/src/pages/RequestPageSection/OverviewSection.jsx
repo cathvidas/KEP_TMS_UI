@@ -31,8 +31,6 @@ import RequestAuditTrailLogsItem from "../../components/TrainingPageComponents/R
 import { Dialog } from "primereact/dialog";
 import ActivityList from "../../components/List/ActivityList";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 const OverviewSection = ({
   data,
   showParticipants = false,
@@ -123,7 +121,7 @@ const reportTemplateRef = useRef(null);
   return (
     <>
       <Toast ref={toast} position="bottom-center" className="z-1" />
-        {/* {showSticky()} */}
+        {showSticky()}
 
         <div className="card p-3 w-100">
       <div ref={reportTemplateRef}>

@@ -227,12 +227,7 @@ ul.p-list-menu {
     border-color: var(--bs-border-color) !important;
 }
 
-.pdf-export {
-    font-size: 9pt;  /* Slightly smaller font for fitting more content */
-    line-height: 1.3; /* Increased line height for readability */
-    padding: 4px;
-    width: 95%; /* To fit within page margins */
-  }
+
   
   .pdf-export table {
     width: 100%;
@@ -243,6 +238,8 @@ ul.p-list-menu {
 
 
   /* Table css */
-  .pdf-export table.table-bordered{
-    border: "2px solid #dee2e6" !important;
+  /* .pdf-export  */
+  .custom-table-bordered, .custom-table-bordered th, .custom-table-bordered td {
+    border: 1px solid #302f2f !important;
+    border-collapse: collapse !important;
   }
