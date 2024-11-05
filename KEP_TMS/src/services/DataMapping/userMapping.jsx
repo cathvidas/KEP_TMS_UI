@@ -1,7 +1,7 @@
 import userService from "../userService";
 
 const userMapping = {
-  mapUserIdList: (data, property, propList) => {
+  mapUserIdList: (data, property, propList, addAsObject) => {
     const getUser = async () => {
       if(data){
       const users = await Promise.all(
@@ -18,7 +18,7 @@ const userMapping = {
               });
               return newData;
             }else{
-              return {...user, ...userDetail}
+              return addAsObject ? {...user,  assignedDetail: userDetail} : {...user,  ...userDetail}
             }} catch {
             return user;
           }

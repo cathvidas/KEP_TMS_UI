@@ -31,7 +31,7 @@ const ApproverList = ({data, activityTitle, activityType }) => {
   const actionBodyTemplate = (rowData) => (
     <div>
       {
-      (getStatus(rowData?.employeeBadge) === "ForApproval" && rowData?.employeeBadge === SessionGetEmployeeId()) ?
+      (getStatus(rowData?.assignedTo) === "ForApproval" && rowData?.assignedTo === SessionGetEmployeeId()) ?
       <>
       <ApproverAction reqId={data?.id} onFinish={()=>window.location.reload()} />
       </> :
@@ -39,18 +39,18 @@ const ApproverList = ({data, activityTitle, activityType }) => {
         type="button"
         icon="pi pi-envelope"
         text
-        disabled={getStatus(rowData.employeeBadge) == "Pending" ? true : false}
+        disabled={getStatus(rowData.assignedTo) == "Pending" ? true : false}
         onClick={() => setVisible(true)}
       />}
     </div>
   );
   const statusTemplate = (rowData) =>
-    StatusColor({status:getStatus(rowData.employeeBadge), class:"p-2 px-3 ", showStatus: true});
+    StatusColor({status:getStatus(rowData.assignedTo), class:"p-2 px-3 ", showStatus: true});
 
   return (
     <>
       <DataTable
-        value={data?.approvers}
+        value={data?.routings}
         size="small"
         scrollable
         scrollHeight="flex"
@@ -59,20 +59,21 @@ const ApproverList = ({data, activityTitle, activityType }) => {
         rows={10}
       >
         <Column header="No" body={(_, { rowIndex }) => rowIndex + 1} />
-        <Column field="fullname" header="Name"></Column>
+        <Column field="fullname" header="Name" 
+          body={(rowData) => <>{rowData?.assignedDetail?.fullname }</>}></Column>
         {/* <Column field="employeeBadge" header="Badge No"></Column> */}
         <Column
           field="position"
           header="Title"
-          body={(rowData) => <>{rowData?.position + " Approval"}</>}
+          body={(rowData) => <>{rowData?.assignedDetail?.position + " Approval"}</>}
         ></Column>
         <Column header="Status" body={statusTemplate}></Column>
         <Column
           header="Approved Date"
           body={(rowData) => (
             <>
-              {getApprovedDate(rowData.employeeBadge)
-                ? formatDateTime(getApprovedDate(rowData.employeeBadge))
+              {getApprovedDate(rowData.assignedTo)
+                ? formatDateTime(getApprovedDate(rowData.assignedTo))
                 : "N/A"}
             </>
           )}

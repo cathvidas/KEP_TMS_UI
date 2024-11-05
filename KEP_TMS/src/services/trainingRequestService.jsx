@@ -1,10 +1,14 @@
-import { getCurrentRoutingActivityApi } from "../api/commonApi";
+import { approveTrainingFormApi, disapproveActivityApi, getCurrentRoutingActivityApi } from "../api/commonApi";
 import { statusCode } from "../api/constants";
-import { approveTrainingRequestApi, createTrainingRequestApi, getAllTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestByTraineeIdApi, getTrainingRequestsByRequestorApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
+import {createTrainingRequestApi, getAllTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestByTraineeIdApi, getTrainingRequestsByRequestorApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
 
 const trainingRequestService = {
   approveTrainingRequest: async (data) => {
-    const response = await approveTrainingRequestApi(data);
+    const response = await approveTrainingFormApi(data);
+    return response;
+  },
+  disapproveTrainingRequest: async (data) => {
+    const response = await disapproveActivityApi(data);
     return response;
   },
   getAllTrainingRequests: async () => {

@@ -30,7 +30,8 @@ import SpeedDialButtonItemTemplate from "../../components/General/SpeedDialButto
 import RequestAuditTrailLogsItem from "../../components/TrainingPageComponents/RequestAuditTrailLogsItem";
 import { Dialog } from "primereact/dialog";
 import ActivityList from "../../components/List/ActivityList";
-import handleGeneratePdf from "../../services/common/handleGeneratePdf";
+import CommentBox from "../../components/General/CommentBox";
+import handleApproveRequest from "../../services/handlers/handleApproveRequest";
 const OverviewSection = ({
   data,
   showParticipants = false,
@@ -43,6 +44,7 @@ const OverviewSection = ({
   const navigate = useNavigate();
   const toast = useRef(null);
   const [showLogModal, setShowLogModal] = useState(false);
+  const [showCommentBox, setShowCommentBox] = useState(false);
   const [reqStatus, setReqStatus] = useState({
     show: true,
     statusId: 0,
@@ -68,7 +70,8 @@ const OverviewSection = ({
       SessionGetEmployeeId(),
       userReports ?? null,
       () => cancelRequest(),
-      () => navigate("/KEP_TMS/Request/Update/" + data.id)
+      () => navigate("/KEP_TMS/Request/Update/" + data.id),
+      ()=>setShowCommentBox(true)
     );
     setReqStatus(statsData);
   }, [data, userReports]);
@@ -121,10 +124,10 @@ const reportTemplateRef = useRef(null);
   return (
     <>
       <Toast ref={toast} position="bottom-center" className="z-1" />
-        {showSticky()}
+      {showSticky()}
 
-        <div className="card p-3 w-100">
-      <div ref={reportTemplateRef}>
+      <div className="card p-3 w-100">
+        <div ref={reportTemplateRef}>
           <div>
             <h3 className="text-center theme-color m-0">
               {data?.trainingType?.name} Training Request
@@ -237,7 +240,26 @@ const reportTemplateRef = useRef(null);
             </>
           )}
         </div>
-        {(SessionGetRole() === "Admin" ||
+      </div>
+      <Dialog
+        header="History Log"
+        visible={showLogModal}
+        maximizable
+        style={{ width: "50vw", minHeight: "50vh" }}
+        onHide={() => {
+          if (!showLogModal) return;
+          setShowLogModal(false);
+        }}
+      >
+        <hr className="mt-0" />
+        <RequestAuditTrailLogsItem data={data} />
+      </Dialog>
+      <CommentBox show={showCommentBox} header="Comments" 
+      onClose={()=>setShowCommentBox(false)}
+      confirmButton={{label: "Return Request"}}
+      onSubmit={()=>handleApproveRequest({id: data?.id, approve: false, onFinish: ()=>window.location.reload(), user: SessionGetEmployeeId() })}
+       description="Please state your reason for returning this Training Request."/>
+      {(SessionGetRole() === "Admin" ||
           SessionGetRole() === "SuperAdmin" ||
           data?.requestorBadge == SessionGetEmployeeId()) && (
           <div className="position-absolute bottom-0  mb-3 me-4 end-0">
@@ -254,25 +276,6 @@ const reportTemplateRef = useRef(null);
             />
           </div>
         )}
-      </div>
-        <Dialog
-          header="History Log"
-          visible={showLogModal}
-          maximizable
-          style={{ width: "50vw", minHeight: "50vh" }}
-          onHide={() => {
-            if (!showLogModal) return;
-            setShowLogModal(false);
-          }}
-        >
-          <hr className="mt-0" />
-          <RequestAuditTrailLogsItem data={data} />
-        </Dialog>
-      {/* <Button label="export" onClick={exportToPDF}/> */}
-      <Button
-        label="export"
-        onClick={() => handleGeneratePdf(reportTemplateRef.current)}
-      />
     </>
   );
 };

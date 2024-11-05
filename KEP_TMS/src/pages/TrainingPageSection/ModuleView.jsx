@@ -13,7 +13,8 @@ const ModuleView = ({reqId})=>{
   const [selected, setSelected]= useState({});
   const [showPDF, setShowPDF]= useState(false);
   useEffect(() => {
-    const filteredData = modules.filter(
+    console.log(modules)
+    const filteredData = modules?.filter(
       (item) =>
         (item?.availableAt === null && item?.unavailableAt === null) ||
         (CompareDateTimeWithToday(item?.availableAt)?.isPast &&

@@ -13,7 +13,8 @@ const getToastDetail = (
   user,
   userReports,
   cancelRequest,
-  updateRequest
+  updateRequest,
+  disApproveRequest
 ) => {
   const reloadPage = ()=>{
     setTimeout(()=>{
@@ -78,7 +79,7 @@ const getToastDetail = (
             rightButtonSeverity="danger"
             rightButtonOutlined
             rightButtonIcon="pi pi-thumbs-down"
-            rightButtonCommand={() =>handleApproveRequest({id: data.id, approve: false, onFinish:reloadPage, user: SessionGetEmployeeId() })}
+            rightButtonCommand={disApproveRequest}
           />
         </>
       ) : (

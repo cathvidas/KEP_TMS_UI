@@ -52,7 +52,7 @@ const CommentBox = ({header,label, description,placeholder, onSubmit, show, onCl
               className="rounded"
               size="small"
               severity={confirmButton?.severity ?? "danger"}
-              icon="pi pi-upload"
+              icon={confirmButton?.icon}
               onClick={verify}
               label={confirmButton?.label ?? "Submit"}
             />
@@ -71,7 +71,8 @@ CommentBox.propTypes = {
     onClose: proptype.func,
     confirmButton: proptype.shape({
         label: proptype.string,
-        severity: proptype.string
+        severity: proptype.string,
+        icon: proptype.string
     })
 }
 export default CommentBox;

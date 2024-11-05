@@ -78,10 +78,11 @@ const ForApprovaleffectiveness = () => {
     </>
   );
   const approveEffectiveness = (id, isApprove) => {
-    const formData = new FormData();
-    formData.append("TransactId", id);
-    formData.append("ApprovedBy", SessionGetEmployeeId());
-    formData.append("ActivityIn", ActivityType.EFFECTIVENESS);
+    const formData = {
+      transactId: id,
+      activityIn: ActivityType.EFFECTIVENESS,
+      approvedBy: SessionGetEmployeeId()
+    };
     confirmAction({
       title: isApprove ? "Approve Effectiveness" : "Disapprove Effectiveness",
       text: isApprove

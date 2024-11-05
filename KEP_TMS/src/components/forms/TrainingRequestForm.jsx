@@ -33,6 +33,7 @@ import trainingRequestService from "../../services/trainingRequestService";
 import trainingRequestHook from "../../hooks/trainingRequestHook";
 import validateTrainingSchedules from "../../services/inputValidation/validateTrainingSchedules";
 import handleResponseAsync from "../../services/handleResponseAsync";
+import { SectionHeading } from "../General/Section";
 export const TrainingRequestForm = () => {
   const trainingType = useParams().type;
   const requestId = useParams().id;
@@ -310,6 +311,41 @@ export const TrainingRequestForm = () => {
               </StepperPanel>
               <StepperPanel header="Summary">
                 <TrainingSummary formData={formData} />
+                <SectionHeading title="Has Training Agreement" icon={<i className="pi pi-bookmark-fill"></i>}/>
+              <div className="d-flex gap-5">
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault1"
+                    checked={formData?.forTrainingAgreement}
+                    onChange={() => setFormData((prev) => ({ ...prev, forTrainingAgreement: true }))}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="flexRadioDefault1"
+                  >
+                    Yes
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault2"
+                    checked={!formData?.forTrainingAgreement}
+                    onChange={() => setFormData((prev) => ({ ...prev, forTrainingAgreement: false }))}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="flexRadioDefault2"
+                  >
+                    No
+                  </label>
+                </div>
+              </div>
                 {<StepperButton back={true} submit={true} />}
               </StepperPanel>
             </Stepper>

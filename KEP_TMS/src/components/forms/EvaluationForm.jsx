@@ -14,7 +14,6 @@ import { Button } from "primereact/button";
 import ErrorTemplate from "../General/ErrorTemplate";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
-import { ActivityType } from "../../api/constants";
 import FacilitatorRatingExportTemplate from "../General/FacilitatorRatingExportTemplate";
 const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
   const [annotation, setAnnotation] = useState(evaluationConstant.annotation);
@@ -27,7 +26,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
   const getFacilitators = () => {
     let facilitators = "";
     data?.trainingFacilitators?.map((x) => {
-      facilitators += `${x.fullname};  `;
+      facilitators += `${x?.assignedDetail?.fullname};  `;
     });
     return facilitators;
   };
@@ -402,7 +401,7 @@ console.log(data)
             {data?.trainingFacilitators.map((faci, index) => {
               return (
                 <TabPanel
-                  header={faci?.fullname}
+                  header={faci?.assignedDetail?.fullname}
                   className="active"
                   key={faci?.id}
                 >

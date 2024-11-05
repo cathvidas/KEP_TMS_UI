@@ -8,7 +8,6 @@ import {
   updateTrainingReportApi,
 } from "../api/trainingReportApi";
 import commonService from "./commonService";
-import userMapping from "./DataMapping/userMapping";
 import userService from "./userService";
 
 const trainingReportService = {
@@ -34,12 +33,9 @@ const trainingReportService = {
     const response = await getTrainingReportByIdApi(id);
     if(response?.status === 1){
       const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.REPORT)
-      const routingWithDetail = await userMapping.mapUserIdList(routings, "assignedTo", [{label: "assignedName",value:"fullname"}]);
       const currentRouting = await commonService.getCurrentRouting(response?.data?.id, ActivityType.REPORT);
-      const approverDetail =await userService.getUserById(currentRouting?.assignedTo)
       const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.REPORT);
-      const approvers = await commonService.getActivityApprovers(response?.data?.createdBy, ActivityType.REPORT);
-      return {...response?.data, routings: routingWithDetail, currentRouting: {...currentRouting, assignedDetail: approverDetail}, auditTrail, approvers};
+      return {...response?.data, routings, currentRouting, auditTrail};
     }
     return {};
   },

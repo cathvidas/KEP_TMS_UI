@@ -28,6 +28,7 @@ import { ActivityType, statusCode } from "../../api/constants";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import ApproverList from "../List/ApproversList";
 import ActivityList from "../List/ActivityList";
+import { CompareDateWithToday } from "../../utils/datetime/dateComparison";
 const EffectivenessForm = ({
   data,
   userData,
@@ -96,6 +97,7 @@ const EffectivenessForm = ({
     });
     return facilitators;
   };
+  console.log(isAfter, formData, userData)
   const getFormData = {
     employeeBadge: SessionGetEmployeeId(),
     trainingProgramId: data?.trainingProgram?.id,
@@ -170,7 +172,7 @@ const EffectivenessForm = ({
     }
   };
   useEffect(() => {
-    setIsAfter(getAfterTrainingDate() >= formatDateOnly(new Date(), "dash"));
+    setIsAfter(CompareDateWithToday(getAfterTrainingDate())?.isPast && SessionGetEmployeeId() === userData?.superiorBadge);
   }, [getAfterTrainingDate]);
   const logs = activityLogHook.useReportsActivityLog(formData, userData);
   const reportTemplateRef = useRef();
@@ -442,7 +444,7 @@ const EffectivenessForm = ({
                       key={`evaluation${index}`}
                       className="position-relative performanceTable"
                     >
-                      <th scope="row">{index + 1}</th>
+                      <th scope="row" className="text-center">{index + 1}</th>
                       <td>
                         <textarea
                           className="no-focus w-100 border-0"

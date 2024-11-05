@@ -1,24 +1,25 @@
-import { statusCode } from "../../api/constants";
+import { ActivityType, statusCode } from "../../api/constants";
 import handleResponseAsync from "../handleResponseAsync";
 import { actionFailed, actionSuccessful, confirmAction } from "../sweetalert";
 import trainingRequestService from "../trainingRequestService";
 
 const handleApproveRequest = async (data) => {
+
   const newData = {
-    requestId: data.id,
-    employeeBadge: data.user,
-    statusId: data.approve ? statusCode.APPROVED : statusCode.DISAPPROVED,
-    updatedBy: data.user,
+    transactId: data.id,
+    approvedBy: data.user,
+    activityIn: ActivityType.REQUEST,
   };
   confirmAction({
-    title: data.approve ? "Approve Request" : "Reject Request",
+    showLoaderOnConfirm: true,
+    title: data.approve ? "Approve Request" : "Disapprove Request",
     text:data.approve  ?  `Are you sure you want to approve this request?`: `Are you sure you want to disapprove this request?`,
     confirmButtonText: data.approve ?"Approve": "Disapprove",
     cancelButtonText: "Cancel",
     confirmButtonColor: !data.approve && "#d33",
     onConfirm: () =>
       handleResponseAsync(
-        () => trainingRequestService.approveTrainingRequest(newData),
+        () => data?.approve ? trainingRequestService.approveTrainingRequest(newData) : trainingRequestService.disapproveTrainingRequest(newData),
         (e) => {
           actionSuccessful(
             "Success",

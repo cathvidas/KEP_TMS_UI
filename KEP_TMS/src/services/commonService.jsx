@@ -1,4 +1,5 @@
 import { disapproveActivityApi, getActivityApproversApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getCurrentRoutingActivityApi, getRoutingActivityWithAuditTrailApi } from "../api/commonApi";
+import userMapping from "./DataMapping/userMapping";
 import userService from "./userService";
 
 const commonService = {
@@ -28,30 +29,43 @@ const commonService = {
     }
   },
   getActivityApprovers: async (id, activityIn) => {
-      const response =await getActivityApproversApi(id, activityIn);
-      if(response?.status === 1) {
-        const updatedData = await Promise.all(response?.data?.map(async (item) => {
+    const response = await getActivityApproversApi(id, activityIn);
+    if (response?.status === 1) {
+      const updatedData = await Promise.all(
+        response?.data?.map(async (item) => {
           return await userService.getUserById(item?.employeeBadge);
-        }))
-        return updatedData;
-      }
-      return [];
+        })
+      );
+      return updatedData;
+    }
+    return [];
   },
   getCurrentRouting: async (transactId, activityIn) => {
     try {
-      const response = await getCurrentRoutingActivityApi(transactId, activityIn);
+      const response = await getCurrentRoutingActivityApi(
+        transactId,
+        activityIn
+      );
+      if(response){
+        const userData = await userService.getUserById(response?.assignedTo)
+        return {...response, assignedDetail: userData};
+      }
       return response;
     } catch {
       return {};
     }
   },
   getRoutingActivityWithAuditTrail: async (transactId, activityIn) => {
-    try{
-    const response =
-      transactId &&
-      (await getRoutingActivityWithAuditTrailApi(transactId, activityIn));
-    return response}catch{
-      return []
+    try {
+      const response =
+        transactId &&
+        (await getRoutingActivityWithAuditTrailApi(transactId, activityIn));
+        if(response){
+          const updatedData =userMapping.mapUserIdList(response, "assignedTo", null, true);
+          return updatedData;
+        }
+    } catch {
+      return [];
     }
   },
   getApprovedForms: async (assignedTo, activityIn) => {

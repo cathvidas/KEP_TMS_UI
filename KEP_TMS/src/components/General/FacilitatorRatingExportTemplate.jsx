@@ -10,7 +10,7 @@ const FacilitatorRatingExportTemplate = ({
       {facilitators?.map((faci, index) => {
         return (
           <TabView className="custom-tab faciRatings" key={faci?.id}>
-            <TabPanel header={faci?.fullname} className="active">
+            <TabPanel header={faci?.assignedDetail?.fullname} className="active">
               <RateFieldItem
                 label="Clarity of Presentation (delivery, platform skills, etc.)"
                 value={facilitatorRating[index]?.frOne}

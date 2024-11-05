@@ -36,7 +36,8 @@ export const validateTrainingRequestForm = (formData)=>{
             FacilitatorBadge:employeeBadge
         })):[],
         statusId:formData?.status?.id,
-        createdBy: SessionGetEmployeeId()
+        createdBy: SessionGetEmployeeId(),
+        forTrainingAgreement: formData?.forTrainingAgreement ?? false,
       }
 }
 

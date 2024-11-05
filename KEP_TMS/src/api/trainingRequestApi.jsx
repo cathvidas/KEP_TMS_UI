@@ -12,9 +12,6 @@ export const createTrainingRequestApi = async (trainingRequest) => {
 export const getTrainingRequestsByRequestorApi = async (id) => {
     return await fetchFromApi(`/TrainingRequest/GetRequestByRequestor?badge=${id}`);
 }
-export const approveTrainingRequestApi = async (data) => {
-    return await fetchFromApi("/Services/ApproveRequest", "POST", data);
-}
 export const updateTrainingRequestApi = async (data)=>{
     return await fetchFromApi("/TrainingRequest/UpdateTrainingRequest", "PUT", data);
 }

@@ -1,4 +1,4 @@
-import { approveTrainingFormApi, getCurrentRoutingActivityApi } from "../api/commonApi";
+import { approveTrainingFormApi } from "../api/commonApi";
 import { ActivityType } from "../api/constants";
 import {
   createTrainingEffectivenessApi,
@@ -9,8 +9,6 @@ import {
   updateProjectPerformanceEvaluationApi,
 } from "../api/effectivenessApi";
 import commonService from "./commonService";
-import userMapping from "./DataMapping/userMapping";
-import userService from "./userService";
 const effectivenessService = {
   createTrainingEffectiveness: async (data) => {
     const response = await createTrainingEffectivenessApi(data);
@@ -37,12 +35,9 @@ const effectivenessService = {
     const response = await getEffectivenessByIdApi(id);
     if(response?.status === 1){
       const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.EFFECTIVENESS);
-      const routingWithDetail = await userMapping.mapUserIdList(routings, "assignedTo", [{label: "assignedName",value:"fullname"}]);
-      const currentRouting = await getCurrentRoutingActivityApi(response?.data?.id, ActivityType.EFFECTIVENESS);
-      const approverDetail =await userService.getUserById(currentRouting?.assignedTo)
+      const currentRouting = await commonService.getCurrentRouting(response?.data?.id, ActivityType.EFFECTIVENESS);
       const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.EFFECTIVENESS);
-      const approvers = await commonService.getActivityApprovers(response?.data?.createdBy, ActivityType.EFFECTIVENESS);
-      return {...response?.data, routings: routingWithDetail, currentRouting: {...currentRouting, assignedDetail: approverDetail}, auditTrail, approvers};
+      return {...response?.data, routings, currentRouting, auditTrail};
     }
     return {};
   },

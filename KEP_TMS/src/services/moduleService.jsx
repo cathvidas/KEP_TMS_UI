@@ -3,7 +3,7 @@ import { createModuleApi, deleteModuleApi, getModulesByRequestIdApi, updateModul
 const moduleService = {
     getModulesByRequestId: async (id) => {
         const response = await getModulesByRequestIdApi(id);
-        return response?.status === 1 ?response.data : {};
+        return response?.status === 1 ?response.data : [];
     },
     createModule: async (module) => {
         const response = await createModuleApi(module);
