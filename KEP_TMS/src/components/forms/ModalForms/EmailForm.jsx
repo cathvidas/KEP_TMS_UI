@@ -1,9 +1,9 @@
 import { Row, Col, Form, Modal } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import proptype from "prop-types";
 import { Button } from "primereact/button";
 import Select from "react-select";
-const EmailForm = ({ handleShow, handleClose, selectedData,  }) => {
+const EmailForm = ({ handleShow, handleClose, selectedData, activityTitle, activityType, activityId }) => {
   const [formData, setFormData] = useState({});
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
@@ -36,7 +36,7 @@ const EmailForm = ({ handleShow, handleClose, selectedData,  }) => {
                     name="name"
                     value={formData.name}
                     placeholder="Category Name"
-                    defaultValue={"Training Request Approval Follow-up"}
+                    defaultValue={`${activityTitle ? activityTitle : "Training Request"} Approval Follow-up`}
                     required
                   />
                   {errors.name && (
@@ -95,9 +95,9 @@ const EmailForm = ({ handleShow, handleClose, selectedData,  }) => {
           </Modal.Footer></> : <>
           <Modal.Body className="p-0">
             <div  className="pb-4 px-4 border-bottom text-center">
-                <h5 className="">Send Follow Up Email for Approval Training Request?
+                <h5 className="">Send Follow Up Email for {activityTitle ? activityTitle : "Training Request"} Approval?
                 </h5>
-                <span className="text-muted h-6 d-block">Training Request ID: 12</span>
+                <span className="text-muted h-6 d-block">{activityTitle ? activityTitle : "Training Request"} ID: {activityId}</span>
                 <div className="px-5 d-flex flex-column mx-4">
                 <Button type="button" icon="pi pi-envelope" className="my-2 rounded d-block text-center" label="Send Follow Up Email"/>
                 <Button type="button" icon="pi pi-pencil" outlined  className="rounded d-block" label="Customize Content" onClick={()=>setContent(true)}/>
@@ -111,9 +111,12 @@ const EmailForm = ({ handleShow, handleClose, selectedData,  }) => {
     </>
   );
 };
-EmailForm.propType = {
+EmailForm.propTypes = {
   handleShow: proptype.bool.isRequired,
   handleClose: proptype.func,
   selectedData: proptype.object,
+  activityTitle: proptype.string,
+  activityType: proptype.number,
+  activityId: proptype.number,
 };
 export default EmailForm;

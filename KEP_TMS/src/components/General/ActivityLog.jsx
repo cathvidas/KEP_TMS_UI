@@ -4,15 +4,16 @@ import sortArrayInDescending from "../../utils/sorting/sortArrayInDescending";
 import { Button } from "primereact/button";
 import { useState } from "react";
 
-const ActivityLog = ({ items, label, isDescending, show = true}) => {
+const ActivityLog = ({ items, label, isDescending, show = true, toggle}) => {
   const arrayList = isDescending ? sortArrayInDescending(items) : items;
   const [isShow, setIsShow] = useState(show);
   return (
     <>
       <div className="flex gap-0">
         {label && <h6 className="mb-1">{label}</h6>}
+        {toggle &&
         <Button className="py-0" size="small" type="button" text icon={isShow ? "pi pi-eye-slash" : "pi pi-eye"} onClick={()=>setIsShow(!isShow)}/>
-      </div>
+      } </div>
       {isDescending}
       {isShow && arrayList?.map((item, index) => (
         <>
@@ -61,5 +62,6 @@ ActivityLog.propTypes = {
   label: proptype.string,
   isDescending: proptype.bool,
   show: proptype.bool,
+  toggle: proptype.bool,
 };
 export default ActivityLog;

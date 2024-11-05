@@ -11,6 +11,11 @@ const activityLogHook = {
       if (defaultValue) {
         let newLogs = [];
         newLogs.push({
+          name: userData?.fullname ?? defaultValue?.auditTrail?.createdBy,
+          process: "New",
+          remark: "N/A",
+          severity: "secondary",
+          show: true,
           label: `Created by ${
             userData?.fullname ?? defaultValue?.auditTrail?.createdBy
           }`,
@@ -31,6 +36,9 @@ const activityLogHook = {
               label: `Routed to ${item.assignedName ?? item.assignedTo}`,
               date: formatDateTime(item?.createdDate),
               severity: "default",
+              show: true,
+              name:item.assignedName ?? item.assignedTo,
+              remark: isApproved ? "Approved" : isDisapproved ? remarks?.toValue ?? "Disapproved": "N/A"
             });
           }
           const remarks = extractChanges(changes?.Remarks ?? "");
@@ -50,6 +58,7 @@ const activityLogHook = {
               : isDisapproved
               ? "danger"
               : "default",
+              show: false,
           });
         });
         setLogs(newLogs);

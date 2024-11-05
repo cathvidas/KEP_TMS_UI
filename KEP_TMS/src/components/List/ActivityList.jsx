@@ -4,7 +4,7 @@ import proptype from "prop-types";
 import { Button } from "primereact/button";
 import { Collapse } from "react-bootstrap";
 
-const ActivityList = ({ data, show = true, label }) => {
+const ActivityList = ({ data, show = true, label, toggle }) => {
   const [isShow, setIsShow] = useState(show);
   const items = [
     { field: "name", header: "Processed By" },
@@ -15,7 +15,8 @@ const ActivityList = ({ data, show = true, label }) => {
   return (
     <>
       <div className="flex gap-0 mb-1">
-        {label && <h6 className="mb-1">{label}</h6>}
+        {label && <h6 className="mb-1 theme-color" style={{fontWeight: 600}}>{label}</h6>}
+        {toggle && 
         <Button
           className="py-0"
           size="small"
@@ -25,7 +26,7 @@ const ActivityList = ({ data, show = true, label }) => {
           onClick={() => setIsShow(!isShow)}
           aria-controls="example-collapse-text"
         aria-expanded={isShow}
-        />
+        />}
       </div>
         
       <Collapse in={isShow}>

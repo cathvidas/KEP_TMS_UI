@@ -10,7 +10,7 @@ import { statusCode } from "../../api/constants";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import ApproverAction from "../tableComponents/ApproverAction";
 import { formatDateTime } from "../../utils/datetime/Formatting";
-const ApproverList = ({data }) => {
+const ApproverList = ({data, activityTitle, activityType }) => {
   const [visible, setVisible] = useState(false);
   const getStatus = (employeeBadge) => {
     const status = data?.routings?.filter((x) => x.assignedTo === employeeBadge); // Get status for this employee
@@ -79,11 +79,13 @@ const ApproverList = ({data }) => {
         ></Column>
         <Column header="Action" body={actionBodyTemplate}></Column>
       </DataTable>
-      <EmailForm handleShow={visible} handleClose={() => setVisible(false)} />
+      <EmailForm handleShow={visible} handleClose={() => setVisible(false)} activityTitle={activityTitle} activityId={data?.id} activityType={activityType}/>
     </>
   );
 };
 ApproverList.propTypes = {
   data: proptype.object,
+  activityTitle: proptype.string,
+  activityType: proptype.number,
 };
 export default ApproverList;
