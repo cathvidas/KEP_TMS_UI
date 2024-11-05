@@ -9,7 +9,6 @@ import RequestList from "./pages/RequestList";
 import Trainings from "./pages/Trainings";
 import CertificatesPage from "./pages/CertificatesPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
-import ApproveRequestPage from "./pages/ApproveRequest";
 import TrainingPage from "./pages/TrainingPage";
 import TrainerPage from "./pages/TrainerPage";
 import ApproverPage from "./pages/ApproverPage";
@@ -33,7 +32,6 @@ function App() {
         <Route path="/KEP_TMS/MasterList/:category?/:type?" element={<MasterListPage />} />
         <Route path="/KEP_TMS/CertificatesPage" element={<CertificatesPage />} />
         <Route path="/KEP_TMS/AnalyticsPage" element={<AnalyticsPage />} />
-        <Route path="/KEP_TMS/ApproveRequest/:id" element={<ApproveRequestPage />} />
         <Route path="/KEP_TMS/Training/:id/:page?" element={<TrainingPage />} />
         <Route path="/KEP_TMS/TrainingMonitoring/:id/:page?" element={<MonitoringPage />} />
         <Route path="/KEP_TMS/Users/:page?/:id?" element={<UserPage />} />
