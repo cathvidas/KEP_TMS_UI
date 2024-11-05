@@ -93,7 +93,6 @@ const TraineeReportView = ({ data, refreshData }) => {
     <span className={`p-menuitem-text text-${activeItem && item.severity}`} data-pc-section="label" style={{color:activeItem ? item.color? item.color: "#2196f3" : ""}}>{item.label}</span></a>}
     </>)
   }
-  console.log(effectiveness,data)
   const items = [
     {
         label: 'Effectiveness Form',

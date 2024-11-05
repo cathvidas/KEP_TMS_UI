@@ -5,7 +5,7 @@ import {
   formatDateOnly,
   formatDateTime,
 } from "../../utils/datetime/Formatting";
-import { useCallback, useEffect, useState, useRef, forwardRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { Rating } from "primereact/rating";
 import {
   actionFailed,
@@ -24,22 +24,10 @@ import ActivityLog from "../General/ActivityLog";
 import activityLogHook from "../../hooks/activityLogHook";
 import validateTrainingEffectiveness from "../../services/inputValidation/validateTrainingEffectiveness";
 import "../../assets/css/effectivenessForm.css";
-import { statusCode } from "../../api/constants";
+import { ActivityType, statusCode } from "../../api/constants";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
-import { useReactToPrint } from "react-to-print";
-const ReportTemplate = forwardRef((props, ref) => (
-  <div ref={ref}>
-    <div className="text-center pb-3 mb-3">
-      <h5 className="m-0 w-100" style={{ fontKerning: "none" }}>
-        TRAINING EFFECTIVENESS MONITORING FORM
-      </h5>
-      <small className="text-muted">Knowles Electronics Philippines</small>
-    </div>
-  </div>
-));
-ReportTemplate.displayName = "ReportTemplate";
-
-
+import ApproverList from "../List/ApproversList";
+import ActivityList from "../List/ActivityList";
 const EffectivenessForm = ({
   data,
   userData,
@@ -47,10 +35,11 @@ const EffectivenessForm = ({
   onFinish,
   currentRouting,
   auditTrail,
-  exportForm,
+  
 }) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showLogs, setShowLogs] = useState(false);
   const [annotation, setAnnotation] = useState("");
   const [performanceCharacteristics, setPerformanceCharacteristics] = useState([
     effectivenessConstant.performanceCharacteristics,
@@ -186,16 +175,6 @@ const EffectivenessForm = ({
   const logs = activityLogHook.useReportsActivityLog(formData, userData);
   const reportTemplateRef = useRef();
 
-  const handlePrint = useReactToPrint({
-    content: () => reportTemplateRef.current || null, // Default to null if ref is undefined
-    onBeforeGetContent: () => {
-      console.log("Preparing to print..."); // Optional debug log
-    },
-    onAfterPrint: () => {
-      console.log("Printing complete"); // Optional debug log
-    }
-  });
-
   return (
     <>
       <Card.Body>
@@ -216,17 +195,20 @@ const EffectivenessForm = ({
             </div>
           </div>
         )}
-        
+
         <Form>
-            <div ref={reportTemplateRef}>
-              <div className="text-center  pb-3 mb-3 ">
-                <h5 className="m-0 w-100 title" style={{ fontFamily: "sans-serif" }}>
-                  TRAINING EFFECTIVENESS MONITORING FORM <i className="pi pi-check" />
-                </h5>
-                <small className="text-muted">
-                  Knowles Electronics Philippines
-                </small>
-              </div>
+          <div ref={reportTemplateRef} style={{height: "fit-content"}}>
+            <div className="text-center  pb-3 mb-3 ">
+              <h5
+                className="m-0 w-100 title"
+                style={{ fontFamily: "sans-serif" }}
+              >
+                TRAINING EFFECTIVENESS MONITORING FORM
+              </h5>
+              <small className="text-muted">
+                Knowles Electronics Philippines
+              </small>
+            </div>
             <Row>
               <AutoCompleteField
                 label="Name of Employee"
@@ -289,7 +271,7 @@ const EffectivenessForm = ({
                 I. What are the specific performance characteristics that you
                 would like to develop by attending this training?
               </b>
-              <Table className="custom-table-bordered m-0" style={{}}>
+              <Table className="table-bordered m-0">
                 <thead>
                   <tr>
                     <th
@@ -301,7 +283,6 @@ const EffectivenessForm = ({
                     <th className="theme-bg-light text-muted text-center">
                       Self-assessment/ Rating
                     </th>
-                    {/* <th></th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -360,7 +341,7 @@ const EffectivenessForm = ({
                   ))}
                 </tbody>
               </Table>
-              <div className="flex">
+              <div className="flex hideExport">
                 {errors?.performanceCharacteristics && (
                   <ErrorTemplate message={errors?.performanceCharacteristics} />
                 )}
@@ -414,23 +395,39 @@ const EffectivenessForm = ({
                     <th
                       colSpan={2}
                       className="theme-bg-light text-muted text-center"
-                      style={{ minWidth: "20rem" }}
+                      style={{
+                        minWidth: "10rem",
+                        width: "100%",
+                        verticalAlign: "middle",
+                      }}
                     >
                       Project / Task / Assignment
                     </th>
-                    <td className="theme-bg-light text-muted text-center">
+                    <td
+                      className="theme-bg-light text-muted text-center"
+                      style={{ verticalAlign: "middle" }}
+                    >
                       <b> Performance Before Training </b> &#x28;to be filled up
                       before the training&#x29;
                     </td>
-                    <td className="theme-bg-light text-muted text-center">
+                    <td
+                      className="theme-bg-light text-muted text-center"
+                      style={{ verticalAlign: "middle" }}
+                    >
                       <b> Projected Performance </b> &#x28;to be filled up
                       before the training&#x29;
                     </td>
-                    <td className="theme-bg-light text-muted text-center">
+                    <td
+                      className="theme-bg-light text-muted text-center"
+                      style={{ verticalAlign: "middle" }}
+                    >
                       <b> Actual Performance </b> &#x28;to be filled up after
                       the training&#x29;
                     </td>
-                    <td className="theme-bg-light text-muted text-center">
+                    <td
+                      className="theme-bg-light text-muted text-center"
+                      style={{ verticalAlign: "middle" }}
+                    >
                       <b>
                         {" "}
                         Actual Performance evaluated by the immediate manager &
@@ -579,7 +576,7 @@ const EffectivenessForm = ({
                   ))}
                 </tbody>
               </Table>
-              <div className="flex">
+              <div className="flex hideExport">
                 {errors?.projectPerformanceEvaluation && (
                   <ErrorTemplate
                     message={errors?.projectPerformanceEvaluation}
@@ -618,7 +615,7 @@ const EffectivenessForm = ({
           {data?.trainingParticipants?.some(
             (x) => x.employeeBadge === SessionGetEmployeeId()
           ) &&
-            (!isSubmitted || isUpdate) && (
+            (!isSubmitted || isUpdate) ? (
               <div className="text-end mt-3">
                 <Button
                   type="button"
@@ -648,18 +645,44 @@ const EffectivenessForm = ({
                   }
                 />
               </div>
-            )}
+            ): 
+            <div className="text-end mt-3">
+              <Button
+                type="button"
+                label={`${showLogs ? "Hide" : "Show"} Activities`}
+                icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
+                className="rounded"
+                text
+                onClick={() => setShowLogs(!showLogs)}
+              />
+              <Button
+                type="button"
+                label="Download"
+                icon="pi pi-download"
+                className="rounded"
+                text
+                severity="help"
+                onClick={() => handleGeneratePdf(reportTemplateRef.current)}
+              />
+            </div>}
         </Form>
-
-        <Button
-          label="export"
-          onClick={() => handleGeneratePdf(reportTemplateRef.current)}
-          // onClick={handlePrint}
-        />
-        {isSubmitted && (
+            {/* <ActivityLog label="Activity Logs" items={logs} isDescending /> */}
+        {isSubmitted  && showLogs && (
           <>
             <hr />
-            <ActivityLog label="Activity Logs" items={logs} isDescending />
+            <h6 className="theme-color" style={{ fontWeight: 600 }}>
+              Routes
+            </h6>
+            <ApproverList
+              data={formData}
+              activityTitle="Training Report"
+              activityType={ActivityType.REPORT}
+            />
+            <hr />
+            <ActivityList
+              data={logs?.filter((item) => item.show)}
+              label={"Activities"}
+            />
           </>
         )}
       </Card.Body>

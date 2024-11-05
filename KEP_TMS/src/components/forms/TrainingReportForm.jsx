@@ -4,7 +4,7 @@ import AutoCompleteField from "./common/AutoCompleteField";
 import proptype from "prop-types";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import trainingreportConstant from "../../services/constants/trainingReportConstant";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "primereact/button";
 import {
   actionFailed,
@@ -17,15 +17,18 @@ import ErrorTemplate from "../General/ErrorTemplate";
 import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
 import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
-import ActivityLog from "../General/ActivityLog";
 import activityLogHook from "../../hooks/activityLogHook";
-import { statusCode } from "../../api/constants";
+import { ActivityType, statusCode } from "../../api/constants";
 import getStatusCode from "../../utils/status/getStatusCode";
+import handleGeneratePdf from "../../services/common/handleGeneratePdf";
+import ActivityList from "../List/ActivityList";
+import ApproverList from "../List/ApproversList";
 
 const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitted, currentRouting, auditTrail}) => {
   const [formData, setFormData] = useState(trainingreportConstant);
   const [errors, setErrors] = useState({});
   const [isUpdate, setIsUpdate] = useState(false);
+  const [showLogs, setShowLogs] = useState(false);
   const getFormData = {
     ...formData,
     trainingRequestId: data.id,
@@ -51,6 +54,7 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     const isValid = validateForm();
     if (isValid) {
       confirmAction({
+        showLoaderOnConfirm: true,
         title: isUpdate ? 'Update Report' : "Submit Report",
         onConfirm: ()=>handleResponseAsync(()=> isUpdate ?
           trainingReportService.updateTrainingReport({...getFormData, updatedBy: SessionGetEmployeeId()}):
@@ -83,14 +87,13 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     return isValid;
   };
 const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
+const reportTemplateRef = useRef();
   return (
     <Card.Body>
-      {isSubmitted &&          
-      <div className=" flex justify-content-between  mb-2">
-            <div>
-              Submitted:{" "}
-              {formatDateTime(auditTrail?.createdDate)}
-            </div>
+      {
+        isSubmitted && (
+          <div className=" flex justify-content-between  mb-2">
+            <div>Submitted: {formatDateTime(auditTrail?.createdDate)}</div>
             <div>
               Status: &nbsp;
               {StatusColor({
@@ -101,22 +104,21 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
               <b> - {currentRouting?.assignedDetail?.fullname}</b>
             </div>
           </div>
-        // <small>Created: {formatDateTime(auditTrail?.createdDate)} {StatusColor({status: getStatusById(formData?.statusId), showStatus: true})}</small>   
-      } <div className="text-center  pb-3 mb-3">
-        <h5 className="m-0">Training Report Form</h5>
-        <small className="text-muted">Knowles Electronics Philippines</small>
-      </div>
-      <Form>
+        )
+        // <small>Created: {formatDateTime(auditTrail?.createdDate)} {StatusColor({status: getStatusById(formData?.statusId), showStatus: true})}</small>
+      }{" "}
+      <Form ref={reportTemplateRef}>
+        <div className="text-center  pb-3 mb-3">
+          <h5 className="m-0">Training Report Form</h5>
+          <small className="text-muted">Knowles Electronics Philippines</small>
+        </div>
         <Row>
           <AutoCompleteField
             label="Name"
             value={userData?.fullname}
             className="col-6"
           />
-          <AutoCompleteField
-            label="BadgeNo"
-            value={userData?.employeeBadge}
-          />
+          <AutoCompleteField label="BadgeNo" value={userData?.employeeBadge} />
           <AutoCompleteField
             label="Position"
             value={userData?.position}
@@ -151,7 +153,7 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
         <br />
         <Row>
           <FormFieldItem
-          required
+            required
             label="Knowledge/Skills Gained from the Training Program:"
             col={"col-12"}
             error={errors?.trainingTakeaways}
@@ -172,10 +174,10 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
           <Col className="col-md-6">
             <div className="">
               <h6 className="text-center p-2 m-0 theme-bg-light form-label required">
-                 {errors?.actionPlan && (
-                <ErrorTemplate message={errors?.actionPlan} />
-              )}
-                ACTION PLAN  
+                {errors?.actionPlan && (
+                  <ErrorTemplate message={errors?.actionPlan} />
+                )}
+                ACTION PLAN
               </h6>
               <textarea
                 className="w-100 border-0 no-focus px-2"
@@ -185,17 +187,16 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
                 onChange={handleOnChange}
                 readOnly={isSubmitted && !isUpdate}
               ></textarea>
-
-           
             </div>
           </Col>
           <Col className="col-md-6 border-start">
             <div className="">
-              <h6 className="text-center p-2 m-0 theme-bg-light form-label required"> {errors?.timeframe && (
-                <ErrorTemplate message={errors?.timeframe} />
-              )}
+              <h6 className="text-center p-2 m-0 theme-bg-light form-label required">
+                {" "}
+                {errors?.timeframe && (
+                  <ErrorTemplate message={errors?.timeframe} />
+                )}
                 TIMEFRAME
-             
               </h6>
               <textarea
                 className="w-100 border-0 no-focus px-2"
@@ -205,12 +206,15 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
                 onChange={handleOnChange}
                 readOnly={isSubmitted && !isUpdate}
               ></textarea>
-
             </div>
           </Col>
-        </Row>  
-        <br />     
-        {data?.trainingParticipants?.some(x=>x.employeeBadge === SessionGetEmployeeId()) && (!defaultValue || isUpdate)&&
+        </Row>
+      </Form>
+      <br />
+      {data?.trainingParticipants?.some(
+        (x) => x.employeeBadge === SessionGetEmployeeId()
+      ) &&
+      (!defaultValue || isUpdate) ? (
         <div className="text-end mt-3">
           <Button
             type="button"
@@ -224,18 +228,52 @@ const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
           />
           <Button
             type="button"
-            icon={isUpdate ? "pi pi-pencil":"pi pi-cloud-upload"}
-            label={isUpdate ? "Update Form": "Submit Form"}
+            icon={isUpdate ? "pi pi-pencil" : "pi pi-cloud-upload"}
+            label={isUpdate ? "Update Form" : "Submit Form"}
             className="rounded ms-2"
             severity="success"
             onClick={handleSubmit}
           />
-        </div>}
-      </Form>
-      {isSubmitted && 
-      <>
-      <hr />
-      <ActivityLog label="Activity Logs" items={logs} isDescending/></>}
+        </div>
+      ) : (
+        <div className="text-end mt-3">
+          <Button
+            type="button"
+            label={`${showLogs ? "Hide" : "Show"} Activities`}
+            icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
+            className="rounded"
+            text
+            onClick={() => setShowLogs(!showLogs)}
+          />
+          <Button
+            type="button"
+            label="Download"
+            icon="pi pi-download"
+            className="rounded"
+            text
+            severity="help"
+            onClick={() => handleGeneratePdf(reportTemplateRef.current)}
+          />
+        </div>
+      )}
+      {isSubmitted && showLogs && (
+        <>
+          <hr />
+          <h6 className="theme-color" style={{ fontWeight: 600 }}>
+            Routes
+          </h6>
+          <ApproverList
+            data={defaultValue}
+            activityTitle="Training Report"
+            activityType={ActivityType.REPORT}
+          />
+          <hr />
+          <ActivityList
+            data={logs?.filter((item) => item.show)}
+            label={"Activities"}
+          />
+        </>
+      )}
     </Card.Body>
   );
 };
