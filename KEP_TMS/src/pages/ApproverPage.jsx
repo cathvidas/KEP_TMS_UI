@@ -50,6 +50,18 @@ const ApproverPage = () => {
         },
       ],
     },
+    {
+      label: "For Evaluation",
+      items: [
+        {
+          label: "Trainee Effectiveness",
+        //   icon: "pi pi-arrow-down-left-and-arrow-up-right-to-center",
+          command: () => navigate("/KEP_TMS/List/EffectivenessEvaluation"),
+          active: currentContent === 3 ? true : false,
+          template: MenuItemTemplate,
+        },
+      ],
+    },
     // { separator: true, template: MenuItemTemplate },
     // {
     //   label: "Approved",
@@ -95,6 +107,8 @@ const ApproverPage = () => {
       } else if (page === "Reports") {
         setCurrentContent(2);
       }
+    }else if (type === "EffectivenessEvaluation"){
+      setCurrentContent(3);
     }
   }, [page, type]);
   const Content = () => (

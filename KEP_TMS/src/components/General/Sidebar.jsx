@@ -96,7 +96,7 @@ const Sidebars = () => {
             <NavItem
               item={"/KEP_TMS/RequestList"}
               title="Training Requests"
-              icon="pi pi-clipboard"
+              icon="pi pi-file-edit"
             />
             <NavItem
               item="/KEP_TMS/Trainings"

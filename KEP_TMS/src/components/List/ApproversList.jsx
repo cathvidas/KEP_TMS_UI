@@ -6,7 +6,7 @@ import getStatusById from "../../utils/status/getStatusById";
 import { Button } from "primereact/button";
 import EmailForm from "../forms/ModalForms/EmailForm";
 import { useState } from "react";
-import { statusCode } from "../../api/constants";
+import { ActivityType, statusCode } from "../../api/constants";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import ApproverAction from "../tableComponents/ApproverAction";
 import { formatDateTime } from "../../utils/datetime/Formatting";
@@ -78,7 +78,8 @@ const ApproverList = ({data, activityTitle, activityType }) => {
             </>
           )}
         ></Column>
-        <Column header="Action" body={actionBodyTemplate}></Column>
+        {activityType === ActivityType.REQUEST && 
+        <Column header="Action" body={actionBodyTemplate}></Column>}
       </DataTable>
       <EmailForm handleShow={visible} handleClose={() => setVisible(false)} activityTitle={activityTitle} activityId={data?.id} activityType={activityType}/>
     </>

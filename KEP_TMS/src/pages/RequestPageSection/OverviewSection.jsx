@@ -25,7 +25,7 @@ import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import trainingRequestService from "../../services/trainingRequestService";
 import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
-import { statusCode } from "../../api/constants";
+import { ActivityType, statusCode } from "../../api/constants";
 import SpeedDialButtonItemTemplate from "../../components/General/SpeedDialButtonItemTemplate";
 import RequestAuditTrailLogsItem from "../../components/TrainingPageComponents/RequestAuditTrailLogsItem";
 import { Dialog } from "primereact/dialog";
@@ -226,7 +226,7 @@ const reportTemplateRef = useRef(null);
                   title="Approvers"
                   icon={<FontAwesomeIcon icon={faUsers} />}
                 />
-                <ApproverList data={data} />
+                <ApproverList data={data} activityType={ActivityType.REQUEST}/>
               </div>
             </>
           )}
