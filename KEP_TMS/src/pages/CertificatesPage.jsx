@@ -7,10 +7,9 @@ import { Button } from "primereact/button";
 import CertificateForm from "../components/forms/ModalForms/CertificateForm";
 import trainingRequestHook from "../hooks/trainingRequestHook";
 import { SessionGetEmployeeId } from "../services/sessions";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import attachmentHook from "../hooks/attachmentHook";
 import CertificateViewModal from "../components/Modal/CertificateViewModal";
-import TextEditorTemplate from "../components/forms/common/TextEditorTemplate";
 const CertificatesPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showCerticateDetail, setShowCerticateDetail] = useState(false);
