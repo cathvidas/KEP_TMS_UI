@@ -110,7 +110,7 @@ const getToastDetail = (
           ? "error"
           : effStatus === getStatusById(statusCode.APPROVED)
           ? "success"
-          : "warning";
+          : "info";
     } else {
       statusData.summary = "Waiting for participants Effectiveness";
       statusData.detail =

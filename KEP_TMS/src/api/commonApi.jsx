@@ -33,7 +33,12 @@ export const getCurrentRoutingActivityApi = async (transactId, activityIn) =>{
 export const getApprovedFormsApi = async (assignedTo, activityIn) =>{
     return await fetchFromApi(`/Services/GetApprovedForms?assignedTo=${assignedTo}&activityIn=${activityIn}`);
 }
-export const getActivityApproversApi = async (id, activityIn) =>{
+export const getActivityApproversApi = async (id, activityIn, requestTotalCost) =>{
+    if(requestTotalCost){
+        return await fetchFromApi(`/Services/GetApprovers?userBadge=${id}&cost=${requestTotalCost}&requestType=${activityIn}`);
+    }
     return await fetchFromApi(`/Services/GetApprovers?userBadge=${id}&requestType=${activityIn}`);
 }
-
+export const sendEmailApi = async (data) =>{
+    return await fetchFromApi(`/Services/SendEmail`, "POST", data);
+}

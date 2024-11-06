@@ -30,10 +30,7 @@ const trainingRequestHook = {
               response.trainingFacilitators,
               "facilitatorBadge"
             );
-            const approvers = await userMapping.mapUserIdList(
-              response.approvers,
-              "employeeBadge"
-            );
+            const approvers = await commonService.getActivityApprovers(response?.requestorBadge, ActivityType.REQUEST, response?.totalTrainingFee);
             const requestor = await userService.getUserById(
               response.requestorBadge
             );
@@ -43,14 +40,11 @@ const trainingRequestHook = {
                 response.id,
                 ActivityType.REQUEST
               );
-            const approver =
+            const currentRouting =
               await commonService.getCurrentRouting(
                 response.id,
                 ActivityType.REQUEST
               );
-            const currentRouting = await userService.getUserById(
-              approver?.assignedTo
-            );
             setData({
               ...response,
               trainingParticipants: participants,
@@ -58,7 +52,7 @@ const trainingRequestHook = {
               requestor: requestor,
               routings,
               approvers,
-              currentRouting: currentRouting,
+              currentRouting: {...currentRouting, ...currentRouting?.assignedDetail},
               auditTrail
             });
             setLoading(false)

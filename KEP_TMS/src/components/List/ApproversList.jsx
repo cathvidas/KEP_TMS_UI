@@ -11,12 +11,13 @@ import { SessionGetEmployeeId } from "../../services/sessions";
 import ApproverAction from "../tableComponents/ApproverAction";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 const ApproverList = ({data, activityTitle, activityType }) => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false);  console.log(data)
   const getStatus = (employeeBadge) => {
-    const status = data?.routings?.filter((x) => x.assignedTo === employeeBadge); // Get status for this employee
-  
-    if (status?.length > 0 && status[0]?.statusId && data?.status?.id !== statusCode.SUBMITTED) {
-      return getStatusById(status[0]?.statusId);
+    console.log(employeeBadge)
+    const status = data?.routings?.find((x) => x.assignedTo === employeeBadge); // Get status for this employee
+
+    if (status && status?.statusId && data?.status?.id !== statusCode.SUBMITTED) {
+      return getStatusById(status?.statusId);
     } 
     else {
         return "Pending";
@@ -31,7 +32,7 @@ const ApproverList = ({data, activityTitle, activityType }) => {
   const actionBodyTemplate = (rowData) => (
     <div>
       {
-      (getStatus(rowData?.assignedTo) === "ForApproval" && rowData?.assignedTo === SessionGetEmployeeId()) ?
+      (getStatus(rowData?.employeeBadge) === "ForApproval" && rowData?.employeeBadge === SessionGetEmployeeId()) ?
       <>
       <ApproverAction reqId={data?.id} onFinish={()=>window.location.reload()} />
       </> :
@@ -45,12 +46,12 @@ const ApproverList = ({data, activityTitle, activityType }) => {
     </div>
   );
   const statusTemplate = (rowData) =>
-    StatusColor({status:getStatus(rowData.assignedTo), class:"p-2 px-3 ", showStatus: true});
+    StatusColor({status:getStatus(rowData.employeeBadge), class:"p-2 px-3 ", showStatus: true});
 
   return (
     <>
       <DataTable
-        value={data?.routings}
+        value={data?.approvers}
         size="small"
         scrollable
         scrollHeight="flex"
@@ -59,21 +60,20 @@ const ApproverList = ({data, activityTitle, activityType }) => {
         rows={10}
       >
         <Column header="No" body={(_, { rowIndex }) => rowIndex + 1} />
-        <Column field="fullname" header="Name" 
-          body={(rowData) => <>{rowData?.assignedDetail?.fullname }</>}></Column>
+        <Column field="fullname" header="Name"></Column>
         {/* <Column field="employeeBadge" header="Badge No"></Column> */}
         <Column
           field="position"
           header="Title"
-          body={(rowData) => <>{rowData?.assignedDetail?.position + " Approval"}</>}
+          body={(rowData) => <>{rowData?.position + " Approval"}</>}
         ></Column>
         <Column header="Status" body={statusTemplate}></Column>
         <Column
           header="Approved Date"
           body={(rowData) => (
             <>
-              {getApprovedDate(rowData.assignedTo)
-                ? formatDateTime(getApprovedDate(rowData.assignedTo))
+              {getApprovedDate(rowData.employeeBadge)
+                ? formatDateTime(getApprovedDate(rowData.employeeBadge))
                 : "N/A"}
             </>
           )}

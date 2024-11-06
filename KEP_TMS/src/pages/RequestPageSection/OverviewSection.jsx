@@ -51,6 +51,7 @@ const OverviewSection = ({
     summary: "",
     detail: {},
   });
+  console.log(data)
   const cancelRequest = ()=>{
     const formmatedData = { ...validateTrainingRequestForm(data),updatedBy: SessionGetEmployeeId(), statusId: statusCode.INACTIVE };
     confirmAction({
