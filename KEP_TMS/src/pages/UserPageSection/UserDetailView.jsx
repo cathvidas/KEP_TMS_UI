@@ -1,18 +1,18 @@
-import { Card, CardBody, Col, Row, Table } from "react-bootstrap";
+import { Card, CardBody, Col, Row } from "react-bootstrap";
 import  proptype  from "prop-types";
 import { Badge } from "primereact/badge";
-import { SectionBanner } from "../../components/General/Section";
 import { TabPanel, TabView } from "primereact/tabview";
 import userHook from "../../hooks/userHook";
 import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import trainingRequestHook from "../../hooks/trainingRequestHook";
 import CommonTable from "../../components/General/CommonTable";
 import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
-import { formatCurrency, formatDateOnly, GenerateTrainingDates } from "../../utils/datetime/Formatting";
-import { useRef } from "react";
+import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
+import { useRef, useState } from "react";
 import { Button } from "primereact/button";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import CertificateTemplate from "../../components/forms/common/CertificateTemplate";
+import TextEditor from "../../components/forms/common/TextEditor";
 const DetailItem = (data) => (
   <>
 <div className="flex py-1">
@@ -25,6 +25,9 @@ const DetailItem = (data) => (
 const UserDetailView = ({id})=>{
     const {data, error, loading } = userHook.useUserById(id);
     const trainings = trainingRequestHook.useUserTrainingsSummary(id);
+    const [showCertForm, setShowCertForm] = useState(false);
+    const [certData, setCertData] = useState("");
+    console.log(certData)
     const columnItem =[
         {field: "id", header: "No",body: (_, {rowIndex})=><>{rowIndex+1}</> },
         // {field: "id", header: "Id", },
@@ -40,6 +43,7 @@ const UserDetailView = ({id})=>{
         {field: "totalFee", header: "Cost", body: (rowData)=><>{formatCurrency(rowData.totalFee)}</>},
     ]
     const certRef = useRef();
+    // console.log(certRef.current?.innerHTML)
     const countTotalHours = (trainings)=>{
       let count = 0;
       trainings?.map(item =>{
@@ -47,7 +51,11 @@ const UserDetailView = ({id})=>{
       })
       return count;
     }
-
+const generateCertificate = ()=>{
+  const div =document.createElement("div");
+  div.innerHTML = certData;
+  handleGeneratePdf(div);
+}
     return (
       <>
       {loading ? <SkeletonBanner/> : error ? <h1>error</h1> :<>
@@ -107,6 +115,17 @@ const UserDetailView = ({id})=>{
           <CertificateTemplate trainings={trainings?.data?.attended} /></div>
         
         </>}
+        <Card>
+          <CardBody>
+            <div className="flex justify-content-between">
+              <h5 className="theme-color">Generate Training Certificate</h5>
+              <Button type="button" label="Generate" icon="pi pi-plus" onClick={()=> setShowCertForm(false)}/>
+            </div>
+            <TextEditor defaultValue={certRef.current?.innerHTML} onChange={(e)=> setCertData(e)}/>
+              <Button type="button" label="Generate Certificate" icon="pi pi-download" onClick={generateCertificate}/>
+            
+          </CardBody>
+        </Card>
       </>
     );
 }
