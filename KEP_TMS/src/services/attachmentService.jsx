@@ -24,20 +24,17 @@ const attachmentService = {
   getAttachmentByReference: async (
     referenceId,
     attachmentType,
-    employeeBadge
   ) => {
     const response = await getAttachmentByReferenceApi(
       referenceId,
       attachmentType,
-      employeeBadge
     );
     return response.status === 1 ? response?.data : [];
   },
   getAllTraineeCertificate: async (id) => {
     const oldTrainings = await attachmentService.getAttachmentByReference(
-      null,
+      id,
       attachmentType.CERTIFICATE,
-      id
     );
     const newTrainings =
       await trainingRequestService.getTrainingRequestByTraineeId(id);

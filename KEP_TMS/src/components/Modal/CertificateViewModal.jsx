@@ -9,10 +9,8 @@ const CertificateViewModal = ({
   title,
   items,
 }) => {
-  console.log(ApiConstant.BASE_URL);
-
   const [showPDF, setShowPDF] = useState(false);
-  const [data, setData] = useState(false);
+  const [data, setData] = useState({});
   return (
     <>
       <Card>

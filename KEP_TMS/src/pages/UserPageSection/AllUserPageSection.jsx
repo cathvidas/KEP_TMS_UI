@@ -22,6 +22,7 @@ const AllUserPageSection = ({userType, data, options, isFilter})=>{
    const filterdata =()=>{
     return userType ? data?.filter(item=>  item.roleName === userType) : data
    }
+   console.log(options)
     const actionTemplate = (rowData) => (
       <>
         <Button

@@ -18,7 +18,7 @@ const UserPage = ()=>{
     const navigate= useNavigate();
     const [currentContent, setCurrentContent] = useState(0);
     const {data, loading} = userHook.useAllUsersAndEmployee();
-    const [options, setOptions] = useState({options:{}, loading: true})
+    const [options, setOptions] = useState({options:[], loading: true})
     const roles = commonHook.useAllRoles();
     const departments = commonHook.useAllDepartments();
     const positions = commonHook.useAllPositions();

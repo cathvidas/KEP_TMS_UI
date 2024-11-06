@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 
 const PDFViewer = ({ data, handleShow, handleClose }) => {
-  console.log(data)
   const [file, setFile] = useState(data)
   useEffect(()=>{
     setFile(data)

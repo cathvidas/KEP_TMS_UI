@@ -66,3 +66,61 @@ export const formatSeconds = (value, toString = false) => {
     }:${seconds < 10 ? "0" + seconds : seconds}`;
   }
 };
+
+export const getMonth = (monthInNumber) =>{
+  switch(monthInNumber){
+    case 1:
+      return "January";
+    case 2:
+      return "February";
+    case 3:
+      return "March";
+    case 4:
+      return "April";
+    case 5:
+      return "May";
+    case 6:
+      return "June";
+    case 7:
+      return "July";
+    case 8:
+      return "August";
+    case 9:
+      return "September";
+    case 10:
+      return "October";
+    case 11:
+      return "November";
+    case 12:
+      return "December";
+  }
+}
+
+export const GenerateTrainingDates = (trainings)=>{
+  let dates = [];
+  if(trainings?.length > 0){
+    trainings.forEach(item =>{
+      const dateData = item?.date?.split("-");
+      const year = dateData[0];
+      const month = getMonth(parseInt(dateData[1]));
+      const day = parseInt(dateData[2]);
+      const y = dates.find(x => x.year === year);
+      if(y){
+        const m = y.month.find(x => x.month === month);
+        if(m){
+          m.days.push(day);
+        }else{
+          y.month.push({month: month, days: [day]});
+        }
+      }else {
+        dates.push({year: year, month: [{month: month, days: [day]}]});
+      }
+    })
+  }
+  const dateString = dates.map(item => {
+    return item.month.map(x => {
+      return x.month + " " + x.days.join(x?.days?.indexOf(x?.days?.length - 1) && x?.days?.length > 1 ? " and " : " , ") + ", " + item.year;
+    }).join(" ");
+  })
+  return dateString;
+}

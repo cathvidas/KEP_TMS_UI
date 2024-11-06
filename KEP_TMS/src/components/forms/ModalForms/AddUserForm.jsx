@@ -92,6 +92,6 @@ AddUserForm.propTypes = {
     userType: proptype.string,
     data: proptype.array,
     userRoles: proptype.array,
-    optionList: proptype.array
+    optionList: proptype.object
 }
 export default AddUserForm;

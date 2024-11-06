@@ -19,11 +19,11 @@ const CertificatesPage = () => {
   const { data, loading } = trainingRequestHook.useUserTrainingsSummary(
     SessionGetEmployeeId()
   );
-  const certicates = attachmentHook.useTraineeCertificates(
-    SessionGetEmployeeId()
+  // const certicates = []
+  const certicates = attachmentHook.useTraineeCertificates(1
   );
   console.log(certicates);
-  // console.log(data);
+  console.log(data);
   useEffect(() => {
     const mappedData = data?.attended?.map(({ id, trainingProgram }) => ({
       value: id,
@@ -32,10 +32,8 @@ const CertificatesPage = () => {
     setTrainingsOption(mappedData);
   }, [data]);
 
-  const reportTemplateRef = useRef(null);
   const contentBody = () => (
     <>
-      <div ref={reportTemplateRef}>
         <div className="px-3">
           <div className="flex justify-content-between align-items-center mt-3">
             <SectionHeading title="Recent" />
@@ -107,8 +105,6 @@ const CertificatesPage = () => {
             onFinish={() => setShowModal(false)}
           />
         </div>
-      </div>
-      <TextEditorTemplate/>
     </>
   );
   return (
