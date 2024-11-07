@@ -4,7 +4,8 @@ const CertificateTemplate = ({ trainings }) => {
   return (
     <>
       <div className="p-5">
-        <h4 className="text-uppercase text-center">Training Certification</h4>
+        <center>
+        <h4 style={{textAlign: "center"}}>TRAINING CERTIFICATION</h4></center>
         <p>To whom It may Concern</p>
         <p>
           This is to certify that Ms. Name has undergone the following training
@@ -13,13 +14,13 @@ const CertificateTemplate = ({ trainings }) => {
 
         <table
           className="table table-bordered "
-          style={{ verticalAlign: "middle" }}
+          style={{ verticalAlign: "middle", textAlign: "center"}}
         >
           <thead>
-            <tr className="text-center" style={{ verticalAlign: "middle" }}>
-              <th>Training Title</th>
-              <th>Training Date</th>
-              <th>Training Hours</th>
+            <tr >
+              <th><p style={{ verticalAlign: "middle" , textAlign: "center"}}>Training Title</p></th>
+              <th><p style={{ verticalAlign: "middle" , textAlign: "center"}}>Training Date</p></th>
+              <th><p style={{ verticalAlign: "middle" , textAlign: "center"}}>Training Hours</p></th>
             </tr>
           </thead>
           <tbody>
@@ -27,8 +28,8 @@ const CertificateTemplate = ({ trainings }) => {
               <tr key={training.id}>
                 <td>{training.trainingProgram?.name}</td>
                 <td>{GenerateTrainingDates(training.trainingDates)}</td>
-                <td className="text-center">
-                  {training.durationInHours} hours
+                <td><p style={{ verticalAlign: "middle" , textAlign: "center"}}>
+                  {training.durationInHours} hours</p>
                 </td>
               </tr>
             ))}
