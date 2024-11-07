@@ -16,15 +16,15 @@ const handleGeneratePdf = (e) => {
   for (let i = 0; i < formLabel.length; i++) {
     formLabel[i].classList.remove("required");
   }
-  const hidden = newElement.getElementsByClassName("hideExport");
+  const hidden = newElement.querySelectorAll(".hideExport");
   for (let i = 0; i < hidden.length; i++) {
-    hidden[i].classList.add("d-none");
+    hidden[i].remove();
   }
-  const visible = newElement.getElementsByClassName("showExport");
+  const visible = newElement.querySelectorAll(".showExport");
   for (let i = 0; i < visible.length; i++) {
     visible[i].classList.remove("d-none");
   }
-  const ratings = newElement.getElementsByClassName("p-rating-item");
+  const ratings = newElement.querySelectorAll(".p-rating-item");
   for (let j = 0; j < ratings.length; j++) {
     const img = document.createElement("img");
     img.width = 16;
@@ -37,11 +37,18 @@ const handleGeneratePdf = (e) => {
     ratings[j].innerHTML = "";
     ratings[j].appendChild(img);
   }
-  const table = newElement.getElementsByClassName("table");
+  const table = newElement.getElementsByClassName("custom-table");
   for (let i = 0; i < table.length; i++) {
     table[i].classList.add("custom-table-bordered");
     table[i].classList.remove("table-bordered");
   }
+//   doc.autoTable({
+//     html: '.custom-table', // You can specify a selector here
+//     startY: 20, // Optional: start rendering from Y position
+//     margin: { top: 10, left: 10, bottom: 10, right: 10 }, // Optional: define margins
+//     theme: 'grid', // Optional: theme for the table (grid, stripes, etc.)
+// });
+  console.log(doc.autoTable)
   doc.html(newElement, {
     html2canvas: {
       scale: 0.7,

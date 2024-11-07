@@ -273,7 +273,7 @@ const EffectivenessForm = ({
                 I. What are the specific performance characteristics that you
                 would like to develop by attending this training?
               </b>
-              <Table className="table-bordered m-0">
+              <Table className="table-bordered custom-table m-0 " >
                 <thead>
                   <tr>
                     <th
@@ -391,7 +391,7 @@ const EffectivenessForm = ({
                   </span>
                 </Col>
               </Row>
-              <Table className="mt-2 table-bordered m-0">
+              <Table className="mt-2 table-bordered custom-table m-0">
                 <thead>
                   <tr>
                     <th

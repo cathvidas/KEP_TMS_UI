@@ -67,7 +67,7 @@ export const formatSeconds = (value, toString = false) => {
   }
 };
 
-export const getMonth = (monthInNumber) =>{
+export const getMonthInString = (monthInNumber) =>{
   switch(monthInNumber){
     case 1:
       return "January";
@@ -102,7 +102,7 @@ export const GenerateTrainingDates = (trainings)=>{
     trainings.forEach(item =>{
       const dateData = item?.date?.split("-");
       const year = dateData[0];
-      const month = getMonth(parseInt(dateData[1]));
+      const month = getMonthInString(parseInt(dateData[1]));
       const day = parseInt(dateData[2]);
       const y = dates.find(x => x.year === year);
       if(y){
