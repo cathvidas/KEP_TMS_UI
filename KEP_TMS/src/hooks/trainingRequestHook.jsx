@@ -30,7 +30,7 @@ const trainingRequestHook = {
               response.trainingFacilitators,
               "facilitatorBadge"
             );
-            // const approvers = await commonService.getActivityApprovers(response?.requestorBadge, ActivityType.REQUEST, response?.totalTrainingFee);
+            const approvers = await commonService.getActivityApprovers(response?.requestorBadge, ActivityType.REQUEST, response?.totalTrainingFee);
             const requestor = await userService.getUserById(
               response.requestorBadge
             );
@@ -51,7 +51,7 @@ const trainingRequestHook = {
               trainingFacilitators: facilitators,
               requestor: requestor,
               routings,
-              // approvers,
+              approvers,
               currentRouting: {...currentRouting, ...currentRouting?.assignedDetail},
               auditTrail
             });

@@ -1,4 +1,4 @@
-import { approveTrainingFormApi } from "../api/commonApi";
+import { approveTrainingFormApi, sendEmailApi } from "../api/commonApi";
 import { ActivityType } from "../api/constants";
 import {
   createTrainingEffectivenessApi,
@@ -51,6 +51,13 @@ const effectivenessService = {
   },
   approveTrainingEffectiveness: async (formData)=>{
     const response = await approveTrainingFormApi(formData);
+    if(response.status !== 1){
+      throw new Error(response.message);
+    }
+    return response?.data;
+  },
+  sendEmail: async () => {
+    const response = await sendEmailApi();
     if(response.status !== 1){
       throw new Error(response.message);
     }

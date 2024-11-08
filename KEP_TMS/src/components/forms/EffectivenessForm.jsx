@@ -20,7 +20,6 @@ import effectivenessConstant from "../../services/constants/effectivenessConstan
 import { SessionGetEmployeeId } from "../../services/sessions";
 import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
-import ActivityLog from "../General/ActivityLog";
 import activityLogHook from "../../hooks/activityLogHook";
 import validateTrainingEffectiveness from "../../services/inputValidation/validateTrainingEffectiveness";
 import "../../assets/css/effectivenessForm.css";
@@ -273,7 +272,7 @@ const EffectivenessForm = ({
                 I. What are the specific performance characteristics that you
                 would like to develop by attending this training?
               </b>
-              <Table className="table-bordered custom-table m-0 " >
+              <Table className="table-bordered custom-table m-0 hideExport" >
                 <thead>
                   <tr>
                     <th
@@ -392,7 +391,7 @@ const EffectivenessForm = ({
                 </Col>
               </Row>
               <Table className="mt-2 table-bordered custom-table m-0">
-                <thead>
+                {/* <thead> */}
                   <tr>
                     <th
                       colSpan={2}
@@ -437,8 +436,8 @@ const EffectivenessForm = ({
                       </b>
                     </td>
                   </tr>
-                </thead>
-                <tbody>
+                {/* </thead> */}
+                {/* <tbody> */}
                   {projectPerformanceEvaluation?.map((_, index) => (
                     <tr
                       key={`evaluation${index}`}
@@ -576,7 +575,7 @@ const EffectivenessForm = ({
                         )}
                     </tr>
                   ))}
-                </tbody>
+                {/* </tbody> */}
               </Table>
               <div className="flex hideExport">
                 {errors?.projectPerformanceEvaluation && (

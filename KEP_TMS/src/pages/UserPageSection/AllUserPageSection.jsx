@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 import proptype from "prop-types"
 import { SectionBanner } from "../../components/General/Section";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddUserForm from "../../components/forms/ModalForms/AddUserForm";
 import NewUserForm from "../../components/forms/ModalForms/NewUserForm";
 import mapUserUpdateDetail from "../../services/DataMapping/mapUserUpdateDetails";
@@ -19,10 +19,6 @@ const AllUserPageSection = ({userType, data, options, isFilter})=>{
     const [showForm, setShowForm] = useState(false);
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const navigate = useNavigate();
-   const filterdata =()=>{
-    return userType ? data?.filter(item=>  item.roleName === userType) : data
-   }
-   console.log(options)
     const actionTemplate = (rowData) => (
       <>
         <Button
@@ -110,7 +106,7 @@ return (
         )}
       />
     )}
-    <CommonTable dataTable={filterdata()} columnItems={columnItems} tableName={`${userType ?? "All"} Users`}/>
+    <CommonTable dataTable={data} columnItems={columnItems} tableName={`${userType ?? "All"} Users`}/>
     <AddUserForm showForm={showForm} closeForm={()=>setShowForm(false)} userType={userType} data={data} userRoles={options?.options?.roles} optionList={options?.options}/>
     <NewUserForm showForm={showUpdateForm} closeForm={setShowUpdateForm} options={options} defaultData={mapUserUpdateDetail(defaultValue, options?.options)} headerTitle={"Update User Details"} isUpdate/>
   </>

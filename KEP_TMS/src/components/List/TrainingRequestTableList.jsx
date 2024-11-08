@@ -19,7 +19,6 @@ import {
   formatDateOnly,
 } from "../../utils/datetime/Formatting";
 import { checkTrainingIfOutDated } from "../../services/inputValidation/validateTrainingSchedules";
-import TooltipTemplate from "../General/TooltipTemplate";
 
 const TrainingRequestTableList = ({
   data,
@@ -100,7 +99,6 @@ const TrainingRequestTableList = ({
             severity="help"
             text
             onClick={() => handleButtonClick(data.id, "TrainingMonitoring")}
-            TrainingMonitoring
           />
         )}
       </div>
@@ -234,7 +232,7 @@ const TrainingRequestTableList = ({
             className="rounded-pill"
           />
         </IconField>
-        <TooltipTemplate title="Export" placement="left" item={<ExportBtn data={data} />} />
+        <ExportBtn data={data} />
       </div>
     );
   };

@@ -23,7 +23,9 @@ const UserPage = ()=>{
     const departments = commonHook.useAllDepartments();
     const positions = commonHook.useAllPositions();
     const empTypes = commonHook.useAllEmployeeTypes();
-
+    const filterdata =(userType)=>{
+      return userType ? data?.filter(item=>  item.roleName === userType) : data
+     }
     useEffect(() => {
       if (
         !roles?.loading &&
@@ -77,12 +79,12 @@ const UserPage = ()=>{
         ]
     }]
     const pageContent = [
-        <UserDetailView key={0} id={id}/>,
+        <UserDetailView key={0} id={id} adminList={filterdata(UserTypeValue.ADMIN)}/>,
         <AllUserPageSection key={1} options={options} data={data}/>,
-        <AllUserPageSection key={2} options={options} data={data} userType={UserTypeValue.TRAINEE}/>,
-        <AllUserPageSection key={3} options={options} data={data} userType={UserTypeValue.APPROVER} isFilter/>,
-        <AllUserPageSection key={4} options={options} data={data} userType={UserTypeValue.FACILITATOR} isFilter/>,
-        <AllUserPageSection key={5} options={options} data={data} userType={UserTypeValue.ADMIN} isFilter/>,
+        <AllUserPageSection key={2} options={options} data={filterdata(UserTypeValue.TRAINEE)} userType={UserTypeValue.TRAINEE}/>,
+        <AllUserPageSection key={3} options={options} data={filterdata(UserTypeValue.APPROVER)} userType={UserTypeValue.APPROVER} isFilter/>,
+        <AllUserPageSection key={4} options={options} data={filterdata(UserTypeValue.FACILITATOR)} userType={UserTypeValue.FACILITATOR} isFilter/>,
+        <AllUserPageSection key={5} options={options} data={filterdata(UserTypeValue.ADMIN)} userType={UserTypeValue.ADMIN} isFilter/>,
     ]
     useEffect(() => {
       if (page && id) {

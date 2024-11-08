@@ -1,6 +1,8 @@
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import proptype from "prop-types";
+import "../../../assets/css/TextEditor.css"
+import 'ckeditor5/ckeditor5.css';
 
 import {
   ClassicEditor,
@@ -19,37 +21,27 @@ import {
   FontBackgroundColor,
   TableToolbar,
   TableProperties,
-  TableCellPropertiesEditing,
   TableCellProperties,
   Underline,
   Indent,
   IndentBlock,
   Font,
+  Image,
+  ImageToolbar,
+  ImageStyle,
+  ImageResize,
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
-
-ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        /* ... */
-        ui: {
-            poweredBy: {
-                position: 'inside',
-                side: 'left',
-                label: 'This is'
-            }
-        }
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
-const TextEditor = ({ defaultValue, onChange }) => {
+const TextEditor = ({ defaultValue, onChange, showToolbar }) => {
   const [editorData, setEditorData] = useState(defaultValue);
   useEffect(() => {
     if (onChange) {
       onChange(editorData);
     }
   }, [editorData]);
+  // console.log(editorData)
   useEffect(() => {
-    setEditorData(defaultValue);
+    setEditorData(defaultValue ?? '<div></div>');
   }, [defaultValue]);
   const customColorPalette = [
     {
@@ -76,13 +68,34 @@ const TextEditor = ({ defaultValue, onChange }) => {
       color: "hsl(207, 90%, 54%)",
       label: "Blue",
     },
-
-    // More colors.
-    // ...
   ];
+  const toolbar =  [
+    "undo",
+    "redo",
+    "|",
+    "heading",
+    "|",
+    "bold",
+    "italic",
+    "underline",
+    "alignment",
+    "|",
+    "link",
+    "insertTable",
+    "bulletedList",
+    "numberedList",
+    "|",
+    "fontSize",
+    "fontFamily",
+    "fontColor",
+    "fontBackgroundColor",
+    "outdent",
+    "indent", "insertImage"
+  ]
   return (
-    <div>
+    <div className={showToolbar ? "": "custom-text-editor"}>
       <CKEditor
+      
         editor={ClassicEditor}
         data={editorData}
         onChange={(event, editor) => {
@@ -91,31 +104,8 @@ const TextEditor = ({ defaultValue, onChange }) => {
         }}
         config={{
           placeholder: "Type your text here...",
-
-          toolbar: [
-            "undo",
-            "redo",
-            "|",
-            "heading",
-            "|",
-            "bold",
-            "italic",
-            "underline",
-            "alignment",
-            "|",
-            "link",
-            "insertTable",
-            "bulletedList",
-            "numberedList",
-            "|",
-            // "blockQuote",
-            "fontSize",
-            "fontFamily",
-            "fontColor",
-            "fontBackgroundColor",
-            "outdent",
-            "indent"
-          ],
+          //add toolbar is showToolbar is true
+          toolbar: showToolbar ? toolbar : [],
           alignment: {
             options: ["left", "center", "right", "justify"],
           },
@@ -175,8 +165,9 @@ const TextEditor = ({ defaultValue, onChange }) => {
             FontBackgroundColor,
             Indent,
             IndentBlock,
-            Font
-          ],
+            Font,
+            Image, ImageToolbar, ImageStyle, ImageResize
+          ],  
         }}
       />
     </div>
@@ -185,5 +176,6 @@ const TextEditor = ({ defaultValue, onChange }) => {
 TextEditor.propTypes = {
   defaultValue: proptype.string,
   onChange: proptype.func,
+  showToolbar: proptype.bool,
 };
 export default TextEditor;

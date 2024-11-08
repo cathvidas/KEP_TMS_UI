@@ -39,7 +39,7 @@ const OverviewSection = ({
   showApprovers = false,
   isAdmin,
   userReports,
-  logs
+  logs,
 }) => {
   const navigate = useNavigate();
   const toast = useRef(null);
@@ -51,20 +51,24 @@ const OverviewSection = ({
     summary: "",
     detail: {},
   });
-  console.log(data)
-  const cancelRequest = ()=>{
-    const formmatedData = { ...validateTrainingRequestForm(data),updatedBy: SessionGetEmployeeId(), statusId: statusCode.INACTIVE };
+  const cancelRequest = () => {
+    const formmatedData = {
+      ...validateTrainingRequestForm(data),
+      updatedBy: SessionGetEmployeeId(),
+      statusId: statusCode.INACTIVE,
+    };
     confirmAction({
       title: "Are you sure?",
       text: "Are you sure you want to cancel this training request?",
       confirmButtonText: "Yes",
       cancelButtonText: "No",
       confirmButtonColor: "#d33",
-      onConfirm: ()=> handleResponseAsync(
-        ()=> trainingRequestService.updateTrainingRequest(formmatedData)
-      )
-    })
-  }
+      onConfirm: () =>
+        handleResponseAsync(() =>
+          trainingRequestService.updateTrainingRequest(formmatedData)
+        ),
+    });
+  };
   useEffect(() => {
     const statsData = getToastDetail(
       data,
@@ -72,56 +76,56 @@ const OverviewSection = ({
       userReports ?? null,
       () => cancelRequest(),
       () => navigate("/KEP_TMS/Request/Update/" + data.id),
-      ()=>setShowCommentBox(true)
+      () => setShowCommentBox(true)
     );
     setReqStatus(statsData);
   }, [data, userReports]);
 
   const showSticky = useCallback(() => {
     if (reqStatus.show) {
-      setReqStatus({...reqStatus, show: false});
+      setReqStatus({ ...reqStatus, show: false });
       toast.current?.clear();
       toast.current?.show({
         severity: reqStatus?.severity,
         summary: reqStatus?.summary,
         detail: reqStatus?.detail,
         sticky: true,
-        content: reqStatus?.content
+        content: reqStatus?.content,
       });
     }
-  },[reqStatus])
+  }, [reqStatus]);
   const toast2 = useRef(null);
   const items = [
     {
-        label: 'Update',
-        icon: 'pi pi-pencil',
-        command: () => navigate("/KEP_TMS/Request/Update/" + data.id)
+      label: "Update",
+      icon: "pi pi-pencil",
+      command: () => navigate("/KEP_TMS/Request/Update/" + data.id),
     },
     {
-        label: 'Cancel Request',
-        icon: 'pi pi-trash',
-        command:cancelRequest,
-        template: SpeedDialButtonItemTemplate,
-        inactive: data?.status?.id === statusCode.INACTIVE? true: false
+      label: "Cancel Request",
+      icon: "pi pi-trash",
+      command: cancelRequest,
+      template: SpeedDialButtonItemTemplate,
+      inactive: data?.status?.id === statusCode.INACTIVE ? true : false,
     },
     {
-        label: 'Status',
-        icon: 'pi pi-info-circle',
-        command: ()=>showSticky,
-        template: SpeedDialButtonItemTemplate,
-        disable:true,
-        // inactive: true
+      label: "Status",
+      icon: "pi pi-info-circle",
+      command: () => showSticky,
+      template: SpeedDialButtonItemTemplate,
+      disable: true,
+      // inactive: true
     },
     {
-        label: 'Logs',
-        icon: 'pi pi-info-circle',
-        command: ()=>setShowLogModal(true),
-        template: SpeedDialButtonItemTemplate,
-        // disable:true,
-        // inactive: true
+      label: "Logs",
+      icon: "pi pi-info-circle",
+      command: () => setShowLogModal(true),
+      template: SpeedDialButtonItemTemplate,
+      // disable:true,
+      // inactive: true
     },
-];
-const reportTemplateRef = useRef(null);
+  ];
+  const reportTemplateRef = useRef(null);
   return (
     <>
       <Toast ref={toast} position="bottom-center" className="z-1" />
@@ -226,7 +230,10 @@ const reportTemplateRef = useRef(null);
                   title="Approvers"
                   icon={<FontAwesomeIcon icon={faUsers} />}
                 />
-                <ApproverList data={data} activityType={ActivityType.REQUEST}/>
+                <ApproverList
+                  data={data}
+                  activityType={ActivityType.REQUEST}
+                />
               </div>
             </>
           )}
@@ -255,28 +262,38 @@ const reportTemplateRef = useRef(null);
         <hr className="mt-0" />
         <RequestAuditTrailLogsItem data={data} />
       </Dialog>
-      <CommentBox show={showCommentBox} header="Comments" 
-      onClose={()=>setShowCommentBox(false)}
-      confirmButton={{label: "Return Request"}}
-      onSubmit={()=>handleApproveRequest({id: data?.id, approve: false, onFinish: ()=>window.location.reload(), user: SessionGetEmployeeId() })}
-       description="Please state your reason for returning this Training Request."/>
+      <CommentBox
+        show={showCommentBox}
+        header="Comments"
+        onClose={() => setShowCommentBox(false)}
+        confirmButton={{ label: "Return Request" }}
+        onSubmit={() =>
+          handleApproveRequest({
+            id: data?.id,
+            approve: false,
+            onFinish: () => window.location.reload(),
+            user: SessionGetEmployeeId(),
+          })
+        }
+        description="Please state your reason for returning this Training Request."
+      />
       {(SessionGetRole() === "Admin" ||
-          SessionGetRole() === "SuperAdmin" ||
-          data?.requestorBadge == SessionGetEmployeeId()) && (
-          <div className="position-absolute bottom-0  mb-3 me-4 end-0">
-            <Toast ref={toast2} />
-            <Tooltip
-              target=".speeddial-bottom-right  .p-speeddial-action"
-              position="left"
-            />
-            <SpeedDial
-              model={items}
-              direction="up"
-              className="speeddial-bottom-right  end-0 bottom-0 "
-              buttonClassName="p-button-default rounded-circle "
-            />
-          </div>
-        )}
+        SessionGetRole() === "SuperAdmin" ||
+        data?.requestorBadge == SessionGetEmployeeId()) && (
+        <div className="position-absolute bottom-0  mb-3 me-4 end-0">
+          <Toast ref={toast2} />
+          <Tooltip
+            target=".speeddial-bottom-right  .p-speeddial-action"
+            position="left"
+          />
+          <SpeedDial
+            model={items}
+            direction="up"
+            className="speeddial-bottom-right  end-0 bottom-0 "
+            buttonClassName="p-button-default rounded-circle "
+          />
+        </div>
+      )}
     </>
   );
 };
@@ -289,5 +306,6 @@ OverviewSection.propTypes = {
   isAdmin: proptype.bool,
   userReports: proptype.object,
   logs: proptype.array,
+  activityRoutes: proptype.array,
 };
 export default OverviewSection;

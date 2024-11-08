@@ -35,11 +35,9 @@ const commonHook = {
             await trainingRequestService.getTrainingRequestByApprover(id);
           const effectiveness =
             await effectivenessService.getApproverAssignedEffectiveness(id);
-            console.log(effectiveness)
           const reports =
             await trainingReportService.getApproverAssignedReports(id);
             const updatedRequest = requests?.filter(item => checkTrainingIfOutDated(item?.trainingRequest) === false)
-            console.log(updatedRequest)
           setData({
             requests: updatedRequest,
             effectiveness: effectiveness,
@@ -124,6 +122,24 @@ const commonHook = {
       };
       getRequests();
     }, [assignedTo, activityIn]);
+    return { data, error, loading };
+  },
+  useAllActivityApprovers:  (userBadge, activityIn, requestCost)=>{
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequests = async () => {
+        handleResponseAsync(
+          () =>
+            commonService.getActivityApprovers(userBadge, activityIn, requestCost),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      getRequests();
+    }, [userBadge, activityIn, requestCost]);
     return { data, error, loading };
   },
 };

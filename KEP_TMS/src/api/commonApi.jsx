@@ -36,8 +36,8 @@ export const getApprovedFormsApi = async (assignedTo, activityIn) =>{
 export const getActivityApproversApi = async (id, activityIn, requestTotalCost) =>{
     if(requestTotalCost){
         return await fetchFromApi(`/Services/GetApprovers?userBadge=${id}&cost=${requestTotalCost}&requestType=${activityIn}`);
-    }
-    return await fetchFromApi(`/Services/GetApprovers?userBadge=${id}&requestType=${activityIn}`);
+    }else {
+    return await fetchFromApi(`/Services/GetApprovers?userBadge=${id}&requestType=${activityIn}`);}
 }
 export const sendEmailApi = async (data) =>{
     return await fetchFromApi(`/Services/SendEmail`, "POST", data);

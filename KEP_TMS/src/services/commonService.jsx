@@ -21,7 +21,7 @@ const commonService = {
   },
   getAuditTrail: async (transactId, activityIn) => {
     try {
-      const response =
+      const response = activityIn &&
         transactId && (await getAuditTrailApi(transactId, activityIn));
       return response.status === 1 ? response?.data : {};
     } catch {
@@ -29,7 +29,7 @@ const commonService = {
     }
   },
   getActivityApprovers: async (id, activityIn, requestTotalCost) => {
-    const response = await getActivityApproversApi(id, activityIn, requestTotalCost);
+    const response = id && activityIn && await getActivityApproversApi(id, activityIn, requestTotalCost);
     if (response?.status === 1) {
       const updatedData = await Promise.all(
         response?.data?.map(async (item) => {

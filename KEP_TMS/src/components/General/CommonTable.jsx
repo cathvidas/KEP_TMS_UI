@@ -3,7 +3,7 @@ import { DataTable } from "primereact/datatable";
 import proptype from "prop-types";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FilterMatchMode } from "primereact/api";
 import { InputText } from "primereact/inputtext";
 import "../../assets/css/customPrimeReact.css"
@@ -16,6 +16,7 @@ const CommonTable = ({
   HeaderComponent,
   hideHeader,
   hidePaginator,
+  dataKey
 }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -50,12 +51,14 @@ const CommonTable = ({
       </div>
     );
   };
+  
+  const dataRef = useRef();
   return (
     <>
       <div className=" w-100 overflowX-auto" style={{ overflowX: "auto" }}>
         {dataTable?.length > 0 ?
         <DataTable
-          // ref={dt}
+          ref={dataRef}
           className="customTable"
           header={!hideHeader ? header ?? renderHeader : ""}
           filters={filters}
@@ -65,21 +68,21 @@ const CommonTable = ({
           scrollHeight="flex"
           paginator={!hidePaginator}
           stripedRows
-          dataKey={"id"}
+          dataKey={dataKey}
           rows={10}
           key={"id"}
           tableStyle={{ minWidth: "50rem" }}
           rowsPerPageOptions={[5, 10, 25, 50]}
         >
           {columnItems &&
-            columnItems?.map((item, i) => (
-              <Column
-                key={"dt"+i}
+            columnItems?.map((item, i) => {
+              return  <Column
+                key={ i}
                 field={item?.field}
                 header={item?.header}
                 body={item.body ?? ""}
               ></Column>
-            ))}
+})}
         </DataTable>: <>
         <div className="text-center py-5">No data available</div> 
         </>}
@@ -95,5 +98,6 @@ CommonTable.propTypes = {
   HeaderComponent: proptype.any,
   hideHeader: proptype.bool,
   hidePaginator: proptype.bool,
+  dataKey: proptype.string
 };
 export default CommonTable;

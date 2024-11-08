@@ -31,23 +31,23 @@ const trainingRequestService = {
     return response;
   },
   getTrainingRequestsByRequestor: async (id) => {
-    const response = await getTrainingRequestsByRequestorApi(id);
+    const response = id && await getTrainingRequestsByRequestorApi(id);
     return response?.status === 1 ? response?.data : [];
   },
   getCurrentRoutingActivity: async (transactId, activityIn) => {
-    const response = transactId && await getCurrentRoutingActivityApi(transactId, activityIn);
+    const response = transactId && activityIn && await getCurrentRoutingActivityApi(transactId, activityIn);
     return response;
   },
   getTrainingRequestByApprover: async (id) => {
-    const response = await getTrainingRequestByApproverApi(id);
+    const response = id && await getTrainingRequestByApproverApi(id);
     return response;
   },
   getTrainingRequestByTraineeId: async (id) => {
-    const response = await getTrainingRequestByTraineeIdApi(id);
+    const response = id && await getTrainingRequestByTraineeIdApi(id);
     return response?.status === 1 ? response?.data : [];
   },
   getTrainingRequestByParticipant: async (id, role) => {
-    const response = await getAllTrainingRequestsApi(id);
+    const response = id && await getAllTrainingRequestsApi(id);
     if (response.status !== 1) {
       return [];
     }

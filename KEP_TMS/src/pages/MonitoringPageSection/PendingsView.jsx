@@ -121,6 +121,7 @@ const PendingView = ({ data, formData, examDetail }) => {
             dataTable={formData?.data}
             columnItems={columnItems}
             tableName="Participants"
+            dataKey={data?.data?.userDetail?.id}
           />
         </>
       ) : (

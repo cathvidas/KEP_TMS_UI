@@ -16,14 +16,14 @@ const examService = {
     return response;
   },
   deleteExam: async (id) => {
-    const response = await deleteExamApi(id);
+    const response = id && await deleteExamApi(id);
     if (response.status !== 1) {
       throw new Error(response.message);
     }
     return response;
   },
   getExamByRequestId: async (id) => {
-    const response = await getExamByRequestIdApi(id);
+    const response = id && await getExamByRequestIdApi(id);
     return response?.status === 1 ? response?.data : [];
   },
   saveTraineeExam: async (data) => {
@@ -34,11 +34,11 @@ const examService = {
     return response?.data;
   },
   getTraineeExam: async (id) => {
-    const response = await getTraineeExamApi(id);
+    const response = id && await getTraineeExamApi(id);
     return response?.status === 1 ? response?.data : {};
   },
   getAllTraineeExamByExamId: async (id) => {
-    const response = await getAllTraineeExamByExamIdApi(id);
+    const response = id && await getAllTraineeExamByExamIdApi(id);
     return response?.status === 1 ? response?.data : [];
   },
   saveStoredExamLog: async () => {

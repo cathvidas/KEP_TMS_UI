@@ -1,0 +1,11 @@
+.custom-text-editor .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused),
+.custom-text-editor .ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+    border-color: transparent !important;
+    border-top-color: transparent !important;
+}
+.ck.ck-balloon-panel.ck-powered-by-balloon[class*="position_border"]{
+    display: none;
+}
+.ck-editor__editable_inline {
+    min-height: 100px;
+}

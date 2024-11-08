@@ -25,6 +25,7 @@ const TrainingRequestPage = () => {
   const { data, loading } = trainingRequestHook.useTrainingRequest(
     parseInt(id)
   );
+  // const approvers = commonHook.useAllActivityApprovers(data?.requestorBadge, ActivityType.REQUEST, data?.totalTrainingFee)
   const [currentContent, setCurrentContent] = useState();
   const logs = activityLogHook.useTrainingRequestActivityLogs(
     data
