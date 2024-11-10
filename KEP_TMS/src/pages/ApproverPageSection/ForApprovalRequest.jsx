@@ -4,20 +4,21 @@ import { SessionGetEmployeeId } from "../../services/sessions";
 import { getUserApi } from "../../api/userApi";
 import { mapForApprovalRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
-import ApproverAction from "../../components/tableComponents/ApproverAction";
 import CommonTable from "../../components/General/CommonTable";
 import trainingRequestService from "../../services/trainingRequestService";
-import { checkTrainingIfOutDated } from "../../services/inputValidation/validateTrainingSchedules";
+import { Button } from "primereact/button";
+import { useNavigate } from "react-router-dom";
+import trainingDetailsService from "../../services/common/trainingDetailsService";
 
 const ForApprovalRequest = () => {
   const [request, setRequest] = useState([]);
-  const [trigger, setTrigger] = useState(0);
+  const navigate = useNavigate();
   useEffect(() => {
     const getRequest = async () => {
       try {
         const res = await trainingRequestService.getTrainingRequestByApprover(SessionGetEmployeeId());
       
-    const updatedRequest = res?.filter(item => !checkTrainingIfOutDated(item?.trainingRequest))
+    const updatedRequest = res?.filter(item => !trainingDetailsService.checkTrainingIfOutDated(item?.trainingRequest))
         const mappedData = mapForApprovalRequestToTableData(updatedRequest);
         const updated = await Promise.all(
           mappedData.map(async (x) => {
@@ -31,12 +32,23 @@ const ForApprovalRequest = () => {
       }
     };
     getRequest();
-  }, [trigger]);
+  }, []);
 
 
   const actionTemplate = (data) => {
     return (
-       <ApproverAction reqId={data.id} onFinish={refreshData} hasView/>
+      
+    <div className="d-flex">
+      <Button
+        type="button"
+        icon="pi pi-eye"
+        size="small"
+        severity="success"
+        className="rounded"
+        text
+        onClick={() => navigate(`/KEP_TMS/TrainingDetail/${data?.id}`)}
+      />
+  </div>
     );
   };
   const columnItems = [
@@ -94,13 +106,6 @@ const ForApprovalRequest = () => {
        body: actionTemplate
     },
   ];
-  const refreshData= ()=>{
-    
-    setInterval(() => {
-      setTrigger(trigger+1)
-    }, 2000);
-  }
-
   return (
     <div className="p-3">
     <SectionBanner

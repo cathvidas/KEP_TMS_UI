@@ -13,16 +13,18 @@ import { SessionGetEmployeeId } from "../../services/sessions";
 import ExamDetails from "../../components/Exam/ExamDetails";
 import { saveTraineeExamApi } from "../../api/examApi";
 import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
-const ExamView = ({ data }) => {
+import ExamSection from "../RequestPageSection/ExamSection";
+import trainingDetailsService from "../../services/common/trainingDetailsService";
+const ExamView = ({ reqData, isTrainee, isEditor }) => {
   const [showDialog, setShowDialog] = useState(false);
   const [trigger, setTrigger] = useState(0);
   const [showExam, setShowExam] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
-  const getUser = data?.trainingParticipants?.find(
+  const getUser = reqData?.trainingParticipants?.find(
     (item) => item.employeeBadge === SessionGetEmployeeId()
   );
   const [showTraineeExam, setShowTraineeExam] = useState(false);
-  const examList = examHook.useAllTraineeExamByRequest(data?.id, trigger);
+  const examList = examHook.useAllTraineeExamByRequest(reqData?.id, trigger);
 
   useEffect(() => {
     const insertData = async () => {
@@ -46,8 +48,11 @@ const getExamDetail =(data)=>{
       );
     }
   }, [examList?.data]);
+  console.log(trainingDetailsService.checkIfTrainingEndsAlready(reqData))
   return (
     <>
+
+    {isTrainee ? trainingDetailsService.checkIfTrainingEndsAlready(reqData) ? <>
       <SectionHeading title="Exams" icon={<i className="pi pi-box"></i>} />
       {showTraineeExam ? (
         <ExamDetails
@@ -143,8 +148,7 @@ const getExamDetail =(data)=>{
                         )}
                       </div>
                     }
-                  >
-                  </Card>
+                  ></Card>
                 </Col>
               ))}
             </Row>
@@ -156,12 +160,14 @@ const getExamDetail =(data)=>{
           />
         </>
       )}
-      
+    </>: <div className="d-flex justify-content-center align-items-center h-100 h1 opacity-50 text-muted">No Details Available</div> : isEditor ? <ExamSection data={reqData} /> : <></>}
 
     </>
   );
 };
 ExamView.propTypes = {
-  data: proptype.object,
+  reqData: proptype.object,
+  isTrainee: proptype.bool,
+  isEditor: proptype.bool,
 };
 export default ExamView;

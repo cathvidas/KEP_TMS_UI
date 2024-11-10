@@ -80,42 +80,6 @@ const activityLogHook = {
           severity: "secondary",
           show: true,
         });
-        //effectiveness
-        if (reportsData) {
-          // if (data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR) {
-          reportsData?.forEach((item) => {
-            if (item?.effectivenessDetail?.id) {
-              newLogs.push({
-                label: `${
-                  item?.userDetail?.fullname ??
-                  item?.effectivenessDetail?.createdBy
-                } submitted an effectiveness Report`,
-                date: item?.effectivenessDetail?.createdDate,
-                severity: "warning",
-              });
-            }
-            if (item?.reportDetail?.id) {
-              newLogs.push({
-                label: `${
-                  item?.userDetail?.fullname ?? item?.reportDetail?.createdBy
-                } submitted a Training Report`,
-                date: item?.reportDetail?.createdDate,
-                severity: "warning",
-              });
-            }
-            if (item?.evaluationDetail?.id) {
-              newLogs.push({
-                label: `${
-                  item?.userDetail?.fullname ??
-                  item?.evaluationDetail?.createdBy
-                } submitted an evaluation Report`,
-                date: item?.evaluationDetail?.createdDate,
-                severity: "warning",
-              });
-            }
-          });
-          // }
-        }
         // Routings
         if (data?.status?.id != statusCode.SUBMITTED) {
           sortRoutingBySequence(data?.routings);
@@ -174,6 +138,43 @@ const activityLogHook = {
                 : "default",
             });
           });
+        }
+        
+        //effectiveness
+        if (reportsData) {
+          // if (data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR) {
+          reportsData?.forEach((item) => {
+            if (item?.effectivenessDetail?.id) {
+              newLogs.push({
+                label: `${
+                  item?.userDetail?.fullname ??
+                  item?.effectivenessDetail?.createdBy
+                } submitted an effectiveness Report`,
+                date: item?.effectivenessDetail?.createdDate,
+                severity: "warning",
+              });
+            }
+            if (item?.reportDetail?.id) {
+              newLogs.push({
+                label: `${
+                  item?.userDetail?.fullname ?? item?.reportDetail?.createdBy
+                } submitted a Training Report`,
+                date: item?.reportDetail?.createdDate,
+                severity: "warning",
+              });
+            }
+            if (item?.evaluationDetail?.id) {
+              newLogs.push({
+                label: `${
+                  item?.userDetail?.fullname ??
+                  item?.evaluationDetail?.createdBy
+                } submitted an evaluation Report`,
+                date: item?.evaluationDetail?.createdDate,
+                severity: "warning",
+              });
+            }
+          });
+          // }
         }
         const sortedItems = newLogs
           .sort((a, b) => {

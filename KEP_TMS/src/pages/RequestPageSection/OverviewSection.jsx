@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { SectionHeading } from "../../components/General/Section";
 import ApproverList from "../../components/List/ApproversList";
-import StatusColor from "../../components/General/StatusColor";
 import TrainingScheduleList from "../../components/trainingRequestFormComponents/TrainingScheduleList";
 import { UserList } from "../../components/List/UserList";
 import EmptyState from "../../components/trainingRequestFormComponents/EmptyState";
@@ -17,7 +16,7 @@ import DetailsOverview from "../../components/TrainingPageComponents/DetailsOver
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Toast } from "primereact/toast";
-import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
+import { SessionGetEmployeeId } from "../../services/sessions";
 import getToastDetail from "../../services/common/getToastDetail";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
@@ -40,6 +39,7 @@ const OverviewSection = ({
   isAdmin,
   userReports,
   logs,
+  reloadData,
 }) => {
   const navigate = useNavigate();
   const toast = useRef(null);
@@ -76,7 +76,8 @@ const OverviewSection = ({
       userReports ?? null,
       () => cancelRequest(),
       () => navigate("/KEP_TMS/Request/Update/" + data.id),
-      () => setShowCommentBox(true)
+      () => setShowCommentBox(true),
+      reloadData
     );
     setReqStatus(statsData);
   }, [data, userReports]);
@@ -125,129 +126,149 @@ const OverviewSection = ({
       // inactive: true
     },
   ];
-  const reportTemplateRef = useRef(null);
+  const actionBodyTemplate = (
+    <div>
+      {/* <ApproverAction reqId={data?.data?.id} onFinish={reloadData} /> */}
+      <Button
+        type="button"
+        icon="pi pi-thumbs-up"
+        onClick={() =>
+          handleApproveRequest({
+            id: data?.id,
+            approve: true,
+            onFinish: reloadData,
+            user: SessionGetEmployeeId(),
+          })
+        }
+        size="small"
+        className="rounded"
+        text
+      />
+      <Button
+        type="button"
+        icon="pi pi-thumbs-down
+"
+        size="small"
+        className="rounded"
+        severity="danger"
+        text
+        onClick={() => setShowCommentBox(true)}
+      />
+    </div>
+  );
   return (
     <>
       <Toast ref={toast} position="bottom-center" className="z-1" />
       {showSticky()}
 
       <div className="card p-3 w-100">
-        <div ref={reportTemplateRef}>
-          <div>
-            <h3 className="text-center theme-color m-0">
-              {data?.trainingType?.name} Training Request
-            </h3>
-            <h6 className="text-muted text-center mb-3">
-              Request ID: {data.id}
-            </h6>
-            <div className="position-absolute end-0 top-0 ">
-              <Button
-                type="button"
-                onClick={() => history.back()}
-                icon="pi pi-times"
-                text
-              />
-            </div>
-            <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
-              <span> REQUESTOR: {data?.requestor?.fullname}</span>
-              <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
-              <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
-              <span> DATE: {formatDateTime(data?.createdDate)}</span>
-              {(isAdmin || SessionGetEmployeeId() === data?.requestorBadge) && (
-                <span>
-                  Status:{" "}
-                  {StatusColor({
-                    status: data?.status?.name,
-                    class: "p-2 px-3 ",
-                    showStatus: true,
-                  })}
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="flex justify-content-between">
-            <SectionHeading
-              title="Details"
-              icon={<FontAwesomeIcon icon={faInfoCircle} />}
+        <div>
+          <h3 className="text-center theme-color m-0">
+            {data?.trainingType?.name} Training Request
+          </h3>
+          {showApprovers &&
+          <>
+          <h6 className="text-muted text-center mb-3">Request ID: {data.id}</h6>
+           {/* <div className="position-absolute end-0 top-0 ">
+            <Button
+              type="button"
+              onClick={() => history.back()}
+              icon="pi pi-times"
+              text
             />
-          </div>
-          <DetailsOverview data={data} />
-          <br />
+          </div>  */}
+          <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
+            <span> REQUESTOR: {data?.requestor?.fullname}</span>
+            <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
+            <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
+            <span> DATE: {formatDateTime(data?.createdDate)}</span>
+          </div></>}
+        </div>
+        <div className="flex justify-content-between">
           <SectionHeading
-            title="Training Schedules"
-            icon={<FontAwesomeIcon icon={faCalendar} />}
+            title="Details"
+            icon={<FontAwesomeIcon icon={faInfoCircle} />}
           />
-          <TrainingScheduleList schedules={data.trainingDates} />
-          {showParticipants && (
-            <>
-              <br />
-              <SectionHeading
-                title="Participants"
-                icon={<FontAwesomeIcon icon={faUsers} />}
-              />
-              {data.trainingParticipants?.length > 0 ? (
-                <div className="w-100 overflow-hidden">
-                  <small className="text-muted">
-                    {data.trainingParticipants?.length} participants{" "}
-                  </small>
-                  <UserList
-                    leadingElement={true}
-                    col="3"
-                    userlist={data.trainingParticipants}
-                    property={"name"}
-                    // allowEffectiveness
-                  />
-                </div>
-              ) : (
-                <EmptyState placeholder="No participants added" />
-              )}
-            </>
-          )}
-          {showFacilitators && (
-            <>
-              <br />
-              <SectionHeading
-                title="Facilitator"
-                icon={<FontAwesomeIcon icon={faUsers} />}
-              />
-              {data.trainingFacilitators?.length > 0 ? (
+        </div>
+        <DetailsOverview data={data} />
+        <br />
+        <SectionHeading
+          title="Training Schedules"
+          icon={<FontAwesomeIcon icon={faCalendar} />}
+        />
+        <TrainingScheduleList schedules={data.trainingDates} />
+        {showParticipants && (
+          <>
+            <br />
+            <SectionHeading
+              title="Participants"
+              icon={<FontAwesomeIcon icon={faUsers} />}
+            />
+            {data.trainingParticipants?.length > 0 ? (
+              <div className="w-100 overflow-hidden">
+                <small className="text-muted">
+                  {data.trainingParticipants?.length} participants{" "}
+                </small>
                 <UserList
                   leadingElement={true}
-                  userlist={data.trainingFacilitators}
+                  col="3"
+                  userlist={data.trainingParticipants}
                   property={"name"}
-                />
-              ) : (
-                <EmptyState placeholder="No facilitator added" />
-              )}
-            </>
-          )}
-          {showApprovers && (
-            <>
-              <br />
-
-              <div className="">
-                <SectionHeading
-                  title="Approvers"
-                  icon={<FontAwesomeIcon icon={faUsers} />}
-                />
-                <ApproverList
-                  data={data}
-                  activityType={ActivityType.REQUEST}
+                  // allowEffectiveness
                 />
               </div>
-            </>
-          )}
-          {logs && (
-            <>
-              <hr />
-              {/* <ActivityLog isDescending label={"Activity Logs"} items={logs} /> */}
-              <ActivityList
-                data={logs?.filter((item) => item.show)}
-                label={"Activities"}
+            ) : (
+              <EmptyState placeholder="No participants added" />
+            )}
+          </>
+        )}
+        {showFacilitators && (
+          <>
+            <br />
+            <SectionHeading
+              title="Facilitator"
+              icon={<FontAwesomeIcon icon={faUsers} />}
+            />
+            {data.trainingFacilitators?.length > 0 ? (
+              <UserList
+                leadingElement={true}
+                userlist={data.trainingFacilitators}
+                property={"name"}
               />
-            </>
-          )}
-        </div>
+            ) : (
+              <EmptyState placeholder="No facilitator added" />
+            )}
+          </>
+        )}
+        {showApprovers && (
+          <>
+            <br />
+
+            <div className="">
+              <SectionHeading
+                title="Approvers"
+                icon={<FontAwesomeIcon icon={faUsers} />}
+              />
+              <ApproverList
+                data={data}
+                activityType={ActivityType.REQUEST}
+                hasEmailForm
+                activityLogs={logs}
+                optionColumn={actionBodyTemplate}
+                reloadData={reloadData}
+              />
+            </div>
+            {logs && (
+              <>
+                <hr />
+                <ActivityList
+                  data={logs?.filter((item) => item.show)}
+                  label={"Activities"}
+                />
+              </>
+            )}
+          </>
+        )}
       </div>
       <Dialog
         header="History Log"
@@ -267,18 +288,18 @@ const OverviewSection = ({
         header="Comments"
         onClose={() => setShowCommentBox(false)}
         confirmButton={{ label: "Return Request" }}
-        onSubmit={() =>
+        onSubmit={(e) =>
           handleApproveRequest({
             id: data?.id,
             approve: false,
-            onFinish: () => window.location.reload(),
+            onFinish: reloadData,
+            remarks: e,
             user: SessionGetEmployeeId(),
           })
         }
         description="Please state your reason for returning this Training Request."
       />
-      {(SessionGetRole() === "Admin" ||
-        SessionGetRole() === "SuperAdmin" ||
+      {(isAdmin ||
         data?.requestorBadge == SessionGetEmployeeId()) && (
         <div className="position-absolute bottom-0  mb-3 me-4 end-0">
           <Toast ref={toast2} />
@@ -307,5 +328,6 @@ OverviewSection.propTypes = {
   userReports: proptype.object,
   logs: proptype.array,
   activityRoutes: proptype.array,
+  reloadData: proptype.func,
 };
 export default OverviewSection;

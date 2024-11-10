@@ -108,6 +108,7 @@ const MasterListPage = () => {
   return (
     <>
       <Layout
+      navReference="MasterList"
         BodyComponent={Content}
         header={{
           title: "Master List",

@@ -14,7 +14,7 @@ import SkeletonCards from "../components/Skeleton/SkeletonCards";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const { data, error, loading } =
+  const { data, loading } =
     SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin"
       ? trainingRequestHook.useStatusCount()
       : trainingRequestHook.useStatusCount(SessionGetEmployeeId());
@@ -42,7 +42,7 @@ const Dashboard = () => {
             color2: "#ff6b6b",
             value: data?.trainerAction,
             icon: "pi pi-tag",
-            status: "AssignedTrainings",
+            status: "FacilitatedTrainings",
           },
         ]
       : []),
@@ -127,8 +127,8 @@ const Dashboard = () => {
                             ? "List/ForApproval"
                             : item.status === "Training"
                             ? "Trainings"
-                            : item.status === "AssignedTrainings"
-                            ? "AssignedTrainings"
+                            : item.status === "FacilitatedTrainings"
+                            ? "FacilitatedTrainings"
                             : `RequestList/${item?.status}`
                         }`
                       )
@@ -171,6 +171,7 @@ const Dashboard = () => {
 
   return (
     <Layout
+    navReference="Dashboard"
       header={{ title: "Dashboard", icon: <FontAwesomeIcon icon={faHouse} /> }}
       BodyComponent={() => <Content />}
       showModalAction={showModal}

@@ -128,7 +128,7 @@ const ModuleSection = ({ data }) => {
                             <small className="text-muted fw-bold text-uppercase">
                               {x.name}
                             </small>
-                            {(x?.availableAt || x.unavailableAt) && (
+                            {(x?.availableAt || x.unavailableAt) ? (
                               <small className="d-block text-muted">
                                 <i
                                   className="pi pi-clock"
@@ -166,15 +166,19 @@ const ModuleSection = ({ data }) => {
                                   <span
                                     className={`text-warning rounded-pill px-2`}
                                   >
-                                    {/* <i
-                                      className="pi pi-check-circle"
-                                      style={{ fontSize: "0.8rem" }}
-                                    ></i>{" "} */}
                                     Inactive
                                   </span>
                                 )}
                               </small>
-                            )}
+                            ):    <span
+                            className={`text-success rounded-pill px-2`}
+                          >
+                            <i
+                              className="pi pi-check-circle"
+                              style={{ fontSize: "0.8rem" }}
+                            ></i>{" "}
+                            Active
+                          </span>}
                           </div>
                           <ButtonGroup>
                             <Button
@@ -201,7 +205,8 @@ const ModuleSection = ({ data }) => {
                           </ButtonGroup>{" "}
                         </div>
                         <div className="px-4 p-2">
-                          <p className="m-0">{x.description}</p>
+                          <div dangerouslySetInnerHTML={{ __html: x.description }} />
+                          {/* <p className="m-0">{x.description}</p> */}
                           <div className="flex flex-wrap"></div>
                           {x?.attachments?.map((a) => (
                             <ButtonGroup className="me-2" key={`file${a.id}`}>

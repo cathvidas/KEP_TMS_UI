@@ -1,4 +1,4 @@
-export const SessionGetUserName = () => {
+export const SessionGetFullName = () => {
   return sessionStorage.getItem("fullname");
 };
 export const SessionGetEmployeeId = () => {

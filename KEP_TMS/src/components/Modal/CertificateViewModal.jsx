@@ -1,6 +1,6 @@
 import { Card, Col, Modal, Row } from "react-bootstrap";
 import proptype from "prop-types";
-import { ApiConstant } from "../../api/constants";
+import { API_BASE_URL } from "../../api/constants";
 import PDFViewer from "../General/PDFViewer";
 import { useState } from "react";
 const CertificateViewModal = ({
@@ -20,7 +20,7 @@ const CertificateViewModal = ({
               <>
                 {e?.fileType === ".pdf" ? (
                   //   <iframe
-                  //     src={`${ApiConstant.BASE_URL}/Attachment/GetCertificateFile?attachmentId=${e?.id}#page=1&zoom=FitH&view=FitH&toolbar=0&nameddest=&page=pagenum`}
+                  //     src={`API_BASE_URL}/Attachment/GetCertificateFile?attachmentId=${e?.id}#page=1&zoom=FitH&view=FitH&toolbar=0&nameddest=&page=pagenum`}
                   //     width="100%"
                   //     height="100%"
                   //     title="Certificate"
@@ -30,7 +30,7 @@ const CertificateViewModal = ({
                       className="bg-light rounded flex flex-column p-3 justify-content-center align-items-center"
                       style={{ width: "fit-content" }}
                       onClick={() => {
-                        setData({...e, url: `${ApiConstant.BASE_URL}/Attachment/GetCertificateFile?attachmentId=${e?.id}`});
+                        setData({...e, url: `${API_BASE_URL}/Attachment/GetCertificateFile?attachmentId=${e?.id}`});
                         setShowPDF(true);
                       }}
                     >
@@ -45,7 +45,7 @@ const CertificateViewModal = ({
                   </Col>
                 ) : (
                   <img
-                    src={`${ApiConstant.BASE_URL}/Attachment/GetCertificateFile?attachmentId=${e?.id}`}
+                    src={`${API_BASE_URL}/Attachment/GetCertificateFile?attachmentId=${e?.id}`}
                     alt="Certificate"
                     width="100%"
                     height="100%"

@@ -1,11 +1,11 @@
 import { Row, Col, Form, Modal } from "react-bootstrap";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import proptype from "prop-types";
 import { Button } from "primereact/button";
 import TextEditor from "../common/TextEditor";
 import { ActivityType } from "../../../api/constants";
 import TrainingRequestEmailtemplate from "../../emailTemplate/TrainingRequestEmailtemplate";
-import { confirmAction } from "../../../services/sweetalert";
+import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import commonService from "../../../services/commonService";
 const EmailForm = ({
@@ -15,33 +15,40 @@ const EmailForm = ({
   activityType,
   activityId,
   activityData,
-  recepient
+  recipient,
+  routeList,
+  activityLogs,
 }) => {
-  const [subject, setSubject] = useState(`${activityTitle ?? "Training Request"} #${activityData?.id} Follow Up Email`);
+  const [subject, setSubject] = useState(`Follow-Up: Pending Approval for ${activityTitle ?? "Training Request"} #${activityData?.id}`);
   const [errors, setErrors] = useState({});
   const [content, setContent] = useState(false);
-  const [emailContent, setEmailContent] = useState("<div></div>");
   const formTemplateRef = useRef();
+  const [emailContent, setEmailContent] = useState("<div></div>");
+  useEffect(()=>{
+    setEmailContent(formTemplateRef.current?.innerHTML);
+  },[])
   const sendEmail = ()=>{
     const validate = validateEmailContent();
     const emailData = { subject: subject,
-      body: content,
-      sendTo: recepient}
-      console.log(emailData)
-    // if(validate){
-    //   confirmAction({
-    //     showLoaderOnConfirm: true,
-    //     title: "Send Email",
-    //     text: "Are you sure you want to send this email?",
-    //     onConfirm: () => {
-    //       handleResponseAsync(
-    //         () => commonService.sendEmail(emailData),
-    //         null,
-    //         null,
-    //       );
-    //     },
-    //   })
-    // }
+      body: emailContent,
+      sendTo: recipient?.employeeBadge}
+    if(validate){
+      confirmAction({
+        showLoaderOnConfirm: true,
+        title: "Send Email",
+        text: "Are you sure you want to send this email?",
+        onConfirm: () => {
+          handleResponseAsync(
+            () => commonService.sendEmail(emailData),
+            () => {actionSuccessful("Email sent successfully");
+              setContent(false);
+              handleClose();
+            },
+            null,
+          );
+        },
+      })
+    }
   }
 const validateEmailContent = () => {
     let errors = {};
@@ -62,7 +69,7 @@ const validateEmailContent = () => {
       {" "}
       <div ref={formTemplateRef} className="d-none">
         {activityData && activityType === ActivityType.REQUEST && (
-          <TrainingRequestEmailtemplate data={activityData} showParticipants  />
+          <TrainingRequestEmailtemplate requestDetail={activityData} recipient={recipient} routeList={routeList} activityLogs={activityLogs}/>
         )}
       </div>
       <Modal
@@ -93,9 +100,6 @@ const validateEmailContent = () => {
                         value={subject}
                         placeholder="Category Name"
                         onChange={(e) => setSubject(e.target.value)}
-                        defaultValue={`${
-                          activityTitle ? activityTitle : "Training Request"
-                        } #${activityId} Approval Follow-up`}
                         required
                       />
                       {errors.name && (
@@ -175,6 +179,7 @@ const validateEmailContent = () => {
                       icon="pi pi-envelope"
                       className="my-2 rounded d-block text-center"
                       label="Send Follow Up Email"
+                      onClick={sendEmail}
                     />
                     <Button
                       type="button"
@@ -201,7 +206,8 @@ EmailForm.propTypes = {
   activityTitle: proptype.string,
   activityType: proptype.number,
   activityId: proptype.number,
-  recepient: proptype.string,
-
+  recipient: proptype.string,
+  routeList: proptype.array,
+  activityLogs: proptype.array
 };
 export default EmailForm;

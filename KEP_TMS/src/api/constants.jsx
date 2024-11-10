@@ -1,7 +1,18 @@
-export const ApiConstant = {
-  BASE_URL: "http://localhost:5030/api",
-  // BASE_URL: "http://kep-testenvw16:2024/api",
+const localhost = {
+    API_BASE_URL: "http://localhost:5030/api",
+    APPLICATION_BASE_URL: "http://localhost:5173/KEP_TMS/"
 }
+
+const testEnvi = {
+    API_BASE_URL: "http://kep-testenvw16:2024/api",
+    APPLICATION_BASE_URL: "http://kep-testenvw16:2024/KEP_TMS/"
+}
+
+const currentServer = localhost;
+export const API_BASE_URL = currentServer.API_BASE_URL
+export const APPLICATION_BASE_URL = currentServer.APPLICATION_BASE_URL
+
+
 export const statusCode = {
   INACTIVE: 1,
   ACTIVE: 2,

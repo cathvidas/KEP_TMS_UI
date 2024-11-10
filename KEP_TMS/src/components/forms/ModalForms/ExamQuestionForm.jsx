@@ -38,8 +38,8 @@ handleUpdateQuestion
       formErrors.Question = "Question is required";
       validForm = false;
     }
-    if (details?.answerOptions?.length < 2) {
-      formErrors.option = "Add at least two (2) options";
+    if (details?.answerOptions?.length < 3) {
+      formErrors.option = "Add at least two (3) options";
       validForm = false;
     }
     const answer = details?.answerOptions?.filter((x) => x.isCorrect === true);
@@ -95,7 +95,7 @@ handleUpdateQuestion
           <Modal.Title className={`h5 theme-color`}>{`${defaultData ? "Update" : "Add"} Item`} </Modal.Title>
         </Modal.Header>
         <Modal.Body className="py-0">
-          <Form>
+          {/* <Form> */}
             {errors?.common && errors.common}
             <FormFieldItem
               label={"Question"}
@@ -107,6 +107,7 @@ handleUpdateQuestion
                   className="form-control"
                   placeholder="Question"
                   value={details?.content}
+                  cols={3}
                   onChange={(e) =>
                     setDetails({ ...details, content: e.target.value })
                   }
@@ -163,7 +164,7 @@ handleUpdateQuestion
                 </>
               }
             />
-          </Form>
+          {/* </Form> */}
         </Modal.Body>
         <Modal.Footer className="border-0">
           <Button

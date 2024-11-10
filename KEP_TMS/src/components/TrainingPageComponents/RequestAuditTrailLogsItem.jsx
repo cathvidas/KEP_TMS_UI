@@ -4,7 +4,6 @@ import { checkIfNullOrEmpty } from "../../utils/stringUtil";
 
 const RequestAuditTrailLogsItem = ({data})=>{
     const logs = activityLogHook.useRequestAuditTrailActivityLogs(data?.auditTrail).filter(item=>item?.changes)
-    console.log(logs)
     const checkIfHasValue = (item)=>{
         return  item?.value && item?.value !== "{}"
     }

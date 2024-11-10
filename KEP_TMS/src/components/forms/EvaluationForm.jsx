@@ -95,7 +95,6 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
       ) {
         faciList.push(faci.fullname)
       }
-      console.log(faciList, facilitatorRating)
     })
     if(faciList.length !== 0){
       let errorMessage =" Please rate all the fields under faclitator(s): "
@@ -105,7 +104,6 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
       formErrors.facilitatorRating = errorMessage;
       isValid = false;
     }
-    console.log(faciList)
     if(overallRating === 0){
       formErrors.overallRating = "Please rate this field";
       isValid =  false;
@@ -145,7 +143,6 @@ newLogs.push({
   date: formatDateTime(defaultValue?.createdDate),
 });
 const reportTemplateRef = useRef();
-console.log(data)
   return (
     <Card.Body>
       <div ref={reportTemplateRef}>

@@ -45,6 +45,7 @@ const ActivityList = ({ data, show = true, label, toggle }) => {
 ActivityList.propTypes = {
   data: proptype.array.isRequired,
   show: proptype.bool,
+  toggle: proptype.bool,
   label: proptype.string,
 };
 export default ActivityList;

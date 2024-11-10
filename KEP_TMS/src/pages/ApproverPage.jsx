@@ -126,6 +126,7 @@ const ApproverPage = () => {
     <>
       {" "}
       <Layout
+      navReference="List/ForApproval"
         BodyComponent={Content}
         header={{
           title: "For Approval",

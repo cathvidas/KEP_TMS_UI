@@ -48,7 +48,6 @@ const handleGeneratePdf = (e) => {
 //     margin: { top: 10, left: 10, bottom: 10, right: 10 }, // Optional: define margins
 //     theme: 'grid', // Optional: theme for the table (grid, stripes, etc.)
 // });
-  console.log(doc.autoTable)
   doc.html(newElement, {
     html2canvas: {
       scale: 0.7,

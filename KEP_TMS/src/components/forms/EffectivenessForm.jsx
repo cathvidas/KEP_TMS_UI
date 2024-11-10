@@ -96,7 +96,6 @@ const EffectivenessForm = ({
     });
     return facilitators;
   };
-  console.log(isAfter, formData, userData)
   const getFormData = {
     employeeBadge: SessionGetEmployeeId(),
     trainingProgramId: data?.trainingProgram?.id,

@@ -18,7 +18,7 @@ import {
   formatCurrency,
   formatDateOnly,
 } from "../../utils/datetime/Formatting";
-import { checkTrainingIfOutDated } from "../../services/inputValidation/validateTrainingSchedules";
+import trainingDetailsService from "../../services/common/trainingDetailsService";
 
 const TrainingRequestTableList = ({
   data,
@@ -53,7 +53,7 @@ const TrainingRequestTableList = ({
   const checkTrainingDates = (rowData) => {
     const detail = data?.find((item) => item.id == rowData.id);
     return (
-      checkTrainingIfOutDated(detail) &&
+      trainingDetailsService.checkTrainingIfOutDated(detail) &&
       (detail?.status?.id === statusCode.SUBMITTED ||
         detail?.status?.id === statusCode.FORAPPROVAL ||
         detail?.status?.id === statusCode.APPROVED)
@@ -71,12 +71,7 @@ const TrainingRequestTableList = ({
           text
           onClick={() =>
             handleButtonClick(
-              data.id,
-              checkTrainingDates(data) || isFacilitator
-                ? "TrainingRequest"
-                : data.status == "Published" || data.status == "Submitted"
-                ? "Training"
-                : "TrainingRequest"
+              data.id, "TrainingDetail"
             )
           }
         />
@@ -88,17 +83,6 @@ const TrainingRequestTableList = ({
             className="rounded"
             text
             onClick={() => handleButtonClick(data.id, "Request/Update")}
-          />
-        )}
-        {isAdmin && (
-          <Button
-            type="button"
-            icon="pi pi-check-circle"
-            size="small"
-            className="rounded"
-            severity="help"
-            text
-            onClick={() => handleButtonClick(data.id, "TrainingMonitoring")}
           />
         )}
       </div>

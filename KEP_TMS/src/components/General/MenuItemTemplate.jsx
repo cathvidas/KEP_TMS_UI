@@ -3,7 +3,7 @@ import { Badge } from "primereact/badge";
 const MenuItemTemplate = (item) => (
     <div className='p-menuitem-content '>
         {!item?.disable &&
-        <a className={`flex align-items-center p-overly-badge rounded custom  p-menuitem-link ${item.active ? 'active': ''} ${item.separator ? 'px-0 pt-0': 'py-2'}`} onClick={item.command}>
+        <a className={`flex align-items-center p-overly-badge rounded custom cutom-link p-menuitem-link ${item.active ? 'active': ''} ${item.separator ? 'px-0 pt-0': 'py-2'}`} onClick={item.command}>
             {item.separator && <span className="bg-secondary w-100" style={{height: "1px"}}></span>}
             {item.icon && <span className={item.icon} />}
             {item.label &&  <span className="mx-">{item.label}</span>}

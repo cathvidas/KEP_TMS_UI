@@ -14,7 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   SessionGetDepartment,
   SessionGetEmployeeId,
-  SessionGetUserName,
+  SessionGetFullName,
 } from "../../services/sessions";
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
@@ -86,7 +86,7 @@ export const TrainingRequestForm = () => {
               "training request successfully submitted."
             );
             setTimeout(() => {
-              navigate("/KEP_TMS/TrainingRequest/" + formmatedData.id);
+              navigate("/KEP_TMS/TrainingDetail/" + formmatedData.id);
             }, 2500);
           }
         );
@@ -108,7 +108,7 @@ export const TrainingRequestForm = () => {
               "training request successfully submitted, please wait for approval"
             );
             setTimeout(() => {
-              navigate("/KEP_TMS/TrainingRequest/" + res?.data?.id);
+              navigate("/KEP_TMS/TrainingDetail/" + res?.data?.id);
             }, 2500);
           }
         );
@@ -264,7 +264,7 @@ export const TrainingRequestForm = () => {
             />
           </div>
           <div className="h6 d-flex gap-5 pb-4 justify-content-around border-bottom">
-            <span> Requestor: {isUpdate ? formData?.requestor?.fullname : SessionGetUserName()}</span>
+            <span> Requestor: {isUpdate ? formData?.requestor?.fullname : SessionGetFullName()}</span>
             <span> Badge No: {isUpdate ? formData?.requestor?.employeeBadge:SessionGetEmployeeId()}</span>
             <span> Department: {isUpdate ? formData?.requestor?.position: SessionGetDepartment()}</span>
             <span> Date: {isUpdate ? formatDateTime(formData?.createdDate) : formatDateTime(new Date())}</span>

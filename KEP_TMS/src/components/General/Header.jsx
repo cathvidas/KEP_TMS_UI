@@ -11,14 +11,14 @@ const Header = ({ title, IconComponent, showModal, setShowModal }) => {
     <Navbar className="header navbar-expand-md d-flex w-100  bg-body z-1 shadow-sm px-4 ">
       <a className="navbar-brand d-flex align-items-center " href="#" style={{fontWeight: 500}}>
         <span
-          className="d-flex justify-content-center align-items-center bs-icon"
+          className="d-flex gap-2 justify-content-center align-items-center bs-icon"
           style={{
             color: "rgb(0, 167, 111)",
             background: "rgba(13, 110, 253, 0)",
           }}
         >
           {IconComponent && IconComponent}
-          <small className="ms-2 " style={{ color: "#00a76f" }}>
+          <small style={{ color: "#00a76f" }}>
             {title}
           </small>
         </span>

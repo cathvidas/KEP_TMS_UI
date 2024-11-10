@@ -21,8 +21,6 @@ const CertificatesPage = () => {
   // const certicates = []
   const certicates = attachmentHook.useTraineeCertificates(1
   );
-  console.log(certicates);
-  console.log(data);
   useEffect(() => {
     const mappedData = data?.attended?.map(({ id, trainingProgram }) => ({
       value: id,
@@ -108,6 +106,7 @@ const CertificatesPage = () => {
   );
   return (
     <Layout
+    navReference="Certificates"
       BodyComponent={contentBody}
       header={{
         title: "Training Certificates",

@@ -8,30 +8,32 @@ import EmailForm from "../forms/ModalForms/EmailForm";
 import { useState } from "react";
 import { ActivityType, statusCode } from "../../api/constants";
 import { SessionGetEmployeeId } from "../../services/sessions";
-import ApproverAction from "../tableComponents/ApproverAction";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import mappingHook from "../../hooks/mappingHook";
-const ApproverList = ({data, activityTitle, activityType, emailFormat}) => {
+const ApproverList = ({data, activityTitle, activityType, hasEmailForm, activityLogs, optionColumn}) => {
   
   const mappedApprovers = mappingHook.useMappedActivityRoute(data?.approvers, data?.routings)
   const [visible, setVisible] = useState(false);  
+  const [emailRecipient, setEmailRecipient] = useState({});  
   const actionBodyTemplate = (rowData) => (
     <div>
       {
       (rowData?.status?.statusId === statusCode.FORAPPROVAL && rowData?.detail?.employeeBadge === SessionGetEmployeeId()) ?
       <>
-      <ApproverAction reqId={data?.data?.id} onFinish={()=>window.location.reload()} />
+      {optionColumn}
       </> :
       <Button
         type="button"
         icon="pi pi-envelope"
         text
         disabled={rowData?.status?.statusId !== statusCode.FORAPPROVAL}
-        onClick={() => setVisible(true)}
+        onClick={() => {setVisible(true);
+          setEmailRecipient(rowData?.detail);
+        }}
       />}
     </div>
   );
-  const statusTemplate = (rowData) => emailFormat ? getStatusById(rowData?.status?.statusId):
+  const statusTemplate = (rowData) => !hasEmailForm ? getStatusById(rowData?.status?.statusId):
     StatusColor({status: getStatusById(rowData?.status?.statusId), class:"p-2 px-3 ", showStatus: true});
 
   return (
@@ -64,12 +66,13 @@ const ApproverList = ({data, activityTitle, activityType, emailFormat}) => {
             </>
           )}
         ></Column>
-        {activityType === ActivityType.REQUEST && !emailFormat &&
+        {activityType === ActivityType.REQUEST && hasEmailForm &&
         <Column header="Action" body={actionBodyTemplate}></Column>}
       </DataTable>
+      {hasEmailForm &&
       <EmailForm handleShow={visible} handleClose={() => setVisible(false)} activityTitle={activityTitle} activityId={data?.id} activityType={activityType}
-      activityData={data}
-      />
+      activityData={data} recipient={emailRecipient} activityLogs={activityLogs}
+      />}
     </>
   );
 };
@@ -77,7 +80,9 @@ ApproverList.propTypes = {
   data: proptype.object,
   activityTitle: proptype.string,
   activityType: proptype.number,
-  emailFormat: proptype.bool,
   routeData: proptype.array,
+  activityLogs: proptype.array,
+  hasEmailForm: proptype.bool,
+  optionColumn: proptype.any,
 };
 export default ApproverList;

@@ -1,5 +1,5 @@
 import { OtherConstant, statusCode } from "../api/constants";
-import { checkTrainingIfOutDated } from "../services/inputValidation/validateTrainingSchedules";
+import trainingDetailsService from "../services/common/trainingDetailsService";
 import { SessionGetEmployeeId } from "../services/sessions";
 
 const countStatus = (data, userRequest) => {
@@ -20,13 +20,13 @@ const countStatus = (data, userRequest) => {
   userRequest.forEach((item) => {
     count.total++;
     // if()
-    if(checkTrainingIfOutDated(item) &&( item?.status?.id === statusCode.SUBMITTED || item?.status?.id === statusCode.FORAPPROVAL|| item?.status?.id === statusCode.APPROVED)){
+    if(trainingDetailsService.checkTrainingIfOutDated(item) &&( item?.status?.id === statusCode.SUBMITTED || item?.status?.id === statusCode.FORAPPROVAL|| item?.status?.id === statusCode.APPROVED)){
       count.outDatedRequests++;
     }
     // if (item?.status?.id === statusCode.APPROVED) {
     //   count.approved++;
     // } else
-     if ((item.status.id === statusCode.FORAPPROVAL || item.status.id === statusCode.SUBMITTED || item?.status?.id === statusCode.APPROVED) && !checkTrainingIfOutDated(item)) {
+     if ((item.status.id === statusCode.FORAPPROVAL || item.status.id === statusCode.SUBMITTED || item?.status?.id === statusCode.APPROVED) && !trainingDetailsService.checkTrainingIfOutDated(item)) {
       count.pending++;
     } else if (item.status.id === statusCode.CLOSED) {
       count.closed++;
@@ -54,10 +54,10 @@ const countStatus = (data, userRequest) => {
     if(isParticipant && item?.status?.id === statusCode.PUBLISHED){
       count.ongoing++;
     }
-    if(isFacilitator &&((item?.status?.id === statusCode.APPROVED && !checkTrainingIfOutDated(item)) || item?.status?.id === statusCode.PUBLISHED)){
+    if(isFacilitator &&((item?.status?.id === statusCode.APPROVED && !trainingDetailsService.checkTrainingIfOutDated(item)) || item?.status?.id === statusCode.PUBLISHED)){
       count.trainerAction++;
     }
-    if(isParticipant  && ((item?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR && item?.status?.id === statusCode.SUBMITTED && !checkTrainingIfOutDated(item))|| item?.status?.id === statusCode.PUBLISHED)){
+    if(isParticipant  && ((item?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR && item?.status?.id === statusCode.SUBMITTED && !trainingDetailsService.checkTrainingIfOutDated(item))|| item?.status?.id === statusCode.PUBLISHED)){
       count.assignedTraining++;
     }
   });

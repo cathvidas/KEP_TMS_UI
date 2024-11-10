@@ -134,7 +134,7 @@ const UserPage = ()=>{
         );
     }
     return(
-        <Layout header={{title: "Users", icon: <i className="pi pi-users"></i>}} BodyComponent={Content}/>
+        <Layout navReference="Users" header={{title: "Users", icon: <i className="pi pi-users"></i>}} BodyComponent={Content}/>
     )
 }
 export default UserPage;

@@ -8,13 +8,12 @@ import Header from "./Header";
 const Layout = ({
   BodyComponent,
   header,
-  showMenu,
+  navReference,
   showModalAction,
   returnAction,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [showmenu, setshowmenu] = useState(true);
-  const [showHeader, setShowHeader] = useState(true);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
   useEffect(() => {
@@ -41,7 +40,7 @@ const Layout = ({
       {showmenu && (
         <>
           <div className="d-flex">
-            <Sidebars />
+            <Sidebars activeNavigation={navReference}/>
             <div className="flex-grow-1 d-flex flex-column d-block expand-transition overflow-hidden vh-100">
               <div className="d-flex">
                 {!header?.hide &&
@@ -65,7 +64,8 @@ const Layout = ({
 Layout.propTypes = {
   BodyComponent: proptype.func,
   header: proptype.object,
-  showMenu: proptype.bool,
+  returnAction: proptype.func,
   showModalAction: proptype.bool,
+  navReference: proptype.string,
 };
 export default Layout;

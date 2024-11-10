@@ -129,7 +129,7 @@ ul.p-dropdown-items {
 
 
 
-a {
+a.cutom-link, .custom-link a {
     color: unset !important;
     text-decoration: none !important;
 }

@@ -80,7 +80,7 @@ const TextEditor = ({ defaultValue, onChange, showToolbar }) => {
     "underline",
     "alignment",
     "|",
-    "link",
+    // "link",
     "insertTable",
     "bulletedList",
     "numberedList",
@@ -157,7 +157,7 @@ const TextEditor = ({ defaultValue, onChange, showToolbar }) => {
             Mention,
             Paragraph,
             Undo,
-            Link,
+            // Link,
             Alignment,
             List,
             Heading,
@@ -166,7 +166,6 @@ const TextEditor = ({ defaultValue, onChange, showToolbar }) => {
             Indent,
             IndentBlock,
             Font,
-            Image, ImageToolbar, ImageStyle, ImageResize
           ],  
         }}
       />

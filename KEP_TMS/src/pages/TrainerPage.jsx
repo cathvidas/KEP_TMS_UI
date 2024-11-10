@@ -5,7 +5,7 @@ import TrainingRequestTableList from "../components/List/TrainingRequestTableLis
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import trainingRequestHook from "../hooks/trainingRequestHook";
-import { checkTrainingIfOutDated } from "../services/inputValidation/validateTrainingSchedules";
+import trainingDetailsService from "../services/common/trainingDetailsService";
 import { SessionGetEmployeeId } from "../services/sessions";
 
 const TrainerPage = () => {
@@ -16,7 +16,7 @@ const TrainerPage = () => {
   const updatedData = data?.filter(
     (item) =>
       (item?.status?.id === statusCode.APPROVED &&
-        !checkTrainingIfOutDated(item)) ||
+        !trainingDetailsService.checkTrainingIfOutDated(item)) ||
       item?.status?.id === statusCode.PUBLISHED
   );
   const Content = () => (

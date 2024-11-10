@@ -11,13 +11,12 @@ import { actionFailed, actionSuccessful, confirmAction } from "../../services/sw
 import handleResponseAsync from "../../services/handleResponseAsync";
 import examService from "../../services/examService";
 import validateExamForm from "../../services/inputValidation/validateExamForm";
-const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
+const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm, readOnly }) => {
   const [data, setData] = useState({ title: "", examQuestion: [] });
   const [isUpdate, setIsUpdate] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [errors, setErrors] = useState({});
-  console.log( defaultData,data, reqId)
   useEffect(() => {
     if (defaultData) {
       setData(defaultData);
@@ -121,14 +120,16 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
         {/* <h4 className="theme-bg2 p-2 px-3">{data?.title}</h4> */}
         <Card.Header className="flex">
           <div>
-            <h4 className="card-title">Exam Form</h4>
+            <h4 className="card-title">{readOnly ? data?.title : "Exam Form"}</h4>
+            {!readOnly &&
             <div className="card-subtitle mb-2 text-muted">
               {isUpdate ? "Edit Exam" : "Add New Exam"}
-            </div>
+            </div>}
           </div>
           <Button text type="button" icon="pi pi-times" className="ms-auto" onClick={closeForm} />
         </Card.Header>
         <Card.Body>
+          {!readOnly &&
           <FormFieldItem
             label="Exam title"
             error={errors?.title}
@@ -142,13 +143,14 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
                 }
               />
             }
-          />
+          />}
           <FormFieldItem
             label="No of Questions to display"
             error={errors?.questionLimit}
             FieldComponent={
               <Form.Control
                 type="number"
+                disabled={readOnly}
                 placeholder="No"
                 value={data?.questionLimit}
                 min={0}
@@ -165,7 +167,8 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
               <>
                 {data?.examQuestion?.length > 0 ? (
                   <>
-                    <span className="flex  px-3 justify-content-between">
+                  {!readOnly &&
+                    <span className="flex  justify-content-between">
                       <span className="text-muted">
                         {`${data?.examQuestion?.length} items`}{" "}
                       </span>
@@ -180,8 +183,8 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
                           setSelectedQuestion(null);
                         }}
                       />
-                    </span>
-                    <Row className="row-cols-lg-2  p-3 g-2 row-cols-1">
+                    </span>}
+                    <Row className="row-cols-lg-2  py-3 g-2 row-cols-1">
                       {data?.examQuestion?.map((x, index) => {
                         return (
                           <Col key={`item-${index}`}>
@@ -190,6 +193,7 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
                                 <small className="text-muted fw-bold text-uppercase">
                                   Question #{index + 1}
                                 </small>
+                                {!readOnly &&
                                 <ButtonGroup>
                                   <Button
                                     type="button"
@@ -217,7 +221,7 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
                                     style={{ width: "1.5rem" }}
                                     onClick={() => removeExamQuestion(index)}
                                   />
-                                </ButtonGroup>{" "}
+                                </ButtonGroup>}
                               </div>
                               <div className="px-3 py-2">
                                 <p className="m-0">{x.content}</p>
@@ -250,7 +254,7 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
               </>
             }
           />
-          
+          {!readOnly &&
             <div className="text-end p-3 border-top">
               <Button
                 icon={isUpdate ? "pi pi-trash" : "pi pi-eraser"}
@@ -268,7 +272,7 @@ const ExamForm = ({ defaultData, handleRefresh, reqId, closeForm }) => {
                 type="button"
                   onClick={isUpdate ? updateExam : uploadExam}
               />
-            </div>
+            </div>}
           
         </Card.Body>
       </Card>
@@ -286,7 +290,8 @@ ExamForm.propTypes = {
   defaultData: proptype.object,
   handleRefresh: proptype.func,
   reqId: proptype.number, 
-  closeForm: proptype.func
+  closeForm: proptype.func,
+  readOnly: proptype.bool,
 
 };
 export default ExamForm;

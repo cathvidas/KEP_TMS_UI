@@ -1,12 +1,12 @@
 import { statusCode } from "../../api/constants";
 import countData from "../../utils/countData";
-import { checkTrainingIfOutDated } from "../inputValidation/validateTrainingSchedules";
 import { SessionGetEmployeeId, SessionGetRole } from "../sessions";
 import getStatusById from "../../utils/status/getStatusById";
 import ToastTemplate from "../../components/General/ToastTemplate";
 import handleApproveRequest from "../handlers/handleApproveRequest";
 import sortRoutingBySequence from "./sortRoutingsBySequence";
 import { extractChanges } from "../../utils/stringUtil";
+import trainingDetailsService from "./trainingDetailsService";
 
 const getToastDetail = (
   data,
@@ -14,13 +14,9 @@ const getToastDetail = (
   userReports,
   cancelRequest,
   updateRequest,
-  disApproveRequest
+  disApproveRequest,
+  reloadData
 ) => {
-  const reloadPage = ()=>{
-    setTimeout(()=>{
-      window.location.reload()
-    }, 1500)
-  }
   const isAdmin =
     SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin"
       ? true
@@ -37,7 +33,7 @@ const getToastDetail = (
     (status == statusCode.FORAPPROVAL ||
       status == statusCode.SUBMITTED ||
       status == statusCode.APPROVED) &&
-    checkTrainingIfOutDated(data)
+    trainingDetailsService.checkTrainingIfOutDated(data)
   ) {
     statusData.detail =
       isAdmin || data?.requestorBadge === SessionGetEmployeeId()
@@ -74,7 +70,7 @@ const getToastDetail = (
             icon="pi pi-info-circle"
             leftButtonLabel="Approve"
             leftButtonIcon="pi pi-thumbs-up"
-            leftButtonCommand={() =>handleApproveRequest({id: data.id, approve: true, onFinish:reloadPage, user: SessionGetEmployeeId() })}
+            leftButtonCommand={() =>handleApproveRequest({id: data.id, approve: true, onFinish:reloadData, user: SessionGetEmployeeId() })}
             rightButtonLabel="Disapprove"
             rightButtonSeverity="danger"
             rightButtonOutlined
@@ -89,7 +85,7 @@ const getToastDetail = (
     statusData.summary = "Waiting for Facilitator's Action";
     let facilitators = "";
     data?.trainingFacilitators?.forEach((f) => {
-      facilitators += `${f?.fullname}, `;
+      facilitators += `${f?.fullname}; `;
     });
     statusData.severity = "info";
     statusData.detail = isFacilitator

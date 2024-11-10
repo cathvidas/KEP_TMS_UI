@@ -4,7 +4,7 @@ export const confirmAction = (prop) => {
   Swal.fire({
     title: prop.title ??"Confirm Submission?",
     text: prop.text??"Are you sure you want to submit this form?",
-    icon: "warning",
+    icon: prop.icon?? "warning",
     showCancelButton: true,
     confirmButtonColor: prop.confirmButtonColor?? "#3085d6",
     cancelButtonColor:prop.cancelButtonColor?? "#dcdcdc",

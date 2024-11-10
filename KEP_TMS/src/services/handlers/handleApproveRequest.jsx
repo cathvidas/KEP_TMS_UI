@@ -1,15 +1,18 @@
-import { ActivityType, statusCode } from "../../api/constants";
+import { ActivityType } from "../../api/constants";
 import handleResponseAsync from "../handleResponseAsync";
 import { actionFailed, actionSuccessful, confirmAction } from "../sweetalert";
 import trainingRequestService from "../trainingRequestService";
 
 const handleApproveRequest = async (data) => {
-
   const newData = {
     transactId: data.id,
     approvedBy: data.user,
     activityIn: ActivityType.REQUEST,
   };
+  if(!data.approve){
+    newData.remarks = data.remarks;
+    newData.updatedBy = data.user
+  }
   confirmAction({
     showLoaderOnConfirm: true,
     title: data.approve ? "Approve Request" : "Disapprove Request",
@@ -32,7 +35,6 @@ const handleApproveRequest = async (data) => {
         (error) =>
           actionFailed("Error", error?.message)
       ),
-    // param: { id: reqId, statusId: statusCode.APPROVED },
   });
 };
 export default handleApproveRequest;

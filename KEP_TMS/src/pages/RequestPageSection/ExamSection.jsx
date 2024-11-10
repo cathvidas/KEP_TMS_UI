@@ -8,6 +8,7 @@ import cardHeaderImg from "../../img/examHeader.png";
 import { Card } from "primereact/card";
 import ExamForm from "../../components/forms/ExamForm";
 import { SectionHeading } from "../../components/General/Section";
+import { CompareDateWithToday } from "../../utils/datetime/dateComparison";
 
 const ExamSection = ({ data }) => {
   const [trigger, setTrigger] = useState(0);
@@ -19,7 +20,6 @@ const ExamSection = ({ data }) => {
     setShowForm(false);
     setSelectedExam(null);
   };
-  console.log(exams, trigger)
   return (
     <>
       <SectionHeading
@@ -79,6 +79,7 @@ const ExamSection = ({ data }) => {
           handleRefresh={refreshData}
           reqId={data.id}
           closeForm={() => setShowForm(false)}
+          readOnly={!CompareDateWithToday(data?.trainingStartDate)?.isFuture}
         />
       )}
       {loading ? <SkeletonList /> : <></>}

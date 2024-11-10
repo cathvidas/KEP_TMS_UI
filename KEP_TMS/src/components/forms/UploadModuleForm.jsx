@@ -15,6 +15,7 @@ import { ModuleAvailability } from "../../services/constants/appConstants";
 import { combineDateTime } from "../../utils/datetime/FormatDateTime";
 import validateModuleForm from "../../services/inputValidation/validateModuleForm";
 import { CompareDates } from "../../utils/datetime/dateComparison";
+import TextEditor from "./common/TextEditor";
 const UploadModuleForm = ({
   requestData,
   setShowForm,
@@ -115,8 +116,8 @@ const UploadModuleForm = ({
           }
           data.append("RequestId", requestData.id);
           data.append("Name", details.Name);
-          data.append("AvailableAt", requestData?.AvailableAt);
-          data.append("UnavailableAt", requestData?.UnavailableAt);
+          data.append("AvailableAt", details?.AvailableAt ?? "");
+          data.append("UnavailableAt", details?.UnavailableAt ?? "");
           data.append("Description", details.Description);
           data.append("CreatedBy", SessionGetEmployeeId());
           handleResponseAsync(
@@ -227,16 +228,10 @@ const UploadModuleForm = ({
               error={errors.Description}
               FieldComponent={
                 <>
-                  <textarea
-                    type="text"
-                    className="form-control"
-                    placeholder="Description or Content"
-                    rows={3}
-                    value={details.Description}
-                    onChange={(e) =>
-                      setDetails({ ...details, Description: e.target.value })
-                    }
-                  ></textarea>
+                  <TextEditor 
+                  defaultValue={details.Description}
+                  showToolbar
+                  onChange={(e)=> setDetails({ ...details, Description: e })}/>
                 </>
               }
             />

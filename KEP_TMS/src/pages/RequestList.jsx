@@ -8,8 +8,8 @@ import getStatusCode from "../utils/status/getStatusCode";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import { statusCode } from "../api/constants";
-import { checkTrainingIfOutDated } from "../services/inputValidation/validateTrainingSchedules";
 import TrainingRequestTableList from "../components/List/TrainingRequestTableList";
+import trainingDetailsService from "../services/common/trainingDetailsService";
 const RequestList = () => {
   const { type } = useParams();
   const isAdmin =
@@ -29,7 +29,7 @@ const RequestList = () => {
       let updatedList = [];
       data.forEach((item) => {
         if (
-          checkTrainingIfOutDated(item) &&
+          trainingDetailsService.checkTrainingIfOutDated(item) &&
           (item?.status?.id === statusCode.SUBMITTED ||
             item?.status?.id === statusCode.FORAPPROVAL ||
             item?.status?.id === statusCode.APPROVED)
@@ -41,7 +41,7 @@ const RequestList = () => {
     } else if (filter.label === "Pending") {
       const updatedList = data.filter(
         (request) =>
-          !checkTrainingIfOutDated(request) &&
+          !trainingDetailsService.checkTrainingIfOutDated(request) &&
           (request?.status?.id === statusCode.FORAPPROVAL ||
             request?.status?.id === statusCode.SUBMITTED ||
             request?.status?.id === statusCode.APPROVED)
@@ -89,6 +89,7 @@ const RequestList = () => {
   return (
     <>
       <Layout
+      navReference="RequestList"
         BodyComponent={Content}
         header={{
           title: "Training Request",
