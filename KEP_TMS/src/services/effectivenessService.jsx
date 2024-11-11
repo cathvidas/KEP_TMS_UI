@@ -19,6 +19,7 @@ const effectivenessService = {
   },
   updateTrainingEffectiveness: async (data) => {
     const response = await updateEffectivenessApi(data);
+    console.log(response)
     if(response.status !== 1){
       throw new Error(response.message);
     }
@@ -34,10 +35,11 @@ const effectivenessService = {
   getEffectivenessById: async (id) => {
     const response = await getEffectivenessByIdApi(id);
     if(response?.status === 1){
+      const approvers = await commonService.getActivityApprovers(response?.data?.createdBy, ActivityType.EFFECTIVENESS);
       const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.EFFECTIVENESS);
       const currentRouting = await commonService.getCurrentRouting(response?.data?.id, ActivityType.EFFECTIVENESS);
       const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.EFFECTIVENESS);
-      return {...response?.data, routings, currentRouting, auditTrail};
+      return {...response?.data, routings, currentRouting, auditTrail, approvers};
     }
     return {};
   },
