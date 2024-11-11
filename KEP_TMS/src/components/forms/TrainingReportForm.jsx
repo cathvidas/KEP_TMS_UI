@@ -216,6 +216,7 @@ const reportTemplateRef = useRef();
         (x) => x.employeeBadge === SessionGetEmployeeId()
       ) &&
         <div className="flex">
+          {isSubmitted && <>
         <Button
           type="button"
           label={`${showLogs ? "Hide" : "Show"} Activities`}
@@ -232,13 +233,13 @@ const reportTemplateRef = useRef();
           text
           severity="help"
           onClick={() => handleGeneratePdf(reportTemplateRef.current)}
-        />
+        /></>}
           {(!defaultValue || isUpdate) &&<>
           <Button
             type="button"
             icon="pi pi-eraser"
             label="Reset"
-            className="rounded"
+            className="rounded ms-auto"
             severity="secondary"
             onClick={() => {
               setFormData(trainingreportConstant);

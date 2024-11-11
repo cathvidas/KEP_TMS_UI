@@ -13,7 +13,7 @@ const AutoCompleteField = ({ label, value, className}) => {
 
 AutoCompleteField.propTypes = {
   label: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.any,
   className: PropTypes.string,
 };
 export default AutoCompleteField;

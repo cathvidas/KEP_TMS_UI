@@ -20,6 +20,31 @@ const trainingDetailsService = {
     }
     return isEnd;
   },
+  checkTrainingScheduleStatus: (data) => {
+    let isEnd = false;
+    let isOngoing = false;
+    let isUpcoming = false;
+    if (CompareDateWithToday(data?.trainingEndDate)?.isPast) {
+      isEnd = true;
+    } else if (
+      CompareDateWithToday(data?.trainingStartDate)?.isFuture &&
+      data?.trainingDates?.length > 0
+    ) {
+      isUpcoming = true;
+    } else if (
+      CompareDateWithToday(data?.trainingStartDate)?.isToday &&
+      data?.trainingDates?.length > 0
+    ) {
+      const firstSchedule = sortSchedules(data?.trainingDates)[0];
+      isOngoing = CompareTimeWithToday(firstSchedule?.startTime)?.isPast;
+      isUpcoming = !isOngoing;
+      const lastSchedule = sortSchedules(data?.trainingDates)[
+        data?.trainingDates?.length - 1
+      ];
+      isEnd = CompareTimeWithToday(lastSchedule?.endTime)?.isPast;
+    }
+    return {isEnd, isOngoing, isUpcoming};
+  },
   checkTrainingIfOutDated: (data) => {
     let isOutDated = false;
     if (
@@ -34,9 +59,7 @@ const trainingDetailsService = {
     return isOutDated;
   },
   getLastTrainingSchedule: (trainingDates) => {
-    return sortSchedules(trainingDates)[
-      trainingDates?.length - 1
-    ];;
+    return sortSchedules(trainingDates)[trainingDates?.length - 1];
   },
 };
 export default trainingDetailsService;

@@ -51,7 +51,7 @@ const getExamDetail =(data)=>{
   return (
     <>
 
-    {isTrainee ? trainingDetailsService.checkIfTrainingEndsAlready(reqData) ? <>
+    {isTrainee ? trainingDetailsService.checkTrainingScheduleStatus(reqData)?.isEnd ? <>
       <SectionHeading title="Exams" icon={<i className="pi pi-box"></i>} />
       {showTraineeExam ? (
         <ExamDetails

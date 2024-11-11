@@ -9,6 +9,7 @@ import { Card } from "primereact/card";
 import ExamForm from "../../components/forms/ExamForm";
 import { SectionHeading } from "../../components/General/Section";
 import { CompareDateWithToday } from "../../utils/datetime/dateComparison";
+import trainingDetailsService from "../../services/common/trainingDetailsService";
 
 const ExamSection = ({ data }) => {
   const [trigger, setTrigger] = useState(0);
@@ -79,7 +80,7 @@ const ExamSection = ({ data }) => {
           handleRefresh={refreshData}
           reqId={data.id}
           closeForm={() => setShowForm(false)}
-          readOnly={!CompareDateWithToday(data?.trainingStartDate)?.isFuture}
+          readOnly={trainingDetailsService.checkTrainingScheduleStatus(data)?.isUpcoming ? false : true}
         />
       )}
       {loading ? <SkeletonList /> : <></>}
