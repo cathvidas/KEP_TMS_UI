@@ -7,15 +7,18 @@ import { useRef, useState } from "react";
 import { SectionHeading } from "../../components/General/Section";
 import { checkFileIfImage } from "../../utils/fileUtils";
 import attachmentService from "../../services/attachmentService";
-import { attachmentType } from "../../api/constants";
+import { API_BASE_URL, attachmentType } from "../../api/constants";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import proptype from "prop-types"
 import { confirmAction } from "../../services/sweetalert";
+import attachmentHook from "../../hooks/attachmentHook";
+import { Col, Row } from "react-bootstrap";
 
 const TraineeCertificateView = ({data}) => {
   const toast = useRef(null);
   const [totalSize, setTotalSize] = useState(0);
+  const certificatesFile = attachmentHook.useAttachmentsByReferenceId(data?.id, attachmentType.CERTIFICATE)
   const fileUploadRef = useRef(null);
 
   const onTemplateSelect = (e) => {
@@ -200,6 +203,16 @@ const uploadCertificate = (e)=>{
       <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
       <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
       <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
+<Row>
+  {certificatesFile?.data?.map(item =><>
+  <Col>
+  <div>
+    <h5>
+  {item?.fileName}</h5>
+  <img src={`${API_BASE_URL}${item?.url}`}/></div>
+  </Col>
+  </>)}
+</Row>
 
       <FileUpload
         ref={fileUploadRef}
