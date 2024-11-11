@@ -129,7 +129,9 @@ ul.p-dropdown-items {
 
 
 
-a.cutom-link, .custom-link a {
+a
+/* .cutom-link, .custom-link a  */
+{
     color: unset !important;
     text-decoration: none !important;
 }
@@ -242,4 +244,7 @@ ul.p-list-menu {
   .custom-table-bordered, .custom-table-bordered th, .custom-table-bordered td {
     border: 1px solid #302f2f !important;
     border-collapse: collapse !important;
+  }
+  .table>:not(caption)>*>*{
+    background-color: unset !important;
   }

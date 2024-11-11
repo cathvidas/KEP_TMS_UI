@@ -4,6 +4,7 @@ import Sidebars from "./Sidebar";
 import proptype from "prop-types";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
+import Login from "../../pages/Login";
 
 const Layout = ({
   BodyComponent,
@@ -14,13 +15,15 @@ const Layout = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [showmenu, setshowmenu] = useState(true);
+  const [showContent, setShowContent] = useState(true);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
   useEffect(() => {
     if (token != null) {
       setshowmenu(true);
-    } else {
-      navigate("/KEP_TMS");
+    } 
+  else{
+      setshowmenu(false);
     }
   }, [token, navigate]);
 
@@ -37,7 +40,7 @@ const Layout = ({
   }, [showModal]);
   return (
     <>
-      {showmenu && (
+      {showmenu? (
         <>
           <div className="d-flex">
             <Sidebars activeNavigation={navReference}/>
@@ -57,7 +60,8 @@ const Layout = ({
           </div>
           <RequestModal showModal={showModal} setShowModal={setShowModal} />
         </>
-      )}
+      ):
+      <Login onSuccess={(e)=>setShowContent(e)} />}
     </>
   );
 };

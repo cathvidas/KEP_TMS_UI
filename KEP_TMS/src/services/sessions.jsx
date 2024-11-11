@@ -13,6 +13,9 @@ export const SessionGetRole = () => {
 export const SessionGetDepartment = () => {
   return sessionStorage.getItem("department");
 };
+export const SessionGetToken = () => {
+  return sessionStorage.getItem("token");
+};
 export const SessionGetUserId = () => {
   const id = sessionStorage.getItem("id");
   if (id == null) return new Error("User not found, please log in again!");

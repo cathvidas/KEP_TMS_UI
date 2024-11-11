@@ -8,11 +8,12 @@ import {
   Form,
   Button,
 } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../img/Knowles_Green.png";
 import { useState } from "react";
 import validateLogin from "../utils/LoginValidation";
 import handleUserLogin from "../services/loginServices";
+import { APP_DOMAIN } from "../api/constants";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const Login = () => {
   const [badge, setBadge] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+ const location = useLocation();
   // response variables
 
   const handleLogin = async (e) => {
@@ -34,7 +35,11 @@ const Login = () => {
       var res = await handleUserLogin(data);
       setLoading(false);
       if(res){
-      navigate("/KEP_TMS/Dashboard");
+        if(location.pathname === APP_DOMAIN){
+          navigate("/KEP_TMS/Dashboard");
+        }
+        else{
+          navigate()}
       }
     }
   };
@@ -100,7 +105,7 @@ const Login = () => {
                         <strong>{loading === true ? <i className="pi pi-spin pi-spinner"></i> : "Login"}</strong>
                       </Button>
                     </Form.Group>
-                    <p className="text-muted m-0">Forgot your password?</p>
+                    {/* <p className="text-muted m-0">Forgot your password?</p> */}
                   </Form>
                 </CardBody>
               </Card>
