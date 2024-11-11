@@ -22,7 +22,8 @@ export const statusCode = {
   DISAPPROVED: 6,
   CLOSED: 7,
   PUBLISHED: 8,
-  FAILED: 9
+  FAILED: 9,
+  TOUPDATE: 10,
 };
 
 export const TrainingType = {

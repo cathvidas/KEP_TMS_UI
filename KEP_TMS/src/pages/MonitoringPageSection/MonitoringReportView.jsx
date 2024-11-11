@@ -14,6 +14,7 @@ import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
 import ExamDetails from "../../components/Exam/ExamDetails";
 const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formData, typeId, examDetail }) => {
     const [showForm, setShowForm] = useState(false);
+    console.log(data, reportType, formData)
     const [selectedData, setSelectedData] = useState({});
   const actionTemplate = (rowData) => {
     return (
@@ -90,7 +91,7 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
         header: "Status",
         body: (rowData) => (
           <>
-            {StatusColor({
+            { typeId === ActivityType.EVALUATION ? rowData[reportType]?.status :StatusColor({
               status:
                 getStatusById(rowData[reportType]?.currentRouting?.statusId) ??
                 "Pending",

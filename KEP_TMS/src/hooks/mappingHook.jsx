@@ -26,22 +26,37 @@ const mappingHook = {
     const [data, setData] = useState([]);
     useEffect(() => {
       const activityLogs = activityData?.routings;
+      console.log(activityLogs);
       const mappedActivityLogs = [];
       mappedActivityLogs.push({
+        id: 1,
         name: author?.fullname,
         process: "New",
         status: activityLogs?.length > 0 ? "Submitted" : "New",
         remark: "Submitted",
         date: formatDateTime(activityData?.createdDate),
       });
-      activityLogs?.map((log) => {
-        mappedActivityLogs.push({
+      activityLogs?.map((log, index) => {
+        const activity = {
+          id: index + 2,
           name: log?.userDetail.fullname,
           process: log?.userDetail?.position + " Approval",
           status: getStatusById(log?.statusId),
-          remark: log?.statusId === statusCode.FORAPPROVAL ? "Pending" : log?.remarks,
+          remark:
+            log?.statusId === statusCode.FORAPPROVAL ? "Pending" :log?.remarks ?? getStatusById(log?.statusId) ,
           date: log?.updatedDate ? formatDateTime(log?.updatedDate) : "N/A",
-        });
+        };
+        if (log.statusId === statusCode.TOUPDATE) {
+          if (activityLogs.length > index + 1 && log.assignedTo === author?.employeeBadge) {
+            activity.remark = "N/A";
+            activity.name = author?.fullname;
+            activity.process = "Updated";
+            activity.status = "Updated";
+            mappedActivityLogs.push(activity);
+          }
+        } else {
+          mappedActivityLogs.push(activity);
+        }
       });
       setData(mappedActivityLogs);
     }, [activityData, author]);

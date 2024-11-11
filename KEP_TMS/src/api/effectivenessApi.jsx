@@ -9,6 +9,9 @@ export const getEffectivenessByIdApi = async (id)=>{
 export const getAllEffectivenessApi = async ()=>{
     return await fetchFromApi(`TrainingEffectiveness/GetAllTrainingEffectiveness`);
 }
+export const getPagedEffectivenessApi = async (pageNumber, pageSize, searchValue)=>{
+    return await fetchFromApi(`TrainingEffectiveness/GetPagedTrainingEffectiveness?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);
+}
 export const getApproverAssignedEffectivenessApi = async (id)=>{
     return await fetchFromApi(`Services/GetAssignedEffectiveness?assignedTo=${id}`);
 }

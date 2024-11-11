@@ -6,7 +6,6 @@ import { Collapse } from "react-bootstrap";
 
 const ActivityList = ({ data, show = true, label, toggle }) => {
   const [isShow, setIsShow] = useState(show);
-  console.log(data)
   const items = [
     { field: "name", header: "Processed By" },
     { field: "process", header: "Process" },
@@ -42,6 +41,7 @@ const ActivityList = ({ data, show = true, label, toggle }) => {
             columnItems={items}
             hideHeader
             hidePaginator
+            dataKey={"id"}
           />
         </div>
       </Collapse>

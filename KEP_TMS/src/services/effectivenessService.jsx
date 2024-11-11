@@ -1,10 +1,11 @@
-import { approveTrainingFormApi, sendEmailApi } from "../api/commonApi";
+import { approveTrainingFormApi } from "../api/commonApi";
 import { ActivityType } from "../api/constants";
 import {
   createTrainingEffectivenessApi,
   getAllEffectivenessApi,
   getApproverAssignedEffectivenessApi,
   getEffectivenessByIdApi,
+  getPagedEffectivenessApi,
   updateEffectivenessApi,
   updateProjectPerformanceEvaluationApi,
 } from "../api/effectivenessApi";
@@ -58,12 +59,9 @@ const effectivenessService = {
     }
     return response?.data;
   },
-  sendEmail: async () => {
-    const response = await sendEmailApi();
-    if(response.status !== 1){
-      throw new Error(response.message);
-    }
-    return response?.data;
-  }
+  getPagedEffectiveness: async (pageNumber, pageSize, searhValue)=>{
+    const response = await getPagedEffectivenessApi(pageNumber, pageSize, searhValue);
+    return response;
+  },
 };
 export default effectivenessService;

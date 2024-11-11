@@ -105,6 +105,23 @@ const effectivenessHook = {
       getRequests();
     }, []);
     return { data, error, loading };
-  }
+  },
+  usePagedEffectiveness: (pageNumber, pageSize, searhValue) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequests = async () => {
+        handleResponseAsync(
+          () => effectivenessService.getPagedEffectiveness(pageNumber, pageSize, searhValue),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      getRequests();
+    }, [pageNumber, pageSize, searhValue]);
+    return { data, error, loading };
+  },
 };
 export default effectivenessHook;
