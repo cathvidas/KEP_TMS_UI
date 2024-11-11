@@ -57,8 +57,9 @@ const ForApprovaleffectiveness = () => {
           text
           icon="pi pi-thumbs-up"
           className="rounded-circle"
-          onClick={() => 
-            approveEffectiveness(rowData?.trainingEffectiveness?.id, true)}
+          onClick={() =>
+            approveEffectiveness(rowData?.trainingEffectiveness?.id, true)
+          }
         />
         <Button
           type="button"
@@ -70,8 +71,7 @@ const ForApprovaleffectiveness = () => {
           onClick={() => {
             setSelectedData(selectedData);
             setShowAnnotation(true);
-          }
-          }
+          }}
         />
         {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
       </div>
@@ -81,9 +81,10 @@ const ForApprovaleffectiveness = () => {
     const formData = {
       transactId: id,
       activityIn: ActivityType.EFFECTIVENESS,
-      approvedBy: SessionGetEmployeeId()
+      approvedBy: SessionGetEmployeeId(),
     };
     confirmAction({
+      showLoaderOnConfirm: true,
       title: isApprove ? "Approve Effectiveness" : "Disapprove Effectiveness",
       text: isApprove
         ? "Are you sure you want to approve this Effectiveness?"
@@ -107,6 +108,7 @@ const ForApprovaleffectiveness = () => {
   };
   const disapproveEffectiveness = (e) => {
     confirmAction({
+      showLoaderOnConfirm: true,
       title: "Return Effectiveness Report",
       text: "Are you sure you want to disapproved and return this Effectiveness Report?",
       confirmButtonText: "Yes",
@@ -117,14 +119,14 @@ const ForApprovaleffectiveness = () => {
           () =>
             commonService.disapproveActivity({
               transactId: selectedData?.trainingEffectiveness?.id,
-              updatedBy: SessionGetEmployeeId(),
+              disapprovedBy: SessionGetEmployeeId(),
               activityIn: ActivityType.EFFECTIVENESS,
               remarks: e,
             }),
           () => {
             actionSuccessful("Success!", "successfully returned report");
             setTimeout(() => {
-              setTrigger((prev)=>prev + 1);
+              setTrigger((prev) => prev + 1);
             }, 1000);
           }
         );
@@ -198,7 +200,12 @@ const ForApprovaleffectiveness = () => {
         confirmButton={{ label: "Return Effectiveness" }}
         onSubmit={disapproveEffectiveness}
       />
-      <Modal show={showModal} onHide={() => setShowModal(false)} fullscreen style={showAnnotation && { zIndex: 1050 }}>
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        fullscreen
+        style={showAnnotation && { zIndex: 1050 }}
+      >
         <Modal.Header closeButton>
           <Modal.Title className="theme-color h5">
             Training Effectiveness Details
@@ -267,16 +274,16 @@ const ForApprovaleffectiveness = () => {
             effectiveness?.data?.routings?.find(
               (item) =>
                 item?.assignedTo === SessionGetEmployeeId() &&
-                item?.statusId === statusCode.DISAPPROVED && (
-                  <Button
-                    type="button"
-                    size="small"
-                    label="Returned"
-                    icon="pi pi-check"
-                    className="rounded text-danger"
-                    text
-                  />
-                )
+                item?.statusId === statusCode.DISAPPROVED
+            ) && (
+              <Button
+                type="button"
+                size="small"
+                label="Returned"
+                icon="pi pi-check"
+                className="rounded text-danger"
+                text
+              />
             )
           )}
         </Modal.Footer>
