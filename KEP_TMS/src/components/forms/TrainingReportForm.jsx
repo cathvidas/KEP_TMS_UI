@@ -17,12 +17,12 @@ import ErrorTemplate from "../General/ErrorTemplate";
 import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
 import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
-import activityLogHook from "../../hooks/activityLogHook";
 import { ActivityType, statusCode } from "../../api/constants";
 import getStatusCode from "../../utils/status/getStatusCode";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import ActivityList from "../List/ActivityList";
 import ApproverList from "../List/ApproversList";
+import mappingHook from "../../hooks/mappingHook";
 
 const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitted, currentRouting, auditTrail}) => {
   const [formData, setFormData] = useState(trainingreportConstant);
@@ -47,6 +47,7 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
         activityRemarks: defaultValue.activityRemarks}
       setFormData({...updatedData});
         setIsUpdate(defaultValue?.status === getStatusById(statusCode.DISAPPROVED))
+        setShowLogs(true)
     }
   }, [defaultValue, isSubmitted])
   
@@ -86,7 +87,7 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     setErrors(formErrors);
     return isValid;
   };
-const logs = activityLogHook.useReportsActivityLog(defaultValue, userData);
+const logs = mappingHook.useMappedActivityLogs(defaultValue, userData);
 const reportTemplateRef = useRef();
   return (
     <Card.Body>
@@ -265,7 +266,7 @@ const reportTemplateRef = useRef();
           />
           <hr />
           <ActivityList
-            data={logs?.filter((item) => item.show)}
+            data={logs}
             label={"Activities"}
           />
         </>
