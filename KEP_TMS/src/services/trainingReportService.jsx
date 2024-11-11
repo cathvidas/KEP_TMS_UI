@@ -32,10 +32,11 @@ const trainingReportService = {
   getTrainingReportById: async (id) => {
     const response = await getTrainingReportByIdApi(id);
     if(response?.status === 1){
+      const approvers = await commonService.getActivityApprovers(response?.data?.createdBy, ActivityType.REPORT)
       const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.REPORT)
       const currentRouting = await commonService.getCurrentRouting(response?.data?.id, ActivityType.REPORT);
       const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.REPORT);
-      return {...response?.data, routings, currentRouting, auditTrail};
+      return {...response?.data, routings, currentRouting, auditTrail, approvers};
     }
     return {};
   },

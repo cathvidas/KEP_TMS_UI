@@ -1,12 +1,8 @@
 import activityLogHook from "../../hooks/activityLogHook";
 import { formatDateTime } from "../../utils/datetime/Formatting";
-import { checkIfNullOrEmpty } from "../../utils/stringUtil";
-
+import proptype from "prop-types"
 const RequestAuditTrailLogsItem = ({data})=>{
     const logs = activityLogHook.useRequestAuditTrailActivityLogs(data?.auditTrail).filter(item=>item?.changes)
-    const checkIfHasValue = (item)=>{
-        return  item?.value && item?.value !== "{}"
-    }
     const ItemTemplate = (item)=> {
         const hasValue = item?.value && item?.value !== "{}"
       return (
@@ -74,5 +70,8 @@ const RequestAuditTrailLogsItem = ({data})=>{
       }
       </>
     );
+}
+RequestAuditTrailLogsItem.propTypes = {
+  data: proptype.object
 }
 export default RequestAuditTrailLogsItem;

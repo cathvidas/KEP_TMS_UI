@@ -18,8 +18,9 @@ const EmailForm = ({
   recipient,
   routeList,
   activityLogs,
+  formTemplate
 }) => {
-  const [subject, setSubject] = useState(`Follow-Up: Pending Approval for ${activityTitle ?? "Training Request"} #${activityData?.id}`);
+  const [subject, setSubject] = useState(`Follow-Up: Pending Approval for ${activityTitle ? activityTitle : "Training Request"} #${activityData?.id}`);
   const [errors, setErrors] = useState({});
   const [content, setContent] = useState(false);
   const formTemplateRef = useRef();
@@ -27,10 +28,22 @@ const EmailForm = ({
   useEffect(()=>{
     setEmailContent(formTemplateRef.current?.innerHTML);
   },[])
+  const serializeContent = ()=>{
+    const div = document.createElement("div");
+    div.innerHTML = emailContent;
+    const tables = document.querySelectorAll(".table");
+    tables.forEach((table) => {
+      const newTable = document.createElement("table");
+      newTable.innerHTML = table.innerHTML;
+      tables.innerHTML = newTable
+      // table.innerHTML = table.innerHTML.replace(/<tr>/g, "<tr style='background-color: #f9f9f9;'>");
+    });
+    return div.innerHTML;
+  }
   const sendEmail = ()=>{
     const validate = validateEmailContent();
     const emailData = { subject: subject,
-      body: emailContent,
+      body: serializeContent(),
       sendTo: recipient?.employeeBadge}
     if(validate){
       confirmAction({
@@ -110,7 +123,7 @@ const validateEmailContent = () => {
                   <Col className="col-12">
                     <Form.Group>
                       <Form.Label className="">Content</Form.Label>
-                      <TextEditor defaultValue={formTemplateRef.current?.innerHTML} onChange={(e)=>setEmailContent(e)} showToolbar />
+                      <TextEditor defaultValue={activityType === ActivityType.REQUEST ? formTemplateRef.current?.innerHTML: formTemplate.current?.innerHTML} onChange={(e)=>setEmailContent(e)} showToolbar />
                       {/* <textarea
                     className="form-control"
                     value={formData.description}
@@ -208,6 +221,7 @@ EmailForm.propTypes = {
   activityId: proptype.number,
   recipient: proptype.string,
   routeList: proptype.array,
-  activityLogs: proptype.array
+  activityLogs: proptype.array,
+  formTemplate: proptype.any,
 };
 export default EmailForm;

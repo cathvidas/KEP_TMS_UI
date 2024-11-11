@@ -10,7 +10,7 @@ import { ActivityType, statusCode } from "../../api/constants";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import mappingHook from "../../hooks/mappingHook";
-const ApproverList = ({data, activityTitle, activityType, hasEmailForm, activityLogs, optionColumn}) => {
+const ApproverList = ({data, activityTitle, activityType, hasEmailForm, activityLogs, optionColumn, emailFormTemplate}) => {
   
   const mappedApprovers = mappingHook.useMappedActivityRoute(data?.approvers, data?.routings)
   const [visible, setVisible] = useState(false);  
@@ -66,12 +66,12 @@ const ApproverList = ({data, activityTitle, activityType, hasEmailForm, activity
             </>
           )}
         ></Column>
-        {activityType === ActivityType.REQUEST && hasEmailForm &&
+        {hasEmailForm &&
         <Column header="Action" body={actionBodyTemplate}></Column>}
       </DataTable>
       {hasEmailForm &&
       <EmailForm handleShow={visible} handleClose={() => setVisible(false)} activityTitle={activityTitle} activityId={data?.id} activityType={activityType}
-      activityData={data} recipient={emailRecipient} activityLogs={activityLogs}
+      activityData={data} recipient={emailRecipient} activityLogs={activityLogs} formTemplate={emailFormTemplate}
       />}
     </>
   );
@@ -84,5 +84,6 @@ ApproverList.propTypes = {
   activityLogs: proptype.array,
   hasEmailForm: proptype.bool,
   optionColumn: proptype.any,
+  emailFormTemplate: proptype.any,
 };
 export default ApproverList;

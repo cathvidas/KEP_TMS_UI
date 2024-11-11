@@ -15,6 +15,7 @@ const getTraineeExamDetail = (data, user) => {
           traineeExam[0]?.totalScore,
       };
     }
-    return { submitted: false, detail: [] };
+    
+    return { submitted: false, detail: [], isPassed: false };
   };
   export default getTraineeExamDetail;

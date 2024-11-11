@@ -162,14 +162,14 @@ const TraineeReportView = ({ data, refreshData, isTrainee }) => {
       severity: evaluation?.data && "success",
       template: (item) => TabMenuItemTemplate(item, 1),
       // disabled: ,
-      hide: data?.status?.id !== statusCode.PUBLISHED,
+      hide: data?.status?.id !== statusCode.PUBLISHED || !trainingDetailsService.checkIfTrainingEndsAlready(data),
     },
     {
       label: "Evaluation Form",
       icon: evaluation?.data && "pi pi-check-circle",
       severity: evaluation?.data && "success",
       template: (item) => TabMenuItemTemplate(item, 2),
-      hide: data?.status?.id !== statusCode.PUBLISHED,
+      hide: data?.status?.id !== statusCode.PUBLISHED || !trainingDetailsService.checkIfTrainingEndsAlready(data),
     },
   ];
   return data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR ||

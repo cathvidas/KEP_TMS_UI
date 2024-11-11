@@ -17,17 +17,20 @@ import handleResponseAsync from "../../services/handleResponseAsync";
 import effectivenessService from "../../services/effectivenessService";
 import ErrorTemplate from "../General/ErrorTemplate";
 import effectivenessConstant from "../../services/constants/effectivenessConstant";
-import { SessionGetEmployeeId } from "../../services/sessions";
+import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
 import activityLogHook from "../../hooks/activityLogHook";
 import validateTrainingEffectiveness from "../../services/inputValidation/validateTrainingEffectiveness";
 import "../../assets/css/effectivenessForm.css";
-import { ActivityType, statusCode } from "../../api/constants";
+import { ActivityType, statusCode, UserTypeValue } from "../../api/constants";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import ApproverList from "../List/ApproversList";
 import ActivityList from "../List/ActivityList";
 import { CompareDateWithToday } from "../../utils/datetime/dateComparison";
+import getStatusCode from "../../utils/status/getStatusCode";
+import mapActivityLogs from "../../services/DataMapping/mapActivityLogs";
+import mappingHook from "../../hooks/mappingHook";
 const EffectivenessForm = ({
   data,
   userData,
@@ -35,7 +38,6 @@ const EffectivenessForm = ({
   onFinish,
   currentRouting,
   auditTrail,
-  
 }) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
@@ -44,6 +46,7 @@ const EffectivenessForm = ({
   const [performanceCharacteristics, setPerformanceCharacteristics] = useState([
     effectivenessConstant.performanceCharacteristics,
   ]);
+  console.log(formData)
   const [projectPerformanceEvaluation, setProjectPerformanceEvaluation] =
     useState([effectivenessConstant.projectPerformanceEvaluation]);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -84,6 +87,7 @@ const EffectivenessForm = ({
         ) ?? [effectivenessConstant.projectPerformanceEvaluation]
       );
       setIsSubmitted(true);
+      setShowLogs(true);
       if (formData?.statusName === getStatusById(statusCode.DISAPPROVED)) {
         setIsUpdate(true);
       }
@@ -100,8 +104,7 @@ const EffectivenessForm = ({
     employeeBadge: SessionGetEmployeeId(),
     trainingProgramId: data?.trainingProgram?.id,
     trainingTypeId: data?.trainingType?.id,
-    totalTrainingHours: 17,
-    // totalTrainingHours: data?.durationInHours,
+    totalTrainingHours: data?.durationInHours,
     evaluationDate: formatDateOnly(new Date(), "dash"),
     trainingRequestId: data.id,
     annotation: annotation,
@@ -158,6 +161,7 @@ const EffectivenessForm = ({
                     ...getFormData,
                     updatedBy: SessionGetEmployeeId(),
                     id: formData.id,
+                    statusId : getStatusCode(formData?.statusName) === statusCode.DISAPPROVED ? statusCode.FORAPPROVAL : getStatusCode(formData?.statusName),
                   })
                 : effectivenessService.createTrainingEffectiveness(getFormData),
             (e) => {
@@ -170,9 +174,13 @@ const EffectivenessForm = ({
     }
   };
   useEffect(() => {
-    setIsAfter(CompareDateWithToday(getAfterTrainingDate())?.isPast && SessionGetEmployeeId() === userData?.superiorBadge);
+    setIsAfter(
+      CompareDateWithToday(getAfterTrainingDate())?.isPast &&
+        SessionGetEmployeeId() === userData?.superiorBadge
+    );
   }, [getAfterTrainingDate]);
-  const logs = activityLogHook.useReportsActivityLog(formData, userData);
+  
+  const activityLogs = mappingHook.useMappedActivityLogs(formData, userData);
   const reportTemplateRef = useRef();
 
   return (
@@ -197,7 +205,7 @@ const EffectivenessForm = ({
         )}
 
         <Form>
-          <div ref={reportTemplateRef} style={{height: "fit-content"}}>
+          <div ref={reportTemplateRef} style={{ height: "fit-content" }}>
             <div className="text-center  pb-3 mb-3 ">
               <h5
                 className="m-0 w-100 title"
@@ -271,7 +279,7 @@ const EffectivenessForm = ({
                 I. What are the specific performance characteristics that you
                 would like to develop by attending this training?
               </b>
-              <Table className="table-bordered custom-table m-0 hideExport" >
+              <Table className="table-bordered custom-table m-0">
                 <thead>
                   <tr>
                     <th
@@ -389,8 +397,8 @@ const EffectivenessForm = ({
                   </span>
                 </Col>
               </Row>
-              <Table className="mt-2 table-bordered custom-table m-0">
-                {/* <thead> */}
+              <Table className="table-bordered custom-table mt-2 m-0">
+                <thead>
                   <tr>
                     <th
                       colSpan={2}
@@ -435,14 +443,16 @@ const EffectivenessForm = ({
                       </b>
                     </td>
                   </tr>
-                {/* </thead> */}
-                {/* <tbody> */}
+                </thead>
+                <tbody>
                   {projectPerformanceEvaluation?.map((_, index) => (
                     <tr
                       key={`evaluation${index}`}
                       className="position-relative performanceTable"
                     >
-                      <th scope="row" className="text-center">{index + 1}</th>
+                      <th scope="row" className="text-center">
+                        {index + 1}
+                      </th>
                       <td>
                         <textarea
                           className="no-focus w-100 border-0"
@@ -574,7 +584,7 @@ const EffectivenessForm = ({
                         )}
                     </tr>
                   ))}
-                {/* </tbody> */}
+                </tbody>
               </Table>
               <div className="flex hideExport">
                 {errors?.projectPerformanceEvaluation && (
@@ -614,60 +624,64 @@ const EffectivenessForm = ({
           </div>
           {data?.trainingParticipants?.some(
             (x) => x.employeeBadge === SessionGetEmployeeId()
-          ) &&
-            (!isSubmitted || isUpdate) ? (
-              <div className="text-end mt-3">
+          ) && (
+            <>
+              <div className="flex mt-3">
+                {isSubmitted && <>
                 <Button
                   type="button"
-                  icon="pi pi-eraser"
-                  label="Reset"
+                  label={`${showLogs ? "Hide" : "Show"} Activities`}
+                  icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
                   className="rounded"
-                  severity="secondary"
-                  onClick={() => {
-                    setPerformanceCharacteristics([
-                      effectivenessConstant.performanceCharacteristics,
-                    ]);
-                    setProjectPerformanceEvaluation([
-                      effectivenessConstant.projectPerformanceEvaluation,
-                    ]);
-                  }}
+                  text
+                  onClick={() => setShowLogs(!showLogs)}
                 />
                 <Button
                   type="button"
-                  icon={isUpdate ? "pi pi-pencil" : "pi pi-cloud-upload"}
-                  label={isUpdate ? "Update Form" : "Submit Form"}
-                  className="rounded ms-2"
-                  severity="success"
-                  onClick={
-                    isUpdate
-                      ? () => handleSubmit(true)
-                      : () => handleSubmit(false)
-                  }
-                />
+                  label="Download"
+                  icon="pi pi-download"
+                  className="rounded me-auto"
+                  text
+                  severity="help"
+                  onClick={() => handleGeneratePdf(reportTemplateRef.current)}
+                /></>}
+                {(!isSubmitted || isUpdate) && (
+                  <>
+                    <Button
+                      type="button"
+                      icon="pi pi-eraser"
+                      label="Reset"
+                      className="rounded ms-auto"
+                      severity="secondary"
+                      onClick={() => {
+                        setPerformanceCharacteristics([
+                          effectivenessConstant.performanceCharacteristics,
+                        ]);
+                        setProjectPerformanceEvaluation([
+                          effectivenessConstant.projectPerformanceEvaluation,
+                        ]);
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      icon={isUpdate ? "pi pi-pencil" : "pi pi-cloud-upload"}
+                      label={isUpdate ? "Update Form" : "Submit Form"}
+                      className="rounded ms-2"
+                      severity="success"
+                      onClick={
+                        isUpdate
+                          ? () => handleSubmit(true)
+                          : () => handleSubmit(false)
+                      }
+                    />
+                  </>
+                )}
               </div>
-            ): 
-            <div className="text-end mt-3">
-              <Button
-                type="button"
-                label={`${showLogs ? "Hide" : "Show"} Activities`}
-                icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
-                className="rounded"
-                text
-                onClick={() => setShowLogs(!showLogs)}
-              />
-              <Button
-                type="button"
-                label="Download"
-                icon="pi pi-download"
-                className="rounded"
-                text
-                severity="help"
-                onClick={() => handleGeneratePdf(reportTemplateRef.current)}
-              />
-            </div>}
+            </>
+          )}
         </Form>
-            {/* <ActivityLog label="Activity Logs" items={logs} isDescending /> */}
-        {isSubmitted  && showLogs && (
+        {/* <ActivityLog label="Activity Logs" items={logs} isDescending /> */}
+        {isSubmitted && showLogs && (
           <>
             <hr />
             <h6 className="theme-color" style={{ fontWeight: 600 }}>
@@ -675,12 +689,14 @@ const EffectivenessForm = ({
             </h6>
             <ApproverList
               data={formData}
-              activityTitle="Training Report"
+              activityTitle="Training Effectiveness"
               activityType={ActivityType.REPORT}
+              hasEmailForm={SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.SUPER_ADMIN}
+              emailFormTemplate={reportTemplateRef}
             />
             <hr />
             <ActivityList
-              data={logs?.filter((item) => item.show)}
+              data={activityLogs}
               label={"Activities"}
             />
           </>

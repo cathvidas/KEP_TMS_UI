@@ -26,7 +26,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
   const getFacilitators = () => {
     let facilitators = "";
     data?.trainingFacilitators?.map((x) => {
-      facilitators += `${x?.assignedDetail?.fullname};  `;
+      facilitators += `${x?.fullname};  `;
     });
     return facilitators;
   };
@@ -398,7 +398,7 @@ const reportTemplateRef = useRef();
             {data?.trainingFacilitators.map((faci, index) => {
               return (
                 <TabPanel
-                  header={faci?.assignedDetail?.fullname}
+                  header={faci?.fullname}
                   className="active"
                   key={faci?.id}
                 >

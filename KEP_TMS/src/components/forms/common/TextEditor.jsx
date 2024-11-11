@@ -1,8 +1,8 @@
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { useEffect, useState } from "react";
 import proptype from "prop-types";
-import "../../../assets/css/TextEditor.css"
-import 'ckeditor5/ckeditor5.css';
+// import "../../../assets/css/TextEditor.css"
+// import 'ckeditor5/ckeditor5.css';
 
 import {
   ClassicEditor,
@@ -12,7 +12,6 @@ import {
   Mention,
   Paragraph,
   Undo,
-  Link,
   Alignment,
   List,
   Table,
@@ -26,10 +25,6 @@ import {
   Indent,
   IndentBlock,
   Font,
-  Image,
-  ImageToolbar,
-  ImageStyle,
-  ImageResize,
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
 const TextEditor = ({ defaultValue, onChange, showToolbar }) => {
@@ -41,7 +36,7 @@ const TextEditor = ({ defaultValue, onChange, showToolbar }) => {
   }, [editorData]);
   // console.log(editorData)
   useEffect(() => {
-    setEditorData(defaultValue ?? '<div></div>');
+    setEditorData(defaultValue ?? '<div> </div>');
   }, [defaultValue]);
   const customColorPalette = [
     {

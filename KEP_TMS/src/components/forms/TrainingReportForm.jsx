@@ -214,8 +214,25 @@ const reportTemplateRef = useRef();
       {data?.trainingParticipants?.some(
         (x) => x.employeeBadge === SessionGetEmployeeId()
       ) &&
-      (!defaultValue || isUpdate) ? (
-        <div className="text-end mt-3">
+        <div className="flex">
+        <Button
+          type="button"
+          label={`${showLogs ? "Hide" : "Show"} Activities`}
+          icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
+          className="rounded"
+          text
+          onClick={() => setShowLogs(!showLogs)}
+        />
+        <Button
+          type="button"
+          label="Download"
+          icon="pi pi-download"
+          className="rounded me-auto"
+          text
+          severity="help"
+          onClick={() => handleGeneratePdf(reportTemplateRef.current)}
+        />
+          {(!defaultValue || isUpdate) &&<>
           <Button
             type="button"
             icon="pi pi-eraser"
@@ -233,29 +250,8 @@ const reportTemplateRef = useRef();
             className="rounded ms-2"
             severity="success"
             onClick={handleSubmit}
-          />
-        </div>
-      ) : (
-        <div className="text-end mt-3">
-          <Button
-            type="button"
-            label={`${showLogs ? "Hide" : "Show"} Activities`}
-            icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
-            className="rounded"
-            text
-            onClick={() => setShowLogs(!showLogs)}
-          />
-          <Button
-            type="button"
-            label="Download"
-            icon="pi pi-download"
-            className="rounded"
-            text
-            severity="help"
-            onClick={() => handleGeneratePdf(reportTemplateRef.current)}
-          />
-        </div>
-      )}
+          /></>}
+        </div>}
       {isSubmitted && showLogs && (
         <>
           <hr />

@@ -179,6 +179,8 @@ const UploadModuleForm = ({
   const getTrainingDates =()=> {
     const AvailableAt = combineDateTime(requestData.trainingDates[0]?.date, requestData.trainingDates[0]?.startTime, true);
     const UnavailableAt = combineDateTime(requestData.trainingDates[requestData.trainingDates?.length - 1]?.date, requestData.trainingDates[0]?.endTime, true);
+    
+    console.log(requestData.trainingDates, AvailableAt)
     return {AvailableAt, UnavailableAt}
   }
   const setModuleAvailability = (e) => {
