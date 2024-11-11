@@ -106,7 +106,7 @@ const ForApprovalReport = () => {
       handleResponseAsync(() =>
         commonService.disapproveActivity({
           transactId: selectedData?.trainingReport?.id,
-          updatedBy: SessionGetEmployeeId(),
+          disapprovedBy: SessionGetEmployeeId(),
           activityIn: ActivityType.REPORT,
           remarks:e,
         }), 

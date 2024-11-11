@@ -11,7 +11,7 @@ const handleApproveRequest = async (data) => {
   };
   if(!data.approve){
     newData.remarks = data.remarks;
-    newData.updatedBy = data.user
+    newData.disapprovedBy = data.user
   }
   confirmAction({
     showLoaderOnConfirm: true,

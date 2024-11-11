@@ -5,7 +5,7 @@ export const approveTrainingFormApi = async (data) => {
 }
 export const disapproveActivityApi = async (data) => {
     return await fetchFromApi(
-      `Services/DisapproveForm?transactId=${data?.transactId}&activityIn=${data?.activityIn}&updatedBy=${data?.updatedBy}&remarks=${data?.remarks}`,
+      `Services/DisapproveForm?transactId=${data?.transactId}&activityIn=${data?.activityIn}&disapprovedBy=${data?.disapprovedBy}&remarks=${data?.remarks}`,
       "POST"
     );
 }
