@@ -61,9 +61,12 @@ export const FormatDate = (dateString) => {
     const [year, month, day] = date.split("-");
     const [hours, minutes] = time.split(":").map(Number);
     const dateObj = new Date(year, month - 1, day, hours, minutes);
+    
+    console.log(dateObj, time)
     if(isLocalDateTime) {
       //format like this 1997-07-16T19:20:15
-      return dateObj.toISOString().split("T")[0] + "T" + time;
+      return `${year}-${month}-${day}T${time}`
+      // return dateObj.toISOString().split("T")[0] + "T" + time;
       // return dateObj.toISOString().split("T")[0] + " " + time;
     }
     return dateObj;

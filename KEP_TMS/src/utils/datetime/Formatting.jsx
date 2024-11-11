@@ -14,7 +14,7 @@ export const formatDateTime = (value, hasSecond) => {
     if(hasSecond){
         return date?.toLocaleString("en-US")
     }else{
-     const time = date?.toLocaleTimeString("en-US", { hour12: true, hour: '2-digit', minute: '2-digit' });
+     const time = date?.toLocaleTimeString("en-US", { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit'});
      return `${date?.toLocaleDateString("en-US")} ${time}`;
     }
     
