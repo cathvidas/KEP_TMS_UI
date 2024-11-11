@@ -128,7 +128,6 @@ const OverviewSection = ({
   ];
   const actionBodyTemplate = (
     <div>
-      {/* <ApproverAction reqId={data?.data?.id} onFinish={reloadData} /> */}
       <Button
         type="button"
         icon="pi pi-thumbs-up"
@@ -262,7 +261,7 @@ const OverviewSection = ({
               <>
                 <hr />
                 <ActivityList
-                  data={logs?.filter((item) => item.show)}
+                  data={logs}
                   label={"Activities"}
                 />
               </>
@@ -310,11 +309,14 @@ const OverviewSection = ({
           <SpeedDial
             model={items}
             direction="up"
-            className="speeddial-bottom-right  end-0 bottom-0 "
+            className="speeddial-bottom-right  end-0 bottom-0 custom-link text-white"
             buttonClassName="p-button-default rounded-circle "
           />
         </div>
       )}
+         {/* <EmailForm handleShow activityTitle={"Tra"} activityId={data?.id} activityType={ActivityType.REQUEST}
+      activityData={data} recipient={{email: "", fullname: ""}} activityLogs={[]} */}
+      {/* /> */}
     </>
   );
 };
