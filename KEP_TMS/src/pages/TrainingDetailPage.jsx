@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import { ActivityType, OtherConstant, statusCode, UserTypeValue } from "../api/constants";
 import trainingRequestHook from "../hooks/trainingRequestHook";
-import activityLogHook from "../hooks/activityLogHook";
 import examHook from "../hooks/examHook";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import { CompareDateWithToday } from "../utils/datetime/dateComparison";
@@ -24,6 +23,7 @@ import TraineeCertificateView from "./TrainingPageSection/TraineeCertificateView
 import MonitoringReportView from "./MonitoringPageSection/MonitoringReportView";
 import PendingView from "./MonitoringPageSection/PendingsView";
 import trainingDetailsService from "../services/common/trainingDetailsService";
+import mappingHook from "../hooks/mappingHook";
 
 const TrainingDetailPage = () => {
   const [trigger, setTrigger] = useState(0);
@@ -33,7 +33,6 @@ const TrainingDetailPage = () => {
     parseInt(id),
     trigger
   );
-  console.log(data)
   const refreshData = () => {
     setTrigger((prev) => prev + 1);
   };
@@ -53,11 +52,9 @@ const TrainingDetailPage = () => {
   const [currentContent, setCurrentContent] = useState(0);
   const trainingForms = trainingRequestHook.useAllParticipantsReports(
     data?.trainingParticipants ?? []
-  );
-  const logs = activityLogHook.useTrainingRequestActivityLogs(
-    data,
-    trainingForms?.data
-  );
+  )
+  const logs = mappingHook.useMappedActivityLogs(data, data?.requestor);
+  console.log(data, data?.requestor, logs)
   const traineeAccess =
     data?.status?.id === statusCode.PUBLISHED ||
     data?.status?.id === statusCode.CLOSED;

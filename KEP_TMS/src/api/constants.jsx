@@ -11,7 +11,7 @@ const testEnvi = {
 const currentServer = localhost;
 export const API_BASE_URL = currentServer.API_BASE_URL
 export const APPLICATION_BASE_URL = currentServer.APPLICATION_BASE_URL
-
+export const APP_DOMAIN = "/KEP_TMS"
 
 export const statusCode = {
   INACTIVE: 1,

@@ -1,8 +1,5 @@
 const getPassingScore = (totalItem, percentage)=>{
     const passingSore = Math.round(totalItem * (percentage??75/100));
-    if(passingSore === totalItem){
-        return passingSore -1;
-    }
-    return passingSore;
+    return totalItem > 1 ? passingSore : totalItem;
 }
 export default getPassingScore;

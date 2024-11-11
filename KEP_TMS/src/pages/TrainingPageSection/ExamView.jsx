@@ -48,7 +48,6 @@ const getExamDetail =(data)=>{
       );
     }
   }, [examList?.data]);
-  console.log(trainingDetailsService.checkIfTrainingEndsAlready(reqData))
   return (
     <>
 

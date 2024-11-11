@@ -77,6 +77,7 @@ const ModuleSection = ({ data }) => {
     const newData = moduleList.find((item) => item.id === selectedModule?.id);
     setSelectedModule(newData);
   }, [moduleList, selectedModule]);
+  console.log(moduleList)
   return (
     <>
       <SectionHeading
