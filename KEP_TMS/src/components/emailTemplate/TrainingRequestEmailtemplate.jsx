@@ -125,20 +125,20 @@ const TrainingRequestEmailtemplate = ({
       </figure>
 
       {tableHedear("TRAINING SCHEDULES")}
-      <TrainingScheduleList schedules={requestDetail.trainingDates} />
+      <TrainingScheduleList schedules={requestDetail?.trainingDates} />
       <p></p>
       {tableHedear("TRAINING PARTICIPANTS")}
       <UserList
         leadingElement={true}
         col="3"
-        userlist={requestDetail.trainingParticipants}
+        userlist={requestDetail?.trainingParticipants}
         property={"name"}
       />
       <p></p>
       {tableHedear("TRAINING FACILITATORS")}
       <UserList
         leadingElement={true}
-        userlist={requestDetail.trainingFacilitators}
+        userlist={requestDetail?.trainingFacilitators}
         property={"name"}
       />
       <p></p>

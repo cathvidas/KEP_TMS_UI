@@ -18,7 +18,7 @@ const userMapping = {
               });
               return newData;
             }else{
-              return addAsObject ? {...user,  assignedDetail: userDetail} : {...user,  ...userDetail}
+              return addAsObject ? {...user, userDetail} : {...user,  ...userDetail}
             }} catch {
             return user;
           }

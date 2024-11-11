@@ -31,17 +31,18 @@ const activityLogHook = {
           const isDisapproved =
             item?.statusId === statusCode.DISAPPROVED ? true : false;
           const changes = JSON.parse(item?.changes);
+          const remarks = extractChanges(changes?.Remarks ?? "");
           if (isApproved || isDisapproved) {
             newLogs.push({
               label: `Routed to ${item.assignedName ?? item.assignedTo}`,
-              date: formatDateTime(item?.createdDate),
+              date: formatDateTime(item?.updatedDate),
               severity: "default",
               show: true,
-              name:item.assignedName ?? item.assignedTo,
+              name:item?.assignedDetail?.fullname,
+              process: item?.assignedDetail?.position + " Approval",
               remark: isApproved ? "Approved" : isDisapproved ? remarks?.toValue ?? "Disapproved": "N/A"
             });
           }
-          const remarks = extractChanges(changes?.Remarks ?? "");
           newLogs.push({
             label: isApproved
               ? `Approved by ${item.assignedName ?? item.assignedTo}`
