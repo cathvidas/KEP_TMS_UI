@@ -33,13 +33,14 @@ const TrainingDetailPage = () => {
     parseInt(id),
     trigger
   );
+  console.log(data)
   const refreshData = () => {
     setTrigger((prev) => prev + 1);
   };
   const isFacilitator = data?.trainingFacilitators?.some(
     (item) => item?.employeeBadge === SessionGetEmployeeId()
   );
-  const isRequestor = data?.requestorBadge === SessionGetRole();
+  const isRequestor = data?.requestorBadge === SessionGetEmployeeId();
   const isApprover = data?.approvers?.some(
     (item) => item?.employeeBadge === SessionGetEmployeeId()
   );
@@ -66,6 +67,7 @@ const TrainingDetailPage = () => {
     <OverviewSection
       key={0}
       data={data}
+      reloadData={refreshData}
       showParticipants={isFacilitator || isAdmin || isApprover || isRequestor}
       showFacilitators
       showApprovers={isAdmin || isRequestor || isApprover}
@@ -94,8 +96,8 @@ const TrainingDetailPage = () => {
     />,
     <TraineeReportView key={3} data={data} refreshData={refreshData} isTrainee={isTrainee}/>,
     <TraineeCertificateView key={4} data={data} />,
-    <MonitoringReportView key={5} data={data} formData={trainingForms} reportType="examDetail" typeId={ActivityType.EXAM} examDetail={examList?.data} />,
-    <MonitoringReportView key={6} data={data} formData={trainingForms} reportType="effectivenessDetail" typeId={ActivityType.EFFECTIVENESS} hasApprover/>,
+    <MonitoringReportView key={5} data={data} formData={trainingForms} reportType="effectivenessDetail" typeId={ActivityType.EFFECTIVENESS} hasApprover/>,
+    <MonitoringReportView key={6} data={data} formData={trainingForms} reportType="examDetail" typeId={ActivityType.EXAM} examDetail={examList?.data} />,
     <MonitoringReportView key={7} data={data} formData={trainingForms} reportType="reportDetail" typeId={ActivityType.REPORT} hasApprover/>,
     <MonitoringReportView key={8} data={data} formData={trainingForms} reportType="evaluationDetail" typeId={ActivityType.EVALUATION}/>,
     <PendingView
@@ -261,18 +263,15 @@ const TrainingDetailPage = () => {
     });
   };
   const bodyContent = () => {
-    const isNotPublished = () => {
-      return !traineeAccess && data?.status?.id !== statusCode.PUBLISHED;
-    };
     return (
       <div className={`d-flex g-0`}>
         {(traineeAccess ||
           (data?.status?.id === statusCode.APPROVED && isFacilitator) ||
-          (data?.status?.id === statusCode.SUBMITTED && isTrainee)) && (
+          (data?.status?.id === statusCode.SUBMITTED && (isTrainee || isAdmin))) && (
           <MenuContainer
             itemList={items}
             action={
-              isNotPublished() && (
+              (data?.status?.id === statusCode.APPROVED && (isAdmin || isFacilitator)) && (
                 <Button
                   type="button"
                   label="Publish"
