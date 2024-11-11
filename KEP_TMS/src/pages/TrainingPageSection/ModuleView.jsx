@@ -92,7 +92,7 @@ const ModuleView = ({ reqData, isEditor, isTrainee }) => {
 };
 ModuleView.propTypes = {
   reqData: proptype.object,
-  isEditor: proptype.func,
-  isTrainee: proptype.func,
+  isEditor: proptype.bool,
+  isTrainee: proptype.bool,
 };
 export default ModuleView;

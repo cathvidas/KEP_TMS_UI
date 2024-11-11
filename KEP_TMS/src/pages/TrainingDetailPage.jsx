@@ -158,8 +158,8 @@ const TrainingDetailPage = () => {
           template: MenuItemTemplate,
           active: currentContent === 4 ? true : false,
           disable: !(
-            (isAdmin || isFacilitator) &&
-            CompareDateWithToday(data?.trainingEndDate)?.isPast
+            (isAdmin || isTrainee) &&
+            trainingDetailsService.checkTrainingScheduleStatus(data)?.isEnd
           ),
         },
       ],
@@ -192,14 +192,14 @@ const TrainingDetailPage = () => {
       {
         label: "Evaluation",
         icon: "pi pi-file-check",
-        command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Monitoring/Evaluation`),
+        command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Monitoring/Evaluations`),
         template: MenuItemTemplate,
         active: currentContent === 8 ? true : false,
       }  ,
       {
         label: "Summarry",
         icon: "pi pi-info-circle",
-        command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Monitoring/Summarry`),
+        command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Monitoring/Summary`),
         template: MenuItemTemplate,
         active: currentContent === 9 ? true : false,
       },]
@@ -263,12 +263,12 @@ const TrainingDetailPage = () => {
     return (
       <div className={`d-flex g-0`}>
         {(traineeAccess ||
-          (data?.status?.id === statusCode.APPROVED && isFacilitator) ||
-          (data?.status?.id === statusCode.SUBMITTED && (isTrainee || isAdmin))) && (
+          (!trainingDetailsService.checkTrainingIfOutDated(data) &&(( data?.status?.id === statusCode.APPROVED && (isFacilitator || isAdmin)) ||
+          (data?.status?.id === statusCode.SUBMITTED && (isTrainee || isAdmin))))) && (
           <MenuContainer
             itemList={items}
             action={
-              (data?.status?.id === statusCode.APPROVED && (isAdmin || isFacilitator)) && (
+              (data?.status?.id === statusCode.APPROVED && (isAdmin || isFacilitator)) ? (
                 <Button
                   type="button"
                   label="Publish"
@@ -277,7 +277,7 @@ const TrainingDetailPage = () => {
                   className="rounded py-1"
                   onClick={handlePublish}
                 />
-              )
+              ) : <></>
             }
           />
         )}
