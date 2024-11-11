@@ -31,7 +31,7 @@ const Header = ({ title, IconComponent, showModal, setShowModal }) => {
         className="navbar-collapse justify-content-end gap-3 align-items-center"
         id="navcol-2"
       >
-        <ul className="nav nav-tabs gap-3 border-0">
+        {/* <ul className="nav nav-tabs gap-3 border-0">
           <li className="nav-item"></li>
           <li className="nav-item">
             <a
@@ -50,7 +50,7 @@ const Header = ({ title, IconComponent, showModal, setShowModal }) => {
               </svg>
             </a>
           </li>
-        </ul>
+        </ul> */}
         <Button
           className="btn rounded-circle border-0"
           style={{ background: "#00a76f", color: "rgb(255,255,255)" }}
