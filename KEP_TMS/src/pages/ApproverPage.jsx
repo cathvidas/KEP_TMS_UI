@@ -8,6 +8,7 @@ import ForApprovaleffectiveness from "./ApproverPageSection/ForApprovalEffective
 import commonHook from "../hooks/commonHook";
 import { SessionGetEmployeeId } from "../services/sessions";
 import ForApprovalReport from "./ApproverPageSection/ForApprovalReport";
+import ForEvaluationEffectiveness from "./ApproverPageSection/ForEvaluationEffectiveness";
 
 const ApproverPage = () => {
   const { type, page } = useParams();
@@ -17,6 +18,7 @@ const ApproverPage = () => {
     <ForApprovalRequest key={0} />,
     <ForApprovaleffectiveness key={1} />,
     <ForApprovalReport key={2}/>,
+    <ForEvaluationEffectiveness key={3}/>,
   ];
   const {data} = commonHook.useAllAssignedForApproval(
     SessionGetEmployeeId()
