@@ -6,7 +6,7 @@ import {
   Card,
   CardBody,
   Form,
-  Button,
+  // Button,
 } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../img/Knowles_Green.png";
@@ -14,6 +14,7 @@ import { useState } from "react";
 import validateLogin from "../utils/LoginValidation";
 import handleUserLogin from "../services/loginServices";
 import { APP_DOMAIN } from "../api/constants";
+import { Button } from "primereact/button";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Login = () => {
   const [badge, setBadge] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
  const location = useLocation();
   // response variables
 
@@ -82,19 +84,20 @@ const Login = () => {
                         placeholder="Employee Badge"
                       />
                     </Form.Group>
-                    <Form.Group className="mb-3">
+                    <Form.Group className="mb-3 position-relative">
                       <Form.Control
                         className="p-3"
-                        type="password"
+                        type={showPass ? "text":"password"}
                         name="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
                       />
+                      <Button type="button" icon={showPass ? "pi pi-eye": "pi pi-eye-slash"} onClick={()=>setShowPass(!showPass)} className="position-absolute top-0 focus-invisible end-0 p-3 " severity="secondary" text/>
                     </Form.Group>
                     <Form.Group className="mb-3">
                       <Button
-                        className="d-block w-100 p-3"
+                        className="d-block w-100 p-3 rounded"
                         type="submit"
                         style={{
                           background: "#2eb396",

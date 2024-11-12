@@ -16,7 +16,7 @@ const CommonTable = ({
   HeaderComponent,
   hideHeader,
   hidePaginator,
-  dataKey
+  dataKey,
 }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -30,6 +30,7 @@ const CommonTable = ({
     setFilters(_filters);
     setGlobalFilterValue(value);
   };
+  
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap">
@@ -56,7 +57,7 @@ const CommonTable = ({
   return (
     <>
       <div className=" w-100 overflowX-auto" style={{ overflowX: "auto" }}>
-        {dataTable?.length > 0 ?
+        {dataTable?.length > 0 ?<>
         <DataTable
           ref={dataRef}
           className="customTable"
@@ -83,7 +84,8 @@ const CommonTable = ({
                 body={item.body ?? ""}
               ></Column>
 })}
-        </DataTable>: <>
+        </DataTable></>
+        : <>
         <div className="text-center py-5">No data available</div> 
         </>}
       </div>
@@ -98,6 +100,6 @@ CommonTable.propTypes = {
   HeaderComponent: proptype.any,
   hideHeader: proptype.bool,
   hidePaginator: proptype.bool,
-  dataKey: proptype.string
+  dataKey: proptype.string,
 };
 export default CommonTable;

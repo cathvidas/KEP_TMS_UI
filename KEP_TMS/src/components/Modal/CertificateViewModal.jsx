@@ -4,9 +4,13 @@ import { API_BASE_URL } from "../../api/constants";
 import PDFViewer from "../General/PDFViewer";
 import { useState } from "react";
 import { Button } from "primereact/button";
-const CertificateViewModal = ({ data, hideModalFunction, title, items }) => {
+import { formatDateOnly, formatDateTime, GenerateTrainingDates } from "../../utils/datetime/Formatting";
+import { SessionGetEmployeeId } from "../../services/sessions";
+import AutoCompleteField from "../forms/common/AutoCompleteField";
+const CertificateViewModal = ({ data, hideModalFunction, }) => {
   const [showPDF, setShowPDF] = useState(false);
   const [selectedItem, setSlectedItem] = useState({});
+  console.log(data)
   return (
     <>
       <Card className="my-3">
@@ -19,15 +23,27 @@ const CertificateViewModal = ({ data, hideModalFunction, title, items }) => {
           />
         </div>
         <Card.Body>
+        {data?.training?.trainingProgram?.name && <>
           <h4 className="text-center">
             {data?.training?.trainingProgram?.name}
           </h4>
+          <p className="text-center mb-2">{data?.training?.trainingCategory?.name}</p>
+          <Row>
+          <AutoCompleteField label={"Training ID"} value={data?.training?.id} />
+          <AutoCompleteField label={"Training Type"} value={data?.training?.trainingType?.name}/>   
+          <AutoCompleteField label={"Training Date/s"} value={GenerateTrainingDates(data?.training?.trainingDates)}/>
+          <AutoCompleteField label={"Total Hours"} value={data?.training?.durationInHours} />
+          <AutoCompleteField label={"Training Provider"} value={data?.training?.trainingProvider?.name} className="col-12"/>
+          {/* <AutoCompleteField label={"Training Date/s"} value={`${formatDateOnly(data?.training?.trainingStartDate)} ${formatDateOnly(data?.training?.trainingStartDate) !== formatDateOnly(data?.training?.trainingEndDate) ? ' - '+formatDateOnly(data?.training?.trainingEndDate) : ''}`}/> */}
+       
+          </Row>  </>}
           {data?.certificate?.map((item) => (
             <>
               <hr />
               <h5 className="theme-color">
-                <i className="pi pi-calendar"></i> &nbsp;
+                <i className="pi pi-info-circle"></i> &nbsp;
                 {item?.detail}</h5>
+                <small>{SessionGetEmployeeId() === item?.createBy ? "Uploaded on" : "Uploaded By: -" +  item?.createBy}  {formatDateTime(item?.createDate)}</small>
               <Row className="row-cols-md-3 justify-content-center">
                 {item?.attachments?.map((e) => (
                   <>

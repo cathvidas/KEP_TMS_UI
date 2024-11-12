@@ -10,6 +10,8 @@ import { SessionGetEmployeeId } from "../services/sessions";
 import { useEffect, useState } from "react";
 import certificateHook from "../hooks/certificateHook";
 import CertificateViewModal from "../components/Modal/CertificateViewModal";
+import StatusColor from "../components/General/StatusColor";
+import { formatDateOnly } from "../utils/datetime/Formatting";
 const CertificatesPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showCerticateDetail, setShowCerticateDetail] = useState(false);
@@ -35,7 +37,7 @@ const CertificatesPage = () => {
     <>
         <div className="px-3">
           {!showCerticateDetail && <>
-          <div className="flex justify-content-between align-items-center mt-3">
+          {/* <div className="flex justify-content-between align-items-center mt-3">
             <SectionHeading title="Recent" />
             <Button
               type="button"
@@ -59,14 +61,23 @@ const CertificatesPage = () => {
               ></Card>
             </Col>
             </Col>
-          </Row>
-          <br />
-          <SectionHeading title="Recent" />
+          </Row> */}
+        <div className="flex justify-content-between align-items-center mb-2 mt-3">
+          <SectionHeading title="Training Certificates" />
+            <Button
+              type="button"
+              icon="pi pi-plus"
+              label="Add New"
+              className="p-button-rounded p-button-success float-right py-1 rounded"
+              onClick={() => setShowModal(true)}
+            />
+          </div>  
+          
           <Row className="row-cols-1 row-cols-lg-1 g-2">
             {certicates?.data?.map((item) => (
               <>
                 <Col>
-                  <div className="flex border rounded p-2 px-3 align-items-center gap-3 bg-white" onClick={()=>{setSelectedData(item);
+                  <div className="flex border rounded p-3 cursor-pointer theme-hover-light align-items-center gap-3 bg-white" onClick={()=>{setSelectedData(item);
                 setShowCerticateDetail(true);
                 }}>
                     <span
@@ -75,14 +86,14 @@ const CertificatesPage = () => {
                     >
                       <i
                         className="pi pi-trophy text-secondary"
-                        style={{ fontSize: "1.5rem" }}
+                        style={{ fontSize: "1.6rem" }}
                       ></i>
                     </span>
                     <div className="flex-wrap flex-grow-1 d-flex flex-column gap-2">
-                      <h6 className="m-0 ">{item?.training?.trainingProgram?.name}</h6>
+                      <h5 className="m-0 ">{item?.training?.trainingProgram?.name}</h5>
                       <div className="flex align-items-center gap-2">
-                        <i className="pi pi-tag text-sm"></i>
-                        <span>{item?.trainingCategory?.name}</span>
+                        <span>{item?.training?.trainingCategory?.name}</span> &nbsp;|&nbsp; {item?.certificate?.length } items &nbsp;|&nbsp; {`${formatDateOnly(item?.training?.trainingStartDate)} 
+                        ${formatDateOnly(item?.training?.trainingStartDate) !== formatDateOnly(item?.training?.trainingEndDate) ? ' - '+formatDateOnly(item?.training?.trainingEndDate) : ''}`}
                       </div>
                     </div>
                     {/* <span className="font-bold text-900 ms-auto">${"item.price"}</span> */}
@@ -90,7 +101,8 @@ const CertificatesPage = () => {
                 </Col>
               </>
             ))}
-          </Row></>}
+          </Row>
+          </>}
           {showCerticateDetail && 
           <CertificateViewModal
           showModal={showCerticateDetail}

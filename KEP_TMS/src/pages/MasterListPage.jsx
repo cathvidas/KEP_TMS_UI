@@ -9,7 +9,9 @@ import CategoryListSection from "./MasterListSection/CategoryListSection";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import ProviderListSection from "./MasterListSection/ProviderListSection";
 import TrainingListSection from "./MasterListSection/TrainingListSection";
-import { TrainingType } from "../api/constants";
+import { TrainingType, UserTypeValue } from "../api/constants";
+import { SessionGetRole } from "../services/sessions";
+import NotFoundPage from "./NotFoundPage";
 
 const MasterListPage = () => {
   const page = useParams();
@@ -107,6 +109,7 @@ const MasterListPage = () => {
   );
   return (
     <>
+    {SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.SUPER_ADMIN ?
       <Layout
       navReference="MasterList"
         BodyComponent={Content}
@@ -115,7 +118,7 @@ const MasterListPage = () => {
           icon: <FontAwesomeIcon icon={faClipboardList} />,
         }}
       />
-    </>
+    : <NotFoundPage/>}</>
   );
 };
 export default MasterListPage;

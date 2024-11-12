@@ -285,6 +285,24 @@ const trainingRequestHook = {
     }, [datalist]);
     return { data, error, loading };
   },
+  usePagedTrainingRequest: (pageNumber, pageSize, searchValue) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequests = async () => {
+          handleResponseAsync(
+            () => trainingRequestService.getPagedTrainingRequest(pageNumber, pageSize, searchValue),
+            (e) => setData(e?.results),
+            (e) => setError(e),
+            () => setLoading(false)
+          );
+      };
+      getRequests();
+    }, [pageNumber, pageSize, searchValue]);
+    return { data, error, loading };
+  },
+   
 };
 
 export default trainingRequestHook;

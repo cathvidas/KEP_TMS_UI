@@ -16,3 +16,6 @@
     bottom: -100px;
     right: -100px;
 }
+.password-field:focus + .password-toggle-icon {
+    display: block !important;
+}

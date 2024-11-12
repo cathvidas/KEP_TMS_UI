@@ -3,10 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import proptype from "prop-types";
 import UserIcon from "./UserIcon";
 import icon2 from "/src/img/logo-nobg.png";
-import { SessionGetRole } from "../../services/sessions";
+import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import TooltipTemplate from "./TooltipTemplate";
 import { Button } from "primereact/button";
 import { confirmAction } from "../../services/sweetalert";
+import { APP_DOMAIN } from "../../api/constants";
 
 const Sidebars = ({ activeNavigation }) => {
   const navigate = useNavigate();
@@ -142,6 +143,7 @@ const Sidebars = ({ activeNavigation }) => {
               className=" link-body-emphasis d-flex mx-auto align-items-center text-decoration-none"
               aria-expanded="false"
               role="button"
+              to={APP_DOMAIN+"/Users/Detail/"+SessionGetEmployeeId()}
             >
               <UserIcon Name={fullname ?? lastname + "," + firstname} />
             </Link>

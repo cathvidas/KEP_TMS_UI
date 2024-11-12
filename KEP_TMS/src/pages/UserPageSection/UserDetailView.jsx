@@ -24,7 +24,7 @@ const DetailItem = (data) => (
     </div>
   </>
 );
-const UserDetailView = ({ id, adminList }) => {
+const UserDetailView = ({ id, adminList, isAdmin }) => {
   const { data, error, loading } = userHook.useUserById(id);
   const trainings = trainingRequestHook.useUserTrainingsSummary(id);
   const [showCertForm, setShowCertForm] = useState(false);
@@ -148,7 +148,7 @@ const UserDetailView = ({ id, adminList }) => {
             </CardBody>
           </Card>
           <br />
-          {!trainings?.loading && (
+          {!trainings?.loading && isAdmin&&  (
             <Button
               type="button"
               label="Generate Certificate"

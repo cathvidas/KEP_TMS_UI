@@ -10,12 +10,10 @@ import { actionFailed, actionSuccessful, confirmAction } from "../../../services
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import userService from "../../../services/userService";
 import { SessionGetEmployeeId } from "../../../services/sessions";
-import { useNavigate } from "react-router-dom";
 const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false, headerTitle})=>{
     const [formData, setFormData] = useState(userConstant);
     const [showPass, setShowPass] = useState(false);
     const [error, setError] = useState({});
-    const navigate= useNavigate()
     const handleOnChange = (e)=>{
         const {name, value} = e.target;
         setFormData((prev)=>({...prev, [name]: value}))
@@ -243,7 +241,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                       name="password"
                       onChange={handleOnChange}
                     />
-                    <Button text icon={!showPass ? "pi pi-eye" : "pi pi-eye-slash"} style={{width: "fit-content"}} className="p-0 position-absolute top-50 end-0 translate-middle" type="button" onClick={()=>setShowPass(!showPass)}/>
+                    <Button text icon={showPass ? "pi pi-eye" : "pi pi-eye-slash"} style={{width: "fit-content"}} className="p-0 position-absolute top-50 end-0 translate-middle" type="button" onClick={()=>setShowPass(!showPass)}/>
 
                   </div>
 

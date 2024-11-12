@@ -1,7 +1,6 @@
 import Dashboard from "./pages/Dashboard";
 import "./App.css";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { NotFoundPage } from "./pages/Error";
 import Login from "./pages/Login";
 import NewRequest from "./pages/Request";
 import RequestList from "./pages/RequestList";
@@ -13,6 +12,7 @@ import ApproverPage from "./pages/ApproverPage";
 import UserPage from "./pages/UsersPage";
 import MasterListPage from "./pages/MasterListPage";
 import TrainingDetailPage from "./pages/TrainingDetailPage";
+import NotFoundPage from "./pages/NotFoundPage";
 function App() {
   
   return (
