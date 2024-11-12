@@ -50,10 +50,10 @@ export const TrainingRequestForm = () => {
     details.current = data;
   }, []);
   const getTrainingTypeId = () => {
-    if (trainingType === "Internal") {
+    if (trainingType?.toUpperCase() === "INTERNAL") {
       return TrainingType.INTERNAL;
     }
-    if (trainingType === "External") {
+    if (trainingType?.toUpperCase() === "EXTERNAL") {
       return TrainingType.EXTERNAL;
     }
   };
@@ -204,10 +204,10 @@ export const TrainingRequestForm = () => {
       setIsUpdate(true)
     }else{
       setIsUpdate(false)
-      setFormData(TrainingRequest);
+      setFormData({...TrainingRequest, trainingType: {id: getTrainingTypeId()}});
     }
   }, [trainingType,trainingRequestData?.data, requestId]);
-
+console.log(formData)
   const StepperButton = (button) => {
     return (
       <div className="flex pt-4 justify-content-between">
@@ -311,6 +311,7 @@ export const TrainingRequestForm = () => {
               </StepperPanel>
               <StepperPanel header="Summary">
                 <TrainingSummary formData={formData} />
+                {getTrainingTypeId() === TrainingType.EXTERNAL && <>
                 <SectionHeading title="Has Training Agreement" icon={<i className="pi pi-bookmark-fill"></i>}/>
               <div className="d-flex gap-5">
                 <div className="form-check">
@@ -345,7 +346,7 @@ export const TrainingRequestForm = () => {
                     No
                   </label>
                 </div>
-              </div>
+              </div></>}
                 {<StepperButton back={true} submit={true} />}
               </StepperPanel>
             </Stepper>

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { SectionHeading } from "../General/Section";
 import Select from "react-select";
 import { mapProviderListToOptionFormat } from "../../services/DataMapping/ProviderData";
+import { TrainingType } from "../../api/constants";
 
 const TrainingCostForm = ({ formData, handleResponse, providersData, error }) => {
   const [data, setFormData] = useState(formData);
@@ -109,6 +110,7 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
             }
           />
         </Col>
+        {formData?.trainingType?.id === TrainingType.EXTERNAL && 
         <Col className="col-lg-6">
           <FormFieldItem
             label={"With early bird rate"}
@@ -189,7 +191,7 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
               />
             </Row>
           )}
-        </Col>
+        </Col>}
       </Row>
     </>
   );
