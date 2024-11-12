@@ -10,11 +10,11 @@ const fetchFromApi = async (endpoint, method = "GET", data = null,  header = nul
                 'Content-Type': 'application/json',
             },
         }
-        // console.log(config)
+        console.log(config)
         const response = await apiClient(config);
         return response.data;
     } catch(error){
-        console.error(`Error fetching data from API: ${error.message}`);
+        console.error(`Error fetching data from API: ${error}`);
         throw error;
     }
 }

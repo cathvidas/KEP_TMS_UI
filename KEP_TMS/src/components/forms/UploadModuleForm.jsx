@@ -25,15 +25,24 @@ const UploadModuleForm = ({
 }) => {
   const [files, setFiles] = useState([]);
   const [savedFiles, setSavedFiles] = useState([]);
-  const [details, setDetails] = useState({ Name: "", Description: "", AvailableAt: null,  UnavailableAt: null});
+  const [details, setDetails] = useState({
+    Name: "",
+    Description: "",
+    AvailableAt: null,
+    UnavailableAt: null,
+  });
   const [errors, setErrors] = useState({});
   const [isUpdate, setIsUpdate] = useState(false);
   const [isCustom, setIsCustom] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-  const availabilityOptions = [{label: "Default", value: ModuleAvailability.IMMEDIATELY},
-    {label: "Based On Training Dates", value: ModuleAvailability.TRAINING_DATES_BASED},
-    {label: "Custom Duration", value: ModuleAvailability.CUSTOM_DURATION},
-  ]
+  const availabilityOptions = [
+    { label: "Default", value: ModuleAvailability.IMMEDIATELY },
+    {
+      label: "Based On Training Dates",
+      value: ModuleAvailability.TRAINING_DATES_BASED,
+    },
+    { label: "Custom Duration", value: ModuleAvailability.CUSTOM_DURATION },
+  ];
   useEffect(() => {
     if (defaultValue) {
       setDetails({
@@ -104,7 +113,12 @@ const UploadModuleForm = ({
     setFiles(updatedFiles);
   };
   const handleSubmit = () => {
-    const validate = validateModuleForm(details, selectedOption?.value, files, false);
+    const validate = validateModuleForm(
+      details,
+      selectedOption?.value,
+      files,
+      false
+    );
     if (validate.isValid) {
       confirmAction({
         title: "Upload Module",
@@ -112,7 +126,7 @@ const UploadModuleForm = ({
         onConfirm: () => {
           const data = new FormData();
           for (let i = 0; i < files.length; i++) {
-            data.append("Files", files[i]); 
+            data.append("Files", files[i]);
           }
           data.append("RequestId", requestData.id);
           data.append("Name", details.Name);
@@ -127,7 +141,6 @@ const UploadModuleForm = ({
               handleRefresh();
             },
             (e) => actionSuccessful("Error", e.message)
-            // ()=> handleRefresh(),
           );
         },
       });
@@ -137,29 +150,34 @@ const UploadModuleForm = ({
   };
   const handleUpdateModule = () => {
     const validate = validateModuleForm(details, selectedOption?.value, files);
-    if(validate.isValid){
-    const newData = {
-      id: defaultValue.id,
-      name: details.Name,
-      description: details.Description,
-      availableAt: details?.AvailableAt,
-      unavailableAt: details?.UnavailableAt,
-      updatedBy: SessionGetEmployeeId(),
-    };
-    confirmAction({
-      title: "Update Module",
-      text: "Are you sure you want to update this module?",
-      onConfirm: () =>
-        handleResponseAsync(
-          () => moduleService.updateModule(newData),
-          () => {files?.length > 0 ? saveAttachments() : 
-            actionSuccessful("Success!", "Successfully updated the module");
-            handleRefresh();
-          }
-        ),
-    });}
-    else{
-      setErrors(validate?.formErrors)
+    if (validate.isValid) {
+      const newData = {
+        id: defaultValue.id,
+        name: details.Name,
+        description: details.Description,
+        availableAt: details?.AvailableAt,
+        unavailableAt: details?.UnavailableAt,
+        updatedBy: SessionGetEmployeeId(),
+      };
+      confirmAction({
+        title: "Update Module",
+        text: "Are you sure you want to update this module?",
+        onConfirm: () =>
+          handleResponseAsync(
+            () => moduleService.updateModule(newData),
+            () => {
+              files?.length > 0
+                ? saveAttachments()
+                : actionSuccessful(
+                    "Success!",
+                    "Successfully updated the module"
+                  );
+              handleRefresh();
+            }
+          ),
+      });
+    } else {
+      setErrors(validate?.formErrors);
     }
   };
   const saveAttachments = () => {
@@ -172,32 +190,44 @@ const UploadModuleForm = ({
     }
     handleResponseAsync(
       () => attachmentService.addAttachments(formData),
-      ()=>{   actionSuccessful("Success!", "Successfully updated the module");
-        handleRefresh();}
-    )
+      () => {
+        actionSuccessful("Success!", "Successfully updated the module");
+        handleRefresh();
+      }
+    );
   };
-  const getTrainingDates =()=> {
-    const AvailableAt = combineDateTime(requestData.trainingDates[0]?.date, requestData.trainingDates[0]?.startTime, true);
-    const UnavailableAt = combineDateTime(requestData.trainingDates[requestData.trainingDates?.length - 1]?.date, requestData.trainingDates[0]?.endTime, true);
-    
-    console.log(requestData.trainingDates, AvailableAt)
-    return {AvailableAt, UnavailableAt}
-  }
+  const getTrainingDates = () => {
+    const AvailableAt = combineDateTime(
+      requestData.trainingDates[0]?.date,
+      requestData.trainingDates[0]?.startTime,
+      true
+    );
+    const UnavailableAt = combineDateTime(
+      requestData.trainingDates[requestData.trainingDates?.length - 1]?.date,
+      requestData.trainingDates[0]?.endTime,
+      true
+    );
+    return { AvailableAt, UnavailableAt };
+  };
   const setModuleAvailability = (e) => {
-    const value= e.value;
-    if(value === ModuleAvailability.IMMEDIATELY){
-      setDetails((prev)=>({...prev, AvailableAt: null, UnavailableAt: null}))
+    const value = e.value;
+    if (value === ModuleAvailability.IMMEDIATELY) {
+      setDetails((prev) => ({
+        ...prev,
+        AvailableAt: null,
+        UnavailableAt: null,
+      }));
     }
-    if(value === ModuleAvailability.TRAINING_DATES_BASED){
-      setDetails((prev)=>({...prev, ...getTrainingDates()}))
+    if (value === ModuleAvailability.TRAINING_DATES_BASED) {
+      setDetails((prev) => ({ ...prev, ...getTrainingDates() }));
     }
-    if(value === ModuleAvailability.CUSTOM_DURATION){
-      setIsCustom(true)
-    }else{
-      setIsCustom(false)
+    if (value === ModuleAvailability.CUSTOM_DURATION) {
+      setIsCustom(true);
+    } else {
+      setIsCustom(false);
     }
     setSelectedOption(e);
-  }
+  };
   return (
     <>
       <Card>
@@ -209,145 +239,174 @@ const UploadModuleForm = ({
           <Form>
             {errors?.common && errors.common}
             <Row>
-            <FormFieldItem
-              label={"Title"}
-              required
-              error={errors.Name}
-              FieldComponent={
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Title"
-                  value={details.Name}
-                  onChange={(e) =>
-                    setDetails({ ...details, Name: e.target.value })
-                  }
-                />
-              }
-            />
-            <FormFieldItem
-              label={"Content"}
-              error={errors.Description}
-              FieldComponent={
+              <FormFieldItem
+                label={"Title"}
+                required
+                error={errors.Name}
+                FieldComponent={
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Title"
+                    value={details.Name}
+                    onChange={(e) =>
+                      setDetails({ ...details, Name: e.target.value })
+                    }
+                  />
+                }
+              />
+              <FormFieldItem
+                label={"Content"}
+                error={errors.Description}
+                FieldComponent={
+                  <>
+                    <TextEditor
+                      defaultValue={details.Description}
+                      showToolbar
+                      onChange={(e) =>
+                        setDetails({ ...details, Description: e })
+                      }
+                    />
+                  </>
+                }
+              />
+              <FormFieldItem
+                label={"Set Availability"}
+                error={errors.Description}
+                FieldComponent={
+                  <>
+                    <Select
+                      options={availabilityOptions}
+                      value={selectedOption ?? availabilityOptions[0]}
+                      onChange={setModuleAvailability}
+                    />
+                  </>
+                }
+              />
+              {isCustom && (
                 <>
-                  <TextEditor 
-                  defaultValue={details.Description}
-                  showToolbar
-                  onChange={(e)=> setDetails({ ...details, Description: e })}/>
+                  <FormFieldItem
+                    label={"Start Date"}
+                    error={errors.AvailableAt}
+                    col={"col-sm-4"}
+                    FieldComponent={
+                      <>
+                        {" "}
+                        <input
+                          className="form-control"
+                          value={details.AvailableAt}
+                          onChange={(e) =>
+                            setDetails({
+                              ...details,
+                              AvailableAt: e.target.value,
+                            })
+                          }
+                          type="datetime-local"
+                        />
+                      </>
+                    }
+                  />
+                  <FormFieldItem
+                    label={"End Date"}
+                    error={errors.UnavailableAt}
+                    col={"col-sm-4"}
+                    FieldComponent={
+                      <>
+                        {" "}
+                        <input
+                          className="form-control"
+                          value={details.UnavailableAt}
+                          onChange={(e) =>
+                            setDetails({
+                              ...details,
+                              UnavailableAt: e.target.value,
+                            })
+                          }
+                          type="datetime-local"
+                        />
+                      </>
+                    }
+                  />
+                  <Col className="col-12">
+                    <hr className="mt-0" />
+                  </Col>
                 </>
-              }
-            />
-            <FormFieldItem
-              label={"Set Availability"}
-              error={errors.Description}
-              FieldComponent={
-                <>
-                <Select
-                options={availabilityOptions}
-                value={selectedOption ?? availabilityOptions[0]}
-                onChange={setModuleAvailability}
-                />
-                </>
-              }
-            />
-            {isCustom && <>
-            <FormFieldItem
-              label={"Start Date"}
-              error={errors.AvailableAt}
-              col={"col-sm-4"}
-              FieldComponent={
-                <> <input className="form-control" 
-                value={details.AvailableAt}
-                onChange={(e)=>setDetails({...details, AvailableAt:e.target.value})}
-                type="datetime-local" />
-                </>
-              }
-            />
-            <FormFieldItem
-              label={"End Date"}
-              error={errors.UnavailableAt}
-              col={"col-sm-4"}
-              FieldComponent={
-                <> <input className="form-control"
-                value={details.UnavailableAt}
-                onChange={(e)=>setDetails({...details, UnavailableAt:e.target.value})}
-                 type="datetime-local" />
-                </>
-              }
-            />
-            <Col className="col-12">
-            <hr className="mt-0" /></Col></>
-          }
-            {isUpdate && savedFiles?.length > 0 && (
+              )}
+              {isUpdate && savedFiles?.length > 0 && (
                 <FormFieldItem
                   label={"Old Attachment"}
                   FieldComponent={
-                    <>    {files?.length > 0 && (
-                      <small className="text-muted ms-2">
-                        &#x28;{savedFiles?.length} {savedFiles?.length > 1 ? "files" : "file"}&#x29;
-                      </small>
-                    )}
-                    <div className="d-flex flex-wrap mb-2 gap-2">
-                      {savedFiles?.map((file, index) => (
-                        <div
-                          key={`savedfile${index}`}
-                          className="border bg-light rounded ps-2 d-flex align-items-center"
-                          style={{ width: "fit-content" }}
-                        >
-                          <span>{file.fileName}</span>
-                          <Button
-                            type="button"
-                            icon="pi pi-times"
-                            text
-                            onClick={() => handleRemoveFile(file.id)}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    </>
-                  }
-                />
-            )}
-            <FormFieldItem
-              label={isUpdate ? "New Attachment" : "Attachment"}
-              error={errors.file}
-              FieldComponent={
-                <>
-                  {files && (
                     <>
+                      {" "}
                       {files?.length > 0 && (
                         <small className="text-muted ms-2">
-                          &#x28;{files?.length} {files?.length > 1 ? "files" : "file"}&#x29;
+                          &#x28;{savedFiles?.length}{" "}
+                          {savedFiles?.length > 1 ? "files" : "file"}&#x29;
                         </small>
                       )}
                       <div className="d-flex flex-wrap mb-2 gap-2">
-                        {files?.map((file, index) => (
+                        {savedFiles?.map((file, index) => (
                           <div
-                            key={`file${index}`}
+                            key={`savedfile${index}`}
                             className="border bg-light rounded ps-2 d-flex align-items-center"
                             style={{ width: "fit-content" }}
                           >
-                            <span>{file.name}</span>
+                            <span>{file.fileName}</span>
                             <Button
                               type="button"
                               icon="pi pi-times"
                               text
-                              onClick={() => handleRemoveSpecificFile(index)}
+                              onClick={() => handleRemoveFile(file.id)}
                             />
                           </div>
                         ))}
                       </div>
                     </>
-                  )}
-                  <input
-                    type="file"
-                    className="form-control"
-                    multiple
-                    onChange={handleFileUpload}
-                  />
-                </>
-              }
-            /></Row>
+                  }
+                />
+              )}
+              <FormFieldItem
+                label={isUpdate ? "New Attachment" : "Attachment"}
+                error={errors.file}
+                FieldComponent={
+                  <>
+                    {files && (
+                      <>
+                        {files?.length > 0 && (
+                          <small className="text-muted ms-2">
+                            &#x28;{files?.length}{" "}
+                            {files?.length > 1 ? "files" : "file"}&#x29;
+                          </small>
+                        )}
+                        <div className="d-flex flex-wrap mb-2 gap-2">
+                          {files?.map((file, index) => (
+                            <div
+                              key={`file${index}`}
+                              className="border bg-light rounded ps-2 d-flex align-items-center"
+                              style={{ width: "fit-content" }}
+                            >
+                              <span>{file.name}</span>
+                              <Button
+                                type="button"
+                                icon="pi pi-times"
+                                text
+                                onClick={() => handleRemoveSpecificFile(index)}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      className="form-control"
+                      multiple
+                      onChange={handleFileUpload}
+                    />
+                  </>
+                }
+              />
+            </Row>
             <div className="text-end">
               <Button
                 variant="primary"
