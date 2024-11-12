@@ -2,16 +2,17 @@ import { Row, Col, Form, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import proptype from "prop-types";
 import { Button } from "primereact/button";
-import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
+import { actionFailed, actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import { SessionGetEmployeeId } from "../../../services/sessions";
 import Select from "react-select";
 import { statusCode } from "../../../api/constants";
 import programService from "../../../services/programService";
-const ProgramForm = ({ handleShow, handleClose, selectedData }) => {
+import handleResponseAsync from "../../../services/handleResponseAsync";
+const ProgramForm = ({ handleShow, handleClose, selectedData, onReload }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [validated, setValidated] = useState(false);
-  const [options, setOptions] = useState([
+  const [options] = useState([
     { label: "Active", value: statusCode.ACTIVE },
     { label: "Inactive", value: statusCode.INACTIVE },
   ]);
@@ -42,44 +43,37 @@ const ProgramForm = ({ handleShow, handleClose, selectedData }) => {
       );
       const updatedData = { ...selectedData, statusId: status?.value };
       setFormData(updatedData);
-    }else{
-      setFormData(null)
+    } else {
+      setFormData(null);
     }
   }, [selectedData]);
   const submitForm = async () => {
-    try {
-      const data =
+    const data =
+      selectedData != null
+        ? {
+            id: formData.id,
+            name: formData.name,
+            description: formData.description,
+            statusId: formData.statusId,
+            updatedBy: SessionGetEmployeeId(),
+          }
+        : {
+            name: formData.name,
+            description: formData.description,
+            createdBy: SessionGetEmployeeId(),
+            statusId: statusCode.ACTIVE,
+          };
+    handleResponseAsync(
+      () =>
         selectedData != null
-          ? {
-              id: formData.id,
-              name: formData.name,
-              description: formData.description,
-              statusId: formData.statusId,
-              updatedBy: SessionGetEmployeeId(),
-            }
-          : {
-              name: formData.name,
-              description: formData.description,
-              createdBy: SessionGetEmployeeId(),
-              statusId: statusCode.ACTIVE,
-            };
-      const res =
-        selectedData != null
-          ? await programService.updateTrainingProgram(data)
-          : await programService.createProgram(data);
-      if (res.isSuccess) {
-        handleClose();
-        actionSuccessful(res.message);
-
-        setInterval(() => {
-          window.location.reload();
-        }, 2500);
-      } else {
-        setErrors({ value: res.message });
-      }
-    } catch (error) {
-      setErrors({ value: error.message });
-    }
+          ? programService.updateProgram(data)
+          : programService.createProgram(data),
+      () => {
+        actionSuccessful("Success!", `Successfully ${selectedData != null ? "updated" : "added"} training program.`);
+          onReload();
+      },
+      (e) => actionFailed("Failed!", e.message)
+    );
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -124,7 +118,7 @@ const ProgramForm = ({ handleShow, handleClose, selectedData }) => {
                   <Form.Control
                     type="text"
                     name="name"
-                    value={formData?.name??""}
+                    value={formData?.name ?? ""}
                     placeholder="Program Name"
                     onChange={handleOnChange}
                     required
@@ -140,7 +134,7 @@ const ProgramForm = ({ handleShow, handleClose, selectedData }) => {
 
                   <textarea
                     className="form-control"
-                    value={formData?.description??""}
+                    value={formData?.description ?? ""}
                     placeholder="Program Description"
                     name="description"
                     rows="5"
@@ -176,7 +170,7 @@ const ProgramForm = ({ handleShow, handleClose, selectedData }) => {
           </Modal.Body>
           <Modal.Footer className="border-0">
             <Button
-            type="button"
+              type="button"
               label="No"
               icon="pi pi-times"
               onClick={handleClose}
@@ -198,5 +192,6 @@ ProgramForm.propTypes = {
   handleShow: proptype.bool.isRequired,
   handleClose: proptype.func,
   selectedData: proptype.object,
+  onReload: proptype.func,
 };
 export default ProgramForm;

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import handleResponseAsync from "../services/handleResponseAsync";
 import programService from "../services/programService";
+import { statusCode } from "../api/constants";
+import getStatusById from "../utils/status/getStatusById";
 
 const programHook = {
-  useAllPrograms: () => {
+  useAllPrograms: (active, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -11,13 +13,13 @@ const programHook = {
       const getPrograms = async () => {
         handleResponseAsync(
          () => programService.getAllPrograms(),
-          (e) => setData(e),
+          (e) => setData(!active ? e : e.filter((item) => item.statusName === getStatusById(statusCode.ACTIVE))),
           (e) => setError(e),
           ()=>setLoading(false)
         );
       };
       getPrograms();
-    }, []);
+    }, [active, trigger]);
     return { data, error, loading };
   },
   useProgramById: (id) => {

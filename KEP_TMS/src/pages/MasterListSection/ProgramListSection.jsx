@@ -11,7 +11,8 @@ import { formatDateOnly } from "../../utils/datetime/Formatting";
 
 const ProgramListSection = () => {
   const [visible, setVisible] = useState({detail: false, form: false});
-  const { data, error, loading } = programHook.useAllPrograms();
+  const [trigger, setTrigger] = useState(0)
+  const { data, error, loading } = programHook.useAllPrograms(false,trigger);
   const [selectedData, setSelectedData] = useState({});
 
   const actionTemplate = (rowData)=><>
@@ -106,6 +107,10 @@ const ProgramListSection = () => {
             handleShow={visible.form}
             handleClose={() => setVisible({ ...visible, form: false })}
             selectedData={selectedData}
+            onReload={()=>{
+              setTrigger((prev)=>prev+1)
+              setVisible({...visible, form: false })
+            }}
           />
           <Modal
             show={visible.detail}

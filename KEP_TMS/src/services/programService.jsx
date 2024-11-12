@@ -1,4 +1,4 @@
-import { createProgramApi, deleteProgramApi, getAllProgramsApi, getProgramApi } from "../api/programApi";
+import { createProgramApi, deleteProgramApi, getAllProgramsApi, getProgramApi, updateProgramApi } from "../api/programApi";
 
 const programService ={
     getAllPrograms: async () => {
@@ -11,6 +11,13 @@ const programService ={
     },
     createProgram: async (program) => {
         const response = await createProgramApi(program);
+        if(response.status !== 1){
+          throw new Error(response.message);
+        }
+        return response?.data;
+    },
+    updateProgram: async (program) => {
+        const response = await updateProgramApi(program);
         if(response.status !== 1){
           throw new Error(response.message);
         }

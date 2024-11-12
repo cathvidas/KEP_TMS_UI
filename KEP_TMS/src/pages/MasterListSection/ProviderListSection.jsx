@@ -13,7 +13,7 @@ import { checkIfNullOrEmpty } from "../../utils/stringUtil";
 const ProviderListSection = () => {
   const [trigger, setTrigger] = useState(0);
   const [visible, setVisible] = useState({ detail: false, form: false });
-  const { data, loading } = providerHook.useAllProviders(trigger);
+  const { data, loading } = providerHook.useAllProviders(false, trigger);
   const [selectedData, setSelectedData] = useState({});
   const actionTemplate = (rowData) => (
     <>

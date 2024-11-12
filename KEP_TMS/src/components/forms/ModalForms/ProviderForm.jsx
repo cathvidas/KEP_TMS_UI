@@ -20,7 +20,7 @@ import { checkIfNullOrEmpty } from "../../../utils/stringUtil";
 const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
   const [formData, setFormData] = useState(providerConstant);
   const [errors, setErrors] = useState({});
-  const categories = categoryHook.useAllCategories();
+  const categories = categoryHook.useAllCategories(true);
   const [options, setOptions] = useState({
     status: [
       { label: "Active", value: statusCode.ACTIVE },

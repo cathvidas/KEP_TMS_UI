@@ -37,9 +37,9 @@ import { SectionHeading } from "../General/Section";
 export const TrainingRequestForm = () => {
   const trainingType = useParams().type;
   const requestId = useParams().id;
-  const programs = programHook.useAllPrograms();
-  const categories = categoryHook.useAllCategories();
-  const providers = providerHook.useAllProviders();
+  const programs = programHook.useAllPrograms(true);
+  const categories = categoryHook.useAllCategories(true);
+  const providers = providerHook.useAllProviders(true);
   const departments = commonHook.useAllDepartments();
   const details = useRef({});
   const [isUpdate, setIsUpdate] = useState(false);

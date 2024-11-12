@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import handleResponseAsync from "../services/handleResponseAsync";
 import providerService from "../services/providerService";
+import getStatusById from "../utils/status/getStatusById";
+import { statusCode } from "../api/constants";
 
 const providerHook = {
-  useAllProviders: (trigger) => {
+  useAllProviders: (active, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -11,13 +13,13 @@ const providerHook = {
       const getPrograms = async () => {
         handleResponseAsync(
          () => providerService.getAllProviders(),
-          (e) => setData(e),
+          (e) => setData(!active ? e : e.filter((p) => p.statusName === getStatusById(statusCode.ACTIVE))),
           (e) => setError(e),
           ()=>setLoading(false)
         );
       };
       getPrograms();
-    }, [trigger]);
+    }, [active, trigger]);
     return { data, error, loading };
   },
   useProviderById: (id) => {

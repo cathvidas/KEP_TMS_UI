@@ -12,7 +12,7 @@ import { formatDateOnly } from "../../utils/datetime/Formatting";
 const CategoryListSection = () => {
   const [visible, setVisible] = useState({ detail: false, form: false });
   const [trigger, setTrigger] = useState(0)
-  const { data, loading } = categoryHook.useAllCategories(trigger);
+  const { data, loading } = categoryHook.useAllCategories(false, trigger);
   const [selectedData, setSelectedData] = useState({});
   const actionTemplate = (rowData) => (
     <>

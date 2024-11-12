@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import handleResponseAsync from "../services/handleResponseAsync";
 import categoryService from "../services/categoryService";
+import getStatusById from "../utils/status/getStatusById";
+import { statusCode } from "../api/constants";
 
 const categoryHook = {
-  useAllCategories: (trigger) => {
+  useAllCategories: (active, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -11,13 +13,13 @@ const categoryHook = {
       const getPrograms = async () => {
         handleResponseAsync(
          () => categoryService.getAllCategories(),
-          (e) => setData(e),
+          (e) => setData(!active ? e : e?.filter((item) => item.status === getStatusById(statusCode.ACTIVE))),
           (e) => setError(e),
           ()=>setLoading(false)
         );
       };
       getPrograms();
-    }, [trigger]);
+    }, [active, trigger]);
     return { data, error, loading };
   },
   useCategoryById: (id) => {
