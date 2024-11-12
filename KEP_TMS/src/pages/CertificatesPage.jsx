@@ -8,9 +8,8 @@ import CertificateForm from "../components/forms/ModalForms/CertificateForm";
 import trainingRequestHook from "../hooks/trainingRequestHook";
 import { SessionGetEmployeeId } from "../services/sessions";
 import { useEffect, useState } from "react";
-import attachmentHook from "../hooks/attachmentHook";
-import CertificateViewModal from "../components/Modal/CertificateViewModal";
 import certificateHook from "../hooks/certificateHook";
+import CertificateViewModal from "../components/Modal/CertificateViewModal";
 const CertificatesPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showCerticateDetail, setShowCerticateDetail] = useState(false);
@@ -35,6 +34,7 @@ const CertificatesPage = () => {
   const contentBody = () => (
     <>
         <div className="px-3">
+          {!showCerticateDetail && <>
           <div className="flex justify-content-between align-items-center mt-3">
             <SectionHeading title="Recent" />
             <Button
@@ -63,11 +63,10 @@ const CertificatesPage = () => {
           <br />
           <SectionHeading title="Recent" />
           <Row className="row-cols-1 row-cols-lg-1 g-2">
-            {certicates?.data?.newTrainings?.map((item) => (
+            {certicates?.data?.map((item) => (
               <>
-              {item?.certificate?.length > 0 && 
                 <Col>
-                  <div className="flex border rounded p-2 px-3 align-items-center gap-3 bg-white" onClick={()=>{setSelectedData({...item, title: item?.trainingProgram?.name});
+                  <div className="flex border rounded p-2 px-3 align-items-center gap-3 bg-white" onClick={()=>{setSelectedData(item);
                 setShowCerticateDetail(true);
                 }}>
                     <span
@@ -80,7 +79,7 @@ const CertificatesPage = () => {
                       ></i>
                     </span>
                     <div className="flex-wrap flex-grow-1 d-flex flex-column gap-2">
-                      <h6 className="m-0 ">{item?.trainingProgram?.name}</h6>
+                      <h6 className="m-0 ">{item?.training?.trainingProgram?.name}</h6>
                       <div className="flex align-items-center gap-2">
                         <i className="pi pi-tag text-sm"></i>
                         <span>{item?.trainingCategory?.name}</span>
@@ -88,16 +87,18 @@ const CertificatesPage = () => {
                     </div>
                     {/* <span className="font-bold text-900 ms-auto">${"item.price"}</span> */}
                   </div>
-                </Col>}
+                </Col>
               </>
             ))}
-          </Row>
+          </Row></>}
+          {showCerticateDetail && 
           <CertificateViewModal
           showModal={showCerticateDetail}
           hideModalFunction={() => setShowCerticateDetail(false)}
           title={selectedData?.title}
           items={selectedData?.certificate}
-          />
+          data={selectedData}
+          />}
           <CertificateForm
             showModal={showModal}
             hideModal={() => setShowModal(false)}

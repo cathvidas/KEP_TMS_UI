@@ -10,13 +10,12 @@ const certificateHook = {
     useEffect(() => {
       const getRequestData = async () => {
         try {
-          const newTrainingsCert = [];
+          let newTrainingsCert = [];
           const certificates = await certificateService.getCertificateByUserId(
             id
           );
-          console.log(certificates)
           certificates?.forEach(async (item) => {
-            let detail = { certificate: item };
+            let detail = { certificate: [item] };
             const trainingDetail = trainingList.find(
               (training) => training.id === item.requestId
             );
@@ -32,7 +31,14 @@ const certificateHook = {
                 detail.training = null;
               }
             }
-            newTrainingsCert.push(detail);
+            const exist = newTrainingsCert.find(
+              (cert) => cert?.training?.id === detail?.training?.id
+            );
+            if (exist) {
+              exist.certificate.push(item);
+            } else {
+              newTrainingsCert.push(detail);
+            }
           });
           setData(newTrainingsCert);
         } catch (e) {

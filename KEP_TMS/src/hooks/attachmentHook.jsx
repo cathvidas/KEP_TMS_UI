@@ -37,5 +37,13 @@ const attachmentHook = {
     }, [id,type, trigger]);
     return { data, error, loading };
   },
+  useAllTraineeCertificate: (id, trigger) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      
+    })
+  }
 };
 export default attachmentHook;

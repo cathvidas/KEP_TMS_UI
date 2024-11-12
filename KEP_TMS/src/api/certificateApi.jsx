@@ -20,7 +20,7 @@ export const deleteCertificateApi = async (id) => {
 
 export const createCertificateApi = async (data) => {
   return await fetchFromApi(
-    `/Certificate/CreateCertificate}`,
+    `/Certificate/CreateCertificate`,
     "POST", data
     , {'Content-Type': 'multipart/form-data'}
   );
