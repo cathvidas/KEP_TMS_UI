@@ -1,25 +1,16 @@
 import { statusCode } from "../../api/constants";
-import {
-  CompareDateWithToday,
-  CompareTimeWithToday,
-} from "../../utils/datetime/dateComparison";
+import trainingDetailsService from "../common/trainingDetailsService";
 
 const mapUserTrainings = (data, id) => {
   const entity = {
     attended: [],
     facilitated: [],
     requested: [],
-    ongoing: []
+    ongoing: [],
   };
   const filterData = data?.filter(
     (item) =>
-      (CompareDateWithToday(item?.trainingEndDate)?.isPast ||
-        (CompareDateWithToday(item?.trainingEndDate)?.isToday &&
-        item?.trainingDates?.lenght > 0
-          ? CompareTimeWithToday(
-              item?.trainingDates[item?.trainingDates?.lenght - 1]?.endTime
-            )?.isPast
-          : "")) &&
+      trainingDetailsService.checkIfTrainingEndsAlready(item) &&
       (item?.status?.id === statusCode.CLOSED ||
         item?.status?.id === statusCode.PUBLISHED)
   );

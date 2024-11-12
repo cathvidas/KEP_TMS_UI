@@ -10,17 +10,20 @@ import { SessionGetEmployeeId } from "../services/sessions";
 import { useEffect, useState } from "react";
 import attachmentHook from "../hooks/attachmentHook";
 import CertificateViewModal from "../components/Modal/CertificateViewModal";
+import certificateHook from "../hooks/certificateHook";
 const CertificatesPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [showCerticateDetail, setShowCerticateDetail] = useState(false);
   const [trainingsOption, setTrainingsOption] = useState([]);
   const [selectedData, setSelectedData] = useState({});
+  const [trigger, setTrigger] = useState({});
   const { data, loading } = trainingRequestHook.useUserTrainingsSummary(
     SessionGetEmployeeId()
   );
   // const certicates = []
-  const certicates = attachmentHook.useTraineeCertificates(1
+  const certicates = certificateHook.useAllTraineeCertificates(SessionGetEmployeeId(), data?.attended, trigger
   );
+  console.log(certicates)
   useEffect(() => {
     const mappedData = data?.attended?.map(({ id, trainingProgram }) => ({
       value: id,
@@ -99,7 +102,9 @@ const CertificatesPage = () => {
             showModal={showModal}
             hideModal={() => setShowModal(false)}
             trainingOptions={trainingsOption}
-            onFinish={() => setShowModal(false)}
+            onFinish={() => {setShowModal(false);
+              setTrigger(prev=>prev+1)
+            }}
           />
         </div>
     </>

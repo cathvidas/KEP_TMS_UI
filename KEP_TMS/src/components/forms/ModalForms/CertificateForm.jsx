@@ -9,6 +9,7 @@ import handleResponseAsync from "../../../services/handleResponseAsync";
 import attachmentService from "../../../services/attachmentService";
 import { attachmentType } from "../../../api/constants";
 import { SessionGetEmployeeId } from "../../../services/sessions";
+import certificateService from "../../../services/certificateService";
 const CertificateForm = ({showModal, hideModal, onFinish, trainingOptions}) => {
     const [oldTraining, setOldTraining] = useState(false);
     const [files, setFiles] = useState([])
@@ -34,8 +35,8 @@ const CertificateForm = ({showModal, hideModal, onFinish, trainingOptions}) => {
       const handleSubmitForm = () => {
           const newErrors = {};
           let isValid = true;
-          if (!oldTraining && !formData.trainingName) {
-            newErrors.trainingName = "Training Name is required";
+          if (!oldTraining && (formData.training?.value === 0 || !formData.training)) {
+            newErrors.training = "Training Name is required";
             isValid = false;
           }
           if (oldTraining && !formData.certificateDetail) {
@@ -51,25 +52,25 @@ const CertificateForm = ({showModal, hideModal, onFinish, trainingOptions}) => {
             const newData = new FormData();
             if (!oldTraining) {
               newData.append(
-                "ReferenceId",
-                oldTraining ? SessionGetEmployeeId() : formData?.trainingName
+                "RequestId", formData?.training?.value
               );
-            }else {
-              newData.append("EmployeeBadge", SessionGetEmployeeId());
             }
-            newData.append("AttachmentType", attachmentType.CERTIFICATE);
+            
+            newData.append("EmployeeBadge", SessionGetEmployeeId());
+            newData.append("CreatedBy", SessionGetEmployeeId());
             newData.append("Detail", formData.certificateDetail);
             files.forEach((file) => {
               newData.append("files", file);
             });
             var object = {};
             newData.forEach((value, key) => object[key] = value);
+            console.log(object)
             confirmAction({
                 showLoaderOnConfirm: true,
                 text: "Are you sure you want to upload this certificate?",
                 onConfirm: () => {
                     handleResponseAsync(
-                        ()=>attachmentService.addAttachments(newData),
+                        ()=>certificateService.createCertificate(newData),
                         (e)=>{actionSuccessful("Success", e?.message);
                             onFinish();
                         }
@@ -79,7 +80,8 @@ const CertificateForm = ({showModal, hideModal, onFinish, trainingOptions}) => {
           }
 
       }
-  return (
+console.log(formData)
+      return (
     <>
       <Modal show={showModal} onHide={hideModal}>
         <Modal.Header closeButton>
@@ -90,12 +92,12 @@ const CertificateForm = ({showModal, hideModal, onFinish, trainingOptions}) => {
             {!oldTraining &&
             <FormFieldItem
               label={"Training Name"}
-              error={errors.trainingName}
+              error={errors.training}
               FieldComponent={
                 <Select
                 options={trainingOptions}
-                value={trainingOptions?.find((option) => option.value === formData?.trainingName)}
-                onChange={(e) => setFormData({...formData, trainingName: e.value})}
+                value={formData?.training}
+                onChange={(e) => setFormData({...formData, training: e})}
                 />
               }
             />}
