@@ -14,6 +14,7 @@ import ExportBtn from "../General/ExportBtn";
 import { Dropdown } from "react-bootstrap";
 import { statusCode } from "../../api/constants";
 import countData from "../../utils/countData";
+import { Paginator } from "primereact/paginator";
 import {
   formatCurrency,
   formatDateOnly,
@@ -30,11 +31,13 @@ const TrainingRequestTableList = ({
   isRequestor,
   isTrainee,
   isFacilitator,
+  enablePagination
 }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
 
+  const [paginatorConfig, setPaginatorConfig] = useState({first: 0, rows: 10, page: 1});
   const [globalFilterValue, setGlobalFilterValue] = useState("");
 
   const onGlobalFilterChange = (e) => {
@@ -229,7 +232,7 @@ const TrainingRequestTableList = ({
           stripedRows
           size="small"
           tableStyle={{ minWidth: "50rem" }}
-          paginator
+          paginator={enablePagination}
           rows={10}
           rowsPerPageOptions={[5, 10, 25, 50]}
           dataKey="id"
@@ -307,6 +310,10 @@ const TrainingRequestTableList = ({
             ></Column> */}
           <Column field="id" header="Action" body={actionTemplate}></Column>
         </DataTable>
+          {enablePagination &&
+          <Paginator first={paginatorConfig?.first ?? 1} 
+          pageLinkSize={5} rows={10} totalRecords={data?.length} rowsPerPageOptions={[10, 20, 30, 50, 100]} onPageChange={(e)=>setPaginatorConfig((prev)=>({...prev, first: e.first, rows: e.rows}))} />
+          }
       </div>
     </>
   );
@@ -321,5 +328,6 @@ TrainingRequestTableList.propTypes = {
   isRequestor: proptype.bool,
   isFacilitator: proptype.bool,
   isTrainee: proptype.bool,
+  enablePagination: proptype.bool,
 };
 export default TrainingRequestTableList;

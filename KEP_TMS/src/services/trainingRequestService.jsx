@@ -1,5 +1,6 @@
 import { approveTrainingFormApi, disapproveActivityApi } from "../api/commonApi";
 import { statusCode } from "../api/constants";
+import { getPagedEffectivenessApi } from "../api/effectivenessApi";
 import {createTrainingRequestApi, getAllTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestByTraineeIdApi, getTrainingRequestsByRequestorApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
 
 const trainingRequestService = {
@@ -41,6 +42,10 @@ const trainingRequestService = {
   getTrainingRequestByTraineeId: async (id) => {
     const response = id && await getTrainingRequestByTraineeIdApi(id);
     return response?.status === 1 ? response?.data : [];
+  },
+  getPagedTrainingRequest: async (pageNumber, pageSize, searchValue) => {
+    const response =  await getPagedEffectivenessApi(pageNumber, pageSize, searchValue);
+    return response;
   },
   getTrainingRequestByParticipant: async (id, role) => {
     const response = id && await getAllTrainingRequestsApi(id);
