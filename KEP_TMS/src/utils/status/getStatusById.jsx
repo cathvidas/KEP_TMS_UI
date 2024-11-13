@@ -14,6 +14,8 @@ const getStatusById = (id) => {
       ? "Disapproved"
       : id === statusCode.CLOSED
       ? "Closed"
+      : id === statusCode.TOUPDATE
+      ? "ForUpdate"
       : id === statusCode.FORAPPROVAL
       ? "ForApproval": 
       "Pending";

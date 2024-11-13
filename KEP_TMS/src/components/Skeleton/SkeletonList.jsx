@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Skeleton } from 'primereact/skeleton';
 
  const SkeletonList=()=> {

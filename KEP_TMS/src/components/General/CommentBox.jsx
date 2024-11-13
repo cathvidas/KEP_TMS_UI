@@ -2,8 +2,8 @@ import proptype from "prop-types"
 import { Modal } from "react-bootstrap";
 import { FormFieldItem } from "../trainingRequestFormComponents/FormElements";
 import { Button } from "primereact/button";
-import { useState } from "react";
-const CommentBox = ({header,label, description,placeholder, onSubmit, show, onClose, confirmButton}) => {
+import { useEffect, useState } from "react";
+const CommentBox = ({header,label, description,placeholder, defaultValue, onSubmit, show, onClose, confirmButton}) => {
     const [annotation, setAnnotation] = useState("")
     const [error, setError] = useState("")
     const verify = () => {
@@ -14,6 +14,11 @@ const CommentBox = ({header,label, description,placeholder, onSubmit, show, onCl
         onSubmit(annotation)
       }
     };
+    useEffect(()=>{
+      if(defaultValue){
+        setAnnotation(defaultValue)
+      }
+    },[defaultValue])
     return (
       <>
         <Modal show={show} onHide={onClose}>
@@ -69,6 +74,7 @@ CommentBox.propTypes = {
     placeholder: proptype.string,
     show: proptype.bool,
     onClose: proptype.func,
+    defaultValue: proptype.string,
     confirmButton: proptype.shape({
         label: proptype.string,
         severity: proptype.string,

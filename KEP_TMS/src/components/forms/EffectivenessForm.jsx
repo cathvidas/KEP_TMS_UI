@@ -20,7 +20,6 @@ import effectivenessConstant from "../../services/constants/effectivenessConstan
 import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
-import activityLogHook from "../../hooks/activityLogHook";
 import validateTrainingEffectiveness from "../../services/inputValidation/validateTrainingEffectiveness";
 import "../../assets/css/effectivenessForm.css";
 import { ActivityType, statusCode, UserTypeValue } from "../../api/constants";
@@ -29,7 +28,6 @@ import ApproverList from "../List/ApproversList";
 import ActivityList from "../List/ActivityList";
 import { CompareDateWithToday } from "../../utils/datetime/dateComparison";
 import getStatusCode from "../../utils/status/getStatusCode";
-import mapActivityLogs from "../../services/DataMapping/mapActivityLogs";
 import mappingHook from "../../hooks/mappingHook";
 const EffectivenessForm = ({
   data,
@@ -194,12 +192,17 @@ const EffectivenessForm = ({
             </div>
             <div>
               Status: &nbsp;
+              {currentRouting?.statusId !== statusCode.TOUPDATE ? <>
               {StatusColor({
                 status: getStatusById(currentRouting?.statusId),
                 class: "p-1",
                 showStatus: true,
               })}
-              <b> - {currentRouting?.assignedDetail?.fullname}</b>
+              <b> - {currentRouting?.assignedDetail?.fullname}</b></>:
+             <span className="text-danger">
+              <i className="pi pi-replay"></i>&nbsp;
+              Returned</span>
+              }
             </div>
           </div>
         )}

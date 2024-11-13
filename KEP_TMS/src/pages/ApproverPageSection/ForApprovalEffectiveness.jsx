@@ -23,6 +23,7 @@ const ForApprovaleffectiveness = () => {
     SessionGetEmployeeId(),
     trigger
   );
+  const [remark] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedData, setSelectedData] = useState({});
   const [showAnnotation, setShowAnnotation] = useState(false);
@@ -107,6 +108,12 @@ const ForApprovaleffectiveness = () => {
     });
   };
   const disapproveEffectiveness = (e) => {
+    console.log({
+      transactId: selectedData?.trainingEffectiveness?.id,
+      disapprovedBy: SessionGetEmployeeId(),
+      activityIn: ActivityType.EFFECTIVENESS,
+      remarks: e,
+    })
     confirmAction({
       showLoaderOnConfirm: true,
       title: "Return Effectiveness Report",
@@ -114,6 +121,7 @@ const ForApprovaleffectiveness = () => {
       confirmButtonText: "Yes",
       cancelButtonText: "Cancel",
       confirmButtonColor: "#d33",
+      
       onConfirm: () => {
         handleResponseAsync(
           () =>
@@ -124,9 +132,10 @@ const ForApprovaleffectiveness = () => {
               remarks: e,
             }),
           () => {
-            actionSuccessful("Success!", "successfully returned report");
+            actionSuccessful("Success!", "successfully returned Effectiveness Report");
             setTimeout(() => {
               setTrigger((prev) => prev + 1);
+              setShowAnnotation(false);
             }, 1000);
           }
         );
@@ -192,6 +201,7 @@ const ForApprovaleffectiveness = () => {
         </>
       )}
       <CommentBox
+      defaultValue={remark}
         header="Comments"
         // label="Remarks"
         description="Please provide a comment explaining the reason for returning this report."

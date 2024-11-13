@@ -9,7 +9,9 @@ import {
   updateEffectivenessApi,
   updateProjectPerformanceEvaluationApi,
 } from "../api/effectivenessApi";
+import routingService from "./common/routingService";
 import commonService from "./commonService";
+import userService from "./userService";
 const effectivenessService = {
   createTrainingEffectiveness: async (data) => {
     const response = await createTrainingEffectivenessApi(data);
@@ -38,7 +40,10 @@ const effectivenessService = {
     if(response?.status === 1){
       const approvers = await commonService.getActivityApprovers(response?.data?.createdBy, ActivityType.EFFECTIVENESS);
       const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.EFFECTIVENESS);
-      const currentRouting = await commonService.getCurrentRouting(response?.data?.id, ActivityType.EFFECTIVENESS);
+      const currentRouting = await routingService.getCurrentApprover(approvers, routings);
+      if(!currentRouting?.assignedDetail){
+        currentRouting.assignedDetail = await userService.getUserById(currentRouting?.assignedTo);
+      }
       const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.EFFECTIVENESS);
       return {...response?.data, routings, currentRouting, auditTrail, approvers};
     }

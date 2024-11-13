@@ -33,8 +33,13 @@ const ApproverList = ({data, activityTitle, activityType, hasEmailForm, activity
       />}
     </div>
   );
-  const statusTemplate = (rowData) => !hasEmailForm ? getStatusById(rowData?.status?.statusId):
-    StatusColor({status: getStatusById(rowData?.status?.statusId), class:"p-2 px-3 ", showStatus: true});
+  const statusTemplate = (rowData) => 
+    // !hasEmailForm ?
+  rowData?.status?.statusId === statusCode.DISAPPROVED ? <span>Reviewed</span> : <span>{getStatusById(rowData?.status?.statusId)}</span>
+  // : 
+  // getStatusById(rowData?.status?.statusId):
+  //   StatusColor({status: getStatusById(rowData?.status?.statusId), class:"p-2 px-3 ", showStatus: true}
+  // );
 
   return (
     <>
