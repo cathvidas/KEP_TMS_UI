@@ -29,6 +29,7 @@ import ActivityList from "../List/ActivityList";
 import { CompareDateWithToday } from "../../utils/datetime/dateComparison";
 import getStatusCode from "../../utils/status/getStatusCode";
 import mappingHook from "../../hooks/mappingHook";
+import ActivityStatus from "../General/ActivityStatus";
 const EffectivenessForm = ({
   data,
   userData,
@@ -192,17 +193,7 @@ const EffectivenessForm = ({
             </div>
             <div>
               Status: &nbsp;
-              {currentRouting?.statusId !== statusCode.TOUPDATE ? <>
-              {StatusColor({
-                status: getStatusById(currentRouting?.statusId),
-                class: "p-1",
-                showStatus: true,
-              })}
-              <b> - {currentRouting?.assignedDetail?.fullname}</b></>:
-             <span className="text-danger">
-              <i className="pi pi-replay"></i>&nbsp;
-              Returned</span>
-              }
+              <ActivityStatus status={currentRouting?.statusId}/> - {currentRouting?.assignedDetail?.fullname}
             </div>
           </div>
         )}

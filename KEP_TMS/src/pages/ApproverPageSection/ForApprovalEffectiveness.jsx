@@ -16,6 +16,7 @@ import userHook from "../../hooks/userHook";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CommentBox from "../../components/General/CommentBox";
 import commonService from "../../services/commonService";
+import ActivityStatus from "../../components/General/ActivityStatus";
 
 const ForApprovaleffectiveness = () => {
   const [trigger, setTrigger] = useState(0);
@@ -70,7 +71,7 @@ const ForApprovaleffectiveness = () => {
           severity="danger"
           className="rounded-circle"
           onClick={() => {
-            setSelectedData(selectedData);
+            setSelectedData(rowData);
             setShowAnnotation(true);
           }}
         />
@@ -108,7 +109,7 @@ const ForApprovaleffectiveness = () => {
     });
   };
   const disapproveEffectiveness = (e) => {
-    console.log({
+    console.log(selectedData, {
       transactId: selectedData?.trainingEffectiveness?.id,
       disapprovedBy: SessionGetEmployeeId(),
       activityIn: ActivityType.EFFECTIVENESS,
@@ -234,12 +235,12 @@ const ForApprovaleffectiveness = () => {
             />
           )}
         </Modal.Body>
-        <Modal.Footer>
+        
           {effectiveness?.data?.currentRouting?.assignedTo ===
             SessionGetEmployeeId() &&
           effectiveness?.data?.currentRouting?.statusId ===
-            statusCode.FORAPPROVAL ? (
-            <>
+            statusCode.FORAPPROVAL && (
+            <><Modal.Footer>
               <Button
                 type="button"
                 size="small"
@@ -265,38 +266,33 @@ const ForApprovaleffectiveness = () => {
                     true
                   )
                 }
-              />
+              /></Modal.Footer>
             </>
-          ) : effectiveness?.data?.routings?.find(
-              (item) =>
-                item?.assignedTo === SessionGetEmployeeId() &&
-                item?.statusId === statusCode.APPROVED
-            ) ? (
-            <Button
-              type="button"
-              size="small"
-              label="Approved"
-              icon="pi pi-check"
-              className="rounded theme-color"
-              text
-            />
-          ) : (
-            effectiveness?.data?.routings?.find(
-              (item) =>
-                item?.assignedTo === SessionGetEmployeeId() &&
-                item?.statusId === statusCode.DISAPPROVED
-            ) && (
-              <Button
-                type="button"
-                size="small"
-                label="Returned"
-                icon="pi pi-check"
-                className="rounded text-danger"
-                text
-              />
-            )
-          )}
-        </Modal.Footer>
+           )
+        
+          // : effectiveness?.data?.routings?.find(
+          //     (item) =>
+          //       item?.assignedTo === SessionGetEmployeeId() &&
+          //       item?.statusId === statusCode.APPROVED
+          //   ) ? (
+          //   <Button
+          //     type="button"
+          //     size="small"
+          //     label="Approved"
+          //     icon="pi pi-check"
+          //     className="rounded theme-color"
+          //     text
+          //   />
+          // ) : (
+          //   effectiveness?.data?.routings?.find(
+          //     (item) =>
+          //       item?.assignedTo === SessionGetEmployeeId() &&
+          //       item?.statusId === statusCode.DISAPPROVED
+          //   ) && (
+          //     <ActivityStatus status={"Returned"} severity={"text-danger"} icon="pi pi-times"/>
+          //   )
+          // )
+          }
       </Modal>
     </div>
   );

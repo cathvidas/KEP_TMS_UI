@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import getStatusById from "../utils/status/getStatusById";
 import { statusCode } from "../api/constants";
 import { formatDateTime } from "../utils/datetime/Formatting";
+import routingService from "../services/common/routingService";
 
 const mappingHook = {
   useMappedActivityRoute: (approvers, activity) => {
+    routingService.sortRoutingBySequence(activity, false)
     const [data, setData] = useState([]);
     useEffect(() => {
       const mappedApprovers = [];
