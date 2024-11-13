@@ -2,22 +2,32 @@ import { Modal, Row } from "react-bootstrap";
 import { FormFieldItem } from "../../trainingRequestFormComponents/FormElements";
 import { Button } from "primereact/button";
 import Select from "react-select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import proptype from "prop-types";
-import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
+import {
+  actionFailed,
+  actionSuccessful,
+  confirmAction,
+} from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import { SessionGetEmployeeId } from "../../../services/sessions";
 import certificateService from "../../../services/certificateService";
+import attachmentService from "../../../services/attachmentService";
+import { attachmentType } from "../../../api/constants";
 const CertificateForm = ({
   showModal,
   hideModal,
   onFinish,
   trainingOptions,
+  userId,
+  defaultValue,
 }) => {
   const [oldTraining, setOldTraining] = useState(false);
   const [files, setFiles] = useState([]);
+  const [oldFiles, setOldFiles] = useState([]);
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState("");
+  const [update, setUpdate] = useState(false);
   const handleFileUpload = (e) => {
     setErrors({ ...errors, file: "" });
     const newFiles = Array.from(e.target.files);
@@ -60,6 +70,23 @@ const CertificateForm = ({
       setFiles([...files, ...newFiles]);
     }
   };
+  useEffect(() => {
+    if (defaultValue) {
+      const x = trainingOptions?.filter(
+        (item) => item?.value === defaultValue?.requestId
+      );
+      setFormData({
+        ...formData,
+        certificateDetail: defaultValue?.detail,
+        training: x,
+      });
+      setOldFiles(defaultValue?.attachments);
+      setUpdate(true);
+    } else {
+      setFormData({});
+      setUpdate(false);
+    }
+  }, [defaultValue]);
   const handleRemoveSpecificFile = (index) => {
     const updatedFiles = [...files];
     updatedFiles.splice(index, 1);
@@ -83,7 +110,6 @@ const CertificateForm = ({
       newErrors.file = "Attachment is required";
       isValid = false;
     }
-    console.log(errors, files.length);
     setErrors({ ...errors, ...newErrors });
     if (isValid) {
       setErrors({});
@@ -94,25 +120,80 @@ const CertificateForm = ({
       if (!oldTraining) {
         newData.append("RequestId", formData?.training?.value);
       }
-      newData.append("EmployeeBadge", SessionGetEmployeeId());
+      newData.append("EmployeeBadge", userId);
       newData.append("CreatedBy", SessionGetEmployeeId());
       newData.append("Detail", formData.certificateDetail);
+
       confirmAction({
         showLoaderOnConfirm: true,
+        title: "Upload Certificate",
         text: "Are you sure you want to upload this certificate?",
         onConfirm: () => {
           handleResponseAsync(
             () => certificateService.createCertificate(newData),
             (e) => {
               actionSuccessful("Success", e?.message);
-              onFinish();
+              onFinish(true);
             }
           );
         },
       });
     }
   };
-  console.log(errors);
+  const updateCertificate = () => {
+    const updatedData = {
+      ...defaultValue,
+      detail: formData.certificateDetail,
+      updatedBy: SessionGetEmployeeId(),
+    };
+    confirmAction({
+      showLoaderOnConfirm: true,
+      text: "Are you sure you want to continue?",
+      onConfirm: () => {
+        handleResponseAsync(
+          () => certificateService.updateCertificate(updatedData),
+          ()=>{""}, null,uploadNewAttachments()
+        );
+      },
+    });
+  };
+  const uploadNewAttachments = ()=>{
+    const formData = new FormData();
+    formData.append("ReferenceId", defaultValue?.id);
+    formData.append("AttachmentType", attachmentType.CERTIFICATE);
+    for (let i = 0; i < files.length; i++) {
+      formData.append("Files", files[i]);
+    }
+    console.log(defaultValue, files);
+
+    handleResponseAsync(
+      () => attachmentService.addAttachments(formData),
+      () => {
+        actionSuccessful("Success", "Certificate updated successfully");
+        onFinish(true);
+        setUpdate(false)
+      },
+      () => {
+        actionFailed("Failed", "Failed to upload new attachment/s");
+        onFinish(false);
+      }
+    );
+  }
+  
+  const deleteOldFile = (id) => {
+    confirmAction({
+      title: "Delete File",
+      text: "Are you sure you want to delete this File?",
+      onConfirm: () => {
+        handleResponseAsync(
+          () => attachmentService.deleteAttachment(id),
+          null,
+          null,
+          onFinish(false)
+        );
+      },
+    });
+  };
   return (
     <>
       <Modal show={showModal} onHide={hideModal}>
@@ -123,19 +204,22 @@ const CertificateForm = ({
         </Modal.Header>
         <Modal.Body>
           <Row>
-            {!oldTraining && (
-              <FormFieldItem
-                label={"Training Name"}
-                error={errors.training}
-                FieldComponent={
-                  <Select
-                    options={trainingOptions}
-                    value={formData?.training}
-                    onChange={(e) => setFormData({ ...formData, training: e })}
-                  />
-                }
-              />
-            )}
+            {(!oldTraining ||
+              update )&& (
+                <FormFieldItem
+                  label={"Training Name"}
+                  error={errors.training}
+                  FieldComponent={
+                    <Select
+                      options={trainingOptions}
+                      value={formData?.training}
+                      onChange={(e) =>
+                        setFormData({ ...formData, training: e })
+                      }
+                    />
+                  }
+                />
+              )}
             <FormFieldItem
               label={"Certificate Detail"}
               error={errors.certificateDetail}
@@ -154,6 +238,41 @@ const CertificateForm = ({
                 ></textarea>
               }
             />
+            {update &&
+            <FormFieldItem
+              label={"Old Files"}
+              FieldComponent={
+                <>
+                  {oldFiles && (
+                    <>
+                      {oldFiles?.length > 0 && (
+                        <small className="text-muted ms-2">
+                          &#x28;{oldFiles?.length}{" "}
+                          {files?.length > 1 ? "files" : "file"}&#x29;
+                        </small>
+                      )}
+                      <div className="d-flex flex-wrap mb-2 gap-2">
+                        {oldFiles?.map((file) => (
+                          <div
+                            key={`file${file?.id}`}
+                            className="border bg-light rounded ps-2 d-flex align-items-center"
+                            style={{ width: "fit-content" }}
+                          >
+                            <span>{file.fileName}</span>
+                            <Button
+                              type="button"
+                              icon="pi pi-times"
+                              text
+                              onClick={() => deleteOldFile(file?.id)}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </>
+              }
+            />}
             <FormFieldItem
               label={"Attachment"}
               required
@@ -200,22 +319,35 @@ const CertificateForm = ({
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            type="button"
-            className="rounded"
-            size="small"
-            onClick={() => setOldTraining(!oldTraining)}
-            text
-            label={oldTraining ? "Current Training" : "Previous Training"}
-          />
-          <Button
-            type="button"
-            onClick={handleSubmitForm}
-            size="small"
-            icon="pi pi-upload"
-            className="rounded"
-            label="Upload Certificate"
-          />
+          {update ? (
+            <Button
+              type="button"
+              className="rounded"
+              size="small"
+              icon="pi pi-save"
+              onClick={updateCertificate}
+              label="Update"
+            />
+          ) : (
+            <>
+              {/* <Button
+                type="button"
+                className="rounded"
+                size="small"
+                onClick={() => setOldTraining(!oldTraining)}
+                text
+                label={oldTraining ? "Current Training" : "Previous Training"}
+              /> */}
+              <Button
+                type="button"
+                onClick={handleSubmitForm}
+                size="small"
+                icon="pi pi-upload"
+                className="rounded"
+                label="Upload Certificate"
+              />
+            </>
+          )}
         </Modal.Footer>
       </Modal>
     </>
@@ -226,5 +358,7 @@ CertificateForm.propTypes = {
   showModal: proptype.bool,
   hideModal: proptype.func,
   trainingOptions: proptype.array,
+  userId: proptype.string,
+  defaultValue: proptype.object,
 };
 export default CertificateForm;

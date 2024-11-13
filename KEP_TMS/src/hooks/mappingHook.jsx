@@ -52,6 +52,7 @@ const mappingHook = {
             activity.name = author?.fullname;
             activity.process = "Updated";
             activity.status = "Updated";
+            activity.date = activityLogs[index + 1] ? formatDateTime(activityLogs[index + 1]?.createdDate) : "N/A";
             mappedActivityLogs.push(activity);
           }
         } else {

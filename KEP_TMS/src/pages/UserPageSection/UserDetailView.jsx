@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Button } from "primereact/button";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CertificateTemplate from "../../components/certificate/CertificateTemplate";
+import CertificatesList from "../../components/certificate/CertificatesList";
 const DetailItem = (data) => (
   <>
     <div className="flex py-1">
@@ -142,12 +143,7 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
                         columnItems={columnItem}
                       />
                     </TabPanel>
-                  </TabView>
-                </Row>
-              )}
-            </CardBody>
-          </Card>
-          <br />
+                    <TabPanel header={"Certificates"}>
           {!trainings?.loading && isAdmin&&  (
             <Button
               type="button"
@@ -156,6 +152,13 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
               onClick={() => setShowCertForm(true)}
             />
           )}
+                      <CertificatesList userId={id} trainings={trainings?.data?.attended}/>
+                    </TabPanel>
+                  </TabView>
+                </Row>
+              )}
+            </CardBody>
+          </Card>
         </>
       ) : (
         <Card>
