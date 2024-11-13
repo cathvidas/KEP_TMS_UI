@@ -21,7 +21,7 @@ const ActivityStatus = ({showIcon = true, icon, status, severity, color})=>{
             placeholder = "For Approval";
             break;
         case statusCode.DISAPPROVED:
-            newIcon = "pi pi-times-circle";
+            newIcon = "pi pi-refresh";
             newColor = "text-danger";
             placeholder = "Returned";
             break;

@@ -18,7 +18,6 @@ import effectivenessService from "../../services/effectivenessService";
 import ErrorTemplate from "../General/ErrorTemplate";
 import effectivenessConstant from "../../services/constants/effectivenessConstant";
 import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
-import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
 import validateTrainingEffectiveness from "../../services/inputValidation/validateTrainingEffectiveness";
 import "../../assets/css/effectivenessForm.css";
@@ -45,7 +44,6 @@ const EffectivenessForm = ({
   const [performanceCharacteristics, setPerformanceCharacteristics] = useState([
     effectivenessConstant.performanceCharacteristics,
   ]);
-  console.log(formData)
   const [projectPerformanceEvaluation, setProjectPerformanceEvaluation] =
     useState([effectivenessConstant.projectPerformanceEvaluation]);
   const [isSubmitted, setIsSubmitted] = useState(false);

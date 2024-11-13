@@ -17,6 +17,7 @@ import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CommentBox from "../../components/General/CommentBox";
 import commonService from "../../services/commonService";
 import ActivityStatus from "../../components/General/ActivityStatus";
+import routingService from "../../services/common/routingService";
 
 const ForApprovaleffectiveness = () => {
   const [trigger, setTrigger] = useState(0);
@@ -181,6 +182,8 @@ const ForApprovaleffectiveness = () => {
       body: actionTemplate,
     },
   ];
+  const currentStatus = routingService.getApproverStatus(effectiveness?.data?.routings, SessionGetEmployeeId())
+  console.log(currentStatus,effectiveness?.data, selectedData)
   return (
     <div className="p-3">
       {loading ? (
@@ -235,12 +238,9 @@ const ForApprovaleffectiveness = () => {
             />
           )}
         </Modal.Body>
-        
-          {effectiveness?.data?.currentRouting?.assignedTo ===
-            SessionGetEmployeeId() &&
-          effectiveness?.data?.currentRouting?.statusId ===
-            statusCode.FORAPPROVAL && (
-            <><Modal.Footer>
+        <Modal.Footer>
+          { currentStatus?.statusId === statusCode.FORAPPROVAL ? (
+            <>
               <Button
                 type="button"
                 size="small"
@@ -266,33 +266,18 @@ const ForApprovaleffectiveness = () => {
                     true
                   )
                 }
-              /></Modal.Footer>
+              />
             </>
-           )
-        
-          // : effectiveness?.data?.routings?.find(
-          //     (item) =>
-          //       item?.assignedTo === SessionGetEmployeeId() &&
-          //       item?.statusId === statusCode.APPROVED
-          //   ) ? (
-          //   <Button
-          //     type="button"
-          //     size="small"
-          //     label="Approved"
-          //     icon="pi pi-check"
-          //     className="rounded theme-color"
-          //     text
-          //   />
-          // ) : (
-          //   effectiveness?.data?.routings?.find(
-          //     (item) =>
-          //       item?.assignedTo === SessionGetEmployeeId() &&
-          //       item?.statusId === statusCode.DISAPPROVED
-          //   ) && (
-          //     <ActivityStatus status={"Returned"} severity={"text-danger"} icon="pi pi-times"/>
-          //   )
-          // )
+          ) : currentStatus?.statusId ===  statusCode.APPROVED
+             ? 
+              <ActivityStatus status={statusCode.APPROVED} />
+           :
+           currentStatus?.statusId === statusCode.DISAPPROVED
+            && (
+              <ActivityStatus status={statusCode.DISAPPROVED} icon="pi pi-times"/>
+            )
           }
+        </Modal.Footer>
       </Modal>
     </div>
   );

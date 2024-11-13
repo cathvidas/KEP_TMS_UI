@@ -15,7 +15,6 @@ import handleResponseAsync from "../../services/handleResponseAsync";
 import trainingReportService from "../../services/trainingReportService";
 import ErrorTemplate from "../General/ErrorTemplate";
 import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
-import StatusColor from "../General/StatusColor";
 import getStatusById from "../../utils/status/getStatusById";
 import { ActivityType, statusCode } from "../../api/constants";
 import getStatusCode from "../../utils/status/getStatusCode";
@@ -23,6 +22,7 @@ import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import ActivityList from "../List/ActivityList";
 import ApproverList from "../List/ApproversList";
 import mappingHook from "../../hooks/mappingHook";
+import ActivityStatus from "../General/ActivityStatus";
 
 const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitted, currentRouting, auditTrail}) => {
   const [formData, setFormData] = useState(trainingreportConstant);
@@ -38,6 +38,7 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  console.log(defaultValue)
   useEffect(()=>{
     if(defaultValue){
       const updatedData = {id: defaultValue?.id,trainingTakeaways: defaultValue?.trainingTakeaways,
@@ -97,12 +98,7 @@ const reportTemplateRef = useRef();
             <div>Submitted: {formatDateTime(auditTrail?.createdDate)}</div>
             <div>
               Status: &nbsp;
-              {StatusColor({
-                status: getStatusById(currentRouting?.statusId),
-                class: "p-1",
-                showStatus: true,
-              })}
-              <b> - {currentRouting?.assignedDetail?.fullname}</b>
+              <ActivityStatus status={currentRouting?.statusId}/> - {currentRouting?.assignedDetail?.fullname}
             </div>
           </div>
         )

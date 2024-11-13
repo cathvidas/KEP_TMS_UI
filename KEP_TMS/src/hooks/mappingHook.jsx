@@ -25,6 +25,7 @@ const mappingHook = {
     return data;
   },
   useMappedActivityLogs: (activityData, author) => {
+    routingService.sortRoutingBySequence(activityData?.routings, false)
     const [data, setData] = useState([]);
     useEffect(() => {
       const activityLogs = activityData?.routings;
@@ -33,9 +34,9 @@ const mappingHook = {
       mappedActivityLogs.push({
         id: 1,
         name: author?.fullname,
-        process: "New",
+        process: "New / Submitted",
         status: activityLogs?.length > 0 ? "Submitted" : "New",
-        remark: "Submitted",
+        remark: "N/A",
         date: formatDateTime(activityData?.createdDate),
       });
       activityLogs?.map((log, index) => {

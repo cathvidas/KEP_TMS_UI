@@ -7,6 +7,7 @@ import {
   getTrainingReportByIdApi,
   updateTrainingReportApi,
 } from "../api/trainingReportApi";
+import routingService from "./common/routingService";
 import commonService from "./commonService";
 import userService from "./userService";
 
@@ -34,7 +35,10 @@ const trainingReportService = {
     if(response?.status === 1){
       const approvers = await commonService.getActivityApprovers(response?.data?.createdBy, ActivityType.REPORT)
       const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.REPORT)
-      const currentRouting = await commonService.getCurrentRouting(response?.data?.id, ActivityType.REPORT);
+      const currentRouting = await routingService.getCurrentApprover(approvers, routings);
+      if(!currentRouting?.assignedDetail){
+        currentRouting.assignedDetail= await userService.getUserById(currentRouting?.assignedTo);
+      }
       const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.REPORT);
       return {...response?.data, routings, currentRouting, auditTrail, approvers};
     }

@@ -14,6 +14,8 @@ import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import CommentBox from "../../components/General/CommentBox";
 import trainingReportService from "../../services/trainingReportService";
 import commonService from "../../services/commonService";
+import routingService from "../../services/common/routingService";
+import ActivityStatus from "../../components/General/ActivityStatus";
 
 const ForApprovalReport = () => {
   const [trigger, setTrigger] = useState(0);
@@ -156,6 +158,9 @@ const ForApprovalReport = () => {
       body: actionTemplate,
     },
   ];
+  const currentStatus =""
+  //  routingService.getCurrentApprover(report?.data?.routings, SessionGetEmployeeId());
+  console.log(report)
   return (
     <div className="p-3">
       <SectionBanner
@@ -205,9 +210,7 @@ const ForApprovalReport = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          {report?.data?.currentRouting?.assignedTo ===
-            SessionGetEmployeeId() &&
-          report?.data?.currentRouting?.statusId === statusCode.FORAPPROVAL ? (
+          {currentStatus.statusId === statusCode.FORAPPROVAL ? (
             <>
               <Button
                 size="small"
@@ -231,35 +234,15 @@ const ForApprovalReport = () => {
                 }
               />{" "}
             </>
-          ) : report?.data?.routings?.find(
-              (item) =>
-                item?.assignedTo === SessionGetEmployeeId() &&
-                item?.statusId === statusCode.APPROVED
-            ) ? (
-            <Button
-              type="button"
-              size="small"
-              label="Approved"
-              icon="pi pi-check"
-              className="rounded theme-color"
-              text
-            />
-          ) : (
-            report?.data?.routings?.find(
-              (item) =>
-                item?.assignedTo === SessionGetEmployeeId() &&
-                item?.statusId === statusCode.DISAPPROVED
-            ) && (
-              <Button
-                type="button"
-                size="small"
-                label="Returned"
-                icon="pi pi-check"
-                className="rounded text-danger"
-                text
-              />
+          ) : currentStatus?.statusId === statusCode.APPROVED
+             ? (
+              <ActivityStatus status={statusCode.APPROVED}/>
+          ) : 
+            currentStatus.statusId === statusCode.DISAPPROVED
+             && (
+              <ActivityStatus status={statusCode.DISAPPROVED} icon="pi pi-times"/>
             )
-          )}
+          }
         </Modal.Footer>
       </Modal>
     </div>
