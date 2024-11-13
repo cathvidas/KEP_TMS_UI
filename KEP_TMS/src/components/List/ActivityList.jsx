@@ -7,6 +7,7 @@ import { Collapse } from "react-bootstrap";
 const ActivityList = ({ data, show = true, label, toggle }) => {
   const [isShow, setIsShow] = useState(show);
   const items = [
+    { field: "no", header: "No", body:(_,{rowIndex})=><>{rowIndex+1}</> },
     { field: "name", header: "Processed By" },
     { field: "process", header: "Process" },
     { field: "date", header: "Date" },

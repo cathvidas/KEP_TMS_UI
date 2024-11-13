@@ -29,7 +29,6 @@ const mappingHook = {
     const [data, setData] = useState([]);
     useEffect(() => {
       const activityLogs = activityData?.routings;
-      console.log(activityLogs);
       const mappedActivityLogs = [];
       mappedActivityLogs.push({
         id: 1,
