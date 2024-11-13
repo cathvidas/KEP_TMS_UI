@@ -21,22 +21,23 @@ const StatusColor = (data) => {
     : data?.status === "Published"
     ? "bg-success"
     : "theme-secondary text-dark";
-
   return (
     <>
-      <span
-        className={`badge ${data?.class} ${className}`}
-        style={data?.style}
-        onClick={data?.handleOnclick}
-      >
-        {data?.showStatus
-          ? data?.status === "ForApproval"
-            ? "For Approval"
-            : data?.status === "Inactive"
-            ? "Cancelled"
-            : data?.status
-          : ""}{" "}
-      </span>
+        <span
+          className={`badge ${data?.class} ${className}`}
+          style={data?.style}
+          onClick={data?.handleOnclick}
+        >
+          {data?.showStatus
+            ? data?.status === "ForUpdate"
+              ? "Returned"
+              : data?.status === "ForApproval"
+              ? "For Approval"
+              : data?.status === "Inactive"
+              ? "Cancelled"
+              : data?.status
+            : ""}{" "}
+        </span>
     </>
   );
 };
