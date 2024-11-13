@@ -86,7 +86,7 @@ const Login = () => {
                     </Form.Group>
                     <Form.Group className="mb-3 position-relative">
                       <Form.Control
-                        className="p-3"
+                        className="p-3 pe-5"
                         type={showPass ? "text":"password"}
                         name="password"
                         value={password}
