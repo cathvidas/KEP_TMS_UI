@@ -6,7 +6,6 @@ import routingService from "../services/common/routingService";
 
 const mappingHook = {
   useMappedActivityRoute: (approvers, activity) => {
-    routingService.sortRoutingBySequence(activity, false)
     const [data, setData] = useState([]);
     useEffect(() => {
       const mappedApprovers = [];
@@ -14,7 +13,7 @@ const mappingHook = {
         const actItem = activity?.filter(
           (act) => act?.assignedTo == app?.employeeBadge
         );
-        actItem?.sort((a, b) => a.sequence - b.sequence);
+        routingService.sortRoutingBySequence(actItem, true);
         mappedApprovers.push({
           detail: app,
           status: actItem ? actItem[0] : {},
@@ -25,7 +24,7 @@ const mappingHook = {
     return data;
   },
   useMappedActivityLogs: (activityData, author) => {
-    routingService.sortRoutingBySequence(activityData?.routings, false)
+    routingService.sortRoutingBySequence(activityData?.routings, false);
     const [data, setData] = useState([]);
     useEffect(() => {
       const activityLogs = activityData?.routings;
@@ -45,16 +44,23 @@ const mappingHook = {
           process: log?.userDetail?.position + " Approval",
           status: getStatusById(log?.statusId),
           remark:
-            log?.statusId === statusCode.FORAPPROVAL ? "Pending" :log?.remarks ?? getStatusById(log?.statusId) ,
+            log?.statusId === statusCode.FORAPPROVAL
+              ? "Pending"
+              : log?.remarks ?? getStatusById(log?.statusId),
           date: log?.updatedDate ? formatDateTime(log?.updatedDate) : "N/A",
         };
         if (log.statusId === statusCode.TOUPDATE) {
-          if (activityLogs.length > index + 1 && log.assignedTo === author?.employeeBadge) {
+          if (
+            activityLogs.length > index + 1 &&
+            log.assignedTo === author?.employeeBadge
+          ) {
             activity.remark = "N/A";
             activity.name = author?.fullname;
             activity.process = "Updated";
             activity.status = "Updated";
-            activity.date = activityLogs[index + 1] ? formatDateTime(activityLogs[index + 1]?.createdDate) : "N/A";
+            activity.date = activityLogs[index + 1]
+              ? formatDateTime(activityLogs[index + 1]?.createdDate)
+              : "N/A";
             mappedActivityLogs.push(activity);
           }
         } else {

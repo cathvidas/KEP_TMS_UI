@@ -14,7 +14,10 @@ import {
 import handleResponseAsync from "../../services/handleResponseAsync";
 import trainingReportService from "../../services/trainingReportService";
 import ErrorTemplate from "../General/ErrorTemplate";
-import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
+import {
+  formatDateOnly,
+  formatDateTime,
+} from "../../utils/datetime/Formatting";
 import getStatusById from "../../utils/status/getStatusById";
 import { ActivityType, statusCode } from "../../api/constants";
 import getStatusCode from "../../utils/status/getStatusCode";
@@ -24,7 +27,16 @@ import ApproverList from "../List/ApproversList";
 import mappingHook from "../../hooks/mappingHook";
 import ActivityStatus from "../General/ActivityStatus";
 
-const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitted, currentRouting, auditTrail}) => {
+const TrainingReportForm = ({
+  data,
+  userData,
+  onFinish,
+  defaultValue,
+  isSubmitted,
+  currentRouting,
+  auditTrail,
+  isAdmin,
+}) => {
   const [formData, setFormData] = useState(trainingreportConstant);
   const [errors, setErrors] = useState({});
   const [isUpdate, setIsUpdate] = useState(false);
@@ -32,41 +44,56 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
   const getFormData = {
     ...formData,
     trainingRequestId: data.id,
-    traineeBadge: SessionGetEmployeeId()
+    traineeBadge: SessionGetEmployeeId(),
   };
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  console.log(defaultValue)
-  useEffect(()=>{
-    if(defaultValue){
-      const updatedData = {id: defaultValue?.id,trainingTakeaways: defaultValue?.trainingTakeaways,
+  console.log(defaultValue);
+  useEffect(() => {
+    if (defaultValue) {
+      const updatedData = {
+        id: defaultValue?.id,
+        trainingTakeaways: defaultValue?.trainingTakeaways,
         actionPlan: defaultValue.actionPlan,
         timeframe: defaultValue.timeframe,
         statusId: getStatusCode(defaultValue.status),
-        activityRemarks: defaultValue.activityRemarks}
-      setFormData({...updatedData});
-        setIsUpdate(defaultValue?.status === getStatusById(statusCode.DISAPPROVED))
-        setShowLogs(true)
+        activityRemarks: defaultValue.activityRemarks,
+      };
+      setFormData({ ...updatedData });
+      setIsUpdate(
+        defaultValue?.status === getStatusById(statusCode.DISAPPROVED)
+      );
+      setShowLogs(true);
     }
-  }, [defaultValue, isSubmitted])
-  
+  }, [defaultValue, isSubmitted]);
+
   const handleSubmit = () => {
     const isValid = validateForm();
     if (isValid) {
       confirmAction({
         showLoaderOnConfirm: true,
-        title: isUpdate ? 'Update Report' : "Submit Report",
-        onConfirm: ()=>handleResponseAsync(()=> isUpdate ?
-          trainingReportService.updateTrainingReport({...getFormData, updatedBy: SessionGetEmployeeId()}):
-          trainingReportService.createTrainingReport(getFormData),
-        (e)=>{actionSuccessful("Success", e.message)
-          onFinish();
-        },
-         (e)=>actionFailed(`Error ${isUpdate ? 'updating' : 'submitting'} training report`, e.message),
-    
-        ),
+        title: isUpdate ? "Update Report" : "Submit Report",
+        onConfirm: () =>
+          handleResponseAsync(
+            () =>
+              isUpdate
+                ? trainingReportService.updateTrainingReport({
+                    ...getFormData,
+                    updatedBy: SessionGetEmployeeId(),
+                  })
+                : trainingReportService.createTrainingReport(getFormData),
+            (e) => {
+              actionSuccessful("Success", e.message);
+              onFinish();
+            },
+            (e) =>
+              actionFailed(
+                `Error ${isUpdate ? "updating" : "submitting"} training report`,
+                e.message
+              )
+          ),
       });
     }
   };
@@ -88,8 +115,8 @@ const TrainingReportForm = ({ data, userData , onFinish, defaultValue, isSubmitt
     setErrors(formErrors);
     return isValid;
   };
-const logs = mappingHook.useMappedActivityLogs(defaultValue, userData);
-const reportTemplateRef = useRef();
+  const logs = mappingHook.useMappedActivityLogs(defaultValue, userData);
+  const reportTemplateRef = useRef();
   return (
     <Card.Body>
       {
@@ -98,7 +125,8 @@ const reportTemplateRef = useRef();
             <div>Submitted: {formatDateTime(auditTrail?.createdDate)}</div>
             <div>
               Status: &nbsp;
-              <ActivityStatus status={currentRouting?.statusId}/> - {currentRouting?.assignedDetail?.fullname}
+              <ActivityStatus status={currentRouting?.statusId} /> -{" "}
+              {currentRouting?.assignedDetail?.fullname}
             </div>
           </div>
         )
@@ -208,48 +236,58 @@ const reportTemplateRef = useRef();
         </Row>
       </Form>
       <br />
-      {data?.trainingParticipants?.some(
-        (x) => x.employeeBadge === SessionGetEmployeeId()
-      ) &&
-        <div className="flex">
-          {isSubmitted && <>
-        <Button
-          type="button"
-          label={`${showLogs ? "Hide" : "Show"} Activities`}
-          icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
-          className="rounded"
-          text
-          onClick={() => setShowLogs(!showLogs)}
-        />
-        <Button
-          type="button"
-          label="Download"
-          icon="pi pi-download"
-          className="rounded me-auto"
-          text
-          severity="help"
-          onClick={() => handleGeneratePdf(reportTemplateRef.current)}
-        /></>}
-          {(!defaultValue || isUpdate) &&<>
-          <Button
-            type="button"
-            icon="pi pi-eraser"
-            label="Reset"
-            className="rounded ms-auto"
-            severity="secondary"
-            onClick={() => {
-              setFormData(trainingreportConstant);
-            }}
-          />
-          <Button
-            type="button"
-            icon={isUpdate ? "pi pi-pencil" : "pi pi-cloud-upload"}
-            label={isUpdate ? "Update Form" : "Submit Form"}
-            className="rounded ms-2"
-            severity="success"
-            onClick={handleSubmit}
-          /></>}
-        </div>}
+      <div className="flex">
+        {(data?.trainingParticipants?.some(
+          (x) => x.employeeBadge === SessionGetEmployeeId()
+        ) ||
+          isAdmin) &&
+          isSubmitted && (
+            <>
+              <Button
+                type="button"
+                label={`${showLogs ? "Hide" : "Show"} Activities`}
+                icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
+                className="rounded"
+                text
+                onClick={() => setShowLogs(!showLogs)}
+              />
+              <Button
+                type="button"
+                label="Download"
+                icon="pi pi-download"
+                className="rounded me-auto"
+                text
+                severity="help"
+                onClick={() => handleGeneratePdf(reportTemplateRef.current)}
+              />
+            </>
+          )}
+        {data?.trainingParticipants?.some(
+          (x) => x.employeeBadge === SessionGetEmployeeId()
+        ) &&
+          (!defaultValue || isUpdate) && (
+            <>
+              <Button
+                type="button"
+                icon="pi pi-eraser"
+                label="Reset"
+                className="rounded ms-auto"
+                severity="secondary"
+                onClick={() => {
+                  setFormData(trainingreportConstant);
+                }}
+              />
+              <Button
+                type="button"
+                icon={isUpdate ? "pi pi-pencil" : "pi pi-cloud-upload"}
+                label={isUpdate ? "Update Form" : "Submit Form"}
+                className="rounded ms-2"
+                severity="success"
+                onClick={handleSubmit}
+              />
+            </>
+          )}
+      </div>
       {isSubmitted && showLogs && (
         <>
           <hr />
@@ -262,10 +300,7 @@ const reportTemplateRef = useRef();
             activityType={ActivityType.REPORT}
           />
           <hr />
-          <ActivityList
-            data={logs}
-            label={"Activities"}
-          />
+          <ActivityList data={logs} label={"Activities"} />
         </>
       )}
     </Card.Body>
@@ -280,5 +315,6 @@ TrainingReportForm.propTypes = {
   isSubmitted: proptype.bool,
   currentRouting: proptype.object,
   auditTrail: proptype.object,
+  isAdmin: proptype.bool,
 };
 export default TrainingReportForm;

@@ -14,7 +14,6 @@ import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
 import ExamDetails from "../../components/Exam/ExamDetails";
 const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formData, typeId, examDetail }) => {
     const [showForm, setShowForm] = useState(false);
-    console.log(data, reportType, formData)
     const [selectedData, setSelectedData] = useState({});
   const actionTemplate = (rowData) => {
     return (
@@ -120,6 +119,7 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
     );
   };
   addcolumns();
+  console.log(selectedData)
   return (
     <>
       {!showForm ? (
@@ -176,7 +176,8 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
                     currentRouting={
                       selectedData?.effectivenessDetail?.currentRouting
                     }
-                    auditTrail={selectedData?.effectivenessDetail?.auditTrail}
+                    auditTrail={selectedData?.effectivenessDetail?.auditTrail ? selectedData?.effectivenessDetail?.auditTrail[0] : {}}
+                    isAdmin
                   />
                 )}
                 {typeId === ActivityType.REPORT && (
@@ -186,6 +187,9 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
                     defaultValue={selectedData[reportType]}
                     // currentRouting={{}}
                     isSubmitted
+                    isAdmin
+                    auditTrail={selectedData?.reportDetail?.auditTrail ? selectedData?.reportDetail?.auditTrail[0] : {}}
+                    currentRouting={selectedData?.reportDetail?.currentRouting}
                   />
                 )}
                 {typeId === ActivityType.EVALUATION && (

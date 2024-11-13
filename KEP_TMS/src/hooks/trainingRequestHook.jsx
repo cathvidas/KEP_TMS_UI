@@ -11,6 +11,7 @@ import evaluationService from "../services/evaluationService";
 import effectivenessService from "../services/effectivenessService";
 import commonService from "../services/commonService";
 import examService from "../services/examService";
+import routingService from "../services/common/routingService";
 
 const trainingRequestHook = {
   useTrainingRequest: (id,trigger) => {
@@ -40,11 +41,10 @@ const trainingRequestHook = {
                 response.id,
                 ActivityType.REQUEST
               );
-            const currentRouting =
-              await commonService.getCurrentRouting(
-                response.id,
-                ActivityType.REQUEST
-              );
+              const currentRouting = await routingService.getCurrentApprover(approvers, routings);
+              if(!currentRouting?.assignedDetail){
+                currentRouting.assignedDetail = await userService.getUserById(currentRouting?.assignedTo);
+              }
             setData({
               ...response,
               trainingParticipants: participants,

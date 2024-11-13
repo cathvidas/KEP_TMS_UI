@@ -14,7 +14,6 @@ import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import CommentBox from "../../components/General/CommentBox";
 import trainingReportService from "../../services/trainingReportService";
 import commonService from "../../services/commonService";
-import routingService from "../../services/common/routingService";
 import ActivityStatus from "../../components/General/ActivityStatus";
 
 const ForApprovalReport = () => {

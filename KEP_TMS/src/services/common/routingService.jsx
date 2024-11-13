@@ -10,6 +10,7 @@ const routingService = {
     }}
   },
   getCurrentApprover: (approvers, routings) => {
+    console.log(routings)
     let currentApprover = null;
     const sortedRouting =routingService.sortRoutingBySequence(routings,true);
     let currentRouting = sortedRouting?.find(routing => routing.statusId !== statusCode.TOUPDATE);

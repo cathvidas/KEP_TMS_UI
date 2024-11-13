@@ -36,6 +36,7 @@ const EffectivenessForm = ({
   onFinish,
   currentRouting,
   auditTrail,
+  isAdmin,
 }) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
@@ -158,7 +159,11 @@ const EffectivenessForm = ({
                     ...getFormData,
                     updatedBy: SessionGetEmployeeId(),
                     id: formData.id,
-                    statusId : getStatusCode(formData?.statusName) === statusCode.DISAPPROVED ? statusCode.FORAPPROVAL : getStatusCode(formData?.statusName),
+                    statusId:
+                      getStatusCode(formData?.statusName) ===
+                      statusCode.DISAPPROVED
+                        ? statusCode.FORAPPROVAL
+                        : getStatusCode(formData?.statusName),
                   })
                 : effectivenessService.createTrainingEffectiveness(getFormData),
             (e) => {
@@ -176,7 +181,7 @@ const EffectivenessForm = ({
         SessionGetEmployeeId() === userData?.superiorBadge
     );
   }, [getAfterTrainingDate]);
-  
+
   const activityLogs = mappingHook.useMappedActivityLogs(formData, userData);
   const reportTemplateRef = useRef();
 
@@ -191,7 +196,8 @@ const EffectivenessForm = ({
             </div>
             <div>
               Status: &nbsp;
-              <ActivityStatus status={currentRouting?.statusId}/> - {currentRouting?.assignedDetail?.fullname}
+              <ActivityStatus status={currentRouting?.statusId} /> -{" "}
+              {currentRouting?.assignedDetail?.fullname}
             </div>
           </div>
         )}
@@ -614,30 +620,36 @@ const EffectivenessForm = ({
               ></textarea>
             </Form.Group>
           </div>
-          {data?.trainingParticipants?.some(
-            (x) => x.employeeBadge === SessionGetEmployeeId()
-          ) && (
-            <>
-              <div className="flex mt-3">
-                {isSubmitted && <>
-                <Button
-                  type="button"
-                  label={`${showLogs ? "Hide" : "Show"} Activities`}
-                  icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
-                  className="rounded"
-                  text
-                  onClick={() => setShowLogs(!showLogs)}
-                />
-                <Button
-                  type="button"
-                  label="Download"
-                  icon="pi pi-download"
-                  className="rounded me-auto"
-                  text
-                  severity="help"
-                  onClick={() => handleGeneratePdf(reportTemplateRef.current)}
-                /></>}
-                {(!isSubmitted || isUpdate) && (
+
+          <>
+            <div className="flex mt-3">
+              {(data?.trainingParticipants?.some(
+                (x) => x.employeeBadge === SessionGetEmployeeId()
+              ) || isAdmin) && isSubmitted && (
+                <>
+                  <Button
+                    type="button"
+                    label={`${showLogs ? "Hide" : "Show"} Activities`}
+                    icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
+                    className="rounded"
+                    text
+                    onClick={() => setShowLogs(!showLogs)}
+                  />
+                  <Button
+                    type="button"
+                    label="Download"
+                    icon="pi pi-download"
+                    className="rounded me-auto"
+                    text
+                    severity="help"
+                    onClick={() => handleGeneratePdf(reportTemplateRef.current)}
+                  />
+                </>
+              )}
+              {data?.trainingParticipants?.some(
+                (x) => x.employeeBadge === SessionGetEmployeeId()
+              ) &&
+                (!isSubmitted || isUpdate) && (
                   <>
                     <Button
                       type="button"
@@ -668,9 +680,8 @@ const EffectivenessForm = ({
                     />
                   </>
                 )}
-              </div>
-            </>
-          )}
+            </div>
+          </>
         </Form>
         {/* <ActivityLog label="Activity Logs" items={logs} isDescending /> */}
         {isSubmitted && showLogs && (
@@ -683,14 +694,14 @@ const EffectivenessForm = ({
               data={formData}
               activityTitle="Training Effectiveness"
               activityType={ActivityType.REPORT}
-              hasEmailForm={SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.SUPER_ADMIN}
+              hasEmailForm={
+                SessionGetRole() === UserTypeValue.ADMIN ||
+                SessionGetRole() === UserTypeValue.SUPER_ADMIN
+              }
               emailFormTemplate={reportTemplateRef}
             />
             <hr />
-            <ActivityList
-              data={activityLogs}
-              label={"Activities"}
-            />
+            <ActivityList data={activityLogs} label={"Activities"} />
           </>
         )}
       </Card.Body>
@@ -704,5 +715,6 @@ EffectivenessForm.propTypes = {
   onFinish: proptype.func,
   currentRouting: proptype.object,
   auditTrail: proptype.object,
+  isAdmin: proptype.boolean,
 };
 export default EffectivenessForm;

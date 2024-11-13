@@ -1,12 +1,11 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import StatusColor from "../General/StatusColor";
 import proptype from "prop-types";
 import getStatusById from "../../utils/status/getStatusById";
 import { Button } from "primereact/button";
 import EmailForm from "../forms/ModalForms/EmailForm";
 import { useState } from "react";
-import { ActivityType, statusCode } from "../../api/constants";
+import { statusCode } from "../../api/constants";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import mappingHook from "../../hooks/mappingHook";

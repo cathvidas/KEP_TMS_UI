@@ -185,5 +185,6 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
 UserDetailView.propTypes = {
   id: proptype.string, // User Data
   adminList: proptype.array,
+  isAdmin: proptype.bool,
 };
 export default UserDetailView;
