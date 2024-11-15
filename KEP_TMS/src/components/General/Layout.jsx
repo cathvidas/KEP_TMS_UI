@@ -13,11 +13,29 @@ const Layout = ({
   showModalAction,
   returnAction,
 }) => {
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showmenu, setshowmenu] = useState(true);
-  const [showContent, setShowContent] = useState(true);
   const navigate = useNavigate();
-  const token = sessionStorage.getItem("token");
+  const token = sessionStorage.getItem("token");  
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+ useEffect(() => {
+  if(width < 768){
+    setShowSidebar(false);
+    setExpanded(true);
+  }else{
+    setShowSidebar(true);
+    setExpanded(false);
+  }
+ },[width])
   useEffect(() => {
     if (token != null) {
       setshowmenu(true);
@@ -43,7 +61,7 @@ const Layout = ({
       {showmenu? (
         <>
           <div className="d-flex">
-            <Sidebars activeNavigation={navReference}/>
+            <Sidebars activeNavigation={navReference} hide={()=>setShowSidebar(false)} show={showSidebar} expanded={expanded}/>
             <div className="flex-grow-1 d-flex flex-column d-block expand-transition overflow-hidden vh-100">
               <div className="d-flex">
                 {!header?.hide &&
@@ -51,6 +69,7 @@ const Layout = ({
                   title={header?.title}
                   IconComponent={header?.icon}
                   setShowModal={setShowModal}
+                  toggleSidebar={()=>setShowSidebar(!showSidebar)}
                 />}
               </div>
               <div className="overflow-auto flex-grow-1" style={{background: "#fbfdfc"}}>
@@ -61,7 +80,7 @@ const Layout = ({
           <RequestModal showModal={showModal} setShowModal={setShowModal} />
         </>
       ):
-      <Login onSuccess={(e)=>setShowContent(e)} />}
+      <Login />}
     </>
   );
 };
@@ -71,5 +90,6 @@ Layout.propTypes = {
   returnAction: proptype.func,
   showModalAction: proptype.bool,
   navReference: proptype.string,
+
 };
 export default Layout;

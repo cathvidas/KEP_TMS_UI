@@ -9,7 +9,7 @@ import { Button } from "primereact/button";
 import { confirmAction } from "../../services/sweetalert";
 import { APP_DOMAIN } from "../../api/constants";
 
-const Sidebars = ({ activeNavigation }) => {
+const Sidebars = ({ activeNavigation , expanded, show, hide}) => {
   const navigate = useNavigate();
   const checkIfActive = (path) => {
     return path?.toUpperCase() === activeNavigation?.toUpperCase();
@@ -18,23 +18,26 @@ const Sidebars = ({ activeNavigation }) => {
   const lastname = sessionStorage.getItem("lastname");
   const fullname = sessionStorage.getItem("fullname");
 
-  const NavItem = ({ item, icon, title }) => {
+  const NavItem = ({ item, icon, title, iconComponent, onClick , hideLabel = false}) => {
     return (
       <li className="">
         <TooltipTemplate
           title={title}
           item={
-            <Link
-              className={`nav-link py-2 px-2 link-body-emphasis rounded-0  ${
+            <div
+              className={`nav-link py-2 cursor-pointer ${expanded ? "px-3": "px-2"} link-body-emphasis rounded-0  ${
                 checkIfActive(item) ? "link-light active" : "text-secondary"
               }`}
               style={{ padding: "2rem", borderBottom: "1px solid #f8f8f8 " }}
-              to={`/KEP_TMS/${item}`}
+              to={"#"}
+              onClick={onClick ? onClick : ()=>navigate(`${APP_DOMAIN}/${item}`)}
               aria-current="page"
             >
-              {icon && (
-                <div className="flex gap-1 flex-column text-center">
-                  <i className={icon} style={{ fontSize: "1.4rem" }}></i>{" "}
+              
+                <div className={`flex  flex-${expanded? "row gap-3": "column gap-1"} text-center`}>
+                  {iconComponent ? <>{iconComponent}</> :  icon &&
+                  <i className={icon} style={{ fontSize: "1.4rem" }}></i> }
+                  {!hideLabel&&
                   <small
                     style={{
                       fontSize: ".7rem",
@@ -43,10 +46,10 @@ const Sidebars = ({ activeNavigation }) => {
                     }}
                   >
                     {title}
-                  </small>
+                  </small>}
                 </div>
-              )}
-            </Link>
+            
+            </div>
           }
         />
       </li>
@@ -56,6 +59,9 @@ const Sidebars = ({ activeNavigation }) => {
     item: proptype.string.isRequired,
     icon: proptype.string,
     title: proptype.string.isRequired,
+    iconComponent: proptype.object,
+    onClick: proptype.func,
+    hideLabel: proptype.bool,
   };
   const handleSignOut = () => {
     confirmAction({
@@ -76,20 +82,23 @@ const Sidebars = ({ activeNavigation }) => {
   return (
     <>
       <div
-        className={`bg-body position-sticky d-none d-md-block  sidebar top-0 min-vh-100 bottom-0 z-1 border-right z-2 `}
+        className={`${show ? "d-block" : "d-none"} ${expanded ? "expanded position-fixed" : "position-sticky"} bg-body  d-md-block  sidebar top-0 min-vh-100 bottom-0 z-1 border-right z-2 `}
         style={{
           borderRight:
             "var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)",
           height: "100vh",
-          width: "5rem",
+          width: expanded ? "" : "5rem"
         }}
       >
-        <div className="d-flex w-100 flex-column h-100  top-0 bottom-0">
+        <div className="d-flex w-100 flex-column  h-100  top-0 bottom-0">
           <Link
-            className="fw-bold lh-1 theme-color flex text-decoration-none py-1 px-3 pe-4 d-flex"
-            to={"/KEP_TMS/Dashboard"}
+            className={`${expanded ? "border-bottom" : ""} fw-bold lh-1 theme-color gap-0 flex text-decoration-none py-1`}
+            to={expanded ? "": "/KEP_TMS/Dashboard"}
           >
-            <img src={icon2} width="43" />
+            <img className={expanded ? `mx-2` : `mx-auto`} src={icon2} width="43" />
+            {expanded &&  <>
+            <span className="">KNOWLES TRAINING MANAGEMENT SYSTEM</span>
+            <Button type="button" text severity="secondary" onClick={hide} className="ms-auto me-1" icon="pi pi-times"/></>}
           </Link>
           <ul className="nav nav-pills flex-column nav-flush w-100 mb-auto">
             <NavItem item={"Dashboard"} title="Home" icon={"pi pi pi-home"} />
@@ -138,25 +147,10 @@ const Sidebars = ({ activeNavigation }) => {
               icon={"pi pi-trophy"}
             />
           </ul>
-          <div className={`dropdown gap-2 p-3 d-flex flex-column nav-flush`}>
-            <Link
-              className=" link-body-emphasis d-flex mx-auto align-items-center text-decoration-none"
-              aria-expanded="false"
-              role="button"
-              to={APP_DOMAIN+"/Users/Detail/"+SessionGetEmployeeId()}
-            >
-              <UserIcon Name={fullname ?? lastname + "," + firstname} />
-            </Link>
-            <Button
-              href="#"
-              className=" link-body-emphasis py-1 rounded-pill  d-flex mx-auto "
-              aria-expanded="false"
-              type="button"
-              onClick={handleSignOut}
-              text
-              icon="pi pi-sign-out"
-            />
-          </div>
+          <ul className={` nav nav-pills  d-flex flex-column nav-flush`}>
+            <NavItem item={"Users/Detail/"+SessionGetEmployeeId()} title={fullname ?? lastname + "," + firstname} icon="pi pi-users" iconComponent={ <UserIcon Name={fullname ?? lastname + "," + firstname} />} />
+            <NavItem hideLabel={!expanded} onClick={handleSignOut} title="Sign Out" icon="pi pi-sign-out"  />
+          </ul>
         </div>
       </div>
     </>
@@ -165,5 +159,8 @@ const Sidebars = ({ activeNavigation }) => {
 
 Sidebars.propTypes = {
   activeNavigation: proptype.string,
+  expanded: proptype.bool,
+  show: proptype.bool,
+  hide: proptype.func,
 };
 export default Sidebars;
