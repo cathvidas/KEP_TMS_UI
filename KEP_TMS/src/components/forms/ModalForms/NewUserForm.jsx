@@ -10,7 +10,7 @@ import { actionFailed, actionSuccessful, confirmAction } from "../../../services
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import userService from "../../../services/userService";
 import { SessionGetEmployeeId } from "../../../services/sessions";
-const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false, headerTitle})=>{
+const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false, headerTitle, onFinish})=>{
     const [formData, setFormData] = useState(userConstant);
     const [showPass, setShowPass] = useState(false);
     const [error, setError] = useState({});
@@ -42,7 +42,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                         ()=>isUpdate? userService.updateUser(newFormData) : userService.createUser(newFormData),
                         () => actionSuccessful("Success!", isUpdate ? "User updated successfully": "User created successfully"),
                         (e) => actionFailed("Error!", e.message),
-                        ()=>window.location.reload()
+                        onFinish
                     )
             })
         }
@@ -244,13 +244,6 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                     <Button text icon={showPass ? "pi pi-eye" : "pi pi-eye-slash"} style={{width: "fit-content"}} className="p-0 position-absolute top-50 end-0 translate-middle" type="button" onClick={()=>setShowPass(!showPass)}/>
 
                   </div>
-
-                  //     <InputGroup className="mb-3">
-                  //     <InputGroup.Text>$</InputGroup.Text>
-                  //     <Form.Control aria-label="Amount (to the nearest dollar)" />
-                  //     <InputGroup.Text>.00</InputGroup.Text>
-                  //   </InputGroup>
-                  // <Password value={formData.email} onChange={(e) => ""} toggleMask />
                 }
               />
               {isUpdate && 
@@ -292,6 +285,7 @@ NewUserForm.propTypes = {
     closeForm: proptype.func,  // Function to close Modal
     options: proptype.object,  // Options for dropdowns
     defaultData: proptype.object,  // Default data for form
-    headerTitle: proptype.string
+    headerTitle: proptype.string,
+    onFinish: proptype.func,  // Function to handle form submission
 }
 export default NewUserForm;

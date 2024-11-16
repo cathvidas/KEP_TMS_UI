@@ -15,11 +15,12 @@ import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import NotFoundPage from "./NotFoundPage";
 
 const UserPage = () => {
+  const [trigger, setTrigger] = useState(0)
   const [showForm, setShowForm] = useState(false);
   const { page, id } = useParams();
   const navigate = useNavigate();
   const [currentContent, setCurrentContent] = useState(0);
-  const { data, loading } = userHook.useAllUsersAndEmployee();
+  const { data, loading } = userHook.useAllUsersAndEmployee(trigger);
   const [options, setOptions] = useState({ options: [], loading: true });
   const roles = commonHook.useAllRoles();
   const departments = commonHook.useAllDepartments();
@@ -28,6 +29,9 @@ const UserPage = () => {
   const filterdata = (userType) => {
     return userType ? data?.filter((item) => item.roleName === userType) : data;
   };
+  const refreshData = ()=>{
+    setTrigger(prev=>prev+1)
+  }
   useEffect(() => {
     if (
       !roles?.loading &&
@@ -131,32 +135,36 @@ const UserPage = () => {
       adminList={filterdata(UserTypeValue.ADMIN)}
       isAdmin={isAdmin}
     />,
-    <AllUserPageSection key={1} options={options} data={data} />,
+    <AllUserPageSection key={1} options={options} data={data} reloadData={refreshData} />,
     <AllUserPageSection
       key={2}
       options={options}
-      data={filterdata(UserTypeValue.TRAINEE)}
+      data={data}
       userType={UserTypeValue.TRAINEE}
+      reloadData={refreshData}
     />,
     <AllUserPageSection
       key={3}
       options={options}
-      data={filterdata(UserTypeValue.APPROVER)}
+      data={data}
       userType={UserTypeValue.APPROVER}
       isFilter
+      reloadData={refreshData}
     />,
     <AllUserPageSection
       key={4}
       options={options}
-      data={filterdata(UserTypeValue.FACILITATOR)}
+      data={data}
       userType={UserTypeValue.FACILITATOR}
       isFilter
+      reloadData={refreshData}
     />,
     <AllUserPageSection
       key={5}
       options={options}
-      data={filterdata(UserTypeValue.ADMIN)}
+      data={data}
       userType={UserTypeValue.ADMIN}
+      reloadData={refreshData}
       isFilter
     />,
   ];
@@ -205,6 +213,7 @@ const UserPage = () => {
           closeForm={() => setShowForm(false)}
           options={options}
           headerTitle="Add New User"
+          onFinish={refreshData}
         />
       </>
     );

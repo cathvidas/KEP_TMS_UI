@@ -25,9 +25,8 @@ const userHook = {
     };
     }
     , 
-    useAllUsersAndEmployee : ()=>{
+    useAllUsersAndEmployee : (trigger)=>{
       const [data, setData] = useState([]);
-      const [approvers, setApprovers] = useState([]);
       const [admins, setAdmins] = useState([]);
       const [facilitators, setFacilitators] = useState([]);
       const [error, setError] = useState(null);
@@ -52,7 +51,7 @@ const userHook = {
           );
         }
         fetchRegisteredUsers();
-      }, [])
+      }, [trigger])
       return {data, facilitators, admins, error, loading}
     }
 }

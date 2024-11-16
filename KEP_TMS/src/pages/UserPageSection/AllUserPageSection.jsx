@@ -14,7 +14,7 @@ import userService from "../../services/userService";
 import { UserTypeValue } from "../../api/constants";
 import { SessionGetEmployeeId } from "../../services/sessions";
 
-const AllUserPageSection = ({userType, data, options, isFilter})=>{
+const AllUserPageSection = ({userType, data, options, isFilter, reloadData})=>{
     const [defaultValue, setDefaultValue] = useState({});
     const [showForm, setShowForm] = useState(false);
     const [showUpdateForm, setShowUpdateForm] = useState(false);
@@ -69,7 +69,7 @@ const AllUserPageSection = ({userType, data, options, isFilter})=>{
                 () => userService.updateUser(newData),
                 (e) => actionSuccessful("Success!", e.message),
                 (e) => actionFailed("Error!", e.message),
-                ()=>window.location.reload()
+                reloadData
               );
             },
           });
@@ -106,9 +106,9 @@ return (
         )}
       />
     )}
-    <CommonTable dataTable={data} columnItems={columnItems} tableName={`${userType ?? "All"} Users`}/>
-    <AddUserForm showForm={showForm} closeForm={()=>setShowForm(false)} userType={userType} data={data} userRoles={options?.options?.roles} optionList={options?.options}/>
-    <NewUserForm showForm={showUpdateForm} closeForm={setShowUpdateForm} options={options} defaultData={mapUserUpdateDetail(defaultValue, options?.options)} headerTitle={"Update User Details"} isUpdate/>
+    <CommonTable dataTable={userType ? data?.filter(item=>item?.roleName === userType) : data} columnItems={columnItems} tableName={`${userType ?? "All"} Users`}/>
+    <AddUserForm showForm={showForm} closeForm={()=>setShowForm(false)} userType={userType} data={data} userRoles={options?.options?.roles} optionList={options?.options} onFinish={reloadData}/>
+    <NewUserForm showForm={showUpdateForm} closeForm={setShowUpdateForm} options={options} defaultData={mapUserUpdateDetail(defaultValue, options?.options)} headerTitle={"Update User Details"} isUpdate onFinish={reloadData}/>
   </>
 )
 }
@@ -119,5 +119,6 @@ AllUserPageSection.propTypes = {
     userRoles: proptype.array,
     options: proptype.object,
     isFilter: proptype.bool,
+    reloadData: proptype.func,
 }
 export default AllUserPageSection;

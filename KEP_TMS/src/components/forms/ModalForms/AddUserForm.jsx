@@ -10,16 +10,17 @@ import { actionFailed, actionSuccessful, confirmAction } from "../../../services
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import userService from "../../../services/userService";
 import { SessionGetEmployeeId } from "../../../services/sessions";
-const AddUserForm = ({showForm, closeForm, userType, data, userRoles, optionList})=>{
+const AddUserForm = ({showForm, closeForm, userType, data, userRoles, optionList, onFinish})=>{
     const [selectedUser, setSelectedUser] = useState({label:"", value:""})
     const [options, setOptions] = useState([]);
     const [error, setError] = useState("");
     useEffect(() => {
-     const mappedData = data?.map((user) => (
+      const filteredData = data?.filter((user) => user.roleName !== userType);
+     const mappedData = filteredData?.map((user) => (
        { label: user?.fullname, value: user?.employeeBadge })
       );
       setOptions(mappedData)
-    }, [data]);
+    }, [data, userType]);
     const handleSubmit = () => {
       const isValid = validateForm();
       const userData = data?.filter(
@@ -35,7 +36,7 @@ const AddUserForm = ({showForm, closeForm, userType, data, userRoles, optionList
               () => userService.updateUser(newData),
               (e) => actionSuccessful("Success!", e.message),
               (e) => actionFailed("Error!", e.message),
-              () =>window.location.reload()
+              onFinish
             );
           },
         });
@@ -92,6 +93,7 @@ AddUserForm.propTypes = {
     userType: proptype.string,
     data: proptype.array,
     userRoles: proptype.array,
-    optionList: proptype.object
+    optionList: proptype.object,
+    onFinish: proptype.func
 }
 export default AddUserForm;
