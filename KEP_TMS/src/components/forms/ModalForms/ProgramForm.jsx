@@ -171,15 +171,13 @@ const ProgramForm = ({ handleShow, handleClose, selectedData, onReload }) => {
           <Modal.Footer className="border-0">
             <Button
               type="button"
-              label="No"
-              icon="pi pi-times"
+              label="Cancel"
               onClick={handleClose}
               className="p-button-text rounded"
             />
             <Button
               type="submit"
-              label="Yes"
-              icon="pi pi-check"
+              label={selectedData != null ? "Update" : "Create"}
               className="rounded"
             />
           </Modal.Footer>

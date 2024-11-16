@@ -48,6 +48,8 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
       );
       const updatedData = { ...selectedData, statusId: status?.value };
       setFormData(updatedData);
+    }else{
+      setFormData({name: "", description: "", statusId: ""});
     }
   }, [selectedData, options]);
   const submitForm = async () => {
@@ -122,7 +124,7 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                   <Form.Control
                     type="text"
                     name="name"
-                    value={formData.name}
+                    value={formData?.name}
                     placeholder="Category Name"
                     onChange={handleOnChange}
                     required
@@ -138,7 +140,7 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
 
                   <textarea
                     className="form-control"
-                    value={formData.description}
+                    value={formData?.description}
                     placeholder="Category Description"
                     name="description"
                     rows="5"
@@ -175,15 +177,13 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
           <Modal.Footer className="border-0">
             <Button
               type="button"
-              label="No"
-              icon="pi pi-times"
+              label="Cancel"
               onClick={handleClose}
               className="p-button-text rounded"
             />
             <Button
               type="submit"
-              label="Yes"
-              icon="pi pi-check"
+              label={selectedData != null ? "Update" : "Create"}
               className="rounded"
             />
           </Modal.Footer>

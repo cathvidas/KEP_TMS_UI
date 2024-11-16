@@ -324,14 +324,12 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
             <Button
               type="button"
               label="Cancel"
-              icon="pi pi-times"
               onClick={handleClose}
               className="p-button-text rounded"
             />
             <Button
               type="button"
-              label="Save"
-              icon="pi pi-check"
+              label={selectedData != null ? "Update" : "Create"}
               className="rounded"
               onClick={handleSubmit}
             />

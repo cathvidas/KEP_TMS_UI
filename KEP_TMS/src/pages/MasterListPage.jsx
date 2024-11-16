@@ -41,6 +41,13 @@ const MasterListPage = () => {
           command: () => navigate("/KEP_TMS/MasterList/Providers"),
           icon: "pi pi-building",
         },
+        {
+          label: "External Trainers",
+          template: MenuItemTemplate,
+          active: currentContent === 5 ? true : false,
+          command: () => navigate("/KEP_TMS/MasterList/ExternalTrainers"),
+          icon: "pi pi-users",
+        },
         // {
         //   label: "Training Type",
         //   template: MenuItemTemplate,
@@ -83,6 +90,8 @@ const MasterListPage = () => {
       setCurrentContent(0);
     } else if (page.category === "Providers") {
       setCurrentContent(2);
+    } else if (page.category === "ExternalTrainers") {
+      setCurrentContent(5);
     } else if (page.category === "Training") {
       if (page.type === "Internal") {
         setCurrentContent(3);
