@@ -15,7 +15,6 @@ const TrainingRequestEmailtemplate = ({
   recipient,
   activityLogs,
 }) => {
-  // console.log(requestDetail, recipient)
   const tableHedear = (value) => {
     return (
       <>

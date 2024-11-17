@@ -53,6 +53,7 @@ export const UserTypeValue = {
   TRAINEE: "Trainee",
   SUPER_ADMIN: "SuperAdmin",
   APPROVER: "Approver",
+  REQUESTOR: "Requestor",
 }
 export const attachmentType = {
   MODULE: 1,

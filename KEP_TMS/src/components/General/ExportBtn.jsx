@@ -1,11 +1,10 @@
 import { Button } from "primereact/button";
 import Proptypes from "prop-types";
 
-function ExportBtn({ data }) {
+const ExportBtn=({ data })=> {
   ExportBtn.propTypes = {
     data: Proptypes.array,
   };
-
   const handleDownload = (e) => {
     e.preventDefault();
   
@@ -16,7 +15,7 @@ function ExportBtn({ data }) {
       });
       return facilitators;
     };
-    const requestData = data.map((dataItem) => ({
+    const requestData = data?.map((dataItem) => ({
       RequestID: dataItem.id,
       RequestorBadge: dataItem.requestorBadge,
       RequestorName: dataItem.requestorName,

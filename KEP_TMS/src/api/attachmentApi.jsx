@@ -9,7 +9,6 @@ export const addAttachmentsApi = async (formData) => {
   for (let pair of formData.entries()) {
     serializedFormData.push(encodeURIComponent(pair[0]) + "=" + encodeURIComponent(pair[1]));
   }
-  console.log(serializedFormData);
   return await fetchFromApi("/Attachment/AddAttachments","POST", formData, {'Content-Type': 'multipart/form-data'});
 }
 export const deleteAttachmentApi = async (id) =>{

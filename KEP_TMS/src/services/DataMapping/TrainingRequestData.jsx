@@ -1,5 +1,3 @@
-import { getUserApi } from "../../api/userApi";
-
 export const mapTRequestToTableData = (data)=>{
     const mappedData = data?.map(item=>({
         id: item.id,
@@ -22,7 +20,8 @@ export const mapTRequestToTableData = (data)=>{
         facilitatorName: item?.trainingFacilitators[0]?.fullname ,
         totalParticipants: item?.totalParticipants,
         trainingParticipants: item?.trainingParticipants,
-        durationInHours: item?.durationInHours
+        durationInHours: item?.durationInHours,
+        createdDate: item?.createdDate
         // facilitatorName: item?trainingFac 
 
     }))

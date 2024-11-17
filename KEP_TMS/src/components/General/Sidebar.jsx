@@ -12,7 +12,7 @@ import { APP_DOMAIN } from "../../api/constants";
 const Sidebars = ({ activeNavigation , expanded, show, hide}) => {
   const navigate = useNavigate();
   const checkIfActive = (path) => {
-    return path?.toUpperCase() === activeNavigation?.toUpperCase();
+    return path && path?.toUpperCase() === activeNavigation?.toUpperCase();
   };
   const firstname = sessionStorage.getItem("firstname");
   const lastname = sessionStorage.getItem("lastname");

@@ -5,6 +5,10 @@ const validateExamForm = (data) => {
         errors.title = "Exam title is required";
         isValid = false;
     }
+    if (data.passingRate === 0) {
+        errors.passingRate = "Passing rate should be greater than zero";
+        isValid = false;
+    }
     if (!data.questionLimit || data.questionLimit < 1) {
         errors.questionLimit = "Number of questions to display is required";
         isValid = false;

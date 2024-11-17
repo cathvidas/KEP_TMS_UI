@@ -1,24 +1,46 @@
-import { SectionBanner } from "../../components/General/Section";
 import trainingRequestHook from "../../hooks/trainingRequestHook";
 import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
-import proptype from "prop-types"
-import TrainingRequestTableList from "../../components/List/TrainingRequestTableList";
+import proptype from "prop-types";
+import TrainingRequestList from "../../components/List/TrainingRequestList";
+import { TrainingType } from "../../api/constants";
+import { useEffect, useState } from "react";
 
-const TrainingListSection = ({trainingType}) => {
-    const { data, loading } = trainingRequestHook.useAllTrainingRequests(
-      0,
-      trainingType
+const TrainingListSection = ({ trainingType }) => {
+  const [filteredData, setFilteredData] = useState([]);
+  const { data, loading } = trainingRequestHook.useAllTrainingRequests();
+  useEffect(() => {
+    setFilteredData(
+      data?.filter((item) => item?.trainingType?.id === trainingType)
     );
-    return (<>
-    {loading ? <><SkeletonBanner/><SkeletonDataTable/></>:<>
-    <SectionBanner title="Training List"/>
-    <TrainingRequestTableList  data={data} isAdmin /></>}
-
-    </>)
-}
+  }, [data, trainingType]);
+  return (
+    <>
+      {loading ? (
+        <>
+          <SkeletonBanner />
+          <SkeletonDataTable />
+        </>
+      ) : (
+        <>
+          <TrainingRequestList
+            headingTitle={
+              trainingType == TrainingType.INTERNAL
+                ? "Internal Training Requests"
+                : trainingType == TrainingType.EXTERNAL
+                ? "External Training Requests"
+                : ""
+            }
+            data={filteredData}
+            isAdmin
+          />
+        </>
+      )}
+    </>
+  );
+};
 
 TrainingListSection.propTypes = {
-  trainingType: proptype.number.isRequired
-}
+  trainingType: proptype.number.isRequired,
+};
 export default TrainingListSection;

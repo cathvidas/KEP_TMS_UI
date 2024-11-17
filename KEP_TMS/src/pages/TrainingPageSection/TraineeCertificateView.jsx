@@ -1,242 +1,153 @@
-import { Tooltip } from "primereact/tooltip";
-import { FileUpload } from "primereact/fileupload";
-import { ProgressBar } from "primereact/progressbar";
-import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { SectionHeading } from "../../components/General/Section";
-import { checkFileIfImage } from "../../utils/fileUtils";
-import attachmentService from "../../services/attachmentService";
-import { API_BASE_URL, attachmentType } from "../../api/constants";
+import proptype from "prop-types";
+import certificateHook from "../../hooks/certificateHook";
 import { SessionGetEmployeeId } from "../../services/sessions";
-import handleResponseAsync from "../../services/handleResponseAsync";
-import proptype from "prop-types"
-import { confirmAction } from "../../services/sweetalert";
-import attachmentHook from "../../hooks/attachmentHook";
+import CertificateViewModal from "../../components/Modal/CertificateViewModal";
+import CertificateForm from "../../components/forms/ModalForms/CertificateForm";
 import { Col, Row } from "react-bootstrap";
 
-const TraineeCertificateView = ({data}) => {
-  const toast = useRef(null);
-  const [totalSize, setTotalSize] = useState(0);
-  const certificatesFile = attachmentHook.useAttachmentsByReferenceId(data?.id, attachmentType.CERTIFICATE)
-  const fileUploadRef = useRef(null);
-
-  const onTemplateSelect = (e) => {
-    let _totalSize = totalSize;
-    let files = e.files;
-
-    Object.keys(files).forEach((key) => {
-      _totalSize += files[key].size || 0;
-    });
-
-    setTotalSize(_totalSize);
+const TraineeCertificateView = ({ data, isAdmin }) => {
+  const [trigger, setTrigger] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [dataToUpdate, setDataToUpdate] = useState(null);
+  const [selectedData, setSelectedData] = useState(null);
+  const [showCertificateViewModal, setShowCertificateViewModal] = useState(false);
+  const certificates = certificateHook.useTrainingCertificatesByRequestId(
+    data?.id,
+    isAdmin ? null : SessionGetEmployeeId(),
+    trigger
+  );
+  const userOptions = ()=>{
+    return data?.trainingParticipants?.map((item) => {
+      return {
+        label: item.fullname,
+        value: item.employeeBadge,
+      };
+    })
+  }
+  const getUserDetail = (userId) => {
+    return data?.trainingParticipants?.find(
+      (item) => item.employeeBadge === userId
+    )?.fullname;
   };
-
-  const onTemplateUpload = (e) => {
-    let _totalSize = 0;
-
-    e.files.forEach((file) => {
-      _totalSize += file.size || 0;
-    });
-    
-    alert(123)
-    setTotalSize(_totalSize);
-    toast.current.show({
-      severity: "info",
-      summary: "Success",
-      detail: "File Uploaded",
-    });
-  };
-
-  const onTemplateRemove = (file, callback) => {
-    setTotalSize(totalSize - file.size);
-    callback();
-  };
-
-  const onTemplateClear = () => {
-    setTotalSize(0);
-  };
-
-  const headerTemplate = (options) => {
-    const { className, chooseButton, uploadButton, cancelButton } = options;
-    const value = totalSize / 10000;
-    const formatedValue =
-      fileUploadRef && fileUploadRef.current
-        ? fileUploadRef.current.formatSize(totalSize)
-        : "0 B";
-
-    return (
-      <div
-        className={className}
-        style={{
-          backgroundColor: "transparent",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        {chooseButton}
-        {uploadButton}
-        {cancelButton}
-        <div className="flex align-items-center gap-3 ml-auto">
-          <span>{formatedValue} / 1 MB</span>
-          <ProgressBar
-            value={value}
-            showValue={false}
-            style={{ width: "10rem", height: "12px" }}
-          ></ProgressBar>
-        </div>
-      </div>
-    );
-  };
-
-  const itemTemplate = (file, props) => {
-    return (
-      <div className="flex align-items-center flex-wrap">
-        <div className="flex align-items-center" style={{ width: "40%" }}>
-          {/* if file is image */}
-          {checkFileIfImage(file) ? (
-            <img
-              alt={file.name}
-              role="presentation"
-              src={file.objectURL}
-              width={100}
-            />
-          ) : (
-            <i className="pi pi-file"           
-            style={{
-                fontSize: "5em",
-                borderRadius: "50%",
-                backgroundColor: "var(--surface-b)",
-                color: "var(--surface-d)",
-              }}></i>
-          )}
-          <span className="flex flex-column justify-content-start ml-3">
-            {file.name}
-            <small className="me-auto">{new Date().toLocaleDateString()}</small>
-          </span>
-        </div>
-        <Tag
-          value={props.formatSize}
-          severity="warning"
-          className="px-3 py-2"
+  return (
+    <div>
+      <div className="flex justify-content-between align-items-center mb-2 mt-3">
+        <SectionHeading
+          title="Training Certificate"
+          icon={<i className="pi pi-trophy" />}
         />
         <Button
           type="button"
-          icon="pi pi-times"
-          className="p-button-outlined p-button-rounded p-button-danger ms-auto  rounded-circle"
-          onClick={() => onTemplateRemove(file, props.onRemove)}
+          icon="pi pi-plus"
+          label="Add New"
+          className="p-button-rounded p-button-success float-right py-1 rounded"
+          onClick={() => {
+            setShowModal(true);
+            setSelectedData(null);
+            setDataToUpdate(null);
+          }}
         />
       </div>
-    );
-  };
-
-  const emptyTemplate = () => {
-    return (
-      <div className="flex align-items-center flex-column">
-        <i
-          className="pi pi-image mt-3 p-5"
-          style={{
-            fontSize: "5em",
-            borderRadius: "50%",
-            backgroundColor: "var(--surface-b)",
-            color: "var(--surface-d)",
+      {isAdmin ? (<>
+        <Row className="g-2">
+          {certificates?.data?.map((item) => (
+            <>
+              <Col className="col-md-6">
+                <div
+                  className="flex border rounded p-3 cursor-pointer theme-hover-light align-items-center gap-3 bg-white"
+                  onClick={() => {
+                    setSelectedData(item);
+                    setShowCertificateViewModal(true);
+                  }}
+                >
+                  <span
+                    className="rounded-pill bg-light bg-danger flex justify-content-center"
+                    style={{ width: "3rem", height: "3rem" }}
+                  >
+                    <i
+                      className="pi pi-trophy text-secondary"
+                      style={{ fontSize: "1.6rem" }}
+                    ></i>
+                  </span>
+                  <div className="flex-wrap flex-grow-1 d-flex flex-column gap-2">
+                    <h5 className="m-0 ">{getUserDetail(item?.userId)}</h5>
+                    <div className="flex flex-wrap align-items-center gap-2">
+                      {item?.certificate?.length} items &nbsp;|&nbsp;{" "}
+                      {item?.certificate?.map((cert) => (
+                        <>
+                          <span className="theme-color">{cert?.detail}</span>;
+                        </>
+                      ))}
+                    </div>
+                  </div>
+                  {/* <span className="font-bold text-900 ms-auto">${"item.price"}</span> */}
+                </div>
+              </Col>
+            </>
+          ))}
+        </Row>
+        {showCertificateViewModal &&<>
+        <CertificateViewModal
+        customHeader={<>
+      <div className="flex justify-content-between">
+        <h5 className="m-0">{getUserDetail(selectedData?.userId)}</h5>
+        <Button
+          type="button"
+          icon="pi pi-times"
+          className="rounded"
+          text
+          onClick={() => setShowCertificateViewModal(false)}/>
+        </div>
+        <hr />
+        </>}
+          hideHeader
+          data={{ training: data, certificate: selectedData?.certificate }}
+          onUpdate={(e) => {
+            setShowModal(true);
+            setDataToUpdate(e);
           }}
-        ></i>
-        <span
-          style={{ fontSize: "1.2em", color: "var(--text-color-secondary)" }}
-          className="my-5"
-        >
-          Drag and Drop Certificate Here
-        </span>
-      </div>
-    );
-  };
-
-  const chooseOptions = {
-    icon: "pi pi-fw pi-images",
-    iconOnly: true,
-    className: "custom-choose-btn p-button-rounded p-button-outlined",
-  };
-  const uploadOptions = {
-    icon: "pi pi-fw pi-cloud-upload",
-    iconOnly: true,
-    className:
-      "custom-upload-btn p-button-success p-button-rounded p-button-outlined  rounded-circle",
-  };
-  const cancelOptions = {
-    icon: "pi pi-fw pi-times",
-    iconOnly: true,
-    className:
-      "custom-cancel-btn p-button-danger p-button-rounded p-button-outlined  rounded-circle",
-  };
-const uploadCertificate = (e)=>{
-    const file = e.files[0];
-    if (file) {
-    const formData = new FormData();
-    formData.append("ReferenceId", data?.id);
-    formData.append("AttachmentType", attachmentType.CERTIFICATE);
-    // formData.append("EmployeeBadge", SessionGetEmployeeId());
-    formData.append("Files", file);
-    confirmAction({
-      showLoaderOnConfirm: true,
-        title: "Upload Certificate",
-        text: "Are you sure you want to upload this certificate?",
-      onConfirm: () =>
-        handleResponseAsync(
-          () => attachmentService.addAttachments(formData),
-          null,
-          null,
-        ),
-    });
-    }else{
-        alert("No file selected")  // or show an error message
-    }
-}
-  return (
-    <div>
-      <SectionHeading
-        title="Certificate"
-        icon={<i className="pi pi-trophy" />}
-      />
-      {/* <Toast ref={toast}></Toast> */}
-
-      <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
-      <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
-      <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />
-<Row>
-  {certificatesFile?.data?.map(item =><>
-  <Col>
-  <div>
-    <h5>
-  {item?.fileName}</h5>
-  <img src={`${API_BASE_URL}${item?.url}`}/></div>
-  </Col>
-  </>)}
-</Row>
-
-      <FileUpload
-        ref={fileUploadRef}
-        name="demo[]"
-        url=""
-        uploadHandler={uploadCertificate}
-        customUpload
-        maxFileSize={20000000}
-        onUpload={onTemplateUpload}
-        onSelect={onTemplateSelect}
-        onError={onTemplateClear}
-        onClear={onTemplateClear}
-        headerTemplate={headerTemplate}
-        itemTemplate={itemTemplate}
-        emptyTemplate={emptyTemplate}
-        chooseOptions={chooseOptions}
-        uploadOptions={uploadOptions}
-        cancelOptions={cancelOptions}
-        
+        /></>}
+        </>
+      ) : certificates.data.length > 0 ? (
+        <CertificateViewModal
+          hideHeader
+          data={{ training: data, certificate: certificates?.data }}
+          onUpdate={(e) => {
+            setShowModal(true);
+            setDataToUpdate(e);
+          }}
+        />
+      ) : (
+        <div className="flex justify-content-center align-items-center py-5">
+          No Certificate Found
+        </div>
+      )}
+      <CertificateForm
+      userOptions={isAdmin ? userOptions() : []}
+        userId={SessionGetEmployeeId()}
+        showModal={showModal}
+        hideModal={() => setShowModal(false)}
+        trainingOptions={[
+          { value: data?.id, label: data?.trainingProgram?.name },
+        ]}
+        defaultTraining={{
+          value: data?.id,
+          label: data?.trainingProgram?.name,
+        }}
+        onFinish={(e) => {
+          setShowModal(!e);
+          setTrigger((prev) => prev + 1);
+        }}
+        defaultValue={dataToUpdate}
       />
     </div>
   );
 };
 TraineeCertificateView.propTypes = {
-    data: proptype.object.isRequired,
-}
+  data: proptype.object.isRequired,
+  isAdmin: proptype.bool,
+};
 export default TraineeCertificateView;

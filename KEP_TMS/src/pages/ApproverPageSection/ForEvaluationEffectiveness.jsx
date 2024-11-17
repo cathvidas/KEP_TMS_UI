@@ -5,7 +5,6 @@ import effectivenessHook from "../../hooks/effectivenessHook";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
-import userHook from "../../hooks/userHook";
 import userMapping from "../../services/DataMapping/userMapping";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import { Button } from "primereact/button";
@@ -43,7 +42,6 @@ const ForEvaluationEffectiveness = () => {
     };
     getRequestData();
   }, [data, loading]);
-  console.log(effectivessDetail)
   const actionTemplate = (rowData) => (
     <>
       <div className="d-flex">

@@ -50,7 +50,6 @@ const TrainingReportForm = ({
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  console.log(defaultValue);
   useEffect(() => {
     if (defaultValue) {
       const updatedData = {

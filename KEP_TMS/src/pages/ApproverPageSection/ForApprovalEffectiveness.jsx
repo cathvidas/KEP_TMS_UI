@@ -110,12 +110,6 @@ const ForApprovaleffectiveness = () => {
     });
   };
   const disapproveEffectiveness = (e) => {
-    console.log(selectedData, {
-      transactId: selectedData?.trainingEffectiveness?.id,
-      disapprovedBy: SessionGetEmployeeId(),
-      activityIn: ActivityType.EFFECTIVENESS,
-      remarks: e,
-    })
     confirmAction({
       showLoaderOnConfirm: true,
       title: "Return Effectiveness Report",
@@ -183,7 +177,6 @@ const ForApprovaleffectiveness = () => {
     },
   ];
   const currentStatus = routingService.getApproverStatus(effectiveness?.data?.routings, SessionGetEmployeeId())
-  console.log(currentStatus,effectiveness?.data, selectedData)
   return (
     <div className="p-3">
       {loading ? (

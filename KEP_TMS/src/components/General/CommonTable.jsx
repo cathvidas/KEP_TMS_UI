@@ -13,7 +13,7 @@ const CommonTable = ({
   columnItems,
   tableName,
   header,
-  HeaderComponent,
+  headerComponent,
   hideHeader,
   hidePaginator,
   dataKey,
@@ -30,16 +30,12 @@ const CommonTable = ({
     setFilters(_filters);
     setGlobalFilterValue(value);
   };
-  
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap">
-        <h6 className="m-0  ">{tableName ?? ""}</h6>
-        {/*         
-        <Button type="button" icon="pi pi-file" rounded onClick={() => exportCSV(false)} data-pr-tooltip="CSV" />
-        <Button type="button" icon="pi pi-pencil" text onClick={handleExport} /> */}
-        {HeaderComponent && 
-        <HeaderComponent /> }
+        {tableName && <h6 className="m-0  ">{tableName}</h6>}
+        {headerComponent && 
+        <>{headerComponent}</> }
         <IconField iconPosition="left" className="ms-auto" >
           <InputIcon className="pi pi-search ms-1" />
           <InputText
@@ -97,7 +93,7 @@ CommonTable.propTypes = {
   columnItems: proptype.array,
   tableName: proptype.string,
   header: proptype.func,
-  HeaderComponent: proptype.any,
+  headerComponent: proptype.any,
   hideHeader: proptype.bool,
   hidePaginator: proptype.bool,
   dataKey: proptype.string,

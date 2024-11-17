@@ -58,7 +58,6 @@ const TrainingDetailPage = () => {
     data?.trainingParticipants ?? []
   );
   const logs = mappingHook.useMappedActivityLogs(data, data?.requestor);
-  console.log(data, data?.requestor, logs);
   const traineeAccess =
     data?.status?.id === statusCode.PUBLISHED ||
     data?.status?.id === statusCode.CLOSED;
@@ -101,7 +100,7 @@ const TrainingDetailPage = () => {
       refreshData={refreshData}
       isTrainee={isTrainee}
     />,
-    <TraineeCertificateView key={4} data={data} />,
+    <TraineeCertificateView key={4} data={data} isAdmin={isAdmin}/>,
     <MonitoringReportView
       key={5}
       data={data}

@@ -23,7 +23,7 @@ function App() {
         <Route path="/KEP_TMS/Dashboard" element={<Dashboard />} />
         <Route path="/KEP_TMS/Request/:type?/:id?" element={<NewRequest />} />
         <Route path="/KEP_TMS/RequestList/:type?" element={<RequestList />} />
-        <Route path="/KEP_TMS/Trainings" element={<Trainings />} />
+        <Route path="/KEP_TMS/Trainings/:page?" element={<Trainings />} />
         <Route path="/KEP_TMS/FacilitatedTrainings" element={<TrainerPage />} />
         <Route path="/KEP_TMS/List/:type/:page?" element={<ApproverPage />} />
         <Route path="/KEP_TMS/MasterList/:category?/:type?" element={<MasterListPage />} />

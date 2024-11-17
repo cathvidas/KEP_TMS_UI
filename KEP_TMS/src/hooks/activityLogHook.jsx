@@ -1,209 +1,169 @@
 import { useEffect, useState } from "react";
-import { formatDateTime } from "../utils/datetime/Formatting";
-import getNameFromList from "../services/common/getNameFromList";
-import sortRoutingBySequence from "../services/common/sortRoutingsBySequence";
-import { statusCode } from "../api/constants";
-import { extractChanges } from "../utils/stringUtil";
+import { OtherConstant, statusCode } from "../api/constants";
+import effectivenessService from "../services/effectivenessService";
+import trainingReportService from "../services/trainingReportService";
+import examService from "../services/examService";
+import getTraineeExamDetail from "../services/common/getTraineeExamDetail";
+import trainingDetailsService from "../services/common/trainingDetailsService";
 const activityLogHook = {
-  useReportsActivityLog: (defaultValue, userData) => {
+  useRequestAuditTrailActivityLogs: (auditTrail) => {
     const [logs, setLogs] = useState([]);
     useEffect(() => {
-      if (defaultValue) {
-        let newLogs = [];
-        newLogs.push({
-          name: userData?.fullname ?? defaultValue?.auditTrail?.createdBy,
-          process: "New",
-          remark: "N/A",
-          severity: "secondary",
-          show: true,
-          label: `Created by ${
-            userData?.fullname ?? defaultValue?.auditTrail?.createdBy
-          }`,
-          date:
-            defaultValue?.auditTrail?.length > 0
-              ? formatDateTime(defaultValue?.auditTrail[0]?.createdDate)
-              : "",
-        });
-        sortRoutingBySequence(defaultValue?.routings);
-        defaultValue?.routings?.forEach((item) => {
-          const isApproved =
-            item?.statusId === statusCode.APPROVED ? true : false;
-          const isDisapproved =
-            item?.statusId === statusCode.DISAPPROVED ? true : false;
-          const changes = JSON.parse(item?.changes);
-          const remarks = extractChanges(changes?.Remarks ?? "");
-          if (isApproved || isDisapproved) {
-            newLogs.push({
-              label: `Routed to ${item.assignedName ?? item.assignedTo}`,
-              date: formatDateTime(item?.updatedDate),
-              severity: "default",
-              show: true,
-              name:item?.assignedDetail?.fullname,
-              process: item?.assignedDetail?.position + " Approval",
-              remark: isApproved ? "Approved" : isDisapproved ? remarks?.toValue ?? "Disapproved": "N/A"
-            });
-          }
-          newLogs.push({
-            label: isApproved
-              ? `Approved by ${item.assignedName ?? item.assignedTo}`
-              : isDisapproved
-              ? `Returned by ${item.assignedName ?? item.assignedTo} ${
-                  remarks?.toValue && "with a message '" + remarks.toValue + "'"
-                } `
-              : `Routed to ${item.assignedName ?? item.assignedTo}`,
-            date: formatDateTime(
-              isApproved ? item.updatedDate : item?.createdDate
-            ),
-            severity: isApproved
-              ? "success"
-              : isDisapproved
-              ? "danger"
-              : "default",
-              show: false,
-          });
-        });
-        setLogs(newLogs);
-      }
-    }, [defaultValue, userData]);
-    return logs;
-  },
-  useTrainingRequestActivityLogs: (data, reportsData) => {
-    const [logs, setLogs] = useState([]);
-    useEffect(() => {
-      if (data) {
-        let newLogs = [];
-        newLogs.push({
-          name: data?.requestor?.fullname,
-          process: "New",
-          remark: "N/A",
-          label: "Created",
-          date: data?.createdDate,
-          severity: "secondary",
-          show: true,
-        });
-        // Routings
-        if (data?.status?.id != statusCode.SUBMITTED) {
-          sortRoutingBySequence(data?.routings);
-          data?.routings?.forEach((item) => {
-            const isApproved =
-              item?.statusId === statusCode.APPROVED;
-            const isDisapproved =
-              item?.statusId === statusCode.DISAPPROVED;
-            const changes = JSON.parse(item?.changes);
-            const remarks = extractChanges(changes?.Remarks ?? "");
-            if (isApproved || isDisapproved) {
-              newLogs.push({
-                name: getNameFromList(data?.approvers, item?.assignedTo) ?? item.assignedTo,
-                process: getNameFromList(data?.approvers, item?.assignedTo, false)?.position,
-                label: `Routed to ${
-                  getNameFromList(data?.approvers, item?.assignedTo) ??
-                  item.assignedTo
-                }`,
-                date: formatDateTime(item?.updatedDate),
-                severity: "default",
-                show: true,
-                remark: isApproved ? "Approved" : isDisapproved ? remarks?.toValue ?? "Disapproved": "N/A"
-              });
-            }
-
-            newLogs.push({
-              name: getNameFromList(data?.approvers, item?.assignedTo)?.position ?? item.assignedTo,
-              process: getNameFromList(data?.approvers, item?.assignedTo, false)?.position + " Approval",
-              label: isApproved
-                ? `Approved by ${
-                    getNameFromList(data?.approvers, item?.assignedTo) ??
-                    item.assignedTo
-                  }`
-                : isDisapproved
-                ? `Returned by ${
-                    getNameFromList(data?.approvers, item?.assignedTo) ??
-                    item.assignedTo
-                  } ${
-                    remarks?.toValue &&
-                    "with a message '" + remarks.toValue + "'"
-                  } `
-                : `Routed to ${
-                    getNameFromList(data?.approvers, item?.assignedTo) ??
-                    item.assignedTo
-                  }`,
-              date: formatDateTime(
-                isApproved || isDisapproved
-                  ? item.updatedDate
-                  : item?.createdDate
-              ),
-              show: false,
-              severity: isApproved
-                ? "success"
-                : isDisapproved
-                ? "danger"
-                : "default",
-            });
-          });
-        }
-        
-        //effectiveness
-        if (reportsData) {
-          // if (data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR) {
-          reportsData?.forEach((item) => {
-            if (item?.effectivenessDetail?.id) {
-              newLogs.push({
-                label: `${
-                  item?.userDetail?.fullname ??
-                  item?.effectivenessDetail?.createdBy
-                } submitted an effectiveness Report`,
-                date: item?.effectivenessDetail?.createdDate,
-                severity: "warning",
-              });
-            }
-            if (item?.reportDetail?.id) {
-              newLogs.push({
-                label: `${
-                  item?.userDetail?.fullname ?? item?.reportDetail?.createdBy
-                } submitted a Training Report`,
-                date: item?.reportDetail?.createdDate,
-                severity: "warning",
-              });
-            }
-            if (item?.evaluationDetail?.id) {
-              newLogs.push({
-                label: `${
-                  item?.userDetail?.fullname ??
-                  item?.evaluationDetail?.createdBy
-                } submitted an evaluation Report`,
-                date: item?.evaluationDetail?.createdDate,
-                severity: "warning",
-              });
-            }
-          });
-          // }
-        }
-        const sortedItems = newLogs
-          .sort((a, b) => {
-            const dateA = new Date(a.date);
-            const dateB = new Date(b.date);
-            return dateA - dateB;
-          })
-          ?.map((item) => {
-            item.date = formatDateTime(item.date);
-            return item;
-          });
-        setLogs(sortedItems);
-      }
-    }, [data, reportsData]);
-    return logs;
-  },
-  useRequestAuditTrailActivityLogs: (auditTrail)=>{
-    const [logs, setLogs] = useState([]);
-    useEffect(() => {
-      if(auditTrail){
+      if (auditTrail) {
         const newLogs = auditTrail.map((item) => {
           const changes = JSON.parse(item?.changes);
-          return {...item, changes: changes}
+          return { ...item, changes: changes };
         });
         setLogs(newLogs);
       }
     }, [auditTrail]);
     return logs;
-  }
+  },
+  useUserPendingTaskList: (id, assignedRequest) => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+  
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const pendingList = await Promise.all(
+            assignedRequest?.map(async (item) => {
+              const user = item?.trainingParticipants?.find((i) => i.employeeBadge === id);
+              if (!user) return [];
+    
+              const tasks = [];
+    
+              // Helper to push a task to the list
+              const addTask = (title, detail, link, date, status = null) => {
+                tasks.push({ title, status, detail, program: item?.trainingProgram?.name, link, date });
+              };
+    
+              // Effectiveness report
+              if (item?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR) {
+                const effectivenessReport = await handleEffectivenessReport(user, item);
+                if (effectivenessReport) tasks.push({...effectivenessReport, program: item?.trainingProgram?.name});
+              }
+    
+              // Training report
+              const reportItem = await handleTrainingReport(user, item);
+              if (reportItem) tasks.push({...reportItem, program: item?.trainingProgram?.name});
+    
+              // Evaluation
+              if (!user?.evaluationId) addTask("Pending Training Evaluation", "You have a pending training evaluation to be submitted.", `TrainingDetail/${item.id}/Reports`, item?.trainingStartDate);
+    
+              // Exam
+              const examItems = await handleExams(item, id);
+              tasks.push(...examItems);
+    
+              return tasks;
+            })
+          );
+    
+          setData(pendingList.flat()); // Flatten the array of arrays
+          setLoading(false);
+        } catch (err) {
+          setError(err.message);
+        } 
+      };
+      fetchData();
+    }, [assignedRequest, id]);
+  
+    return { data, loading, error };
+  
+  },
 };
 export default activityLogHook;
+
+
+
+// Handle Effectiveness Report
+const handleEffectivenessReport = async (user, item) => {
+  if (user?.effectivenessId > 0) {
+    try {
+      const effDetail = await effectivenessService.getEffectivenessById(user?.effectivenessId);
+      if (effDetail?.status === statusCode.APPROVED) return null;
+      const title = effDetail?.status === statusCode.DISAPPROVED ? "Effectiveness Report Disapproved" : "Pending Effectiveness Report";
+      return {
+        title,
+        status: effDetail?.status,
+        detail: effDetail?.status === statusCode.DISAPPROVED 
+          ? "Your effectiveness report has been disapproved. Click here to view more details." 
+          : "You have a pending effectiveness report to be submitted.",
+        link: `TrainingDetail/${item.id}/Reports`,
+        date: effDetail?.currentRouting?.createdDate || item?.trainingStartDate,
+      };
+    } catch {
+      return null;
+    }
+  }
+  return {
+    title: "Pending Effectiveness Report",
+    status: null,
+    detail: "You have a pending effectiveness report to be submitted for this training request",
+    link: `TrainingDetail/${item.id}/Reports`,
+    date: item?.trainingStartDate,
+  };
+};
+
+// Handle Training Report
+const handleTrainingReport = async (user, item) => {
+  if (user?.reportId > 0) {
+    try {
+      const reportDetail = await trainingReportService.getTrainingReportById(user?.reportId);
+      if (reportDetail?.status === statusCode.APPROVED) return null;
+      return {
+        title: reportDetail?.status === statusCode.DISAPPROVED ? "Training Report Disapproved" : "Pending Training Report",
+        status: reportDetail?.status,
+        detail: reportDetail?.status === statusCode.DISAPPROVED
+          ? "Your training report has been disapproved. Click here to view more details."
+          : "You have a pending training report to be submitted.",
+        link: `TrainingDetail/${item.id}/Reports`,
+        date: reportDetail?.currentRouting?.createdDate || item?.trainingStartDate,
+      };
+    } catch {
+      return null;
+    }
+  }
+  return {
+    title: "Pending Training Report",
+    status: null,
+    detail: "You have a pending training report to be submitted for this training request",
+    link: `TrainingDetail/${item.id}/Reports`,
+    date: item?.trainingStartDate,
+  };
+};
+
+// Handle Exams
+const handleExams = async (item, id) => {
+  if (!trainingDetailsService.checkIfTrainingEndsAlready(item)) return [];
+
+  const exams = await examService.getExamByRequestId(item.id);
+  const examItems = await Promise.all(exams?.map(async (exam) => {
+    const traineeExams = await examService.getAllTraineeExamByExamId(exam.id);
+    const s = getTraineeExamDetail(traineeExams, id);
+    if (s.length === 0) {
+      return {
+        title: "Pending Exam",
+        status: null,
+        detail: "You have a pending exam to be submitted for this training request",
+        program: item?.trainingProgram?.name,
+        link: `TrainingDetail/${item.id}/Exams`,
+        date: item?.trainingStartDate,
+      };
+    } else if (s.length < 3 && !s.isPassed) {
+      return {
+        title: "Failed Exam",
+        status: "Pending",
+        detail: "You have failed on this exam, please retake the exam",
+        program: item?.trainingProgram?.name,
+        link: `TrainingDetail/${item.id}/Exams`,
+        date: item?.trainingStartDate,
+      };
+    }
+    return null;
+  }));
+
+  return examItems.filter(item => item !== null); // Remove null values
+};

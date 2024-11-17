@@ -12,9 +12,17 @@ import { ActivityType } from "../../api/constants";
 import getStatusById from "../../utils/status/getStatusById";
 import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
 import ExamDetails from "../../components/Exam/ExamDetails";
-const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formData, typeId, examDetail }) => {
-    const [showForm, setShowForm] = useState(false);
-    const [selectedData, setSelectedData] = useState({});
+const MonitoringReportView = ({
+  data,
+  reportType,
+  tableName,
+  hasApprover,
+  formData,
+  typeId,
+  examDetail,
+}) => {
+  const [showForm, setShowForm] = useState(false);
+  const [selectedData, setSelectedData] = useState({});
   const actionTemplate = (rowData) => {
     return (
       <>
@@ -70,35 +78,47 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
           field: "",
           header: `Exam${index + 1} Score`,
           body: (rowData) => (
-            <>{getTraineeExamDetail(item, rowData?.userDetail?.employeeBadge)?.submitted ?`${
-              getTraineeExamDetail(item, rowData?.userDetail?.employeeBadge)
-                ?.detail[0]?.totalScore
-            }/${item?.examDetail?.questionLimit}`: StatusColor({
-              status:
-                getStatusById(rowData[reportType]?.currentRouting?.statusId) ??
-                "Pending",
-              showStatus: true,
-            })}</>
+            <>
+              {getTraineeExamDetail(item, rowData?.userDetail?.employeeBadge)
+                ?.submitted
+                ? `${
+                    getTraineeExamDetail(
+                      item?.traineeExam,
+                      rowData?.userDetail?.employeeBadge
+                    )?.detail[0]?.totalScore
+                  }/${item?.examDetail?.questionLimit}`
+                : StatusColor({
+                    status:
+                      getStatusById(
+                        rowData[reportType]?.currentRouting?.statusId
+                      ) ?? "Pending",
+                    showStatus: true,
+                  })}
+            </>
           ),
         });
       });
     }
     columnItems.push(
-      typeId !== ActivityType.EXAM ?
-      {
-        field: "department",
-        header: "Status",
-        body: (rowData) => (
-          <>
-            { typeId === ActivityType.EVALUATION ? rowData[reportType]?.status :StatusColor({
-              status:
-                getStatusById(rowData[reportType]?.currentRouting?.statusId) ??
-                "Pending",
-              showStatus: true,
-            })}
-          </>
-        ),
-      }:[],
+      typeId !== ActivityType.EXAM
+        ? {
+            field: "department",
+            header: "Status",
+            body: (rowData) => (
+              <>
+                {typeId === ActivityType.EVALUATION
+                  ? rowData[reportType]?.status
+                  : StatusColor({
+                      status:
+                        getStatusById(
+                          rowData[reportType]?.currentRouting?.statusId
+                        ) ?? "Pending",
+                      showStatus: true,
+                    })}
+              </>
+            ),
+          }
+        : [],
       hasApprover
         ? {
             field: "department",
@@ -118,20 +138,27 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
       }
     );
   };
+  const HeaderComponent = ()=>{
+  return<>
+  <Button label="Send Follow-up Email" icon="pi pi-send" type="button" size="small" className="rounded"/>
+  </>}
   addcolumns();
-  console.log(selectedData)
   return (
     <>
       {!showForm ? (
         <>
-          <SectionHeading
-            title={`Training ${tableName ? tableName : "Forms"} Monitoring`}
-            icon={<i className="pi pi-clock"></i>}
-          />
+          <div className="flex justify-content-between">
+            {" "}
+            <SectionHeading
+              title={`Training ${tableName ? tableName : "Forms"} Monitoring`}
+              icon={<i className="pi pi-clock"></i>}
+            />
+          </div>
+
           <CommonTable
+            headerComponent={<HeaderComponent />}
             dataTable={formData?.data}
             columnItems={columnItems}
-            tableName={tableName ? tableName : `Training Participants`}
           />
         </>
       ) : (
@@ -149,22 +176,22 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
             </Card.Header>
             {examDetail && typeId === ActivityType.EXAM ? (
               <>
-                  <div className="d-flex flex-column">
-                    {selectedData?.exam?.map((item, index) => (
-                      <>
-                        <ExamDetails
-                          traineeExam={
-                            getTraineeExamDetail(item, selectedData?.user)
-                              ?.detail
-                          }
-                          examDetail={item?.examDetail}
-                          isAdmin
-                        />
-                        {index < selectedData?.exam?.length - 1 &&
-                        <hr className="m-0"/>}
-                      </>
-                    ))}
-                  </div>
+                <div className="d-flex flex-column">
+                  {selectedData?.exam?.map((item, index) => (
+                    <>
+                      <ExamDetails
+                        traineeExam={
+                          getTraineeExamDetail(item?.traineeExam, selectedData?.user)?.detail
+                        }
+                        examDetail={item?.examDetail}
+                        isAdmin
+                      />
+                      {index < selectedData?.exam?.length - 1 && (
+                        <hr className="m-0" />
+                      )}
+                    </>
+                  ))}
+                </div>
               </>
             ) : selectedData[reportType]?.id ? (
               <>
@@ -176,7 +203,11 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
                     currentRouting={
                       selectedData?.effectivenessDetail?.currentRouting
                     }
-                    auditTrail={selectedData?.effectivenessDetail?.auditTrail ? selectedData?.effectivenessDetail?.auditTrail[0] : {}}
+                    auditTrail={
+                      selectedData?.effectivenessDetail?.auditTrail
+                        ? selectedData?.effectivenessDetail?.auditTrail[0]
+                        : {}
+                    }
                     isAdmin
                   />
                 )}
@@ -188,7 +219,11 @@ const MonitoringReportView = ({ data, reportType, tableName, hasApprover, formDa
                     // currentRouting={{}}
                     isSubmitted
                     isAdmin
-                    auditTrail={selectedData?.reportDetail?.auditTrail ? selectedData?.reportDetail?.auditTrail[0] : {}}
+                    auditTrail={
+                      selectedData?.reportDetail?.auditTrail
+                        ? selectedData?.reportDetail?.auditTrail[0]
+                        : {}
+                    }
                     currentRouting={selectedData?.reportDetail?.currentRouting}
                   />
                 )}

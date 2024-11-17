@@ -77,7 +77,6 @@ const ModuleSection = ({ data }) => {
     const newData = moduleList.find((item) => item.id === selectedModule?.id);
     setSelectedModule(newData);
   }, [moduleList, selectedModule]);
-  console.log(moduleList)
   return (
     <>
       <SectionHeading
@@ -129,7 +128,7 @@ const ModuleSection = ({ data }) => {
                             <small className="text-muted fw-bold text-uppercase">
                               {x.name}
                             </small>
-                            {(x?.availableAt || x.unavailableAt) ? (
+                            {x?.availableAt || x.unavailableAt ? (
                               <small className="d-block text-muted">
                                 <i
                                   className="pi pi-clock"
@@ -171,15 +170,17 @@ const ModuleSection = ({ data }) => {
                                   </span>
                                 )}
                               </small>
-                            ):    <span
-                            className={`text-success rounded-pill px-2`}
-                          >
-                            <i
-                              className="pi pi-check-circle"
-                              style={{ fontSize: "0.8rem" }}
-                            ></i>{" "}
-                            Active
-                          </span>}
+                            ) : (
+                              <span
+                                className={`text-success rounded-pill px-2`}
+                              >
+                                <i
+                                  className="pi pi-check-circle"
+                                  style={{ fontSize: "0.8rem" }}
+                                ></i>{" "}
+                                Active
+                              </span>
+                            )}
                           </div>
                           <ButtonGroup>
                             <Button
@@ -206,7 +207,9 @@ const ModuleSection = ({ data }) => {
                           </ButtonGroup>{" "}
                         </div>
                         <div className="px-4 p-2">
-                          <div dangerouslySetInnerHTML={{ __html: x.description }} />
+                          <div
+                            dangerouslySetInnerHTML={{ __html: x.description }}
+                          />
                           {/* <p className="m-0">{x.description}</p> */}
                           <div className="flex flex-wrap"></div>
                           {x?.attachments?.map((a) => (

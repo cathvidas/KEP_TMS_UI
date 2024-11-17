@@ -15,37 +15,56 @@ import userService from "./userService";
 const effectivenessService = {
   createTrainingEffectiveness: async (data) => {
     const response = await createTrainingEffectivenessApi(data);
-    if(response.status !== 1){
+    if (response.status !== 1) {
       throw new Error(response.message);
     }
     return response;
   },
   updateTrainingEffectiveness: async (data) => {
     const response = await updateEffectivenessApi(data);
-    console.log(response)
-    if(response.status !== 1){
+    if (response.status !== 1) {
       throw new Error(response.message);
     }
     return response;
   },
   updateProjectPerformanceEvaluation: async (data) => {
     const response = await updateProjectPerformanceEvaluationApi(data);
-    if(response.status !== 1){
+    if (response.status !== 1) {
       throw new Error(response.message);
     }
     return response?.data;
   },
   getEffectivenessById: async (id) => {
     const response = await getEffectivenessByIdApi(id);
-    if(response?.status === 1){
-      const approvers = await commonService.getActivityApprovers(response?.data?.createdBy, ActivityType.EFFECTIVENESS);
-      const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.EFFECTIVENESS);
-      const currentRouting = await routingService.getCurrentApprover(approvers, routings);
-      if(!currentRouting?.assignedDetail){
-        currentRouting.assignedDetail = await userService.getUserById(currentRouting?.assignedTo);
+    if (response?.status === 1) {
+      const approvers = await commonService.getActivityApprovers(
+        response?.data?.createdBy,
+        ActivityType.EFFECTIVENESS
+      );
+      const routings = await commonService.getRoutingActivityWithAuditTrail(
+        response?.data?.id,
+        ActivityType.EFFECTIVENESS
+      );
+      const currentRouting = await routingService.getCurrentApprover(
+        approvers,
+        routings
+      );
+      if (!currentRouting?.assignedDetail) {
+        currentRouting.assignedDetail = await userService.getUserById(
+          currentRouting?.assignedTo
+        );
       }
-      const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.EFFECTIVENESS);
-      return {...response?.data, routings, currentRouting, auditTrail, approvers};
+      const auditTrail = await commonService.getAuditTrail(
+        response?.data?.id,
+        ActivityType.EFFECTIVENESS
+      );
+      return {
+        ...response?.data,
+        routings,
+        currentRouting,
+        auditTrail,
+        approvers,
+      };
     }
     return {};
   },
@@ -57,15 +76,19 @@ const effectivenessService = {
     const response = await getApproverAssignedEffectivenessApi(id);
     return response;
   },
-  approveTrainingEffectiveness: async (formData)=>{
+  approveTrainingEffectiveness: async (formData) => {
     const response = await approveTrainingFormApi(formData);
-    if(response.status !== 1){
+    if (response.status !== 1) {
       throw new Error(response.message);
     }
     return response?.data;
   },
-  getPagedEffectiveness: async (pageNumber, pageSize, searhValue)=>{
-    const response = await getPagedEffectivenessApi(pageNumber, pageSize, searhValue);
+  getPagedEffectiveness: async (pageNumber, pageSize, searhValue) => {
+    const response = await getPagedEffectivenessApi(
+      pageNumber,
+      pageSize,
+      searhValue
+    );
     return response;
   },
 };

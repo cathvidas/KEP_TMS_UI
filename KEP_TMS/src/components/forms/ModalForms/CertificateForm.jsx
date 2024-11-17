@@ -21,6 +21,8 @@ const CertificateForm = ({
   trainingOptions,
   userId,
   defaultValue,
+  defaultTraining,
+  userOptions,
 }) => {
   const [oldTraining, setOldTraining] = useState(false);
   const [files, setFiles] = useState([]);
@@ -72,18 +74,18 @@ const CertificateForm = ({
   };
   useEffect(() => {
     if (defaultValue) {
-      const x = trainingOptions?.filter(
+      const x = trainingOptions?.find(
         (item) => item?.value === defaultValue?.requestId
       );
       setFormData({
         ...formData,
         certificateDetail: defaultValue?.detail,
-        training: x,
+        training: defaultTraining ?? x,
       });
       setOldFiles(defaultValue?.attachments);
       setUpdate(true);
     } else {
-      setFormData({});
+      setFormData(defaultTraining ? { training: defaultTraining } : {});
       setUpdate(false);
     }
   }, [defaultValue]);
@@ -110,6 +112,10 @@ const CertificateForm = ({
       newErrors.file = "Attachment is required";
       isValid = false;
     }
+    if (userOptions && !formData.user?.value) {
+      newErrors.user = "Participant is required";
+      isValid = false;
+    }
     setErrors({ ...errors, ...newErrors });
     if (isValid) {
       setErrors({});
@@ -120,7 +126,7 @@ const CertificateForm = ({
       if (!oldTraining) {
         newData.append("RequestId", formData?.training?.value);
       }
-      newData.append("EmployeeBadge", userId);
+      newData.append("EmployeeBadge", (userOptions && formData?.user?.value) ? formData?.user?.value :userId);
       newData.append("CreatedBy", SessionGetEmployeeId());
       newData.append("Detail", formData.certificateDetail);
 
@@ -133,6 +139,7 @@ const CertificateForm = ({
             () => certificateService.createCertificate(newData),
             (e) => {
               actionSuccessful("Success", e?.message);
+              setFiles([])
               onFinish(true);
             }
           );
@@ -152,34 +159,37 @@ const CertificateForm = ({
       onConfirm: () => {
         handleResponseAsync(
           () => certificateService.updateCertificate(updatedData),
-          ()=>{""}, null,uploadNewAttachments()
+          () => {
+            "";
+          },
+          null,
+          uploadNewAttachments()
         );
       },
     });
   };
-  const uploadNewAttachments = ()=>{
+  const uploadNewAttachments = () => {
     const formData = new FormData();
     formData.append("ReferenceId", defaultValue?.id);
     formData.append("AttachmentType", attachmentType.CERTIFICATE);
     for (let i = 0; i < files.length; i++) {
       formData.append("Files", files[i]);
     }
-    console.log(defaultValue, files);
-
     handleResponseAsync(
       () => attachmentService.addAttachments(formData),
       () => {
         actionSuccessful("Success", "Certificate updated successfully");
         onFinish(true);
-        setUpdate(false)
+        setUpdate(false);
+        setFiles([]);
       },
       () => {
         actionFailed("Failed", "Failed to upload new attachment/s");
         onFinish(false);
       }
     );
-  }
-  
+  };
+
   const deleteOldFile = (id) => {
     confirmAction({
       title: "Delete File",
@@ -198,28 +208,39 @@ const CertificateForm = ({
     <>
       <Modal show={showModal} onHide={hideModal}>
         <Modal.Header closeButton>
-          <Modal.Title className="theme-color h5">
-            Upload New Certificate
+          <Modal.Title className="theme-color h5">{update ? "Update Certificate": "Upload New Certificate"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Row>
-            {(!oldTraining ||
-              update )&& (
-                <FormFieldItem
-                  label={"Training Name"}
-                  error={errors.training}
-                  FieldComponent={
-                    <Select
-                      options={trainingOptions}
-                      value={formData?.training}
-                      onChange={(e) =>
-                        setFormData({ ...formData, training: e })
-                      }
-                    />
-                  }
-                />
-              )}
+            {(!oldTraining || update) && (
+              <FormFieldItem
+                label={"Training Name"}
+                required
+                error={errors.training}
+                FieldComponent={
+                  <Select
+                    options={trainingOptions}
+                    value={formData?.training}
+                    onChange={(e) => setFormData({ ...formData, training: e })}
+                  />
+                }
+              />
+            )}
+            {userOptions && (
+              <FormFieldItem
+                label={"Participant"}
+                error={errors.user}
+                required
+                FieldComponent={
+                  <Select
+                    options={userOptions}
+                    value={formData?.user}
+                    onChange={(e) => setFormData({ ...formData, user: e })}
+                  />
+                }
+              />
+            )}
             <FormFieldItem
               label={"Certificate Detail"}
               error={errors.certificateDetail}
@@ -238,41 +259,42 @@ const CertificateForm = ({
                 ></textarea>
               }
             />
-            {update &&
-            <FormFieldItem
-              label={"Old Files"}
-              FieldComponent={
-                <>
-                  {oldFiles && (
-                    <>
-                      {oldFiles?.length > 0 && (
-                        <small className="text-muted ms-2">
-                          &#x28;{oldFiles?.length}{" "}
-                          {files?.length > 1 ? "files" : "file"}&#x29;
-                        </small>
-                      )}
-                      <div className="d-flex flex-wrap mb-2 gap-2">
-                        {oldFiles?.map((file) => (
-                          <div
-                            key={`file${file?.id}`}
-                            className="border bg-light rounded ps-2 d-flex align-items-center"
-                            style={{ width: "fit-content" }}
-                          >
-                            <span>{file.fileName}</span>
-                            <Button
-                              type="button"
-                              icon="pi pi-times"
-                              text
-                              onClick={() => deleteOldFile(file?.id)}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </>
-              }
-            />}
+            {update && (
+              <FormFieldItem
+                label={"Old Files"}
+                FieldComponent={
+                  <>
+                    {oldFiles && (
+                      <>
+                        {oldFiles?.length > 0 && (
+                          <small className="text-muted ms-2">
+                            &#x28;{oldFiles?.length}{" "}
+                            {files?.length > 1 ? "files" : "file"}&#x29;
+                          </small>
+                        )}
+                        <div className="d-flex flex-wrap mb-2 gap-2">
+                          {oldFiles?.map((file) => (
+                            <div
+                              key={`file${file?.id}`}
+                              className="border bg-light rounded ps-2 d-flex align-items-center"
+                              style={{ width: "fit-content" }}
+                            >
+                              <span>{file.fileName}</span>
+                              <Button
+                                type="button"
+                                icon="pi pi-times"
+                                text
+                                onClick={() => deleteOldFile(file?.id)}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </>
+                }
+              />
+            )}
             <FormFieldItem
               label={"Attachment"}
               required
@@ -360,5 +382,7 @@ CertificateForm.propTypes = {
   trainingOptions: proptype.array,
   userId: proptype.string,
   defaultValue: proptype.object,
+  defaultTraining: proptype.object,
+  userOptions: proptype.array,
 };
 export default CertificateForm;

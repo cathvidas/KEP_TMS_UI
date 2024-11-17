@@ -6,18 +6,16 @@ const mapActivityLogs = (activityLogs) => {
       updatedList.push({
         ...log,
         statusId: null,
-        remarks: null
-      })
+        remarks: null,
+      });
     } else {
       updatedList.push({
         ...log,
         statusId: activityLogs[index - 1].statusId,
-        remarks: activityLogs[index - 1]?.remarks
-      })
+        remarks: activityLogs[index - 1]?.remarks,
+      });
     }
-  })
-  console.log(updatedList);
+  });
   return mappedActivityLogs;
-  
 };
 export default mapActivityLogs;

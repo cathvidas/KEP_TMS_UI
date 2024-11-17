@@ -14,15 +14,15 @@ const ApproverPage = () => {
   const { type, page } = useParams();
   const navigate = useNavigate();
   const [currentContent, setCurrentContent] = useState(0);
+  const {data} = commonHook.useAllAssignedForApproval(
+    SessionGetEmployeeId()
+  );
   const pageContent = [
     <ForApprovalRequest key={0} />,
     <ForApprovaleffectiveness key={1} />,
     <ForApprovalReport key={2}/>,
     <ForEvaluationEffectiveness key={3}/>,
   ];
-  const {data} = commonHook.useAllAssignedForApproval(
-    SessionGetEmployeeId()
-  );
   const items = [
     {
       items: [

@@ -207,7 +207,6 @@ export const TrainingRequestForm = () => {
       setFormData({...TrainingRequest, trainingType: {id: getTrainingTypeId()}});
     }
   }, [trainingType,trainingRequestData?.data, requestId]);
-console.log(formData)
   const StepperButton = (button) => {
     return (
       <div className="flex pt-4 justify-content-between">

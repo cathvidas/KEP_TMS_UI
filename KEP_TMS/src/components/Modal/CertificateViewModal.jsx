@@ -13,7 +13,7 @@ import AutoCompleteField from "../forms/common/AutoCompleteField";
 import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import certificateService from "../../services/certificateService";
-const CertificateViewModal = ({ data, hideModalFunction, onFinish, onUpdate }) => {
+const CertificateViewModal = ({ data, hideModalFunction, onFinish, onUpdate, hideHeader, customHeader }) => {
   const [showPDF, setShowPDF] = useState(false);
   const [selectedItem, setSlectedItem] = useState({});
   const removeCertificate = (id) => {
@@ -33,6 +33,7 @@ const CertificateViewModal = ({ data, hideModalFunction, onFinish, onUpdate }) =
   return (
     <>
       <Card className="my-3">
+        {!hideHeader &&
         <div className="text-end">
           <Button
             type="button"
@@ -40,8 +41,10 @@ const CertificateViewModal = ({ data, hideModalFunction, onFinish, onUpdate }) =
             onClick={hideModalFunction}
             icon="pi pi-times"
           />
-        </div>
+        </div>}
         <Card.Body>
+        {customHeader}
+          {!hideHeader && <>
           {data?.training?.trainingProgram?.name && (
             <>
               <h4 className="text-center">
@@ -75,12 +78,12 @@ const CertificateViewModal = ({ data, hideModalFunction, onFinish, onUpdate }) =
                 {/* <AutoCompleteField label={"Training Date/s"} value={`${formatDateOnly(data?.training?.trainingStartDate)} ${formatDateOnly(data?.training?.trainingStartDate) !== formatDateOnly(data?.training?.trainingEndDate) ? ' - '+formatDateOnly(data?.training?.trainingEndDate) : ''}`}/> */}
               </Row>{" "}
             </>
-          )}
-          {data?.certificate?.map((item) => (
+          )}</>}
+          {data?.certificate?.map((item, index) => (
             <>
-              <hr />
+             {(!hideHeader || (hideHeader && index !== 0))&& <hr/>}
               <div className="flex justify-content-between">
-              <h5 className="theme-color">
+              <h5 className="theme-color m-0">
                 <i className="pi pi-info-circle"></i> &nbsp;
                 {item?.detail}
               </h5>
@@ -90,11 +93,19 @@ const CertificateViewModal = ({ data, hideModalFunction, onFinish, onUpdate }) =
               </ButtonGroup> </div>
               <small>
                 {SessionGetEmployeeId() === item?.createBy
-                  ? "Uploaded on"
-                  : "Uploaded By: -" + item?.createBy}{" "}
+                  ? "Created on"
+                  : "Uploaded By: " + item?.createBy + " on"}{" "}
                 {formatDateTime(item?.createDate)}
               </small>
-              <Row className="row-cols-md-3 justify-content-center">
+              {item?.updateDate && <>
+              {" || "}
+              <small>
+                {SessionGetEmployeeId() === item?.updateBy
+                  ? "Updated on"
+                  : "Updated By: " + item?.updateBy + " on"}{" "}
+                {formatDateTime(item?.updateDate)}
+              </small></>}
+              <Row className="row-cols-md-3 mt-2 justify-content-center">
                 {item?.attachments?.map((e) => (
                   <>
                     <Col>
@@ -151,5 +162,7 @@ CertificateViewModal.propTypes = {
   hideModalFunction: proptype.func,
   onFinish: proptype.func,
   onUpdate: proptype.func,
+  hideHeader: proptype.bool,
+  customHeader: proptype.any,
 };
 export default CertificateViewModal;

@@ -34,7 +34,6 @@ const TextEditor = ({ defaultValue, onChange, showToolbar }) => {
       onChange(editorData);
     }
   }, [editorData]);
-  // console.log(editorData)
   useEffect(() => {
     setEditorData(defaultValue ?? '<div> </div>');
   }, [defaultValue]);

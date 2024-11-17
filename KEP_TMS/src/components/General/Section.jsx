@@ -11,7 +11,7 @@ export const SectionHeading = ({ title, icon }) => (
 export const SectionTitle = ({ title, Action }) => {
   return (
     <div className="d-flex py-2 justify-content-between">
-      <h6>{title}</h6>
+      <h6 className="m-0" style={{fontWeight: 600, color: "#363636"}}>{title}</h6>
       {Action && (
         <Link className="text-muted text-decoration-none" to={Action.Link}>
           {Action.Text}

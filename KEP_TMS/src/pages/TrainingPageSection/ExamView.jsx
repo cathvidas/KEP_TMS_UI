@@ -37,7 +37,7 @@ const ExamView = ({ reqData, isTrainee, isEditor }) => {
     insertData();
   }, []);
 const getExamDetail =(data)=>{
-  return getTraineeExamDetail(data, SessionGetEmployeeId())
+  return getTraineeExamDetail(data?.traineeExam, SessionGetEmployeeId())
 }
   useEffect(() => {
     if (selectedExam?.examDetail?.id) {

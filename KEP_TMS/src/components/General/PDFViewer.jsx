@@ -7,7 +7,6 @@ const PDFViewer = ({ data, handleShow, handleClose }) => {
   useEffect(()=>{
     setFile(data)
   },[data])
-  console.log(data)
   return (
     <Modal show={handleShow} fullscreen onHide={() => handleClose(false)}>
       <Modal.Header closeButton>

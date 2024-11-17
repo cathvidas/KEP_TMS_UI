@@ -7,7 +7,7 @@ const Header = ({ title, IconComponent, showModal, setShowModal,toggleSidebar })
     setShowModal(!showModal);
   };
   return (
-    <Navbar className="header navbar-expand-md d-flex w-100  bg-body z-1 shadow-sm px-2 ">
+    <Navbar className="header navbar-expand-md d-flex w-100  z-1 border-bottom px-2 " style={{background: "#fbfdfc"}}>
       <div className="d-block d-md-none">
       <Button type="button" severity="secondary" text icon="pi pi-bars" onClick={toggleSidebar} /></div>
       <a className="navbar-brand ms-2 d-flex align-items-center " href="#" style={{fontWeight: 500}}>

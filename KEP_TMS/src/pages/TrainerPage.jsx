@@ -1,7 +1,7 @@
 import { statusCode } from "../api/constants";
 import Layout from "../components/General/Layout";
 import { SectionBanner } from "../components/General/Section";
-import TrainingRequestTableList from "../components/List/TrainingRequestTableList";
+import TrainingRequestList from "../components/List/TrainingRequestList";
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import trainingRequestHook from "../hooks/trainingRequestHook";
@@ -33,7 +33,7 @@ const TrainerPage = () => {
             subtitle="List of Trainings Assigned to you"
           />
 
-          <TrainingRequestTableList
+          <TrainingRequestList
             data={updatedData}
             headingTitle="Training List"
             isFacilitator

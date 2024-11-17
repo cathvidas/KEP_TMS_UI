@@ -23,7 +23,7 @@ const PendingView = ({ data, formData, examDetail }) => {
   const traineeExamCount = (user) =>{
     let count = 0;
     examDetail?.map(e=>{
-    const res =  getTraineeExamDetail(e, user);
+    const res =  getTraineeExamDetail(e?.traineeExam, user);
     if(res?.submitted)
       count++;
     })

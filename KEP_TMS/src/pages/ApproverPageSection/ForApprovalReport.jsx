@@ -18,16 +18,21 @@ import ActivityStatus from "../../components/General/ActivityStatus";
 
 const ForApprovalReport = () => {
   const [trigger, setTrigger] = useState(0);
-  const { data } =
-    trainingReportHook.useApproverAssignedReports(SessionGetEmployeeId(), trigger);
+  const { data } = trainingReportHook.useApproverAssignedReports(
+    SessionGetEmployeeId(),
+    trigger
+  );
   const [showModal, setShowModal] = useState(false);
   const [selectedData, setSelectedData] = useState({});
   const requestData = selectedData?.trainingReport?.trainingRequest;
   const userData = userHook.useUserById(
     selectedData?.trainingReport?.traineeBadge
   );
-  const report = trainingReportHook.useTrainingReportById(selectedData?.trainingReport?.id, trigger)
-  const [showAnnotation, setShowAnnotation] = useState(false)
+  const report = trainingReportHook.useTrainingReportById(
+    selectedData?.trainingReport?.id,
+    trigger
+  );
+  const [showAnnotation, setShowAnnotation] = useState(false);
   const actionTemplate = (rowData) => (
     <>
       <div className="d-flex">
@@ -79,48 +84,53 @@ const ForApprovalReport = () => {
       cancelButtonText: "No",
       confirmButtonColor: isApprove ? "#4CAF50" : "#f44336",
       onConfirm: () => {
-        handleResponseAsync(() =>
-          trainingReportService.approveTrainingReport({
-            transactId: id,
-            ApprovedBy: SessionGetEmployeeId(),
-            activityIn: ActivityType.REPORT,
-          }), 
-          (e)=> {
-            actionSuccessful("Sucess!", e.mesasge)
+        handleResponseAsync(
+          () =>
+            trainingReportService.approveTrainingReport({
+              transactId: id,
+              ApprovedBy: SessionGetEmployeeId(),
+              activityIn: ActivityType.REPORT,
+            }),
+          (e) => {
+            actionSuccessful("Sucess!", e.mesasge);
             setTimeout(() => {
-              setTrigger(trigger+1)
+              setTrigger(trigger + 1);
             }, 1000);
-          },null, null
+          },
+          null,
+          null
         );
       },
     });
   };
-  const disapproveReport = (e) => {    
+  const disapproveReport = (e) => {
     confirmAction({
-    showLoaderOnConfirm:true,
-    title:  "Return Training Report",
-    text:"Are you sure you want to disapproved and return this Training Report?",
-    confirmButtonText:  "Yes",
-    cancelButtonText: "Cancel",
-    confirmButtonColor:"#d33",
-    onConfirm: () => {
-      handleResponseAsync(() =>
-        commonService.disapproveActivity({
-          transactId: selectedData?.trainingReport?.id,
-          disapprovedBy: SessionGetEmployeeId(),
-          activityIn: ActivityType.REPORT,
-          remarks:e,
-        }), 
-        ()=>{actionSuccessful("Success!", "successfully returned report");
-          setTimeout(() => {
-            setTrigger(trigger+1);
-            setShowAnnotation(false)
-          }, 1000);
-        }
-      );
-    },
-  });
-  }
+      showLoaderOnConfirm: true,
+      title: "Return Training Report",
+      text: "Are you sure you want to disapproved and return this Training Report?",
+      confirmButtonText: "Yes",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#d33",
+      onConfirm: () => {
+        handleResponseAsync(
+          () =>
+            commonService.disapproveActivity({
+              transactId: selectedData?.trainingReport?.id,
+              disapprovedBy: SessionGetEmployeeId(),
+              activityIn: ActivityType.REPORT,
+              remarks: e,
+            }),
+          () => {
+            actionSuccessful("Success!", "successfully returned report");
+            setTimeout(() => {
+              setTrigger(trigger + 1);
+              setShowAnnotation(false);
+            }, 1000);
+          }
+        );
+      },
+    });
+  };
   const columnItems = [
     {
       field: "id",
@@ -157,9 +167,8 @@ const ForApprovalReport = () => {
       body: actionTemplate,
     },
   ];
-  const currentStatus =""
+  const currentStatus = "";
   //  routingService.getCurrentApprover(report?.data?.routings, SessionGetEmployeeId());
-  console.log(report)
   return (
     <div className="p-3">
       <SectionBanner
@@ -233,15 +242,16 @@ const ForApprovalReport = () => {
                 }
               />{" "}
             </>
-          ) : currentStatus?.statusId === statusCode.APPROVED
-             ? (
-              <ActivityStatus status={statusCode.APPROVED}/>
-          ) : 
-            currentStatus.statusId === statusCode.DISAPPROVED
-             && (
-              <ActivityStatus status={statusCode.DISAPPROVED} icon="pi pi-times"/>
+          ) : currentStatus?.statusId === statusCode.APPROVED ? (
+            <ActivityStatus status={statusCode.APPROVED} />
+          ) : (
+            currentStatus.statusId === statusCode.DISAPPROVED && (
+              <ActivityStatus
+                status={statusCode.DISAPPROVED}
+                icon="pi pi-times"
+              />
             )
-          }
+          )}
         </Modal.Footer>
       </Modal>
     </div>

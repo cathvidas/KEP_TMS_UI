@@ -253,3 +253,9 @@ ul.p-list-menu {
   .table>:not(caption)>*>*{
     background-color: unset !important;
   }
+  @media screen and (min-width: 1200px) {
+    .to-do-list-bar {
+        max-height: 90vh;
+        overflow: auto;
+    }
+  }
