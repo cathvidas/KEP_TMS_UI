@@ -171,7 +171,7 @@ const Dashboard = () => {
       <div className="p-3">
         <>
           <Row className="h-100">
-            <Col className="col-xl-9 col-12">
+            <Col className={`${pendingTasks.data?.length > 0 ? "col-xl-9": ""} col-12`}>
               {assignedTraining?.loading ? (
                 <SkeletonBanner />
               ) : (
@@ -289,13 +289,14 @@ const Dashboard = () => {
               {/* <EnrolledTrainingsSection/> */}
             </Col>
             <br />
+            {pendingTasks?.data?.length > 0 &&
             <Col className="col-xl-3 to-do-list-bar">
               {pendingTasks?.loading ? (
                 <SkeletonList />
               ) : (
                 <PendingActionsSection items={pendingTasks?.data} />
               )}
-            </Col>
+            </Col>}
           </Row>
         </>
       </div>
