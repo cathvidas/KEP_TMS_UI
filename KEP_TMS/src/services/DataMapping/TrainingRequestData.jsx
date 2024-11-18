@@ -10,8 +10,8 @@ export const mapTRequestToTableData = (data)=>{
         venue: item?.venue,
         category: item?.trainingCategory?.name,
         provider: item?.trainingProvider?.name,
-        startDate: item.trainingStartDate,
-        endDate: item.trainingEndDate,
+        trainingStartDate: item.trainingStartDate,
+        trainingEndDate: item.trainingEndDate,
         totalFee: item?.totalTrainingFee,
         approverId: item?.routing?.approverId,
         approverFullName: item?.routing?.approverFullName,
@@ -21,7 +21,8 @@ export const mapTRequestToTableData = (data)=>{
         totalParticipants: item?.totalParticipants,
         trainingParticipants: item?.trainingParticipants,
         durationInHours: item?.durationInHours,
-        createdDate: item?.createdDate
+        createdDate: item?.createdDate,
+        trainingDates: item?.trainingDates,
         // facilitatorName: item?trainingFac 
 
     }))

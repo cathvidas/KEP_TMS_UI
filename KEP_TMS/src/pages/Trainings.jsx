@@ -25,11 +25,19 @@ const Trainings = () => {
     {
       items: [
         {
-          label: "Ongoing",
-          icon: "pi pi-clock",
+          label: "Awaiting Effectiveness",
+          icon: "pi pi-filed",
           command: () => navigate(`/KEP_TMS/Trainings/`),
           template: MenuItemTemplate,
           active: currentContent === 0 ? true : false,
+          count: mappedData?.submitted?.length,
+        },
+        {
+          label: "Ongoing",
+          icon: "pi pi-clock",
+          command: () => navigate(`/KEP_TMS/Trainings/Ongoing`),
+          template: MenuItemTemplate,
+          active: currentContent === 1 ? true : false,
           count: mappedData?.ongoing?.length,
         },
         {
@@ -37,7 +45,7 @@ const Trainings = () => {
           icon: "pi pi-calendar-clock",
           command: () => navigate(`/KEP_TMS/Trainings/upcoming`),
           template: MenuItemTemplate,
-          active: currentContent === 1 ? true : false,
+          active: currentContent === 2 ? true : false,
           count: mappedData?.upcoming?.length,
         },
         {
@@ -45,7 +53,7 @@ const Trainings = () => {
           icon: "pi pi-list-check",
           command: () => navigate(`/KEP_TMS/Trainings/attended`),
           template: MenuItemTemplate,
-          active: currentContent === 2 ? true : false,
+          active: currentContent === 3 ? true : false,
           count: mappedData?.attended?.length,
         },
       ],
@@ -63,7 +71,7 @@ const Trainings = () => {
             template: MenuItemTemplate,
             command: () => navigate(`/KEP_TMS/Trainings/trainer_ongoing`),
             icon: "pi pi-clock",
-            active: currentContent === 3 ? true : false,
+            active: currentContent === 4 ? true : false,
             count: trainerAssignedData?.mappedData?.ongoing?.length,
           },
           {
@@ -71,7 +79,7 @@ const Trainings = () => {
             template: MenuItemTemplate,
             command: () => navigate(`/KEP_TMS/Trainings/trainer_upcoming`),
             icon: "pi pi-calendar-clock",
-            active: currentContent === 4 ? true : false,
+            active: currentContent === 5 ? true : false,
             count: trainerAssignedData?.mappedData?.upcoming?.length,
           },
           {
@@ -79,7 +87,7 @@ const Trainings = () => {
             template: MenuItemTemplate,
             command: () => navigate(`/KEP_TMS/Trainings/facilitated`),
             icon: "pi pi-list-check",
-            active: currentContent === 5 ? true : false,
+            active: currentContent === 6 ? true : false,
             count: trainerAssignedData?.mappedData?.attended?.length,
           },
         ],
@@ -89,26 +97,26 @@ const Trainings = () => {
   useEffect(() => {
     const currentPage = page?.toUpperCase();
     if (currentPage === "ONGOING") {
-      setCurrentContent(0);
+      setCurrentContent(1);
       setCurrentList(mappedData?.ongoing);
     } else if (currentPage === "UPCOMING") {
-      setCurrentContent(1);
+      setCurrentContent(2);
       setCurrentList(mappedData?.upcoming);
     } else if (currentPage === "ATTENDED") {
       setCurrentList(mappedData?.attended);
-      setCurrentContent(2);
+      setCurrentContent(3);
     } else if (currentPage === "TRAINER_ONGOING") {
       setCurrentList(trainerAssignedData?.mappedData?.ongoing);
-      setCurrentContent(3);
+      setCurrentContent(4);
     } else if (currentPage === "TRAINER_UPCOMING") {
       setCurrentList(trainerAssignedData?.mappedData?.upcoming);
-      setCurrentContent(4);
+      setCurrentContent(5);
     } else if (currentPage === "FACILITATED") {
       setCurrentList(trainerAssignedData?.mappedData?.attended);
-      setCurrentContent(5);
+      setCurrentContent(6);
     } else {
       setCurrentContent(0);
-      setCurrentList(mappedData?.ongoing);
+      setCurrentList(mappedData?.submitted);
     }
   }, [page, mappedData, trainerAssignedData]);
   const Content = () =>

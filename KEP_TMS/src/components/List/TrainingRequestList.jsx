@@ -134,7 +134,13 @@ const TrainingRequestList = ({
     <>
       <div>
         {rowData.status == "Published" && (
-          <div className=" flex gap-1 text-secondary">Ongoing</div>
+          <div className=" flex gap-1 text-secondary">
+            {trainingDetailsService.checkIfTrainingEndsAlready(rowData)
+              ? "Completed"
+              : trainingDetailsService.checkTrainingScheduleStatus?.isUpcomin
+              ? "Upcoming"
+              : "Ongoing"}
+          </div>
         )}
         {rowData.status == "Submitted" && (
           <div className="text-secondary  gap-1">
@@ -145,6 +151,7 @@ const TrainingRequestList = ({
       </div>
     </>
   );
+  
 
   const renderHeader = () => {
     return (
@@ -180,7 +187,7 @@ const TrainingRequestList = ({
               stripedRows
               size="small"
               tableStyle={{ minWidth: "50rem" }}
-              paginator={enablePagination}
+              paginator
               rows={10}
               rowsPerPageOptions={[5, 10, 25, 50]}
               dataKey="id"
@@ -207,21 +214,21 @@ const TrainingRequestList = ({
               <Column field="provider" header="Provider" sortable></Column>
               <Column field="venue" header="Venue" sortable></Column>
               <Column
-                field="startDate"
+                field="trainingStartDate"
                 header="Start Date"
                 sortable
                 style={{ width: "8%" }}
                 body={(rowData) => {
-                  return formatDateOnly(rowData.startDate);
+                  return formatDateOnly(rowData.trainingStartDate);
                 }}
               ></Column>
               <Column
-                field="endDate"
+                field="trainingEndDate"
                 header="End Date"
                 sortable
                 style={{ width: "8%" }}
                 body={(rowData) => {
-                  return formatDateOnly(rowData.endDate);
+                  return formatDateOnly(rowData.trainingEndDate);
                 }}
               ></Column>
               {(isAdmin || isRequestor) && (

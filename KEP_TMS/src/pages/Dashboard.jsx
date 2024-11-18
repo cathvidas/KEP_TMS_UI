@@ -80,7 +80,7 @@ const Dashboard = () => {
             icon: "pi pi-thumbs-up",
             status: "Disapproved",
             isRequest: true,
-            url: "/RequestList/Returned",
+            url: "/RequestList/Approved",
           },
     {
       label: "Published Request",
@@ -134,6 +134,16 @@ const Dashboard = () => {
       isRequest: false,
       url: "/Trainings",
       disabled: SessionGetRole() !== UserTypeValue.FACILITATOR,
+    },
+    {
+      label: "Awaiting Effectiveness",
+      color: "#608dfa",
+      value: assignedTraining?.mappedData?.submitted?.length ?? 0,
+      icon: "pi pi-clock",
+      status: "Training",
+      isRequest: false,
+      url: "/Trainings",
+      disabled: SessionGetRole() === UserTypeValue.FACILITATOR,
     },
     {
       label: "Ongoing Trainings",
