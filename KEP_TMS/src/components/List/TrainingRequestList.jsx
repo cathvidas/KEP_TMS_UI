@@ -257,7 +257,7 @@ const TrainingRequestList = ({
               {isTrainee && (
                 <Column
                   field="approverPosition"
-                  header="Remarks"
+                  header="Status"
                   sortable
                   style={{ minWidth: "12rem" }}
                   body={traineeStatusTemplate}
