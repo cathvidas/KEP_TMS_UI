@@ -95,7 +95,7 @@ const RequestList = () => {
           icon: "pi pi-thumbs-up",
           command: () => navigate(`/KEP_TMS/RequestList/Approved`),
           template: MenuItemTemplate,
-          count: mappedData?.submitted?.approved,
+          count: mappedData?.approved?.length,
           active: currentContent === 2 ? true : false,
         },
         {
