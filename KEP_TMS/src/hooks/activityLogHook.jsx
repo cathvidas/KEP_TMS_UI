@@ -5,6 +5,7 @@ import trainingReportService from "../services/trainingReportService";
 import examService from "../services/examService";
 import getTraineeExamDetail from "../services/common/getTraineeExamDetail";
 import trainingDetailsService from "../services/common/trainingDetailsService";
+import getStatusById from "../utils/status/getStatusById";
 const activityLogHook = {
   useRequestAuditTrailActivityLogs: (auditTrail) => {
     const [logs, setLogs] = useState([]);
@@ -23,7 +24,6 @@ const activityLogHook = {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-  
   
     useEffect(() => {
       const fetchData = async () => {
@@ -46,6 +46,7 @@ const activityLogHook = {
                 if (effectivenessReport) tasks.push({...effectivenessReport, program: item?.trainingProgram?.name});
               }
     
+              if(trainingDetailsService.checkIfTrainingEndsAlready()) {
               // Training report
               const reportItem = await handleTrainingReport(user, item);
               if (reportItem) tasks.push({...reportItem, program: item?.trainingProgram?.name});
@@ -56,11 +57,13 @@ const activityLogHook = {
               // Exam
               const examItems = await handleExams(item, id);
               tasks.push(...examItems);
-    
+              
+              }
               return tasks;
             })
           );
     
+          console.log(pendingList,pendingList.flat());
           setData(pendingList.flat()); // Flatten the array of arrays
           setLoading(false);
         } catch (err) {
@@ -83,12 +86,12 @@ const handleEffectivenessReport = async (user, item) => {
   if (user?.effectivenessId > 0) {
     try {
       const effDetail = await effectivenessService.getEffectivenessById(user?.effectivenessId);
-      if (effDetail?.status === statusCode.APPROVED) return null;
-      const title = effDetail?.status === statusCode.DISAPPROVED ? "Effectiveness Report Disapproved" : "Pending Effectiveness Report";
+      if (effDetail?.statusName === getStatusById(statusCode.APPROVED) || effDetail?.statusName === getStatusById(statusCode.FORAPPROVAL)) return null;
+      const title = effDetail?.statusName === getStatusById(statusCode.DISAPPROVED) ? "Effectiveness Report Disapproved" : "Pending Effectiveness Report";
       return {
         title,
-        status: effDetail?.status,
-        detail: effDetail?.status === statusCode.DISAPPROVED 
+        status: effDetail?.statusName,
+        detail: effDetail?.statusName === getStatusById(statusCode.DISAPPROVED) 
           ? "Your effectiveness report has been disapproved. Click here to view more details." 
           : "You have a pending effectiveness report to be submitted.",
         link: `TrainingDetail/${item.id}/Reports`,
@@ -112,11 +115,11 @@ const handleTrainingReport = async (user, item) => {
   if (user?.reportId > 0) {
     try {
       const reportDetail = await trainingReportService.getTrainingReportById(user?.reportId);
-      if (reportDetail?.status === statusCode.APPROVED) return null;
+      if (reportDetail?.status === getStatusById(statusCode.APPROVED) ||reportDetail?.status === getStatusById(statusCode.FORAPPROVAL) ) return null;
       return {
-        title: reportDetail?.status === statusCode.DISAPPROVED ? "Training Report Disapproved" : "Pending Training Report",
+        title: reportDetail?.status === getStatusById(statusCode.DISAPPROVED) ? "Training Report Disapproved" : "Pending Training Report",
         status: reportDetail?.status,
-        detail: reportDetail?.status === statusCode.DISAPPROVED
+        detail: reportDetail?.status === getStatusById(statusCode.DISAPPROVED)
           ? "Your training report has been disapproved. Click here to view more details."
           : "You have a pending training report to be submitted.",
         link: `TrainingDetail/${item.id}/Reports`,

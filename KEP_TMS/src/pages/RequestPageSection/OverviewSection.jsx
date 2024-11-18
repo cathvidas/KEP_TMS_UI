@@ -165,8 +165,7 @@ const OverviewSection = ({
           <h3 className="text-center theme-color m-0">
             {data?.trainingType?.name} Training Request
           </h3>
-          {showApprovers &&
-          <>
+         
           <h6 className="text-muted text-center mb-3">Request ID: {data.id}</h6>
            {/* <div className="position-absolute end-0 top-0 ">
             <Button
@@ -176,7 +175,8 @@ const OverviewSection = ({
               text
             />
           </div>  */}
-          <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
+          {showApprovers &&
+          <> <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
             <span> REQUESTOR: {data?.requestor?.fullname}</span>
             <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
             <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
