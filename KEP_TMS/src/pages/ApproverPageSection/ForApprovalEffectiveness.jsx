@@ -141,9 +141,9 @@ const ForApprovaleffectiveness = () => {
   const columnItems = [
     {
       field: "id",
-      header: "Request Id",
+      header: "Id",
       body: (rowData) => (
-        <>{rowData?.trainingEffectiveness?.trainingRequest?.id}</>
+        <>{rowData?.trainingEffectiveness?.id}</>
       ),
     },
     {
