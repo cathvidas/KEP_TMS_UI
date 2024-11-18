@@ -12,6 +12,7 @@ import TrainingListSection from "./MasterListSection/TrainingListSection";
 import { TrainingType, UserTypeValue } from "../api/constants";
 import { SessionGetRole } from "../services/sessions";
 import NotFoundPage from "./NotFoundPage";
+import ExternalFacilitatorListSection from "./MasterListSection/externalFacilitatorListSection";
 
 const MasterListPage = () => {
   const page = useParams();
@@ -44,7 +45,7 @@ const MasterListPage = () => {
         {
           label: "External Trainers",
           template: MenuItemTemplate,
-          active: currentContent === 5 ? true : false,
+          active: currentContent === 3 ? true : false,
           command: () => navigate("/KEP_TMS/MasterList/ExternalTrainers"),
           icon: "pi pi-users",
         },
@@ -62,14 +63,14 @@ const MasterListPage = () => {
           label: "Internal",
           icon: "pi pi-arrow-down-left-and-arrow-up-right-to-center",
           command: () => navigate("/KEP_TMS/MasterList/Training/Internal"),
-          active: currentContent === 3 ? true : false,
+          active: currentContent === 4 ? true : false,
           template: MenuItemTemplate,
         },
         {
           label: "External",
           icon: "pi pi-external-link",
           command: () => navigate("/KEP_TMS/MasterList/Training/External"),
-          active: currentContent === 4 ? true : false,
+          active: currentContent === 5 ? true : false,
           template: MenuItemTemplate,
         },
       ],
@@ -80,23 +81,26 @@ const MasterListPage = () => {
     <CategoryListSection key={0} />,
     <ProgramListSection key={1} />,
     <ProviderListSection key={2} />,
-    <TrainingListSection key={3} trainingType={TrainingType.INTERNAL} />,
-    <TrainingListSection key={4} trainingType={TrainingType.EXTERNAL} />,
+    <ExternalFacilitatorListSection key={3} />,
+    <TrainingListSection key={4} trainingType={TrainingType.INTERNAL} />,
+    <TrainingListSection key={5} trainingType={TrainingType.EXTERNAL} />,
   ];
   useEffect(() => {
-    if (page.category === "Programs") {
+    const pageName = page.category?.toUpperCase();
+    const pageType = page.type?.toUpperCase();
+    if (pageName === "PROGRAMS") {
       setCurrentContent(1);
-    } else if (page.category === "Categories") {
+    } else if (pageName === "CATEGORIES") {
       setCurrentContent(0);
-    } else if (page.category === "Providers") {
+    } else if (pageName === "PROVIDERS") {
       setCurrentContent(2);
-    } else if (page.category === "ExternalTrainers") {
-      setCurrentContent(5);
-    } else if (page.category === "Training") {
-      if (page.type === "Internal") {
-        setCurrentContent(3);
-      } else if (page.type === "External") {
+    } else if (pageName === "EXTERNALTRAINERS") {
+      setCurrentContent(3);
+    } else if (pageName === "TRAINING") {
+      if (pageType === "INTERNAL") {
         setCurrentContent(4);
+      } else if (pageType === "EXTERNAL") {
+        setCurrentContent(5);
       }
     } else {
       // navigate("/KEP_TMS/MasterList")
