@@ -1,16 +1,17 @@
 import { Button } from "primereact/button";
-import { SectionBanner } from "../../components/General/Section";
 import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
-import categoryHook from "../../hooks/categoryHook";
-import CategoryForm from "../../components/forms/ModalForms/CategoryForm";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
 import getStatusById from "../../utils/status/getStatusById";
 import { Paginator } from "primereact/paginator";
+import ExternalFacilitatorForm from "../../components/forms/ModalForms/ExternalFacilitatorForm";
+import handleResponseAsync from "../../services/handleResponseAsync";
+import externalFacilitatorService from "../../services/externalFacilitatorService";
+import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 
 const ExternalFacilitatorListSection = () => {
   const [visible, setVisible] = useState({ detail: false, form: false });
@@ -19,11 +20,12 @@ const ExternalFacilitatorListSection = () => {
     first: 0,
     rows: 10,
     page: 1,
+    value:null,
   });
-  const [searchValue, setSearchValue] = useState(null)
-//   const { data, loading } = externalFacilitatorHook.usePagedExternalFacilitator(paginatorConfig.page, paginatorConfig.rows, searchValue, trigger);
-  const {data, loading} = externalFacilitatorHook.useAllExternalFacilitators();
+  
+  const { data, loading } = externalFacilitatorHook.usePagedExternalFacilitator(paginatorConfig.page, paginatorConfig.rows, paginatorConfig.value, trigger);
   const [selectedData, setSelectedData] = useState({});
+  console.log(data, paginatorConfig)
   const actionTemplate = (rowData) => (
     <>
       <div className="d-flex">
@@ -34,7 +36,9 @@ const ExternalFacilitatorListSection = () => {
           icon="pi pi-eye"
           severity="help"
           className="rounded-circle"
-          onClick={() => handleOnclick(rowData.id)}
+          onClick={() => {setSelectedData(rowData);
+            setVisible({ ...visible, detail: true });
+          }}
         />
         <Button
           type="button"
@@ -42,38 +46,19 @@ const ExternalFacilitatorListSection = () => {
           text
           icon="pi pi-pen-to-square"
           className="rounded-circle"
-          onClick={() => handleOnclick(rowData.id, true)}
+          onClick={() => {setSelectedData(rowData);
+            setVisible({ ...visible, form: true });
+          }}
         />
-        {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
-      </div>
+        <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} />
+        </div>
     </>
   );
-  const handleOnclick = (id, isUpdate = false) => {
-    const selected = data.find((x) => x.id === id);
-    setSelectedData(selected);
-    setVisible(
-      isUpdate ? { detail: false, form: true } : { detail: true, form: false }
-    );
-  };
-  // const handleDelete = (id) => {
-  //   confirmAction({
-  //     title: "Confirm Deletion",
-  //     text: `Are you sure you want to delete this Program?`,
-  //     confirmButtonText: "Delete",
-  //     cancelButtonText: "Cancel",
-  //     onConfirm: () =>
-  //       handleResponseAsync(
-  //         () => programService.deleteProgram(id),
-  //         () => actionSuccessful("Success!", "Program deleted successfully"),
-  //         (e) => actionFailed("Error!", e.message)
-  //       ),
-  //   });
-  // };
   const columnItems = [
     {
       field: "",
       header: "No",
-      body: (_, { rowIndex }) => <>{rowIndex + 1}</>,
+      body: (_, { rowIndex }) => <>{paginatorConfig.first + 1+ rowIndex}</>,
     },
     {
       field: "name",
@@ -103,23 +88,47 @@ const ExternalFacilitatorListSection = () => {
       body: actionTemplate,
     },
   ];
-  const actionButton = () => {
-    return (
-      <div className=" flex flex-wrap justify-content- gap-3">
+  const header = (
+    <div className="flex justify-content-between">
+      <div className="flex flex-wrap gap-3">
+        <div className="flex theme-color" >
+          <i
+            className="pi pi-users fw-bold"
+            style={{ fontSize: "1.5rem" }}
+          ></i>
+          <h5 className="theme-color m-0 fw-bold" >
+            External Facilitators
+          </h5>
+        </div>
         <Button
           type="button"
           icon="pi pi-plus"
-          severity="success"
-          className="rounded theme-bg py-1"
+          className="rounded  py-1"
           text
-          label={"category"}
+          outlined
+          label={"Add New"}
           onClick={() => {
             setVisible({ ...visible, form: true });
             setSelectedData(null);
           }}
         />
       </div>
-    );
+    </div>
+  );
+  const handleDelete = (id) => {
+    confirmAction({
+      title: "Confirm Deletion",
+      text: `Are you sure you want to delete this Program?`,
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+      onConfirm: () =>
+        handleResponseAsync(
+          () => externalFacilitatorService.deleteExternalFacilitator(id),
+          (e)=>{actionSuccessful("Success", e.message);
+            setTrigger(prev=>prev+1)
+          }
+        ),
+    });
   };
   return (
     <>
@@ -130,19 +139,37 @@ const ExternalFacilitatorListSection = () => {
         </>
       ) : (
         <>
-          <SectionBanner
-            title={"Categories"}
-            subtitle="List of Training Programs"
-            ActionComponents={actionButton}
-          />{" "}
           <CommonTable
-          tableName="Training Categories"
-            dataTable={data}
+          headerComponent={header}
+            dataTable={data?.results}
             title="Programs"
             columnItems={columnItems}
-            // HeaderComponent={actionButton}
+            hidePaginator
+            hideOnEmpty
+            onInputChange={(e)=>
+              setPaginatorConfig((prev) => ({
+                ...prev,
+                value: e,
+                page: 1,
+                first: 0,
+              }))}
           />
-          <CategoryForm
+          <Paginator
+            first={paginatorConfig?.first ?? 1}
+            pageLinkSize={5}
+            rows={paginatorConfig.rows}
+            totalRecords={data?.totalRecords}
+            rowsPerPageOptions={[10, 20, 30, 50, 100]}
+            onPageChange={(e) =>
+              setPaginatorConfig((prev) => ({
+                ...prev,
+                first: e.first,
+                rows: e.rows,
+                page: e.page+1,
+              }))
+            }
+          />
+          <ExternalFacilitatorForm
             handleShow={visible.form}
             handleClose={() => setVisible({ ...visible, form: false })}
             selectedData={selectedData}
@@ -161,22 +188,14 @@ const ExternalFacilitatorListSection = () => {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <h6>Name: </h6>
-              <p>{selectedData?.name}</p>
-              <h6>Description: </h6>
-              <p>{selectedData?.description}</p>
-              <h6>Status: </h6>
-              <p>{selectedData?.status}</p>
-              <h6 className="m-0">Created: </h6>
-              <p>
-                {formatDateOnly(selectedData?.createdDate)} by{" "}
-                {selectedData?.createdBy}
-              </p>
-              <h6 className="m-0">Updated: </h6>
-              <p>
-                {formatDateOnly(selectedData?.updatedDate)} by{" "}
-                {selectedData?.updatedBy}
-              </p>
+              
+              <h6><strong>Name:</strong> <span>{selectedData?.name}</span></h6>
+              <h6><strong>Depatment / Organization:</strong> <span>{selectedData?.depatmentOrganization}</span></h6>
+              <h6><strong>Position:</strong> <span>{selectedData?.position}</span></h6>
+              <h6><strong>Status:</strong> <span>{getStatusById(selectedData?.statusId)}</span></h6>
+              <h6><strong>Created:</strong> <span>{formatDateOnly(selectedData?.createdDate)}{" by "}
+              {selectedData?.createdBy}</span></h6>
+              <h6><strong>Added:</strong> <span>{selectedData?.updatedDate ? `${formatDateOnly(selectedData?.updatedDate)} by ${selectedData?.updatedBy}`: "N/A"}</span></h6>
             </Modal.Body>
             <Modal.Footer>
               <Button

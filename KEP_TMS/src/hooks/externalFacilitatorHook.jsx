@@ -45,7 +45,7 @@ const externalFacilitatorHook = {
         loading,
       };
     },
-  usePagedExternalFacilitator: (pageNumber, pageSize, searchValue) => {
+  usePagedExternalFacilitator: (pageNumber, pageSize, searchValue, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -64,7 +64,7 @@ const externalFacilitatorHook = {
         );
       };
       getRequest();
-    }, [pageNumber, pageSize, searchValue]);
+    }, [pageNumber, pageSize, searchValue, trigger]);
     return {
       data,
       error,

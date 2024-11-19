@@ -17,6 +17,8 @@ const CommonTable = ({
   hideHeader,
   hidePaginator,
   dataKey,
+  onInputChange,
+  hideOnEmpty=false,
 }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -25,7 +27,7 @@ const CommonTable = ({
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     let _filters = { ...filters };
-
+    onInputChange(value);
     _filters["global"].value = value;
     setFilters(_filters);
     setGlobalFilterValue(value);
@@ -53,7 +55,7 @@ const CommonTable = ({
   return (
     <>
       <div className=" w-100 overflowX-auto" style={{ overflowX: "auto" }}>
-        {dataTable?.length > 0 ?<>
+        {((dataTable?.length > 0 && !hideOnEmpty) || hideOnEmpty) ?<>
         <DataTable
           ref={dataRef}
           className="customTable"
@@ -97,5 +99,7 @@ CommonTable.propTypes = {
   hideHeader: proptype.bool,
   hidePaginator: proptype.bool,
   dataKey: proptype.string,
+  onInputChange: proptype.func,
+  hideOnEmpty: proptype.bool
 };
 export default CommonTable;
