@@ -184,7 +184,6 @@ const EffectivenessForm = ({
 
   const activityLogs = mappingHook.useMappedActivityLogs(formData, userData);
   const reportTemplateRef = useRef();
-
   return (
     <>
       <Card.Body>
@@ -214,6 +213,8 @@ const EffectivenessForm = ({
               <small className="text-muted">
                 Knowles Electronics Philippines
               </small>
+              {isSubmitted &&
+              <p className="hideExport">Effectiveness Report # {formData.id}</p>}
             </div>
             <Row>
               <AutoCompleteField
