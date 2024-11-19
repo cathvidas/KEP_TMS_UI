@@ -4,7 +4,7 @@ import proptype from "prop-types";
 import { Button } from "primereact/button";
 import TextEditor from "../common/TextEditor";
 import { ActivityType } from "../../../api/constants";
-import TrainingRequestEmailtemplate from "../../emailTemplate/TrainingRequestEmailtemplate";
+import TrainingRequestEmailtemplate from "../../email/TrainingRequestEmailtemplate";
 import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import commonService from "../../../services/commonService";

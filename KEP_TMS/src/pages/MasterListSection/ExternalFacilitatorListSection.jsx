@@ -8,7 +8,6 @@ import { formatDateOnly } from "../../utils/datetime/Formatting";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
 import getStatusById from "../../utils/status/getStatusById";
 import { Paginator } from "primereact/paginator";
-import ExternalFacilitatorForm from "../../components/forms/ModalForms/ExternalFacilitatorForm";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import externalFacilitatorService from "../../services/externalFacilitatorService";
 import { actionSuccessful, confirmAction } from "../../services/sweetalert";

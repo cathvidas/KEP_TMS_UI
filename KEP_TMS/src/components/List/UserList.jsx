@@ -4,7 +4,6 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import StatusColor from "../General/StatusColor";
-import getStatusById from "../../utils/status/getStatusById";
 import effectivenessHook from "../../hooks/effectivenessHook";
 
 export const UserList = ({
@@ -114,5 +113,6 @@ UserList.propTypes = {
   scrollHeight: proptype.string,
   column: proptype.object,
   allowEffectiveness: proptype.bool,
-  sortable: proptype.bool
+  sortable: proptype.bool,
+  selectionMode: proptype.bool
 };

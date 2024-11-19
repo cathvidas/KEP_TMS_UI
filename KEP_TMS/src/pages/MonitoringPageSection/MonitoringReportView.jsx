@@ -12,6 +12,7 @@ import { ActivityType } from "../../api/constants";
 import getStatusById from "../../utils/status/getStatusById";
 import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
 import ExamDetails from "../../components/Exam/ExamDetails";
+import GeneralEmailTemplate from "../../components/email/GeneralEmailTemplate";
 const MonitoringReportView = ({
   data,
   reportType,
@@ -22,6 +23,7 @@ const MonitoringReportView = ({
   examDetail,
 }) => {
   const [showForm, setShowForm] = useState(false);
+  const [showEmailTemplate, setShowEmailTemplate] = useState(false);
   const [selectedData, setSelectedData] = useState({});
   const actionTemplate = (rowData) => {
     return (
@@ -138,28 +140,52 @@ const MonitoringReportView = ({
       }
     );
   };
-  const HeaderComponent = ()=>{
-  return<>
-  <Button label="Send Follow-up Email" icon="pi pi-send" type="button" size="small" className="rounded"/>
-  </>}
+  const HeaderComponent = () => {
+    return (
+      <>
+        <Button
+          label="Send Follow-up Email"
+          icon="pi pi-send"
+          type="button"
+          size="small"
+          className="rounded"
+          onClick={() => setShowEmailTemplate(true)}
+        />
+      </>
+    );
+  };
   addcolumns();
   return (
     <>
       {!showForm ? (
         <>
-          <div className="flex justify-content-between">
-            {" "}
-            <SectionHeading
-              title={`Training ${tableName ? tableName : "Forms"} Monitoring`}
-              icon={<i className="pi pi-clock"></i>}
+          {showEmailTemplate ? (
+            <GeneralEmailTemplate
+              requestData={data}
+              userFormData={formData?.data}
+              reportType={reportType}
+              typeId={typeId}
+              onClose={() => setShowEmailTemplate(false)}
             />
-          </div>
+          ) : (
+            <>
+              <div className="flex justify-content-between">
+                {" "}
+                <SectionHeading
+                  title={`Training ${
+                    tableName ? tableName : "Forms"
+                  } Monitoring`}
+                  icon={<i className="pi pi-clock"></i>}
+                />
+              </div>
 
-          <CommonTable
-            headerComponent={<HeaderComponent />}
-            dataTable={formData?.data}
-            columnItems={columnItems}
-          />
+              <CommonTable
+                headerComponent={<HeaderComponent />}
+                dataTable={formData?.data}
+                columnItems={columnItems}
+              />
+            </>
+          )}
         </>
       ) : (
         <>
@@ -181,7 +207,10 @@ const MonitoringReportView = ({
                     <>
                       <ExamDetails
                         traineeExam={
-                          getTraineeExamDetail(item?.traineeExam, selectedData?.user)?.detail
+                          getTraineeExamDetail(
+                            item?.traineeExam,
+                            selectedData?.user
+                          )?.detail
                         }
                         examDetail={item?.examDetail}
                         isAdmin
@@ -240,7 +269,7 @@ const MonitoringReportView = ({
             )}
           </Card>
         </>
-      )}
+      )}{" "}
     </>
   );
 };

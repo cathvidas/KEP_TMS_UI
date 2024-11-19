@@ -18,7 +18,7 @@ const CommonTable = ({
   hidePaginator,
   dataKey,
   onInputChange,
-  hideOnEmpty=false,
+  hideOnEmpty=true,
 }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -55,7 +55,7 @@ const CommonTable = ({
   return (
     <>
       <div className=" w-100 overflowX-auto" style={{ overflowX: "auto" }}>
-        {((dataTable?.length > 0 && !hideOnEmpty) || hideOnEmpty) ?<>
+        {((dataTable?.length > 0 && hideOnEmpty) || !hideOnEmpty) ?<>
         <DataTable
           ref={dataRef}
           className="customTable"

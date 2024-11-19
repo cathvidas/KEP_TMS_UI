@@ -1,7 +1,7 @@
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { useEffect, useState } from "react";
 import proptype from "prop-types";
-// import "../../../assets/css/TextEditor.css"
+import "../../../assets/css/TextEditor.css"
 // import 'ckeditor5/ckeditor5.css';
 
 import {
@@ -27,7 +27,7 @@ import {
   Font,
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
-const TextEditor = ({ defaultValue, onChange, showToolbar }) => {
+const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTable }) => {
   const [editorData, setEditorData] = useState(defaultValue);
   useEffect(() => {
     if (onChange) {
@@ -74,8 +74,8 @@ const TextEditor = ({ defaultValue, onChange, showToolbar }) => {
     "underline",
     "alignment",
     "|",
-    // "link",
-    "insertTable",
+    "link",
+     ...(disableTable ? [] : ["table", "insertTable"]),
     "bulletedList",
     "numberedList",
     "|",
@@ -87,7 +87,7 @@ const TextEditor = ({ defaultValue, onChange, showToolbar }) => {
     "indent", "insertImage"
   ]
   return (
-    <div className={showToolbar ? "": "custom-text-editor"}>
+    <div className={`${showToolbar ? "": "custom-text-editor"} ${template}`} >
       <CKEditor
       
         editor={ClassicEditor}
@@ -170,5 +170,7 @@ TextEditor.propTypes = {
   defaultValue: proptype.string,
   onChange: proptype.func,
   showToolbar: proptype.bool,
+  template: proptype.string,
+  disableTable: proptype.bool,
 };
 export default TextEditor;
