@@ -44,6 +44,8 @@ export const mappedTrainingRequestByStatus = (trainings) => {
   const pending = [];
   const outdated = [];
   const closed = [];
+  const inactive = [];
+  const returned = [];
   trainings?.forEach((item) => {
     if (
       trainingDetailsService.checkTrainingIfOutDated(item) &&
@@ -69,11 +71,16 @@ export const mappedTrainingRequestByStatus = (trainings) => {
       }
     } else if (item?.status?.id === statusCode.APPROVED) {
       approved.push(item);
-    } else if (item?.status?.id === statusCode.FORAPPROVAL) {
+    } 
+  else if (item?.status?.id === statusCode.DISAPPROVED) {
+    returned.push(item);
+  } else if (item?.status?.id === statusCode.FORAPPROVAL) {
       forApproval.push(item);
     } else if (item?.status?.id === statusCode.SUBMITTED) {
       submitted.push(item);
       pending.push(item);
+    }else if (item?.status?.id === statusCode.INACTIVE) {
+      inactive.push(item);
     }
   });
   return {
@@ -87,5 +94,7 @@ export const mappedTrainingRequestByStatus = (trainings) => {
     published,
     outdated,
     closed,
+    returned,
+    inactive,
   };
 };

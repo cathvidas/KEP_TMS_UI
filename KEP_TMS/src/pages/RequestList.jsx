@@ -68,7 +68,7 @@ const RequestList = () => {
           command: () => navigate(`/KEP_TMS/RequestList`),
           template: MenuItemTemplate,
           count: data?.length,
-          active: currentContent === 7 ? true : false,
+          active: currentContent === 8 ? true : false,
           // badge:
           //   mappedData?.ongoing?.length > 0
           //     ? { value: mappedData?.ongoing?.length }
@@ -123,12 +123,20 @@ const RequestList = () => {
           active: currentContent === 5 ? true : false,
         },
         {
+          label: "Cancelled",
+          icon: "pi pi-times-circle",
+          command: () => navigate(`/KEP_TMS/RequestList/Inactive`),
+          template: MenuItemTemplate,
+          count: mappedData?.inactive?.length,
+          active: currentContent === 6 ? true : false,
+        },
+        {
           label: "OutDated",
           icon: "pi pi-calendar-clock",
           command: () => navigate(`/KEP_TMS/RequestList/OutDated`),
           template: MenuItemTemplate,
           count: mappedData?.outdated?.length,
-          active: currentContent === 6 ? true : false,
+          active: currentContent === 7 ? true : false,
         },
       ],
     },
@@ -154,11 +162,14 @@ const RequestList = () => {
     } else if (currentPage === "CLOSED") {
       setFilter({ value: statusCode.CLOSED, label: "Closed", data: mappedData?.closed });
       setCurrentContent(5);
-    }else if (currentPage === "OUTDATED") {
-      setFilter({ value: null, label: "Outdated", data: mappedData?.outdated });
+    }else if (currentPage === "INACTIVE") {
+      setFilter({ value: null, label: "Inactive", data: mappedData?.inactive });
       setCurrentContent(6);
-    } else {
+    } else if (currentPage === "OUTDATED") {
+      setFilter({ value: null, label: "Outdated", data: mappedData?.outdated });
       setCurrentContent(7);
+    } else {
+      setCurrentContent(8);
       setFilter({ value: statusCode.PUBLISHED, label: "All Training", data:  data});
     }
   }, [type, mappedData, data]);
