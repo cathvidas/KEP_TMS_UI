@@ -36,9 +36,9 @@ const ExamView = ({ reqData, isTrainee, isEditor }) => {
     };
     insertData();
   }, []);
-const getExamDetail =(data)=>{
-  return getTraineeExamDetail(data?.traineeExam, SessionGetEmployeeId())
-}
+  const getExamDetail = (data) => {
+    return getTraineeExamDetail(data, SessionGetEmployeeId());
+  };
   useEffect(() => {
     if (selectedExam?.examDetail?.id) {
       setSelectedExam(
@@ -50,117 +50,132 @@ const getExamDetail =(data)=>{
   }, [examList?.data]);
   return (
     <>
-
-    {isTrainee ? trainingDetailsService.checkTrainingScheduleStatus(reqData)?.isEnd ? <>
-      <SectionHeading title="Exams" icon={<i className="pi pi-box"></i>} />
-      {showTraineeExam ? (
-        <ExamDetails
-          handleClose={() => {
-            setShowTraineeExam(false);
-            setSelectedExam({});
-          }}
-          traineeExam={getExamDetail(selectedExam)?.detail}
-          examDetail={selectedExam?.examDetail}
-        />
-      ) : showExam ? (<>
-        <TraineeExamForm
-          data={selectedExam?.examDetail}
-          examCount={getExamDetail(selectedExam)?.detail?.length}
-          closeForm={() => setShowExam(false)}
-          handleRefresh={() => setTrigger((prev) => prev + 1)}
-        /></>
+      {isTrainee ? (
+        trainingDetailsService.checkTrainingScheduleStatus(reqData)?.isEnd ? (
+          <>
+            <SectionHeading
+              title="Exams"
+              icon={<i className="pi pi-box"></i>}
+            />
+            {showTraineeExam ? (
+              <ExamDetails
+                handleClose={() => {
+                  setShowTraineeExam(false);
+                  setSelectedExam({});
+                }}
+                traineeExam={getExamDetail(selectedExam)?.detail}
+                examDetail={selectedExam?.examDetail}
+              />
+            ) : showExam ? (
+              <>
+                <TraineeExamForm
+                  data={selectedExam?.examDetail}
+                  examCount={getExamDetail(selectedExam)?.detail?.length}
+                  closeForm={() => setShowExam(false)}
+                  handleRefresh={() => setTrigger((prev) => prev + 1)}
+                />
+              </>
+            ) : (
+              <>
+                {examList?.loading ? (
+                  <SkeletonList />
+                ) : (
+                  <Row className="row-cols-1 row-cols-md-2 row-cols-lg-4 g-3 ">
+                    {examList?.data?.map((item) => (
+                      <Col key={`ex${item?.examDetail?.id}`}>
+                        <Card
+                          className="h-100"
+                          title={item?.examDetail?.title}
+                          subTitle={`${item?.examDetail?.questionLimit} items`}
+                          footer={
+                            <div className="text-center">
+                              {getUser?.id ? (
+                                getExamDetail(item)?.submitted ? (
+                                  getExamDetail(item)?.detail?.length < 3 &&
+                                  !getExamDetail(item)?.isPassed ? (
+                                    <Button
+                                      label="Retake"
+                                      icon="pi pi-pencil"
+                                      size="small"
+                                      className="rounded"
+                                      onClick={() => {
+                                        setShowDialog(true);
+                                        setSelectedExam(item);
+                                      }}
+                                    />
+                                  ) : (
+                                    <Button
+                                      label="View Details"
+                                      severity="success"
+                                      icon="pi pi-eye"
+                                      size="small"
+                                      outlined
+                                      className="rounded theme-color"
+                                      onClick={() => {
+                                        setShowTraineeExam(true);
+                                        setSelectedExam(item);
+                                      }}
+                                    />
+                                  )
+                                ) : (
+                                  <Button
+                                    type="button"
+                                    label="Take Exam"
+                                    size="small"
+                                    icon="pi pi-pen-to-square"
+                                    className="ms-2 rounded theme-bg"
+                                    onClick={() => {
+                                      setShowDialog(true);
+                                      setSelectedExam(item);
+                                    }}
+                                  />
+                                )
+                              ) : (
+                                <></>
+                              )}
+                            </div>
+                          }
+                          header={
+                            <div className="position-relative">
+                              <img alt="Card" src={cardHeaderImg} />
+                              {getExamDetail(item)?.submitted && (
+                                <div
+                                  className={`position-absolute top-0 flex justify-content-center h1 w-100 h-100 bg-opacity-25 ${
+                                    getExamDetail(item)?.isPassed
+                                      ? "bg-success text-success"
+                                      : "bg-danger text-danger"
+                                  }  `}
+                                >
+                                  {getExamDetail(item)?.isPassed
+                                    ? "PASSED"
+                                    : "FAILED"}
+                                </div>
+                              )}
+                            </div>
+                          }
+                        ></Card>
+                      </Col>
+                    ))}
+                  </Row>
+                )}
+                <ExamConfirmDialog
+                  handleClose={() => setShowDialog(false)}
+                  handleShow={showDialog}
+                  handleOnclick={() => setShowExam(true)}
+                />
+              </>
+            )}
+          </>
+        ) : (
+          <div className="d-flex justify-content-center align-items-center h-100 h1 opacity-50 text-muted">
+            No Details Available
+          </div>
+        )
+      ) : isEditor ? (
+        <ExamSection data={reqData} />
       ) : (
-        <>
-          {examList?.loading ? (
-            <SkeletonList />
-          ) : (
-            <Row className="row-cols-1 row-cols-md-2 row-cols-lg-4 g-3 ">
-              {examList?.data?.map((item) => (
-                <Col key={`ex${item?.examDetail?.id}`}>
-                  <Card
-                    className="h-100"
-                    title={item?.examDetail?.title}
-                    subTitle={`${item?.examDetail?.questionLimit} items`}
-                    footer={
-                      <div className="text-center">
-                        {getUser?.id ? (
-                          getExamDetail(item)?.submitted ? (
-                            getExamDetail(item)?.detail?.length < 3 &&
-                            !getExamDetail(item)?.isPassed ? (
-                              <Button
-                                label="Retake"
-                                icon="pi pi-pencil"
-                                size="small"
-                                className="rounded"
-                                onClick={() => {
-                                  setShowDialog(true);
-                                  setSelectedExam(item);
-                                }}
-                              />
-                            ) : (
-                              <Button
-                                label="View Details"
-                                severity="success"
-                                icon="pi pi-eye"
-                                size="small"
-                                outlined
-                                className="rounded theme-color"
-                                onClick={() => {
-                                  setShowTraineeExam(true);
-                                  setSelectedExam(item);
-                                }}
-                              />
-                            )
-                          ) : (
-                            <Button
-                              type="button"
-                              label="Take Exam"
-                              size="small"
-                              icon="pi pi-pen-to-square"
-                              className="ms-2 rounded theme-bg"
-                              onClick={() => {
-                                setShowDialog(true);
-                                setSelectedExam(item);
-                              }}
-                            />
-                          )
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    }
-                    header={
-                      <div className="position-relative">
-                        <img alt="Card" src={cardHeaderImg} />
-                        {getExamDetail(item)?.submitted && (
-                          <div
-                            className={`position-absolute top-0 flex justify-content-center h1 w-100 h-100 bg-opacity-25 ${
-                              getExamDetail(item)?.isPassed
-                                ? "bg-success text-success"
-                                : "bg-danger text-danger"
-                            }  `}
-                          >
-                            {getExamDetail(item)?.isPassed
-                              ? "PASSED"
-                              : "FAILED"}
-                          </div>
-                        )}
-                      </div>
-                    }
-                  ></Card>
-                </Col>
-              ))}
-            </Row>
-          )}
-          <ExamConfirmDialog
-            handleClose={() => setShowDialog(false)}
-            handleShow={showDialog}
-            handleOnclick={() => setShowExam(true)}
-          />
-        </>
+        <></>
       )}
-    </>: <div className="d-flex justify-content-center align-items-center h-100 h1 opacity-50 text-muted">No Details Available</div> : isEditor ? <ExamSection data={reqData} /> : <></>}
-
     </>
   );
 };

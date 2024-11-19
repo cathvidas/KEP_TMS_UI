@@ -199,8 +199,6 @@ const TrainingRequestList = ({
               onValueChange={(e) => mapFilteredData(e)}
             >
               <Column field="id" header="Id" sortable></Column>
-              {/* {isAdmin &&
-          <Column field="requestorBadge" header="BadgeNo" sortable></Column>} */}
               {isAdmin && (
                 <Column
                   field="requestorName"
@@ -261,7 +259,7 @@ const TrainingRequestList = ({
                   body={approverColumnTemplate}
                 ></Column>
               )}
-              {isTrainee && (
+              {/* {isTrainee && (
                 <Column
                   field="approverPosition"
                   header="Status"
@@ -269,7 +267,7 @@ const TrainingRequestList = ({
                   style={{ minWidth: "12rem" }}
                   body={traineeStatusTemplate}
                 ></Column>
-              )}
+              )} */}
               <Column field="id" header="Action" body={actionTemplate}></Column>
             </DataTable>
             {enablePagination && (

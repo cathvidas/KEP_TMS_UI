@@ -80,7 +80,7 @@ const ExamSection = ({ data }) => {
           handleRefresh={refreshData}
           reqId={data.id}
           closeForm={() => setShowForm(false)}
-          readOnly={trainingDetailsService.checkTrainingScheduleStatus(data)?.isUpcoming ? false : true}
+          readOnly={(trainingDetailsService.checkTrainingScheduleStatus(data)?.isUpcoming || !selectedExam)? false : true}
         />
       )}
       {loading ? <SkeletonList /> : <></>}

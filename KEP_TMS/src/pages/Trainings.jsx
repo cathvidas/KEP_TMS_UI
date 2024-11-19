@@ -67,6 +67,14 @@ const Trainings = () => {
         label: "Trainer Menu",
         items: [
           {
+            label: "Pending Action",
+            template: MenuItemTemplate,
+            command: () => navigate(`/KEP_TMS/Trainings/trainer_pendingAction`),
+            icon: "pi pi-exclamation-circle",
+            active: currentContent === 7 ? true : false,
+            count: trainerAssignedData?.mappedData?.approved?.length,
+          },
+          {
             label: "Ongoing",
             template: MenuItemTemplate,
             command: () => navigate(`/KEP_TMS/Trainings/trainer_ongoing`),
@@ -114,6 +122,9 @@ const Trainings = () => {
     } else if (currentPage === "FACILITATED") {
       setCurrentList(trainerAssignedData?.mappedData?.attended);
       setCurrentContent(6);
+    } else if (currentPage === "TRAINER_PENDINGACTION") {
+      setCurrentList(trainerAssignedData?.mappedData?.approved);
+      setCurrentContent(7);
     } else {
       setCurrentContent(0);
       setCurrentList(mappedData?.submitted);

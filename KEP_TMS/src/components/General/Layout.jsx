@@ -62,8 +62,8 @@ const Layout = ({
         <>
           <div className="d-flex">
             <Sidebars activeNavigation={navReference} hide={()=>setShowSidebar(false)} show={showSidebar} expanded={expanded}/>
-            <div className="flex-grow-1 d-flex flex-column d-block expand-transition overflow-hidden vh-100">
-              <div className="d-flex">
+            <div className=" flex-fill d-flex flex-column d-block expand-transition overflow-hidden vh-100">
+              <div className=" position-sticky top-0 w-100">
                 {!header?.hide &&
                 <Header
                   title={header?.title}

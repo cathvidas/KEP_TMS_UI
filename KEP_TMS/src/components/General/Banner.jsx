@@ -29,7 +29,7 @@ const Banner = ({ setShowModal }) => {
             <h3 className="fw-bold" style={{ color: "rgb(0,75,80)" }}>
               Welcome back, {displayName()}
             </h3>
-            {(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole === UserTypeValue.REQUESTOR ) ?<>
+            {(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.SUPER_ADMIN || SessionGetRole === UserTypeValue.REQUESTOR ) ?<>
             <p className="my-3">
               Click &apos;Request Training&apos; to request new training or
               &apos;View All Requests&apos; to track your training request

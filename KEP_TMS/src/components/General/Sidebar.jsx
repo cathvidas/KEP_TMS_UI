@@ -112,13 +112,13 @@ const Sidebars = ({ activeNavigation , expanded, show, hide}) => {
               title="Assigned Trainings"
               icon="pi pi-address-book"
             />
-            {SessionGetRole() === "Facilitator" && (
+            {/* {SessionGetRole() === "Facilitator" && (
               <NavItem
                 item="FacilitatedTrainings"
                 title="Facilitated Trainings"
                 icon="pi pi-list-check"
               />
-            )}
+            )} */}
             <NavItem
               item={"List/ForApproval"}
               title="For Approval"

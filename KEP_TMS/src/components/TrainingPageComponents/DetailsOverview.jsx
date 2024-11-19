@@ -4,7 +4,7 @@ import proptype from "prop-types";
 import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
 import { formatTotalTime } from "../../utils/datetime/FormatDateTime";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
-const DetailsOverview = ({ data }) => {
+const DetailsOverview = ({ data , showCost }) => {
   return (
     <div>
       <Row className="g-0 border-top  border-end border-bottom">
@@ -54,6 +54,7 @@ const DetailsOverview = ({ data }) => {
             value={formatTotalTime(calculateTotalHours(data?.trainingDates))}
           />
         </Col>
+        {showCost &&<>
         <Col className="col-6 col-md-3">
           <DetailItem
             label="Training Fee"
@@ -77,13 +78,13 @@ const DetailsOverview = ({ data }) => {
             label="Cut-off Date"
             value={formatDateOnly(data?.cutOffDate ?? "N/A")}
           />
-        </Col>
+        </Col></>}
       </Row>
     </div>
   );
 };
 DetailsOverview.propTypes = {
-  id: proptype.number,
   data: proptype.object,
+  showCost: proptype.bool,
 };
 export default DetailsOverview;

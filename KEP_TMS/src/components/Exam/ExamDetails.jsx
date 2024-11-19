@@ -31,6 +31,7 @@ const ExamDetails = ({ handleClose, traineeExam, examDetail, isAdmin }) => {
       answer,
     };
   };
+  console.log(examDetail)
   return (
     <>
       <Card className={!handleClose && "border-0"}>
@@ -65,14 +66,14 @@ const ExamDetails = ({ handleClose, traineeExam, examDetail, isAdmin }) => {
                       value={`${traineeExamItem?.examDetail?.totalScore}/${examDetail?.questionLimit}`}
                       color={
                         traineeExamItem?.examDetail?.totalScore >=
-                        getPassingScore(examDetail?.questionLimit)
+                        getPassingScore(examDetail?.questionLimit,examDetail.passingRate)
                           ? "#00a76f"
                           : "#dc3545"
                       }
                     />
                   </div>
                   {traineeExamItem?.examDetail?.totalScore >=
-                  getPassingScore(examDetail?.questionLimit) ? (
+                  getPassingScore(examDetail?.questionLimit,examDetail.passingRate) ? (
                     <h4 className="theme-color text-center">
                       <FontAwesomeIcon icon={faFaceSmile} /> Passed{" "}
                     </h4>
@@ -82,6 +83,7 @@ const ExamDetails = ({ handleClose, traineeExam, examDetail, isAdmin }) => {
                       <FontAwesomeIcon icon={faFaceSadTear} /> Failed{" "}
                     </h4>
                   )}
+                  <p className="text-muted text-center">Passing score is {getPassingScore(examDetail?.questionLimit, examDetail.passingRate)}</p>
                   <br />
                   <h6>Exam Title: {mappedDetail?.title}</h6>
                   <p>

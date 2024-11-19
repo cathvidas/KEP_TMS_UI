@@ -189,7 +189,7 @@ const OverviewSection = ({
             icon={<FontAwesomeIcon icon={faInfoCircle} />}
           />
         </div>
-        <DetailsOverview data={data} />
+        <DetailsOverview data={data} showCost={isAdmin || showApprovers} />
         <br />
         <SectionHeading
           title="Training Schedules"

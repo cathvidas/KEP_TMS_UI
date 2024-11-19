@@ -172,10 +172,10 @@ const RequestList = () => {
         )
       ) : (
         <>
-          <div className={`d-flex g-0`}>
+          <div className={`d-flex `}>
             <MenuContainer itemList={items} />
             <div
-              className={`p-3 pb-5 flex-grow-1`}
+              className={`p-3 pb-5 flex-fill overflow-auto`}
               style={{ minHeight: "calc(100vh - 50px)" }}
             >
               <TrainingRequestList

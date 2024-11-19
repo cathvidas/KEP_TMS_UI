@@ -121,6 +121,7 @@ const UploadModuleForm = ({
     );
     if (validate.isValid) {
       confirmAction({
+        showLoaderOnConfirm:true,
         title: "Upload Module",
         message: "Are you sure you want to upload this module?",
         onConfirm: () => {
@@ -160,6 +161,7 @@ const UploadModuleForm = ({
         updatedBy: SessionGetEmployeeId(),
       };
       confirmAction({
+        showLoaderOnConfirm:true,
         title: "Update Module",
         text: "Are you sure you want to update this module?",
         onConfirm: () =>

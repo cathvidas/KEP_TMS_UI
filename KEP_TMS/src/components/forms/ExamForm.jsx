@@ -21,6 +21,7 @@ import {
 import handleResponseAsync from "../../services/handleResponseAsync";
 import examService from "../../services/examService";
 import validateExamForm from "../../services/inputValidation/validateExamForm";
+import getPassingScore from "../../utils/common/getPassingScore";
 const ExamForm = ({
   defaultData,
   handleRefresh,
@@ -196,21 +197,21 @@ const ExamForm = ({
             <FormFieldItem
               label="Passing Rate"
               col={"col-md-6"}
-              subLabel={"default passing rate is 75%"}
+              subLabel={`( passing score is ${getPassingScore(data?.questionLimit, data?.passingRate ? data?.passingRate: 75)} )`}
               error={errors?.passingRate}
               FieldComponent={
                 <InputGroup className="mb-3">
                   <InputGroup.Text id="basic-addon1">%</InputGroup.Text>
                   <Form.Control
                     type="number"
-                    // disabled={readOnly}
-                    placeholder={"75%"}
+                    disabled={readOnly}
+                    placeholder={"75"}
                     value={data?.passingRate}
                     min={0}
                     onChange={(e) =>
                       setData((prev) => ({
                         ...prev,
-                        passingRate: parseFloat(e.target.value),
+                        passingRate: parseInt(e.target.value ? e.target.value : 75),
                       }))
                     }
                   />
