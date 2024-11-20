@@ -12,36 +12,27 @@ import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import SkeletonForm from "../../components/Skeleton/SkeletonForm";
 import trainingRequestHook from "../../hooks/trainingRequestHook";
 import { Card } from "react-bootstrap";
+import { statusCode } from "../../api/constants";
+import trainingDetailsService from "../../services/common/trainingDetailsService";
 
 const ForEvaluationEffectiveness = () => {
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [search, setSearch] = useState(SessionGetEmployeeId());
-  const [assignedForms, setAssignedForms] = useState([]);
+  const [trigger, setTrigger] = useState(0);
   const [selectedData, setSelectedData] = useState({});
   const [showForm, setShowForm] = useState(false);
-  const effectivessDetail = effectivenessHook.useEffectivenessById(selectedData?.id);
-  const requestData = trainingRequestHook.useTrainingRequest(4);
-  const { data, error, loading } = effectivenessHook.usePagedEffectiveness(
-    pageNumber,
-    pageSize,
-    search
+  const [availableData, setAvailableData] = useState([]);
+  const effectivessDetail = effectivenessHook.useEffectivenessById(
+    selectedData?.trainingEffectiveness?.id,trigger
   );
-  useEffect(() => {
-    const updatedData = data?.results?.filter(
-      (item) => item?.evaluatorBadge === SessionGetEmployeeId()
-    );
-    const getRequestData = async () => {
-      const mappedDetail = await userMapping.mapUserIdList(
-        updatedData,
-        "createdBy",
-        null,
-        true
-      );
-      setAssignedForms(mappedDetail);
-    };
-    getRequestData();
-  }, [data, loading]);
+  // const requestData = trainingRequestHook.useTrainingRequest(4);
+  const { data, loading } = effectivenessHook.useEvaluatorAssignedEffectiveness(
+    SessionGetEmployeeId(),
+    trigger
+  );
+useEffect(()=>{
+const filtered = data?.filter(item=> trainingDetailsService.checkIfTrainingEndsAlready(item?.requestData) && item.routingActivity?.statusId === statusCode.TOUPDATE)
+setAvailableData(filtered);
+},[data])
+  console.log(availableData, )
   const actionTemplate = (rowData) => (
     <>
       <div className="d-flex">
@@ -64,24 +55,31 @@ const ForEvaluationEffectiveness = () => {
     {
       field: "id",
       header: "No",
-    },
-    {
-      field: "trainingProgramName",
-      header: "Program",
+      body: (rowData) => <>{rowData?.trainingEffectiveness?.id}</>,
     },
     {
       field: "id",
       header: "Created By",
-      body: (rowData)=><>{rowData?.userDetail?.fullname}</>
+      body: (rowData) => <>{rowData?.auditTrail?.createdBy}</>,
+    },
+    {
+      field: "trainingProgramName",
+      header: "Program",
+      body: (rowData) => (
+        <>{rowData?.trainingEffectiveness?.trainingProgram?.name}</>
+      ),
     },
     {
       field: "id",
       header: "Created Date",
-      body: (rowData)=><>{formatDateTime(rowData?.createdDate)}</>
+      body: (rowData) => (
+        <>{formatDateTime(rowData?.auditTrail?.createdDate)}</>
+      ),
     },
     {
       field: "id",
       header: "Status",
+      body: () => <>{"For Evaluation"}</>,
     },
     {
       field: "id",
@@ -91,35 +89,55 @@ const ForEvaluationEffectiveness = () => {
   ];
   return (
     <>
-        {loading ? (
-          <>
-            <SkeletonBanner /> <SkeletonDataTable />
-          </>
-        ) : !showForm ?  (
-          <>
-      <div className="p-3">
+      {loading ? (
+        <>
+          <SkeletonBanner /> <SkeletonDataTable />
+        </>
+      ) : !showForm ? (
+        <>
+          <div className="p-3">
             <SectionBanner
               title="For Evaluation Training Effectiveness"
               subtitle="List of Training Effectiveness for Evaluation"
             />
             <CommonTable
               columnItems={items}
-              dataTable={assignedForms}
+              dataTable={availableData}
               tableName={"For Evaluation Training Effectiveness"}
             />
-            </div>
-          </>
-        ) : <>
-        {effectivessDetail?.loading ? <SkeletonForm/> : 
-        <Card>
-<div className="text-end">
-    <Button text icon="pi pi-times" type="button" onClick={()=>{
-        setShowForm(false);
-        setSelectedData({});
-    }}/>
-</div>
-        <EffectivenessForm data={requestData?.data} formData={effectivessDetail?.data} userData={selectedData?.userDetail} currentRouting={effectivessDetail?.currentRouting} auditTrail={effectivessDetail?.auditTrail} /></Card>}
-        </>}
+          </div>
+        </>
+      ) : (
+        <>
+          {effectivessDetail?.loading ? (
+            <SkeletonForm />
+          ) : (
+            <Card>
+              <div className="text-end">
+                <Button
+                  text
+                  icon="pi pi-times"
+                  type="button"
+                  onClick={() => {
+                    setShowForm(false);
+                    setSelectedData({});
+                  }}
+                />
+              </div>
+              
+              <EffectivenessForm
+                evaluate
+                onFinish={() => setTrigger((prev) => prev + 1)}
+                data={selectedData?.requestData}
+                formData={effectivessDetail?.data}
+                userData={selectedData?.userDetail}
+                currentRouting={effectivessDetail?.currentRouting}
+                auditTrail={effectivessDetail?.auditTrail}
+              />
+            </Card>
+          )}
+        </>
+      )}
     </>
   );
 };

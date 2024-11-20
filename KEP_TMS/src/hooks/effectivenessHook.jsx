@@ -63,6 +63,24 @@ const effectivenessHook = {
     }, [approverId, trigger]);
     return { data, error, loading };
   },
+  useEvaluatorAssignedEffectiveness: (id) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequests = async () => {
+        handleResponseAsync(
+          () => 
+            effectivenessService.getEvaluatorAssignedEffectiveness(id),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      getRequests();
+    }, [id]);
+    return { data, error, loading };
+  },
   useAllParticipantsEffectiveness: (datalist) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);

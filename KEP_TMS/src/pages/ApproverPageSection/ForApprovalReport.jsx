@@ -176,7 +176,7 @@ const ForApprovalReport = () => {
         subtitle="List of for Approval Training Reports"
       />
       <CommonTable
-        dataTable={data}
+        dataTable={data?.filter(item=>item.routingActivity?.statusId !== statusCode.TOUPDATE)}
         title="Programs"
         columnItems={columnItems}
       />

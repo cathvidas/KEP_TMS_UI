@@ -191,7 +191,7 @@ const ForApprovaleffectiveness = () => {
             subtitle="List of for Approval Training Effectiveness"
           />
           <CommonTable
-            dataTable={data}
+            dataTable={data?.filter(item=>item.routingActivity?.statusId !== statusCode.TOUPDATE)}
             title="Programs"
             columnItems={columnItems}
           />

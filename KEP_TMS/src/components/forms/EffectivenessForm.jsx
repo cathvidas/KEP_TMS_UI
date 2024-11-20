@@ -29,6 +29,7 @@ import { CompareDateWithToday } from "../../utils/datetime/dateComparison";
 import getStatusCode from "../../utils/status/getStatusCode";
 import mappingHook from "../../hooks/mappingHook";
 import ActivityStatus from "../General/ActivityStatus";
+import trainingDetailsService from "../../services/common/trainingDetailsService";
 const EffectivenessForm = ({
   data,
   userData,
@@ -37,6 +38,7 @@ const EffectivenessForm = ({
   currentRouting,
   auditTrail,
   isAdmin,
+  evaluate
 }) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
@@ -175,13 +177,48 @@ const EffectivenessForm = ({
       });
     }
   };
+  const EvaluateEffectiveness = () => {
+    const { formErrors, isValid } = validateTrainingEffectiveness(
+      getFormData,
+      performanceCharacteristics,
+      projectPerformanceEvaluation,
+      isAfter
+    );
+    console.log(formErrors);
+    setErrors(formErrors);
+    if (isValid) {
+      confirmAction({
+        showLoaderOnConfirm: true,
+        title: "Submit Evaluation",
+        message: `Are you sure you want to submit this form?`,
+        confirmButtonText:"Submit",
+        cancelButtonText: "Cancel",
+        onConfirm: () =>
+          handleResponseAsync(
+            () => effectivenessService.updateTrainingEffectiveness({
+                    ...getFormData,
+                    updatedBy: SessionGetEmployeeId(),
+                    id: formData.id,
+                    statusId: statusCode.CLOSED
+                  }),
+            (e) => {
+              actionSuccessful("Success!", e?.message);
+              onFinish();
+            },
+            (e) => actionFailed("Error!", e.message)
+          ),
+      });
+    }
+  };
+
   useEffect(() => {
     setIsAfter(
-      CompareDateWithToday(getAfterTrainingDate())?.isPast &&
-        SessionGetEmployeeId() === userData?.superiorBadge
+      trainingDetailsService.checkIfTrainingEndsAlready(data)
+       &&  SessionGetEmployeeId() === formData?.evaluatorBadge
     );
-  }, [getAfterTrainingDate]);
+  }, [data, formData]);
 
+  console.log(SessionGetEmployeeId() === formData?.evaluatorBadge,formData, isAfter, evaluate)
   const activityLogs = mappingHook.useMappedActivityLogs(formData, userData);
   const reportTemplateRef = useRef();
   return (
@@ -213,8 +250,11 @@ const EffectivenessForm = ({
               <small className="text-muted">
                 Knowles Electronics Philippines
               </small>
-              {isSubmitted &&
-              <p className="hideExport">Effectiveness Report # {formData.id}</p>}
+              {isSubmitted && (
+                <p className="hideExport">
+                  Effectiveness Report # {formData.id}
+                </p>
+              )}
             </div>
             <Row>
               <AutoCompleteField
@@ -530,7 +570,7 @@ const EffectivenessForm = ({
                             handlePerfEvaluationOnChange(e, index)
                           }
                           cancel={false}
-                          disabled={!isAfter}
+                          disabled={!isAfter && !evaluate}
                         />
                         <small className="mt-1 d-block">
                           {isSubmitted
@@ -555,7 +595,7 @@ const EffectivenessForm = ({
                             handlePerfEvaluationOnChange(e, index)
                           }
                           cancel={false}
-                          disabled={!isAfter}
+                          disabled={!isAfter && !evaluate}
                         />
                         <small className="mt-1 d-block">
                           {isSubmitted
@@ -617,8 +657,10 @@ const EffectivenessForm = ({
                 className="form-control"
                 rows={3}
                 placeholder="Comments/Remarks"
-                disabled={!isAfter}
+                          disabled={!isAfter && !evaluate}
+                          onChange={(e)=>setAnnotation(e.target.value)}
               ></textarea>
+              <ErrorTemplate message={errors?.annotation}/>
             </Form.Group>
           </div>
 
@@ -626,27 +668,31 @@ const EffectivenessForm = ({
             <div className="flex mt-3">
               {(data?.trainingParticipants?.some(
                 (x) => x.employeeBadge === SessionGetEmployeeId()
-              ) || isAdmin) && isSubmitted && (
-                <>
-                  <Button
-                    type="button"
-                    label={`${showLogs ? "Hide" : "Show"} Activities`}
-                    icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
-                    className="rounded"
-                    text
-                    onClick={() => setShowLogs(!showLogs)}
-                  />
-                  <Button
-                    type="button"
-                    label="Download"
-                    icon="pi pi-download"
-                    className="rounded me-auto"
-                    text
-                    severity="help"
-                    onClick={() => handleGeneratePdf(reportTemplateRef.current)}
-                  />
-                </>
-              )}
+              ) ||
+                isAdmin) &&
+                isSubmitted && (
+                  <>
+                    <Button
+                      type="button"
+                      label={`${showLogs ? "Hide" : "Show"} Activities`}
+                      icon={`${showLogs ? "pi pi-eye-slash" : "pi pi-eye"}`}
+                      className="rounded"
+                      text
+                      onClick={() => setShowLogs(!showLogs)}
+                    />
+                    <Button
+                      type="button"
+                      label="Download"
+                      icon="pi pi-download"
+                      className="rounded me-auto"
+                      text
+                      severity="help"
+                      onClick={() =>
+                        handleGeneratePdf(reportTemplateRef.current)
+                      }
+                    />
+                  </>
+                )}
               {data?.trainingParticipants?.some(
                 (x) => x.employeeBadge === SessionGetEmployeeId()
               ) &&
@@ -681,6 +727,16 @@ const EffectivenessForm = ({
                     />
                   </>
                 )}
+              {(isAfter && evaluate) && (
+                <Button
+                  type="button"
+                  icon={"pi pi-pencil"}
+                  label={"Submit Form"}
+                  className="rounded ms-auto"
+                  severity="success"
+                  onClick={EvaluateEffectiveness}
+                />
+              )}
             </div>
           </>
         </Form>

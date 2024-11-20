@@ -40,5 +40,8 @@ export const getActivityApproversApi = async (id, activityIn, requestTotalCost) 
     return await fetchFromApi(`/Services/GetApprovers?userBadge=${id}&requestType=${activityIn}`);}
 }
 export const sendEmailApi = async (data) =>{
-    return await fetchFromApi(`/Services/SendEmail`, "POST", data);
+    return await fetchFromApi(`/EmailActions/SendEmail`, "POST", data);
+}
+export const sendEmailToManyApi = async (data) =>{
+    return await fetchFromApi(`/EmailActions/SendEmailToMany`, "POST", data);
 }

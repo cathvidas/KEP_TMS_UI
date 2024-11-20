@@ -8,7 +8,7 @@ const validateTrainingEffectiveness = (getFormData,performanceCharacteristics, p
       isValid = false;
     }
     if (!getFormData.annotation && isAfter) {
-      formErrors.annotation = "Annotation is required";
+      formErrors.annotation = "This field is required";
       isValid = false;
     }
     if (getFormData.performanceCharacteristics.length === 0 && validCharacteristic) {

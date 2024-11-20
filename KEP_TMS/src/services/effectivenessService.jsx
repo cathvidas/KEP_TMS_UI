@@ -11,6 +11,7 @@ import {
 } from "../api/effectivenessApi";
 import routingService from "./common/routingService";
 import commonService from "./commonService";
+import trainingRequestService from "./trainingRequestService";
 import userService from "./userService";
 const effectivenessService = {
   createTrainingEffectiveness: async (data) => {
@@ -74,6 +75,13 @@ const effectivenessService = {
   },
   getApproverAssignedEffectiveness: async (id) => {
     const response = await getApproverAssignedEffectivenessApi(id);
+    return response;
+  },
+  getEvaluatorAssignedEffectiveness: async (id) => {
+    const response = await getApproverAssignedEffectivenessApi(id);
+    response?.map(async item=>{
+      item.requestData = await trainingRequestService.getTrainingRequest(item?.trainingEffectiveness?.trainingRequestId)
+    })
     return response;
   },
   approveTrainingEffectiveness: async (formData) => {
