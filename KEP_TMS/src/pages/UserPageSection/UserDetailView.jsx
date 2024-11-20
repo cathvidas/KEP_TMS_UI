@@ -144,15 +144,18 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
                       />
                     </TabPanel>
                     <TabPanel header={"Certificates"}>
-          {!trainings?.loading && isAdmin&&  (
-            <Button
-              type="button"
-              label="Generate Certificate"
-              icon="pi pi-download"
-              onClick={() => setShowCertForm(true)}
-            />
-          )}
-                      <CertificatesList userId={id} trainings={trainings?.data?.attended}/>
+                      {!trainings?.loading && isAdmin && (
+                        <Button
+                          type="button"
+                          label="Generate Certificate"
+                          icon="pi pi-download"
+                          onClick={() => setShowCertForm(true)}
+                        />
+                      )}
+                      <CertificatesList
+                        userId={id}
+                        trainings={trainings?.data?.attended}
+                      />
                     </TabPanel>
                   </TabView>
                 </Row>

@@ -25,7 +25,6 @@ const Login = () => {
   const [showPass, setShowPass] = useState(false);
  const location = useLocation();
   // response variables
-
   const handleLogin = async (e) => {
     e.preventDefault();
     if (validateLogin(badge, password)) {

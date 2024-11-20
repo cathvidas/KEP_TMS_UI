@@ -110,7 +110,6 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
             }
           />
         </Col>
-        {formData?.trainingType?.id === TrainingType.EXTERNAL && 
         <Col className="col-lg-6">
           <FormFieldItem
             label={"With early bird rate"}
@@ -191,7 +190,7 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
               />
             </Row>
           )}
-        </Col>}
+        </Col>
       </Row>
     </>
   );

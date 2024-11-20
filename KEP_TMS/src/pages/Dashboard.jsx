@@ -12,7 +12,10 @@ import commonHook from "../hooks/commonHook";
 import SkeletonCards from "../components/Skeleton/SkeletonCards";
 import { SectionTitle } from "../components/General/Section";
 import { APP_DOMAIN, UserTypeValue } from "../api/constants";
-
+import activityLogHook from "../hooks/activityLogHook";
+import { Button } from "primereact/button";
+import { ButtonGroup } from "primereact/buttongroup";
+import { TabPanel, TabView } from "primereact/tabview";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -21,16 +24,20 @@ const Dashboard = () => {
     SessionGetEmployeeId()
   );
   const trainingRequests =
-  SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin" ? trainingRequestHook.useAllTrainingRequests(): trainingRequestHook.useAllTrainingRequests(
-    SessionGetEmployeeId()
-  );
+    SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin"
+      ? trainingRequestHook.useAllTrainingRequests()
+      : trainingRequestHook.useAllTrainingRequests(SessionGetEmployeeId());
   const trainerAssignedData = trainingRequestHook.useParticipantTrainings(
     SessionGetEmployeeId(),
     "trainer"
   );
+  const pendingTasks = activityLogHook.useUserPendingTaskList(
+    SessionGetEmployeeId(),
+    assignedTraining?.mappedData?.pending
+  );
   const values = [
     {
-      label: "Pending Effectiveness",
+      label: "Submitted",
       color: "#fbbf24",
       value: trainingRequests?.mappedData?.submitted?.length,
       icon: "pi pi-list",
@@ -47,34 +54,24 @@ const Dashboard = () => {
       isRequest: true,
       url: "/RequestList/ForApproval",
     },
-          {
-            label: "Outdated Requests",
-            color: "#ff6b6b",
-            value: trainingRequests?.mappedData?.outdated?.length,
-            icon: "pi pi-calendar-clock",
-            status: "OutDated",
-            isRequest: true,
-            url: "/RequestList/OutDated",
-            disabled: !trainingRequests?.mappedData?.outdated?.length > 0,
-          },
-          {
-            label: "Returned Request",
-            color: "#d36034",
-            value: trainingRequests?.mappedData?.returned?.length,
-            icon: "pi pi-replay",
-            status: "Disapproved",
-            isRequest: true,
-            url: "/RequestList/Returned",
-          },
-          {
-            label: "Approved Request",
-            color: "#50d0a2",
-            value: trainingRequests?.mappedData?.returned?.length,
-            icon: "pi pi-thumbs-up",
-            status: "Disapproved",
-            isRequest: true,
-            url: "/RequestList/Approved",
-          },
+    {
+      label: "Disapproved Request",
+      color: "#d36034",
+      value: trainingRequests?.mappedData?.returned?.length,
+      icon: "pi pi-replay",
+      status: "Disapproved",
+      isRequest: true,
+      url: "/RequestList/Returned",
+    },
+    {
+      label: "Approved Request",
+      color: "#50d0a2",
+      value: trainingRequests?.mappedData?.returned?.length,
+      icon: "pi pi-thumbs-up",
+      status: "Disapproved",
+      isRequest: true,
+      url: "/RequestList/Approved",
+    },
     {
       label: "Published Request",
       color: "#345ed3",
@@ -108,12 +105,20 @@ const Dashboard = () => {
     {
       label: "Facilitated Trainings",
       color: "#ff6bbd",
-      value: trainerAssignedData?.mappedData?.approved?.length +  trainerAssignedData?.mappedData?.closed?.length+ trainerAssignedData?.mappedData?.published?.length,
+      value:
+        trainerAssignedData?.mappedData?.approved?.length +
+        trainerAssignedData?.mappedData?.closed?.length +
+        trainerAssignedData?.mappedData?.published?.length,
       icon: "pi pi-tag",
       status: "FacilitatedTrainings",
       isRequest: false,
       url: "/Trainings/facilitated",
-      disabled: !(trainerAssignedData?.mappedData?.approved?.length +  trainerAssignedData?.mappedData?.closed?.length+ trainerAssignedData?.mappedData?.published?.length) > 0,
+      disabled:
+        !(
+          trainerAssignedData?.mappedData?.approved?.length +
+          trainerAssignedData?.mappedData?.closed?.length +
+          trainerAssignedData?.mappedData?.published?.length
+        ) > 0,
     },
     {
       label: "Enrolled Trainings",
@@ -126,47 +131,18 @@ const Dashboard = () => {
       status: "Training",
       isRequest: false,
       url: "/Trainings",
-      disabled: SessionGetRole() !== UserTypeValue.FACILITATOR,
     },
     {
-      label: "Awaiting Effectiveness",
-      color: "#608dfa",
-      value: assignedTraining?.mappedData?.submitted?.length ?? 0,
-      icon: "pi pi-clock",
+      label: "Training Forms To Comply",
+      color: "#919090",
+      value:
+        assignedTraining?.mappedData?.ongoing?.length +
+        assignedTraining?.mappedData?.upcoming?.length +
+        assignedTraining?.mappedData?.attended?.length,
+      icon: "pi pi-file",
       status: "Training",
       isRequest: false,
       url: "/Trainings",
-      disabled: SessionGetRole() === UserTypeValue.FACILITATOR,
-    },
-    {
-      label: "Ongoing Trainings",
-      color: "#608dfa",
-      value: assignedTraining?.mappedData?.ongoing?.length ?? 0,
-      icon: "pi pi-clock",
-      status: "Training",
-      isRequest: false,
-      url: "/Trainings",
-      disabled: SessionGetRole() === UserTypeValue.FACILITATOR,
-    },
-    {
-      label: "Upcoming Trainings",
-      color: "#eea152",
-      value: assignedTraining?.mappedData?.ongoing?.upcoming ?? 0,
-      icon: "pi pi-calendar-clock",
-      status: "Training",
-      isRequest: false,
-      url: "/Trainings/upcoming",
-      disabled: SessionGetRole() === UserTypeValue.FACILITATOR,
-    },
-    {
-      label: "Attended Trainings",
-      color: "#34d399",
-      value: assignedTraining?.mappedData?.attended?.length ?? 0,
-      icon: "pi pi-address-book",
-      status: "Training",
-      isRequest: false,
-      url: "/Trainings/attended",
-      disabled: SessionGetRole() === UserTypeValue.FACILITATOR,
     },
   ];
   const Content = () => {
@@ -174,7 +150,7 @@ const Dashboard = () => {
       <div className="p-3">
         <>
           <Row className="h-100">
-            <Col >
+            <Col>
               {assignedTraining?.loading ? (
                 <SkeletonBanner />
               ) : (
@@ -182,114 +158,123 @@ const Dashboard = () => {
                   <Banner setShowModal={() => setShowModal(true)} />
                 </>
               )}
-              {assignedTraining?.loading ? (
-                <SkeletonCards />
-              ) : (
-                <>
-                  <SectionTitle title="Assigned Trainings" />
-                  <Row className="g-2 row-cols-lg-4">
-                    {assignedTrainingItems
-                      ?.filter((item) => item.disabled !== true)
-                      .map((item, index) => (
-                        <Col key={index}>
-                          <Card
-                            className="shadow-sm p-3 h-100 btn"
-                            style={{
-                              background: item.color + "1c",
-                              borderColor: item.color,
-                            }}
-                            onClick={() => navigate(`${APP_DOMAIN}${item.url}`)}
-                          >
-                            <div className="flex justify-content-between gap-5">
-                              <div className="flex flex-column gap-1">
-                                <span className="text-secondary h5">
-                                  {item.label}
-                                </span>
-                                <span className="font-bold h4">
-                                  {item.value ?? 0}
-                                </span>
-                              </div>
-                              <span
-                                className="p-3 ratio ratio-1x1 d-flex justify-content-center align-items-center text-center rounded-circle"
+
+              <TabView className={`custom-tab ${trainingRequests?.data?.length > 0 ? "" : "border-0"}`}>
+                <TabPanel header={trainingRequests?.data?.length > 0 ? "Trainings" : ""}>
+                  {assignedTraining?.loading ? (
+                    <SkeletonCards />
+                  ) : (
+                    <>
+                      <Row className="g-2 row-cols-lg-4">
+                        {assignedTrainingItems
+                          ?.filter((item) => item.disabled !== true)
+                          .map((item, index) => (
+                            <Col key={index}>
+                              <Card
+                                className="shadow-sm p-3 h-100 btn"
                                 style={{
-                                  backgroundColor: item.color,
-                                  color: "#ffffff",
-                                  width: "4rem",
+                                  background: item.color + "1c",
+                                  borderColor: item.color,
                                 }}
+                                onClick={() =>
+                                  navigate(`${APP_DOMAIN}${item.url}`)
+                                }
                               >
-                                <i
-                                  className={item.icon}
-                                  style={{
-                                    top: "unset",
-                                    left: "unset",
-                                    fontSize: "2rem",
-                                    height: "unset",
-                                  }}
-                                />
-                              </span>
-                            </div>
-                          </Card>
-                        </Col>
-                      ))}
-                  </Row>
-                </>
-              )}
+                                <div className="flex justify-content-between gap-2">
+                                  <div className="flex  flex-column gap-1">
+                                    <span className="text-secondary h5">
+                                      {item.label}
+                                    </span>
+                                    <span className="font-bold h4">
+                                      {item.value ?? 0}
+                                    </span>
+                                  </div>
+                                  <span
+                                    className="p-3 ratio ratio-1x1 d-flex justify-content-center align-items-center text-center rounded-circle"
+                                    style={{
+                                      backgroundColor: item.color,
+                                      color: "#ffffff",
+                                      width: "4rem",
+                                    }}
+                                  >
+                                    <i
+                                      className={item.icon}
+                                      style={{
+                                        top: "unset",
+                                        left: "unset",
+                                        fontSize: "2rem",
+                                        height: "unset",
+                                      }}
+                                    />
+                                  </span>
+                                </div>
+                              </Card>
+                            </Col>
+                          ))}
+                      </Row>
+                    </>
+                  )}
+                </TabPanel>
+                {trainingRequests?.data?.length > 0 &&
+                <TabPanel header={"Training Requests"}>
+                  {trainingRequests?.loading ? (
+                    <SkeletonCards />
+                  ) : (
+                    (SessionGetRole() === UserTypeValue.ADMIN ||
+                      SessionGetRole() === UserTypeValue.REQUESTOR ||
+                      trainingRequests?.data?.length > 0) && (
+                      <>
+                        <Row className="g-2 row-cols-lg-4">
+                          {values.map((item, index) => (
+                            <Col key={index}>
+                              <Card
+                                className="shadow-sm p-3 h-100 btn"
+                                style={{
+                                  background: item.color + "1c",
+                                  borderColor: item.color,
+                                }}
+                                onClick={() =>
+                                  navigate(`${APP_DOMAIN + item.url}`)
+                                }
+                              >
+                                <div className="flex justify-content-between gap-2">
+                                  <div className="flex flex-column gap-1">
+                                    <span className="text-secondary h5">
+                                      {item.label}
+                                    </span>
+                                    <span className="font-bold h4">
+                                      {item.value ?? 0}
+                                    </span>
+                                  </div>
+                                  <span
+                                    className="p-3 ratio ratio-1x1 d-flex justify-content-center align-items-center text-center rounded-circle"
+                                    style={{
+                                      backgroundColor: item.color,
+                                      color: "#ffffff",
+                                      width: "4rem",
+                                    }}
+                                  >
+                                    <i
+                                      className={item.icon}
+                                      style={{
+                                        top: "unset",
+                                        left: "unset",
+                                        fontSize: "2rem",
+                                        height: "unset",
+                                      }}
+                                    />
+                                  </span>
+                                </div>
+                              </Card>
+                            </Col>
+                          ))}
+                        </Row>
+                      </>
+                    )
+                  )}
+                </TabPanel>}
+              </TabView>
               <br />
-              {trainingRequests?.loading ? (
-                <SkeletonCards />
-              ) : (
-                (SessionGetRole() === UserTypeValue.ADMIN ||
-                  SessionGetRole() === UserTypeValue.REQUESTOR ||
-                  trainingRequests?.data?.length > 0) && (
-                  <>
-                    <SectionTitle title="Training Requests" />
-                    <Row className="g-2 row-cols-lg-4">
-                      {values.map((item, index) => (
-                        <Col key={index}>
-                          <Card
-                            className="shadow-sm p-3 h-100 btn"
-                            style={{
-                              background: item.color + "1c",
-                              borderColor: item.color,
-                            }}
-                            onClick={() => navigate(`${APP_DOMAIN + item.url}`)}
-                          >
-                            <div className="flex justify-content-between gap-5">
-                              <div className="flex flex-column gap-1">
-                                <span className="text-secondary h5">
-                                  {item.label}
-                                </span>
-                                <span className="font-bold h4">
-                                  {item.value ?? 0}
-                                </span>
-                              </div>
-                              <span
-                                className="p-3 ratio ratio-1x1 d-flex justify-content-center align-items-center text-center rounded-circle"
-                                style={{
-                                  backgroundColor: item.color,
-                                  color: "#ffffff",
-                                  width: "4rem",
-                                }}
-                              >
-                                <i
-                                  className={item.icon}
-                                  style={{
-                                    top: "unset",
-                                    left: "unset",
-                                    fontSize: "2rem",
-                                    height: "unset",
-                                  }}
-                                />
-                              </span>
-                            </div>
-                          </Card>
-                        </Col>
-                      ))}
-                    </Row>
-                  </>
-                )
-              )}
-              {/* <EnrolledTrainingsSection/> */}
             </Col>
             <br />
           </Row>

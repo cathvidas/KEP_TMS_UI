@@ -91,6 +91,7 @@ const GeneralEmailTemplate = ({
   };
   const sendEmail = (data)=>{
     confirmAction({
+      showLoaderOnConfirm: true,
       title: "Send Email",
       message: "Are you sure you want to send this email?",
       onConfirm: () => 
@@ -136,7 +137,8 @@ const GeneralEmailTemplate = ({
                   )}
                   <TextEditor
                     defaultValue={emailTempContentRef.current?.innerHTML}
-                    disableTable
+                    // disableTable
+                    showToolbar
                     onChange={setEmailContent}
                   />
                   {addFormLink && (

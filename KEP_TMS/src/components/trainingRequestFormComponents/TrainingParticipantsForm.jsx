@@ -11,8 +11,15 @@ import { FilterMatchMode } from "primereact/api";
 import EmptyState from "./EmptyState";
 import { Button } from "primereact/button";
 import { Modal } from "react-bootstrap";
-const TrainingParticipantsForm = ({ formData, handleResponse, errors , departments}) => {
-
+import { TrainingType } from "../../api/constants";
+const TrainingParticipantsForm = ({
+  formData,
+  handleResponse,
+  errors,
+  departments,
+  trainingType,
+}) => {
+  console.log(trainingType, TrainingType.INTERNAL);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -73,7 +80,6 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors , departmen
               (y) => x.employeeBadge === y.employeeBadge
             )
         );
-
 
       setList({
         users: availableUsers,
@@ -159,10 +165,7 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors , departmen
   const bodyContent = (
     <>
       {" "}
-      <SearchBar
-        handleOnInput={onGlobalFilterChange}
-        options={departments}
-      />
+      <SearchBar handleOnInput={onGlobalFilterChange} options={departments} />
       <div
         className="overflow-auto max-vh-100 mt-2"
         style={{ maxHeight: "calc(100vh - 275px)" }}
@@ -218,7 +221,7 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors , departmen
           action={() => handleShow("trainees")}
         />
       )}
-
+      {trainingType === TrainingType.INTERNAL &&<>
       <div className="mt-4"></div>
       <SectionHeading
         title="Training faciltator"
@@ -227,7 +230,7 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors , departmen
       {error?.facilitators && (
         <small className="text-red">{error.facilitators}</small>
       )}
-      {data.trainingFacilitators?.length > 0 ? (
+      {(data.trainingFacilitators?.length > 0) ? (
         <>
           <span className="d-flex mb-2 justify-content-between">
             <span className="text-muted">
@@ -235,7 +238,7 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors , departmen
             </span>
             <ActionButton
               variant={{ size: "btn-sm" }}
-              title="Add Participant"
+              title="Add Facilitator"
               onClick={() => handleShow("facilitators")}
             />
           </span>
@@ -253,43 +256,39 @@ const TrainingParticipantsForm = ({ formData, handleResponse, errors , departmen
           placeholder="Click to add facilitator."
           action={() => handleShow("facilitators")}
         />
-      )}
+      )}</>}
 
-      <div className="mt-4"></div>
-      <Modal show={showModal} onHide={()=>setShowModal(false)} size={"xl"}>
-        <Modal.Header className="border-0" closeButton>
-          <Modal.Title className={`h5 `}>{
-          currentSelected === "facilitators"
-            ? "Facilitators"
-            : currentSelected === "trainees"
-            ? "Employees": "Users"}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="py-0">{bodyContent}
-        </Modal.Body>
-        <Modal.Footer className="border-0">
-          
-        <Button label="Cancel"  onClick={()=>setShowModal(false)} className="p-button-text rounded" />
-        <Button label="Add" icon="pi pi-user-plus" onClick={checkUser} className="rounded"  />
-   
-        </Modal.Footer>
-      </Modal>
-      {/* <ModalContainer
-        variantStyle={"primary"}
-        state={showModal}
-        close={handleClose}
-        buttonAction={checkUser}
-        heading={
-          currentSelected === "facilitators"
-            ? "Facilitators"
-            : currentSelected === "trainees"
-            ? "Employees"
-            : "Users"
-        }
-        id="userlistModal"
-        buttonText="Add"
-        body={bodyContent}
-        size={"xl"}
-      /> */}
+          <div className="mt-4"></div>
+
+          <Modal
+            show={showModal}
+            onHide={() => setShowModal(false)}
+            size={"xl"}
+          >
+            <Modal.Header className="border-0" closeButton>
+              <Modal.Title className={`h5 `}>
+                {currentSelected === "facilitators"
+                  ? "Facilitators"
+                  : currentSelected === "trainees"
+                  ? "Employees"
+                  : "Users"}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="py-0">{bodyContent}</Modal.Body>
+            <Modal.Footer className="border-0">
+              <Button
+                label="Cancel"
+                onClick={() => setShowModal(false)}
+                className="p-button-text rounded"
+              />
+              <Button
+                label="Add"
+                icon="pi pi-user-plus"
+                onClick={checkUser}
+                className="rounded"
+              />
+            </Modal.Footer>
+          </Modal>
     </>
   );
 };

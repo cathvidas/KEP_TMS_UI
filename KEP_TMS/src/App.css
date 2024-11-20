@@ -129,7 +129,9 @@ ul.p-dropdown-items {
     display: none !important;
 }
 
-
+.custom-tab.border-0.p-tabview .p-tabview-nav{
+    border: none !important;
+}
 
 
 a

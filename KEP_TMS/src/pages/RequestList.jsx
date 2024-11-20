@@ -75,7 +75,7 @@ const RequestList = () => {
           //     : false,
         },
         {
-          label: "Pending Effectiveness",
+          label: "Submitted",
           icon: "pi pi-file-import",
           command: () => navigate(`/KEP_TMS/RequestList/Pending`),
           template: MenuItemTemplate,
@@ -99,7 +99,7 @@ const RequestList = () => {
           active: currentContent === 2 ? true : false,
         },
         {
-          label: "Returned",
+          label: "Disapproved",
           icon: "pi pi-replay",
           command: () => navigate(`/KEP_TMS/RequestList/Returned`),
           template: MenuItemTemplate,
@@ -130,14 +130,18 @@ const RequestList = () => {
           count: mappedData?.inactive?.length,
           active: currentContent === 6 ? true : false,
         },
-        {
-          label: "OutDated",
-          icon: "pi pi-calendar-clock",
-          command: () => navigate(`/KEP_TMS/RequestList/OutDated`),
-          template: MenuItemTemplate,
-          count: mappedData?.outdated?.length,
-          active: currentContent === 7 ? true : false,
-        },
+        // {
+        //   separator:true,
+        //   template: MenuItemTemplate,
+        // },
+        // {
+        //   label: "OutDated",
+        //   icon: "pi pi-calendar-clock",
+        //   command: () => navigate(`/KEP_TMS/RequestList/OutDated`),
+        //   template: MenuItemTemplate,
+        //   count: mappedData?.outdated?.length,
+        //   active: currentContent === 7 ? true : false,
+        // },
       ],
     },
   ];

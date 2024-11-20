@@ -25,6 +25,7 @@ import {
   Indent,
   IndentBlock,
   Font,
+  GeneralHtmlSupport,
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
 const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTable }) => {
@@ -84,7 +85,8 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
     "fontColor",
     "fontBackgroundColor",
     "outdent",
-    "indent", "insertImage"
+    "indent", "insertImage",
+    { name: 'insert', items: [ 'Table' ] }
   ]
   return (
     <div className={`${showToolbar ? "": "custom-text-editor"} ${template}`} >
@@ -132,7 +134,17 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
               }
               }
             },
-
+            htmlSupport: {
+              allow: [
+                  {
+                      name: /.*/,
+                      attributes: true,
+                      classes: true,
+                      styles: true
+                  }
+              ]
+          },
+          
             // Set the palettes for table cells.
             tableCellProperties: {
               borderColors: customColorPalette,
@@ -160,6 +172,7 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
             Indent,
             IndentBlock,
             Font,
+            GeneralHtmlSupport
           ],  
         }}
       />

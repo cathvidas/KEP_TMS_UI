@@ -54,7 +54,7 @@ export const mappedTrainingRequestByStatus = (trainings) => {
         item?.status?.id === statusCode.APPROVED)
     ) {
       outdated.push(item);
-    } else if (item?.status?.id === statusCode.CLOSED) {
+    }  if (item?.status?.id === statusCode.CLOSED) {
       closed.push(item);
       attended.push(item);
     } else if (item?.status?.id === statusCode.PUBLISHED) {

@@ -27,7 +27,7 @@ const Banner = ({ setShowModal }) => {
         <Col className="d-md-flex align-items-md-center col-12 col-md-8">
           <div className="px-5">
             <h3 className="fw-bold" style={{ color: "rgb(0,75,80)" }}>
-              Welcome back, {displayName()}
+              Good Day, {displayName()}
             </h3>
             {(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.SUPER_ADMIN || SessionGetRole === UserTypeValue.REQUESTOR ) ?<>
             <p className="my-3">

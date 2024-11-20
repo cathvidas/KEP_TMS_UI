@@ -75,9 +75,10 @@ const AllUserPageSection = ({userType, data, options, isFilter, reloadData})=>{
           });
     }
     const columnItems = [
-        {field: "_", header: "No", body: (_, {rowIndex})=><>{rowIndex + 1}</>},
-        {field: "employeeBadge", header: "Badge No"},
+        // {field: "_", header: "No", body: (_, {rowIndex})=><>{rowIndex + 1}</>},
+        {field: "employeeBadge", header: "ID"},
         {field: "fullname", header: "Name"},
+        {field: "email", header: "Email"},
         {field: "position", header: "Position"},
         {field: "departmentName", header: "Department"},
         {field: "roleName", header: "User Type"},
