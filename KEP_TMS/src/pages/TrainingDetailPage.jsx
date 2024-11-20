@@ -108,6 +108,7 @@ const TrainingDetailPage = () => {
       reportType="effectivenessDetail"
       typeId={ActivityType.EFFECTIVENESS}
       hasApprover
+      onRefresh={refreshData}
     />,
     <MonitoringReportView
       key={6}
@@ -116,6 +117,7 @@ const TrainingDetailPage = () => {
       reportType="examDetail"
       typeId={ActivityType.EXAM}
       examDetail={examList?.data}
+      onRefresh={refreshData}
     />,
     <MonitoringReportView
       key={7}
@@ -124,6 +126,7 @@ const TrainingDetailPage = () => {
       reportType="reportDetail"
       typeId={ActivityType.REPORT}
       hasApprover
+      onRefresh={refreshData}
     />,
     <MonitoringReportView
       key={8}

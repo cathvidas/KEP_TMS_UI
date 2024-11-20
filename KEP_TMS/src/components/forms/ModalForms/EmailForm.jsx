@@ -8,6 +8,7 @@ import TrainingRequestEmailtemplate from "../../email/TrainingRequestEmailtempla
 import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import commonService from "../../../services/commonService";
+import { SessionGetEmployeeId } from "../../../services/sessions";
 const EmailForm = ({
   handleShow,
   handleClose,
@@ -44,7 +45,8 @@ const EmailForm = ({
     const validate = validateEmailContent();
     const emailData = { subject: subject,
       body: serializeContent(),
-      sendTo: recipient?.employeeBadge}
+      recipient: recipient?.employeeBadge,
+      sender: SessionGetEmployeeId()}
     if(validate){
       confirmAction({
         showLoaderOnConfirm: true,
@@ -81,9 +83,7 @@ const validateEmailContent = () => {
     <>
       {" "}
       <div ref={formTemplateRef} className="d-none">
-        {activityData && activityType === ActivityType.REQUEST && (
-          <TrainingRequestEmailtemplate requestDetail={activityData} recipient={recipient} routeList={routeList} activityLogs={activityLogs}/>
-        )}
+          <TrainingRequestEmailtemplate requestDetail={activityData} recipient={recipient} routeList={routeList} activityLogs={activityLogs} activityTitle={activityTitle}/>
       </div>
       <Modal
         show={handleShow}
@@ -123,7 +123,7 @@ const validateEmailContent = () => {
                   <Col className="col-12">
                     <Form.Group>
                       <Form.Label className="">Content</Form.Label>
-                      <TextEditor defaultValue={activityType === ActivityType.REQUEST ? formTemplateRef.current?.innerHTML: formTemplate.current?.innerHTML} onChange={(e)=>setEmailContent(e)} showToolbar />
+                      <TextEditor disableTable defaultValue={formTemplateRef.current?.innerHTML} onChange={(e)=>setEmailContent(e)} showToolbar />
                       {/* <textarea
                     className="form-control"
                     value={formData.description}

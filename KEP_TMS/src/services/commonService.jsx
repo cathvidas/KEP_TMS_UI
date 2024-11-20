@@ -1,4 +1,4 @@
-import { disapproveActivityApi, getActivityApproversApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getCurrentRoutingActivityApi, getRoutingActivityWithAuditTrailApi, sendEmailApi } from "../api/commonApi";
+import { disapproveActivityApi, getActivityApproversApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getCurrentRoutingActivityApi, getRoutingActivityWithAuditTrailApi, sendEmailApi, sendEmailToManyApi } from "../api/commonApi";
 import userMapping from "./DataMapping/userMapping";
 import userService from "./userService";
 
@@ -82,6 +82,13 @@ const commonService = {
   sendEmail: async (data) => {
     const response = await sendEmailApi(data);
     return response.status === 1 ? response?.data : [];
+  },
+  sendEmailToMany: async (data) => {
+    const response = await sendEmailToManyApi(data);
+    if (response.status !== 1) {
+      throw new Error(response.message);
+    }
+    return response;
   },
 };
 

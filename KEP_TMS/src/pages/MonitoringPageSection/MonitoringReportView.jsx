@@ -21,6 +21,7 @@ const MonitoringReportView = ({
   formData,
   typeId,
   examDetail,
+  onRefresh
 }) => {
   const [showForm, setShowForm] = useState(false);
   const [showEmailTemplate, setShowEmailTemplate] = useState(false);
@@ -166,6 +167,7 @@ const MonitoringReportView = ({
               reportType={reportType}
               typeId={typeId}
               onClose={() => setShowEmailTemplate(false)}
+              onRefresh={onRefresh}
             />
           ) : (
             <>

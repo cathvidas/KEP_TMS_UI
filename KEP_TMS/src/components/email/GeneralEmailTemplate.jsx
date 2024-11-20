@@ -6,7 +6,13 @@ import { Column } from "primereact/column";
 import { useEffect, useRef, useState } from "react";
 import proptype from "prop-types";
 import getStatusById from "../../utils/status/getStatusById";
-import { ActivityType, APP_DOMAIN, statusCode } from "../../api/constants";
+import { ActivityType, APP_DOMAIN, APPLICATION_BASE_URL, statusCode } from "../../api/constants";
+import { actionSuccessful, confirmAction } from "../../services/sweetalert";
+import handleResponseAsync from "../../services/handleResponseAsync";
+import commonService from "../../services/commonService";
+import ErrorTemplate from "../General/ErrorTemplate";
+import { useLocation } from "react-router-dom";
+import { SessionGetEmployeeId } from "../../services/sessions";
 const GeneralEmailTemplate = ({
   toCC,
   requestData,
@@ -14,6 +20,7 @@ const GeneralEmailTemplate = ({
   reportType,
   typeId,
   onClose,
+  onRefresh
 }) => {
   const formType = 
   typeId == ActivityType.EFFECTIVENESS
@@ -23,17 +30,18 @@ const GeneralEmailTemplate = ({
     : typeId == ActivityType.EVALUATION
     ? "Evaluation"
     : "Request"
-  const [addRecipient, setAddRecipinet] = useState(true);
+  const [addRecipient, setAddRecipinet] = useState(false);
   const [addFormLink, setAddFormLink] = useState(true);
   const [statusSelected, setStatusSelected] = useState("Pending");
   const [greeting, setGreeting] = useState("Good Day");
   const [emailContent, setEmailContent] = useState("");
+  const [error, setError] = useState("");
   const [subject, setSubject] = useState(
     `Reminder: Pending Training ${formType} Form Submission`
   );
   const [recipients, setRecipients] = useState([]);
   const [urlPlaceholder, setUrlPlaceholder] = useState(
-    "To submit the form, please click the link below:"
+    "To submit the form, please click the link below"
   );
   useEffect(() => {
     if (userFormData) {
@@ -70,10 +78,30 @@ const GeneralEmailTemplate = ({
     }
     content += emailContent;
     if (addFormLink) {
-      content += `<a href="http://localhost:5173/${APP_DOMAIN}/TrainingDetail/${requestData?.id}/Reports" className="text-primary">${urlPlaceholder ? urlPlaceholder : `http://localhost:5173/${APP_DOMAIN}/TrainingDetail/${requestData?.id}/Reports`}</a>`;
+      content += `<a href="${APPLICATION_BASE_URL}TrainingDetail/${requestData?.id}/Reports" className="text-primary">${urlPlaceholder ? urlPlaceholder : `${APPLICATION_BASE_URL}TrainingDetail/${requestData?.id}/Reports`}</a>`;
     }
-    console.log({ subject, body: content, recipients, toCC });
+    if(recipients?.length > 0){
+    const rec = recipients?.map(item=> {
+      return item?.userDetail?.employeeBadge
+    })
+    sendEmail({ subject, body: content, recipients: rec, toCC: [], sender: SessionGetEmployeeId() });}
+    else{
+      setError("No recipients added")
+    }
   };
+  const sendEmail = (data)=>{
+    confirmAction({
+      title: "Send Email",
+      message: "Are you sure you want to send this email?",
+      onConfirm: () => 
+      handleResponseAsync(
+        ()=>commonService.sendEmailToMany(data),
+        ()=>{actionSuccessful("Email sent successfully")
+          onRefresh()
+          onClose()
+        },null
+    )})
+  }
   console.log(userFormData);
   return (
     <>
@@ -122,7 +150,7 @@ const GeneralEmailTemplate = ({
               </Form.Group>
 
               <hr />
-              <Form.Check
+              {/* <Form.Check
                 type="checkbox"
                 label="Add Recipient Detail"
                 checked={addRecipient}
@@ -137,7 +165,7 @@ const GeneralEmailTemplate = ({
                     placeholder="Greeting [e.g. 'Good Day']"
                   />
                 </>
-              )}
+              )} */}
               <Form.Check
                 className="mt-2"
                 type="checkbox"
@@ -157,17 +185,17 @@ const GeneralEmailTemplate = ({
               )}
 
               <div ref={emailTempContentRef} className="d-none">
+                <p>Good Day,</p>
+                <br />
                 <p>
                   This is a reminder to complete and submit the Training
                    &nbsp;{formType} Form for the training program &apos;
                   {requestData?.trainingProgram?.name}&apos;.
-                </p>
-                <p></p>
+                </p><br />
                 <p>
                   If you have any questions or need assistance with the form,
                   feel free to reach out to HR Department.
-                </p>
-                <p></p>
+                </p><br />
                 <p>Thank you for your cooperation.</p>
                 <p></p>
               </div>
@@ -239,6 +267,7 @@ const GeneralEmailTemplate = ({
                   )}
                 ></Column>
               </DataTable>
+              <ErrorTemplate message={error}/>
             </Col>
           </Row>
           <div className="text-end">
@@ -264,5 +293,6 @@ GeneralEmailTemplate.propTypes = {
   reportType: proptype.string,
   typeId: proptype.string,
   onClose: proptype.func,
+  onRefresh: proptype.func,
 };
 export default GeneralEmailTemplate;
