@@ -10,11 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import commonHook from "../hooks/commonHook";
 import SkeletonCards from "../components/Skeleton/SkeletonCards";
-import PendingActionsSection from "../components/dashboard/PendingActionsSection";
 import { SectionTitle } from "../components/General/Section";
 import { APP_DOMAIN, UserTypeValue } from "../api/constants";
-import activityLogHook from "../hooks/activityLogHook";
-import SkeletonList from "../components/Skeleton/SkeletonList";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -30,10 +27,6 @@ const Dashboard = () => {
   const trainerAssignedData = trainingRequestHook.useParticipantTrainings(
     SessionGetEmployeeId(),
     "trainer"
-  );
-  const pendingTasks = activityLogHook.useUserPendingTaskList(
-    SessionGetEmployeeId(),
-    assignedTraining?.mappedData?.pending
   );
   const values = [
     {
@@ -181,7 +174,7 @@ const Dashboard = () => {
       <div className="p-3">
         <>
           <Row className="h-100">
-            <Col className={`${pendingTasks.data?.length > 0 ? "col-xl-9": ""} col-12`}>
+            <Col >
               {assignedTraining?.loading ? (
                 <SkeletonBanner />
               ) : (
@@ -299,14 +292,6 @@ const Dashboard = () => {
               {/* <EnrolledTrainingsSection/> */}
             </Col>
             <br />
-            {pendingTasks?.data?.length > 0 &&
-            <Col className="col-xl-3 to-do-list-bar">
-              {pendingTasks?.loading ? (
-                <SkeletonList />
-              ) : (
-                <PendingActionsSection items={pendingTasks?.data} />
-              )}
-            </Col>}
           </Row>
         </>
       </div>
