@@ -1,7 +1,7 @@
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { useEffect, useState } from "react";
 import proptype from "prop-types";
-import "../../../assets/css/TextEditor.css"
+import "../../../assets/css/TextEditor.css";
 // import 'ckeditor5/ckeditor5.css';
 
 import {
@@ -28,7 +28,13 @@ import {
   GeneralHtmlSupport,
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
-const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTable }) => {
+const TextEditor = ({
+  defaultValue,
+  onChange,
+  showToolbar,
+  template,
+  disableTable,
+}) => {
   const [editorData, setEditorData] = useState(defaultValue);
   useEffect(() => {
     if (onChange) {
@@ -36,7 +42,7 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
     }
   }, [editorData]);
   useEffect(() => {
-    setEditorData(defaultValue ?? '<div> </div>');
+    setEditorData(defaultValue ?? "<div> </div>");
   }, [defaultValue]);
   const customColorPalette = [
     {
@@ -64,7 +70,7 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
       label: "Blue",
     },
   ];
-  const toolbar =  [
+  const toolbar = [
     "undo",
     "redo",
     "|",
@@ -76,7 +82,7 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
     "alignment",
     "|",
     "link",
-     ...(disableTable ? [] : ["table", "insertTable"]),
+    ...(disableTable ? [] : ["table", "insertTable"]),
     "bulletedList",
     "numberedList",
     "|",
@@ -85,13 +91,12 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
     "fontColor",
     "fontBackgroundColor",
     "outdent",
-    "indent", "insertImage",
-    { name: 'insert', items: [ 'Table' ] }
-  ]
+    "indent",
+    "insertImage",
+  ];
   return (
-    <div className={`${showToolbar ? "": "custom-text-editor"} ${template}`} >
+    <div className={`${showToolbar ? "" : "custom-text-editor"} ${template}`}>
       <CKEditor
-      
         editor={ClassicEditor}
         data={editorData}
         onChange={(event, editor) => {
@@ -99,15 +104,33 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
           setEditorData(data);
         }}
         config={{
+          allowedContent: true,
+          htmlSupport: {
+            allow: [
+              {
+                name: /.*/,
+                attributes: true,
+                classes: true,
+                styles: true,
+              },
+            ],
+          },
+          extraAllowedContent: "*[*]{*}(*)",
+          // extraAllowedContent: [
+          //   'table(*);',
+          //   'table-row(*);',
+          //   'table-cell(*);',
+          //   'table[border*,style*,width*,height*]',
+          //   'table-row[style*,data-*]',
+          //   'table-cell[style*,data-*]',
+          // ].join(' '),
           placeholder: "Type your text here...",
           //add toolbar is showToolbar is true
           toolbar: showToolbar ? toolbar : [],
           alignment: {
             options: ["left", "center", "right", "justify"],
           },
-          dataProcessingMode: 'manual',
-          allowedContent: true,
-          extraAllowedContent: '*[*]{*}(*)',
+
           table: {
             contentToolbar: [
               "tableColumn",
@@ -120,33 +143,24 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
             // Set the palettes for tables.
             tableProperties: {
               borderColors: customColorPalette,
-              backgroundColors: customColorPalette,  
-               defaultProperties: {
-                borderStyle: 'dashed',
-                borderColor: 'hsl(90, 75%, 60%)',
-                borderWidth: '3px',
-                alignment: 'left',
-                width: '550px',
-                height: '450px'
-            }, tableCellProperties: {
+              backgroundColors: customColorPalette,
               defaultProperties: {
-                  horizontalAlignment: 'center',
-                  verticalAlignment: 'bottom',
-                  padding: '10px'
-              }
-              }
+                borderStyle: "dashed",
+                borderColor: "hsl(90, 75%, 60%)",
+                borderWidth: "3px",
+                alignment: "left",
+                width: "550px",
+                height: "450px",
+              },
+              tableCellProperties: {
+                defaultProperties: {
+                  horizontalAlignment: "center",
+                  verticalAlignment: "bottom",
+                  padding: "10px",
+                },
+              },
             },
-            htmlSupport: {
-              allow: [
-                  {
-                      name: /.*/,
-                      attributes: true,
-                      classes: true,
-                      styles: true
-                  }
-              ]
-          },
-          
+
             // Set the palettes for table cells.
             tableCellProperties: {
               borderColors: customColorPalette,
@@ -166,6 +180,7 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
             Paragraph,
             Undo,
             // Link,
+            GeneralHtmlSupport,
             Alignment,
             List,
             Heading,
@@ -174,8 +189,51 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
             Indent,
             IndentBlock,
             Font,
-            GeneralHtmlSupport
-          ],  
+          ],
+          schema: {
+            elements: {
+              table: {
+                allowAttributes: [
+                  "class",
+                  "style",
+                  "data-*",
+                  "border",
+                  "width",
+                  "height",
+                ],
+              },
+              tableRow: {
+                allowAttributes: ["class", "style", "data-*"],
+              },
+              tableCell: {
+                allowAttributes: [
+                  "class",
+                  "style",
+                  "data-*",
+                  "colspan",
+                  "rowspan",
+                ],
+              },
+              tableHeaderCell: {
+                allowAttributes: [
+                  "class",
+                  "style",
+                  "data-*",
+                  "colspan",
+                  "rowspan",
+                ],
+              },
+              span: {
+                allowAttributes: ["class", "style", "data-*"],
+              },
+              div: {
+                allowAttributes: ["class", "style", "data-*"],
+              },
+              p: {
+                allowAttributes: ["class", "style", "data-*"],
+              },
+            },
+          },
         }}
       />
     </div>
