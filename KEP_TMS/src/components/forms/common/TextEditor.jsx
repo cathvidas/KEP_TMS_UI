@@ -105,7 +105,9 @@ const TextEditor = ({ defaultValue, onChange, showToolbar, template, disableTabl
           alignment: {
             options: ["left", "center", "right", "justify"],
           },
-
+          dataProcessingMode: 'manual',
+          allowedContent: true,
+          extraAllowedContent: '*[*]{*}(*)',
           table: {
             contentToolbar: [
               "tableColumn",

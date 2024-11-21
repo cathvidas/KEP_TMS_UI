@@ -48,7 +48,7 @@ const TrainingRequestEmailtemplate = ({
         <br />
         Thank you for your attention to this matter.
       </p>
-      {withDetail && (
+      {!withDetail && (
         <>
           <p>
             <br />
@@ -70,7 +70,7 @@ const TrainingRequestEmailtemplate = ({
                   <td>
                     <strong>REQUESTOR:</strong>
                   </td>
-                  <td>{requestDetail?.requestorName}</td>
+                  <td>{requestDetail?.requesterName}</td>
                   <td rowSpan="2">
                     <strong>DATE:</strong>
                   </td>
@@ -80,7 +80,7 @@ const TrainingRequestEmailtemplate = ({
                   <td>
                     <strong>BADGE ID:</strong>
                   </td>
-                  <td>{requestDetail?.requestorBadge}</td>
+                  <td>{requestDetail?.requesterBadge}</td>
                 </tr>
                 <tr>
                   <td>
@@ -131,7 +131,28 @@ const TrainingRequestEmailtemplate = ({
               </tbody>
             </table>
           </figure>
-
+          <table border='1' cellPadding='10' cellSpacing='0' style={{borderCollapse: 'collapse', width: '100%', fontFamily: 'Arial, sans-serif'}}>
+      <thead>
+          <tr style={{backgroundColor: '#f2f2f2'}}>
+              <th colSpan='2' style={{padding: '10px', textAlign: 'left', fontSize: '16px'}}>Training Report Details</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td style={{padding: "10px", width: '30%'}}><strong>ID</strong></td>
+              <td style={{padding: '10px'}}>report.Id</td>
+          </tr>
+          <tr>
+          <td style={{padding: '10px'}}><strong>Date Created</strong></td>
+          <td style={{padding: '10px'}}>auditTrail.CreatedDate?.ToStringyyyy-MM-dd HH:mm:ss</td>
+          </tr>
+          <tr>
+          <td style={{padding: '10px'}}><strong>Training Takeaways</strong></td>
+          <td style={{padding: '10px'}}>report.TrainingTakeaways</td>
+          </tr>
+      </tbody>
+  </table>
+  <br />
           {tableHedear("TRAINING SCHEDULES")}
           <TrainingScheduleList schedules={requestDetail?.trainingDates} />
           <p></p>
@@ -154,7 +175,7 @@ const TrainingRequestEmailtemplate = ({
           <ApproverList
             data={requestDetail}
             emailFormat
-            activityTitle={ActivityTitle.REQUEST}
+            // activityTitle={ActivityTitle.REQUEST}
           />
           <p></p>
           {tableHedear("ACTIVITIES")}

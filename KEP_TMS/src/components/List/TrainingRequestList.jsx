@@ -201,7 +201,7 @@ const TrainingRequestList = ({
               <Column field="id" header="Id" sortable></Column>
               {isAdmin && (
                 <Column
-                  field="requestorName"
+                  field="requesterName"
                   header="Requestor Name"
                   sortable
                 ></Column>

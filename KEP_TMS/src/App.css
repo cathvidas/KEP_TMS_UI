@@ -132,7 +132,9 @@ ul.p-dropdown-items {
 .custom-tab.border-0.p-tabview .p-tabview-nav{
     border: none !important;
 }
-
+.custom-tab ul , .custom-tab ul li a, .custom-tab .p-tabview-panels{ 
+    background: transparent !important;
+}
 
 a
 /* .cutom-link, .custom-link a  */

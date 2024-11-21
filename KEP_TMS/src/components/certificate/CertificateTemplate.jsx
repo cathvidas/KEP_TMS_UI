@@ -58,7 +58,7 @@ const CertificateTemplate = ({ trainings, signatoryList }) => {
     <>
       <div ref={certRef} className="d-none showExport">
         <CertificateContent
-          trainings={trainings?.data?.attended}
+          trainings={trainings}
           signatory={signatoryList?.find(
             (item) => item?.employeeBadge === signatory?.value
           )}

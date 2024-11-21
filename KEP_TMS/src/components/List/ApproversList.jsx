@@ -39,7 +39,6 @@ const ApproverList = ({data, activityTitle, activityType, hasEmailForm, activity
   // getStatusById(rowData?.status?.statusId):
   //   StatusColor({status: getStatusById(rowData?.status?.statusId), class:"p-2 px-3 ", showStatus: true}
   // );
-
   return (
     <>
       <DataTable

@@ -11,7 +11,6 @@ import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import commonService from "../../services/commonService";
 import ErrorTemplate from "../General/ErrorTemplate";
-import { useLocation } from "react-router-dom";
 import { SessionGetEmployeeId } from "../../services/sessions";
 const GeneralEmailTemplate = ({
   toCC,
