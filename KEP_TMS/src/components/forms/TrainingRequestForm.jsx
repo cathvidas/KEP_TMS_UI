@@ -107,7 +107,7 @@ export const TrainingRequestForm = () => {
       } else {
         const updateData = {
           ...formmatedData,
-          requestorBadge: SessionGetEmployeeId(),
+          requesterBadge: SessionGetEmployeeId(),
           trainingTypeId: getTrainingTypeId(),
           statusId:
             calculateTotalHours(formmatedData?.trainingDates) >= 960

@@ -23,7 +23,7 @@ const ForApprovalRequest = () => {
         const updated = await Promise.all(
           mappedData.map(async (x) => {
             const user = await getUserApi(x.requestorId);
-            return { ...x, requestorName: user.data.fullname };
+            return { ...x, requesterName: user.data.fullname };
           })
         );
         setRequest(updated);
@@ -57,7 +57,7 @@ const ForApprovalRequest = () => {
       header: "Id",
     },
     {
-      field: "requestorName",
+      field: "requesterName",
       header: "Requestor",
     },
     {

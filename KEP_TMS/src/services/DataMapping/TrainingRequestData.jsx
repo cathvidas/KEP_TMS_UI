@@ -1,8 +1,9 @@
 export const mapTRequestToTableData = (data)=>{
+    console.log(data)
     const mappedData = data?.map(item=>({
         id: item.id,
-        requestorName: item?.requestorName,
-        requestorBadge: item?.requestorBadge,
+        requesterName: item?.requesterName,
+        requesterBadge: item?.requesterBadge,
         status: item?.status?.name,
         program: item.trainingProgram?.name,
         type: item?.trainingType?.name,
@@ -43,8 +44,8 @@ export const mapForApprovalRequestToTableData =  (data) => {
 export const mapTrainingRequestDetails = (data)=>{
     const user = {
         id: data.id,
-        requestorName: data?.requestorName,
-        requestorId: data?.requestorBadge,
+        requesterName: data?.requesterName,
+        requestorId: data?.requesterBadge,
         status: data?.status?.name,
         program: data.trainingProgram?.name,
         type: data?.trainingType?.name,

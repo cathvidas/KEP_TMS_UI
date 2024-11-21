@@ -43,7 +43,7 @@ const TrainingDetailPage = () => {
   const isFacilitator = data?.trainingFacilitators?.some(
     (item) => item?.employeeBadge === SessionGetEmployeeId()
   );
-  const isRequestor = data?.requestorBadge === SessionGetEmployeeId();
+  const isRequestor = data?.requesterBadge === SessionGetEmployeeId();
   const isApprover = data?.approvers?.some(
     (item) => item?.employeeBadge === SessionGetEmployeeId()
   );

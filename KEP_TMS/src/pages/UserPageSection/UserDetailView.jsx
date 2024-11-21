@@ -36,7 +36,7 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
       body: (_, { rowIndex }) => <>{rowIndex + 1}</>,
     },
     // {field: "id", header: "Id", },
-    { field: "requestorName", header: "Requestor" },
+    { field: "requesterName", header: "Requestor" },
     { field: "type", header: "Type" },
     { field: "program", header: "Program" },
     { field: "category", header: "Category" },

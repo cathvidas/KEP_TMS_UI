@@ -3,7 +3,7 @@ import { SessionGetEmployeeId } from "../sessions";
 export const validateTrainingRequestForm = (formData)=>{
     return{
         id: formData?.id,
-        requestorBadge: formData.requestorBadge ?? SessionGetEmployeeId(),
+        requesterBadge: formData.requesterBadge ?? SessionGetEmployeeId(),
         categoryId: formData.trainingCategory?.id,
         trainingProgramId: formData.trainingProgram?.id,
         trainingProviderId: formData.trainingProvider?.id,

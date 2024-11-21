@@ -10,11 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import commonHook from "../hooks/commonHook";
 import SkeletonCards from "../components/Skeleton/SkeletonCards";
-import { SectionTitle } from "../components/General/Section";
 import { APP_DOMAIN, UserTypeValue } from "../api/constants";
-import activityLogHook from "../hooks/activityLogHook";
-import { Button } from "primereact/button";
-import { ButtonGroup } from "primereact/buttongroup";
 import { TabPanel, TabView } from "primereact/tabview";
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -31,10 +27,10 @@ const Dashboard = () => {
     SessionGetEmployeeId(),
     "trainer"
   );
-  const pendingTasks = activityLogHook.useUserPendingTaskList(
-    SessionGetEmployeeId(),
-    assignedTraining?.mappedData?.pending
-  );
+  // const pendingTasks = activityLogHook.useUserPendingTaskList(
+  //   SessionGetEmployeeId(),
+  //   assignedTraining?.mappedData?.pending
+  // );
   const values = [
     {
       label: "Submitted",
@@ -171,7 +167,7 @@ const Dashboard = () => {
                           .map((item, index) => (
                             <Col key={index}>
                               <Card
-                                className="shadow-sm p-3 h-100 btn"
+                                className="shadow-sm p-3 h-100 btn "
                                 style={{
                                   background: item.color + "1c",
                                   borderColor: item.color,

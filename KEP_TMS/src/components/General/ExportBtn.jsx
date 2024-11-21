@@ -17,8 +17,8 @@ const ExportBtn=({ data })=> {
     };
     const requestData = data?.map((dataItem) => ({
       RequestID: dataItem.id,
-      RequestorBadge: dataItem.requestorBadge,
-      RequestorName: dataItem.requestorName,
+      requesterBadge: dataItem.requesterBadge,
+      requesterName: dataItem.requesterName,
       Type: dataItem.trainingType.name,
       Program: dataItem.trainingProgram.name,
       Category: dataItem.trainingCategory.name,

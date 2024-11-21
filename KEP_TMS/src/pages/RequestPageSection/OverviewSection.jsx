@@ -299,7 +299,7 @@ const OverviewSection = ({
         description="Please state your reason for returning this Training Request."
       />
       {(isAdmin ||
-        data?.requestorBadge == SessionGetEmployeeId()) && (
+        data?.requesterBadge == SessionGetEmployeeId()) && (
         <div className="position-absolute bottom-0  mb-3 me-4 end-0">
           <Toast ref={toast2} />
           <Tooltip

@@ -31,9 +31,9 @@ const trainingRequestHook = {
               response.trainingFacilitators,
               "facilitatorBadge"
             );
-            const approvers = await commonService.getActivityApprovers(response?.requestorBadge, ActivityType.REQUEST, response?.totalTrainingFee);
+            const approvers = await commonService.getActivityApprovers(response?.requesterBadge, ActivityType.REQUEST, response?.totalTrainingFee);
             const requestor = await userService.getUserById(
-              response.requestorBadge
+              response.requesterBadge
             );
             const auditTrail = await commonService.getAuditTrail(id, ActivityType.REQUEST);
             const routings =
@@ -135,7 +135,7 @@ const trainingRequestHook = {
           () => trainingRequestService.getAllTrainingRequests(),
           (e) => {
             const userRequest =
-              id != null ? e?.filter((x) => x.requestorBadge === id) : e;
+              id != null ? e?.filter((x) => x.requesterBadge === id) : e;
             setData(countStatus(e, userRequest));
           },
           (e) => setError(e),

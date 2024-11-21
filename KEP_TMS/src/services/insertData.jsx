@@ -1,7 +1,7 @@
 import { SessionGetEmployeeId } from "./sessions";
 
 export const TrainingRequest =  {
-  requestorBadge: SessionGetEmployeeId()??0,
+  requesterBadge: SessionGetEmployeeId()??0,
   trainingCategory: {},
   trainingProgram: {},
   trainingProviderId: 0,

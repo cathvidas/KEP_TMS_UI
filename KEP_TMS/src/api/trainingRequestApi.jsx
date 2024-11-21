@@ -10,7 +10,7 @@ export const createTrainingRequestApi = async (trainingRequest) => {
     return await fetchFromApi("/TrainingRequest/CreateTrainingRequest", "POST", trainingRequest);
 }
 export const getTrainingRequestsByRequestorApi = async (id) => {
-    return await fetchFromApi(`/TrainingRequest/GetRequestByRequestor?badge=${id}`);
+    return await fetchFromApi(`/TrainingRequest/GetRequestByRequester?badge=${id}`);
 }
 export const updateTrainingRequestApi = async (data)=>{
     return await fetchFromApi("/TrainingRequest/UpdateTrainingRequest", "PUT", data);

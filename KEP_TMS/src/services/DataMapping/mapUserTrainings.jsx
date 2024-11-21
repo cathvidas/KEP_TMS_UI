@@ -10,7 +10,7 @@ const mapUserTrainings = (data, id) => {
     upcoming: [],
   };
   data?.forEach((item) => {
-    if (item?.requestorBadge === id) {
+    if (item?.requesterBadge === id) {
       entity.requested.push(item);
     }
     const isParticipant = item?.trainingParticipants?.find(

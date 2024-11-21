@@ -36,13 +36,13 @@ const getToastDetail = (
     trainingDetailsService.checkTrainingIfOutDated(data)
   ) {
     statusData.detail =
-      isAdmin || data?.requestorBadge === SessionGetEmployeeId()
+      isAdmin || data?.requesterBadge === SessionGetEmployeeId()
         ? "This training Request is outdated, please update training dates OR cancel training Request."
         : "This training Request is outdated and is no longer available.";
     statusData.summary = "OutDated Training Request";
     statusData.severity = "error";
     statusData.content =
-      isAdmin || data?.requestorBadge === SessionGetEmployeeId()
+      isAdmin || data?.requesterBadge === SessionGetEmployeeId()
         ? () => (
           <ToastTemplate icon="pi pi-times-circle" summary={statusData.summary} detail={statusData.detail} 
           leftButtonLabel="Cancel request" leftButtonSeverity="danger"
@@ -130,7 +130,7 @@ const getToastDetail = (
     statusData.detail = `Training Request was disapproved by ${disApproverData?.fullname ?? current?.assignedTo} with a message '${remarks?.toValue}.'`;
     statusData.severity = "error";
     statusData.content =
-      isAdmin || data?.requestorBadge === SessionGetEmployeeId()
+      isAdmin || data?.requesterBadge === SessionGetEmployeeId()
         ? () => (
           <ToastTemplate icon="pi pi-times-circle" summary={statusData.summary} detail={statusData.detail} 
           leftButtonLabel="Cancel request" leftButtonSeverity="danger"
