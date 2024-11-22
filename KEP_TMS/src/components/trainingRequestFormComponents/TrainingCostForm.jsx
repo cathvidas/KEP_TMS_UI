@@ -8,13 +8,21 @@ import { SectionHeading } from "../General/Section";
 import Select from "react-select";
 import { mapProviderListToOptionFormat } from "../../services/DataMapping/ProviderData";
 import { TrainingType } from "../../api/constants";
+import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
 
 const TrainingCostForm = ({ formData, handleResponse, providersData, error }) => {
   const [data, setFormData] = useState(formData);
   const [cost, setCost] = useState(data.trainingFee);
   const [totalCost, setTotalCost] = useState(0);
   const [providers, setProviders] = useState([]);
+  const [trainers, setTrainers] = useState([]);
   const [withEarlyRate, setWithEarlyRate] = useState(false);
+  const [pageConfig, setPageConfig] = useState({page: 1, size: 10, value: ""});
+  const externalFacilitator = externalFacilitatorHook.usePagedExternalFacilitator(pageConfig.page, pageConfig.size, pageConfig.value);
+  console.log(externalFacilitator)
+    const trainerOptions = externalFacilitator?.data?.results?.map((item) => {
+      return { value: `${item.id}`, label: item.name };
+    });
   useEffect(() => {
     if (handleResponse != null) {
       handleResponse(data);
@@ -48,7 +56,14 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
     } else {
       setWithEarlyRate(false);
     }
+    // if(formData?.trainingFacilitators)
   }, [formData]);
+  useEffect(() => {
+    const mappedFacilitator = trainers?.map(({value})=>({facilitatorBadge: value}));
+    if (trainers) {
+      setFormData(prev=>({...prev, trainingFacilitators: mappedFacilitator}));
+    }
+  }, [trainers]);
   return (
     <>
       <SectionHeading
@@ -72,6 +87,24 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
                 ...obj,
                 trainingProvider: { id: e.value, name: e.label },
               }))
+            }
+          />
+        }
+      />
+      <FormFieldItem
+        label={"Trainer"}
+        col="col-12"
+        error={error?.facilitators}
+        required
+        FieldComponent={
+          <Select
+          onInputChange={(e) => setPageConfig(prev=>({...prev, value: e}))}
+          isLoading={externalFacilitator?.loading}
+          onMenuScrollToBottom={()=>setPageConfig(prev=>({...prev, size: prev.size+10}))}
+          isMulti
+            value={trainers}
+            options={trainerOptions}
+            onChange={setTrainers
             }
           />
         }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Card, Form, Modal } from "react-bootstrap";
+import { Card, Form } from "react-bootstrap";
 import TrainingDetailsForm from "../trainingRequestFormComponents/TrainingDetailsForm";
 import TrainingScheduleForm from "../trainingRequestFormComponents/TrainingScheduleForm";
 import TrainingCostForm from "../trainingRequestFormComponents/TrainingCostForm";
@@ -10,7 +10,7 @@ import {
   actionSuccessful,
   confirmAction,
 } from "../../services/sweetalert";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   SessionGetDepartment,
   SessionGetEmployeeId,
@@ -43,7 +43,6 @@ export const TrainingRequestForm = () => {
   const departments = commonHook.useAllDepartments();
   const details = useRef({});
   const [isUpdate, setIsUpdate] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
   var trainingSchedules = { trainingDates: [] };
   const [formData, setFormData] = useState(TrainingRequest);
   const navigate = useNavigate();
@@ -197,6 +196,14 @@ export const TrainingRequestForm = () => {
         newErrors.provider = "Please select a training provider";
         hasError = true;
       }
+      if (getTrainingTypeId() === TrainingType.EXTERNAL) {
+        if (details.current.trainingFacilitators?.length > 0) {
+          <></>;
+        } else {
+          newErrors.facilitators = "Please add facilitator";
+          hasError = true;
+        }
+      }
       setErrors({ ...errors, provider: newErrors.provider });
       if (!hasError) {
         setFormData((prev) => ({ ...prev, ...details.current }));
@@ -208,7 +215,7 @@ export const TrainingRequestForm = () => {
       }
     }
   };
-
+  console.log(details)
   const trainingRequestData = trainingRequestHook.useTrainingRequest(
     requestId ?? 0
   );
@@ -327,7 +334,7 @@ export const TrainingRequestForm = () => {
                 className="w-100"
                 style={{ flexBasis: "50rem" }}
               >
-                <StepperPanel header="Details">
+                {/* <StepperPanel header="Details">
                   <TrainingDetailsForm
                     handleResponse={handleResponse}
                     formData={formData}
@@ -341,8 +348,8 @@ export const TrainingRequestForm = () => {
                     errors={errors?.schedules}
                   />
                   {<StepperButton next={true} index={0} />}
-                </StepperPanel>
-                <StepperPanel header="Participants">
+                </StepperPanel> */}
+                {/* <StepperPanel header="Participants">
                   <TrainingParticipantsForm
                     formData={formData}
                     handleResponse={handleResponse}
@@ -351,7 +358,7 @@ export const TrainingRequestForm = () => {
                     trainingType={getTrainingTypeId()}
                   />
                   {<StepperButton back={true} next={true} index={1} />}
-                </StepperPanel>
+                </StepperPanel> */}
                 {getTrainingTypeId() === TrainingType.EXTERNAL && (
                   <StepperPanel header="Cost">
                     <TrainingCostForm
