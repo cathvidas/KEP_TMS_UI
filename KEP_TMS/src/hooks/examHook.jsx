@@ -77,10 +77,23 @@ const examHook = {
           async (e) => {
             const updatedData = await Promise.all(
               e?.map(async (item) => {
+                const traineeExamList = [];
                 const traineeExam = await examService.getAllTraineeExamByExamId(
                   item.id
                 );
-                return { examDetail: item, traineeExam: traineeExam };
+                traineeExam?.map(item=>{
+                  const isExist = traineeExamList.find((x) => x.traineeId === item.createdBy);
+                  if(isExist){
+                    isExist.examList.push(item);
+                  }else{
+                    traineeExamList.push({
+                      traineeId: item.createdBy,
+                      examList: [item],
+                    }
+                    )
+                  }
+                })
+                return { examDetail: item, traineeExam: traineeExamList };
               })
             );
             setData(updatedData);

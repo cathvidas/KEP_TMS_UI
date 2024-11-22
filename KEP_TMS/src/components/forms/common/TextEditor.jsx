@@ -26,6 +26,8 @@ import {
   IndentBlock,
   Font,
   GeneralHtmlSupport,
+  PlainTableOutput,
+  Link,
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
 const TextEditor = ({
@@ -145,12 +147,14 @@ const TextEditor = ({
               borderColors: customColorPalette,
               backgroundColors: customColorPalette,
               defaultProperties: {
-                borderStyle: "dashed",
-                borderColor: "hsl(90, 75%, 60%)",
-                borderWidth: "3px",
+                // borderStyle: "dashed",
+                // borderColor: "hsl(90, 75%, 60%)",
+                // borderWidth: "3px",
                 alignment: "left",
                 width: "550px",
                 height: "450px",
+                borderCollapse: "collapse",
+                border: "1px solid #000",
               },
               tableCellProperties: {
                 defaultProperties: {
@@ -179,7 +183,7 @@ const TextEditor = ({
             Mention,
             Paragraph,
             Undo,
-            // Link,
+            Link,
             GeneralHtmlSupport,
             Alignment,
             List,
@@ -188,6 +192,7 @@ const TextEditor = ({
             FontBackgroundColor,
             Indent,
             IndentBlock,
+            PlainTableOutput,
             Font,
           ],
           schema: {
@@ -212,6 +217,7 @@ const TextEditor = ({
                   "data-*",
                   "colspan",
                   "rowspan",
+                  "*"
                 ],
               },
               tableHeaderCell: {

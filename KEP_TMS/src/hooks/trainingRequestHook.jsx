@@ -10,7 +10,6 @@ import trainingReportService from "../services/trainingReportService";
 import evaluationService from "../services/evaluationService";
 import effectivenessService from "../services/effectivenessService";
 import commonService from "../services/commonService";
-import examService from "../services/examService";
 import routingService from "../services/common/routingService";
 
 const trainingRequestHook = {
@@ -267,13 +266,11 @@ const trainingRequestHook = {
                         item.effectivenessId
                       )
                     : {};
-                    const exam = item?.traineeExamId ? await examService.getTraineeExam(item?.traineeExamId) : {};
                   return {
                     userDetail: item,
                     reportDetail: report,
                     effectivenessDetail: effectiveness,
                     evaluationDetail: evaluation,
-                    examDetail: exam,
                   };
                 })
               ),

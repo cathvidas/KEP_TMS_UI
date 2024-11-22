@@ -1,34 +1,21 @@
 import { SectionHeading } from "../../components/General/Section";
-import StatusColor from "../../components/General/StatusColor";
 import proptype from "prop-types";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
-import { ActivityType, OtherConstant } from "../../api/constants";
-import EffectivenessForm from "../../components/forms/EffectivenessForm";
-import { Card } from "react-bootstrap";
+import { OtherConstant } from "../../api/constants";
 import { Button } from "primereact/button";
-import TrainingReportForm from "../../components/forms/TrainingReportForm";
-import EvaluationForm from "../../components/forms/EvaluationForm";
-import getStatusById from "../../utils/status/getStatusById";
-import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
+import TrainingFormsEmailTemplate from "../../components/email/TrainingFormsEmailTemplate";
 const PendingView = ({ data, formData, examDetail }) => {
-  const [showForm, setShowForm] = useState(false);
-  const [selectedData, setSelectedData] = useState({});
-  const [formType, setFormType] = useState({});
-  const handleOnclick = (data, formProperty)=>{
-    setSelectedData(data);
-    setFormType(formProperty)
-    setShowForm(true)
-  }
-  const traineeExamCount = (user) =>{
-    let count = 0;
-    examDetail?.map(e=>{
-    const res =  getTraineeExamDetail(e?.traineeExam, user);
-    if(res?.submitted)
-      count++;
-    })
-    return count;
-  }
+  const [showEmailTemplate, setShowEmailTemplate] = useState(false);
+  const getExamSumary = (traineeId) => {
+    const exams = examDetail?.filter((item) =>
+      item?.traineeExam?.find((o) => o.traineeId === traineeId)
+    );
+    return exams?.length === examDetail?.length
+      ? "Completed"
+      : `${exams?.length}/${examDetail?.length}`;
+  };
+  console.log(examDetail);
   const columnItems = [
     {
       field: "id",
@@ -54,26 +41,12 @@ const PendingView = ({ data, formData, examDetail }) => {
       field: "Effectiveness",
       header: "Effectiveness",
       body: (rowData) => (
-        <> {data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR ? 
-          StatusColor({
-            status: getStatusById(rowData?.effectivenessDetail?.currentRouting?.statusId) ?? "Pending",
-            showStatus: true,
-            handleOnclick : ()=>handleOnclick(rowData,  {typeId: ActivityType.EFFECTIVENESS, property:"effectivenessDetail"}),
-          }): "N/A"}
-        </>
-      ),
-    },
-    {
-      field: "exam",
-      header: "Exam",
-      body: (rowData) => (
         <>
-        {traineeExamCount(rowData?.userDetail?.employeeBadge) !== examDetail?.length ? `${traineeExamCount(rowData?.userDetail?.employeeBadge)}/${examDetail?.length}`
-        :   StatusColor({
-          color: "bg-success",
-          status: "Completed",
-          showStatus: true,
-        })}
+          {" "}
+          {data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR
+            ? rowData?.effectivenessDetail?.currentRouting?.statusId ??
+              "Pending"
+            : "N/A"}
         </>
       ),
     },
@@ -81,90 +54,60 @@ const PendingView = ({ data, formData, examDetail }) => {
       field: "Report",
       header: "Report",
       body: (rowData) => (
-        <>
-          {StatusColor({
-            status: getStatusById(rowData?.reportDetail?.currentRouting?.statusId) ?? "Pending",
-            showStatus: true,
-            handleOnclick : ()=>handleOnclick(rowData,  {typeId: ActivityType.REPORT, property:"reportDetail"}),
-          })}
-        </>
+        <>{rowData?.reportDetail?.currentRouting?.statusId ?? "Pending"}</>
       ),
     },
     {
       field: "Evaluation",
       header: "Evaluation",
-      body: (rowData) => (
-        <>
-          {StatusColor({
-            status: rowData?.evaluationDetail?.status ?? "Pending",
-            color: rowData?.evaluationDetail?.status === "Submitted" && "bg-success" ,
-            showStatus: true,
-            handleOnclick : ()=>handleOnclick(rowData, {typeId: ActivityType.EVALUATION, property:"evaluationDetail"}),
-          })}
-        </>
-      ),
+      body: (rowData) => <>{rowData?.evaluationDetail?.status ?? "Pending"}</>,
     },
     {
-      field: "department",
-      header: "Remarks",
+      field: "exam",
+      header: "Exam",
+      body: (rowData) => (
+        <>{getExamSumary(rowData?.userDetail?.employeeBadge)}</>
+      ),
     },
   ];
+  const HeaderComponent = () => {
+    return (
+      <>
+        <Button
+          label="Send Follow-up Email"
+          icon="pi pi-send"
+          type="button"
+          size="small"
+          className="rounded"
+          onClick={() => setShowEmailTemplate(true)}
+        />
+      </>
+    );
+  };
+  // const get
   return (
     <>
-      {!showForm ? (
+      {!showEmailTemplate ? (
         <>
           <SectionHeading
             title="Trainee Pending Reports"
             icon={<i className="pi pi-clock"></i>}
           />
           <CommonTable
+            headerComponent={<HeaderComponent />}
             dataTable={formData?.data}
             columnItems={columnItems}
-            tableName="Participants"
             dataKey={data?.data?.userDetail?.id}
           />
         </>
       ) : (
-        selectedData && (
-          <Card>
-            <Card.Header className="text-end">
-              <Button
-                type="button"
-                icon="pi pi-times"
-                size="small"
-                text
-                className="rounded-circle"
-                onClick={() => setShowForm(false)}
-              />
-            </Card.Header>
-            {selectedData[formType.property]?.id ?<>
-            {formType?.typeId === ActivityType.EFFECTIVENESS && 
-            <EffectivenessForm
-              data={data}
-              userData={selectedData?.userDetail}
-              formData={selectedData[formType.property]}
-              currentRouting={selectedData[formType.property]?.currentRouting}
-              auditTrail={selectedData[formType.property]?.auditTrail}
-            />}
-            {formType?.typeId === ActivityType.REPORT && 
-            <TrainingReportForm
-              data={data}
-              userData={selectedData?.userDetail}
-              defaultValue={selectedData[formType.property]}
-              currentRouting={selectedData[formType.property]?.currentRouting}
-              auditTrail={selectedData[formType.property]?.auditTrail}
-              isSubmitted
-            />}
-            {formType?.typeId === ActivityType.EVALUATION && 
-            <EvaluationForm
-              data={data}
-              userData={selectedData?.userDetail}
-              defaultValue={selectedData[formType.property]}
-            />}</>:
-            <div className="text-center py-5">No data available</div> }
-          </Card>
-        )
-      )}
+        <TrainingFormsEmailTemplate
+          examDetail={examDetail}
+          userFormData={formData?.data}
+          requestData={data}
+          onClose={() => setShowEmailTemplate(false)}
+        />
+      )}{" "}
     </>
   );
 };

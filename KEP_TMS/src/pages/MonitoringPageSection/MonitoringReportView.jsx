@@ -284,5 +284,6 @@ MonitoringReportView.propTypes = {
   formData: proptype.object,
   typeId: proptype.number,
   examDetail: proptype.array,
+  onRefresh: proptype.func,
 };
 export default MonitoringReportView;

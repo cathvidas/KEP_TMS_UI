@@ -248,7 +248,7 @@ const TrainingDetailPage = () => {
               active: currentContent === 8 ? true : false,
             },
             {
-              label: "Summarry",
+              label: "Summary",
               icon: "pi pi-info-circle",
               command: () =>
                 navigate(`/KEP_TMS/TrainingDetail/${id}/Monitoring/Summary`),

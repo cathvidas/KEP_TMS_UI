@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import proptype from "prop-types";
 import { Button } from "primereact/button";
 import TextEditor from "../common/TextEditor";
-import { ActivityType } from "../../../api/constants";
 import TrainingRequestEmailtemplate from "../../email/TrainingRequestEmailtemplate";
 import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
@@ -13,13 +12,11 @@ const EmailForm = ({
   handleShow,
   handleClose,
   activityTitle,
-  activityType,
   activityId,
   activityData,
   recipient,
   routeList,
   activityLogs,
-  formTemplate
 }) => {
   const [subject, setSubject] = useState(`Follow-Up: Pending Approval for ${activityTitle ? activityTitle : "Training Request"} #${activityData?.id}`);
   const [errors, setErrors] = useState({});
@@ -32,13 +29,6 @@ const EmailForm = ({
   const serializeContent = ()=>{
     const div = document.createElement("div");
     div.innerHTML = emailContent;
-    const tables = document.querySelectorAll(".table");
-    tables.forEach((table) => {
-      const newTable = document.createElement("table");
-      newTable.innerHTML = table.innerHTML;
-      tables.innerHTML = newTable
-      // table.innerHTML = table.innerHTML.replace(/<tr>/g, "<tr style='background-color: #f9f9f9;'>");
-    });
     return div.innerHTML;
   }
   const sendEmail = ()=>{
