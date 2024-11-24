@@ -8,6 +8,8 @@ import DetailsOverview from "../TrainingPageComponents/DetailsOverview";
 import TrainingScheduleList from "../trainingRequestFormComponents/TrainingScheduleList";
 import { useEffect, useState } from "react";
 import sortSchedules from "../../utils/SortSchedule";
+import { TrainingType } from "../../api/constants";
+import ExternalFacilitatorList from "../List/ExternalFacilitatorList";
 
 const TrainingSummary = ({ formData }) => {
   const [updatedData, setUpdatedData] = useState(formData);
@@ -53,7 +55,10 @@ const TrainingSummary = ({ formData }) => {
         title="Training Facilitator/s"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
-      {updatedData.trainingFacilitators?.length > 0 ? (
+      {formData?.trainingType?.id === TrainingType.EXTERNAL ? <>
+      <ExternalFacilitatorList trainers={formData?.trainingFacilitators}/>
+      </> :
+      updatedData.trainingFacilitators?.length > 0 ? (
         <UserList
           leadingElement={true}
           userlist={updatedData.trainingFacilitators}

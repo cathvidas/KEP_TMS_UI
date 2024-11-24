@@ -155,8 +155,8 @@ const Dashboard = () => {
                 </>
               )}
 
-              <TabView className={`custom-tab ${trainingRequests?.data?.length > 0 ? "" : "border-0"}`}>
-                <TabPanel header={trainingRequests?.data?.length > 0 ? "Trainings" : ""}>
+              <TabView className={`custom-tab ${(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) ? "" : "border-0"}`}>
+                <TabPanel header={(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) ? "Trainings" : ""}>
                   {assignedTraining?.loading ? (
                     <SkeletonCards />
                   ) : (
@@ -211,7 +211,7 @@ const Dashboard = () => {
                     </>
                   )}
                 </TabPanel>
-                {trainingRequests?.data?.length > 0 &&
+                {(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) &&
                 <TabPanel header={"Training Requests"}>
                   {trainingRequests?.loading ? (
                     <SkeletonCards />

@@ -89,7 +89,7 @@ const AllUserPageSection = ({userType, data, options, isFilter, reloadData})=>{
     ]
 return (
   <>
-    {(userType === "Approver" ||
+    {(userType === "Requester" ||
       userType === "Facilitator" ||
       userType === "Admin") && (
       <SectionBanner

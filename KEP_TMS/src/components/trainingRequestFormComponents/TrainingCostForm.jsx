@@ -9,20 +9,55 @@ import Select from "react-select";
 import { mapProviderListToOptionFormat } from "../../services/DataMapping/ProviderData";
 import { TrainingType } from "../../api/constants";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
+import externalFacilitatorService from "../../services/externalFacilitatorService";
 
-const TrainingCostForm = ({ formData, handleResponse, providersData, error }) => {
+const TrainingCostForm = ({
+  formData,
+  handleResponse,
+  providersData,
+  error,
+}) => {
   const [data, setFormData] = useState(formData);
   const [cost, setCost] = useState(data.trainingFee);
   const [totalCost, setTotalCost] = useState(0);
   const [providers, setProviders] = useState([]);
   const [trainers, setTrainers] = useState([]);
+  const [trainerOptions, setTrainerOptions] = useState([]);
   const [withEarlyRate, setWithEarlyRate] = useState(false);
-  const [pageConfig, setPageConfig] = useState({page: 1, size: 10, value: ""});
-  const externalFacilitator = externalFacilitatorHook.usePagedExternalFacilitator(pageConfig.page, pageConfig.size, pageConfig.value);
-  console.log(externalFacilitator)
-    const trainerOptions = externalFacilitator?.data?.results?.map((item) => {
-      return { value: `${item.id}`, label: item.name };
-    });
+  const [pageConfig, setPageConfig] = useState({
+    page: 1,
+    size: 10,
+    value: "",
+  });
+  const externalFacilitator =
+    externalFacilitatorHook.usePagedExternalFacilitator(
+      pageConfig.page,
+      pageConfig.size,
+      pageConfig.value
+    );
+  // console.log(externalFacilitator, formData);
+  useEffect(() => {
+    if (externalFacilitator?.data?.results) {
+      const newTrainerOptions = externalFacilitator.data.results.map(
+        (item) => ({
+          value: `${item.id}`,
+          label: item.name,
+        })
+      );
+
+      // Prevent duplicates in the trainer options list
+      setTrainerOptions((prev) => {
+        const uniqueOptions = [
+          ...prev,
+          ...newTrainerOptions.filter(
+            (newOption) =>
+              !prev.some((option) => option.value === newOption.value)
+          ),
+        ];
+        return uniqueOptions;
+      });
+    }
+  }, [externalFacilitator?.data]);
   useEffect(() => {
     if (handleResponse != null) {
       handleResponse(data);
@@ -56,12 +91,35 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
     } else {
       setWithEarlyRate(false);
     }
-    // if(formData?.trainingFacilitators)
+    if (formData?.trainingType?.id === TrainingType.EXTERNAL) {
+      
+      // const getRequest = async () => {
+      //   try {
+      //     const list = [];
+      //     formData?.trainingFacilitators?.map(async (facilitator) => {
+      //       const res =
+      //         await externalFacilitatorService.getExternaFacilitatorById(
+      //           facilitator?.FacilitatorBadge
+      //         );
+      //       list.push(res);
+      //     });
+      //     console.log(list);
+      //   } catch (e) {
+      //     console.error(e);
+      //   }
+      // };
+      // getRequest();
+      setTrainers(formData.trainingFacilitators);
+    }
+    console.log(formData)
   }, [formData]);
   useEffect(() => {
-    const mappedFacilitator = trainers?.map(({value})=>({facilitatorBadge: value}));
+    const mappedFacilitator = trainers?.map(({ value }) => ({
+      FacilitatorBadge: value,
+    }));
     if (trainers) {
-      setFormData(prev=>({...prev, trainingFacilitators: mappedFacilitator}));
+      // setFormData(prev=>({...prev, trainingFacilitators: mappedFacilitator}));
+      setFormData((prev) => ({ ...prev, trainingFacilitators: trainers }));
     }
   }, [trainers]);
   return (
@@ -98,13 +156,18 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
         required
         FieldComponent={
           <Select
-          onInputChange={(e) => setPageConfig(prev=>({...prev, value: e}))}
-          isLoading={externalFacilitator?.loading}
-          onMenuScrollToBottom={()=>setPageConfig(prev=>({...prev, size: prev.size+10}))}
-          isMulti
-            value={trainers}
+            onInputChange={(e) =>
+              setPageConfig((prev) => ({ ...prev, value: e }))
+            }
+            isLoading={externalFacilitator?.loading}
+            onMenuScrollToBottom={() =>
+              setPageConfig((prev) => ({ ...prev, size: prev.size + 10 }))
+            }
+            isMulti
+            value={data?.trainingFacilitators}
             options={trainerOptions}
-            onChange={setTrainers
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, trainingFacilitators: e }))
             }
           />
         }
@@ -118,6 +181,7 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
         <Col className="col-12 col-md-4">
           <FormFieldItem
             label="Training Fee"
+            subLabel={'(per pax)'}
             col={"col-md-10"}
             FieldComponent={
               <input
@@ -131,6 +195,7 @@ const TrainingCostForm = ({ formData, handleResponse, providersData, error }) =>
           />
           <FormFieldItem
             label="Total Training Fee"
+            subLabel={`(${formData?.trainingParticipants?.length} participants)`}
             col={"col-md-10"}
             FieldComponent={
               <input

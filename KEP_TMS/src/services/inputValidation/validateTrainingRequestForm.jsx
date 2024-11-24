@@ -1,3 +1,4 @@
+import { TrainingType } from "../../api/constants";
 import { SessionGetEmployeeId } from "../sessions";
 
 export const validateTrainingRequestForm = (formData)=>{
@@ -20,7 +21,9 @@ export const validateTrainingRequestForm = (formData)=>{
         discountedRate: formData.discountedRate,
         // cutOffDate: new Date(),
         trainingDates: formData?.trainingDates?.map(({startTime, endTime, date})=>({startTime, endTime, date})),
-        trainingFacilitators:formData.trainingFacilitators ? formData.trainingFacilitators.map(({employeeBadge}) =>({
+        trainingFacilitators:formData.trainingFacilitators ?  formData?.trainingType?.id === TrainingType.EXTERNAL ? formData.trainingFacilitators.map(({value}) =>({
+          FacilitatorBadge:value
+      })) : formData.trainingFacilitators.map(({employeeBadge}) =>({
             FacilitatorBadge:employeeBadge
         })):[],
         statusId:formData?.status?.id,

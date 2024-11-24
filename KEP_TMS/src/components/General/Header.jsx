@@ -1,6 +1,8 @@
 import { Navbar } from "react-bootstrap";
 import proptype from "prop-types";
 import { Button } from "primereact/button";
+import { SessionGetRole } from "../../services/sessions";
+import { UserTypeValue } from "../../api/constants";
 
 const Header = ({ title, IconComponent, showModal, setShowModal,toggleSidebar }) => {
   const handleShow = () => {
@@ -24,6 +26,7 @@ const Header = ({ title, IconComponent, showModal, setShowModal,toggleSidebar })
           </small>
         </span>
       </a>
+      {(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) &&
       <div
         className="ms-auto justify-content-end align-items-center"
       >
@@ -35,7 +38,7 @@ const Header = ({ title, IconComponent, showModal, setShowModal,toggleSidebar })
           onClick={handleShow}
           icon="pi pi-plus"
           />
-      </div>
+      </div>}
     </Navbar>
   );
 };

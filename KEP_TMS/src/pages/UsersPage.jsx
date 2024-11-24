@@ -30,7 +30,8 @@ const UserPage = () => {
     return userType ? data?.filter((item) => item.roleName === userType) : data;
   };
   const refreshData = ()=>{
-    setTrigger(prev=>prev+1)
+    setTrigger(prev=>prev+1);
+    setShowForm(false);
   }
   useEffect(() => {
     if (
@@ -104,11 +105,18 @@ const UserPage = () => {
           command: () => navigate("/KEP_TMS/Users/Trainee"),
           active: currentContent === 2 ? true : false,
         },
+        // {
+        //   label: "Approvers",
+        //   icon: "pi pi-users",
+        //   template: MenuItemTemplate,
+        //   command: () => navigate("/KEP_TMS/Users/Approver"),
+        //   active: currentContent === 3 ? true : false,
+        // },
         {
-          label: "Approvers",
+          label: "Requester",
           icon: "pi pi-users",
           template: MenuItemTemplate,
-          command: () => navigate("/KEP_TMS/Users/Approver"),
+          command: () => navigate("/KEP_TMS/Users/Requester"),
           active: currentContent === 3 ? true : false,
         },
         {
@@ -147,7 +155,7 @@ const UserPage = () => {
       key={3}
       options={options}
       data={data}
-      userType={UserTypeValue.APPROVER}
+      userType={UserTypeValue.REQUESTOR}
       isFilter
       reloadData={refreshData}
     />,
@@ -173,7 +181,7 @@ const UserPage = () => {
       setCurrentContent(0);
     } else if (page === "Trainee") {
       setCurrentContent(2);
-    } else if (page === "Approver") {
+    } else if (page === "Requester") {
       setCurrentContent(3);
     } else if (page === "Facilitator") {
       setCurrentContent(4);

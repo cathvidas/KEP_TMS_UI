@@ -15,13 +15,14 @@ import {
   SessionGetDepartment,
   SessionGetEmployeeId,
   SessionGetFullName,
+  SessionGetRole,
 } from "../../services/sessions";
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
 import { Button } from "primereact/button";
 import validateTrainingDetails from "../../services/inputValidation/validateTrainingDetails";
 import { formatDateTime } from "../../utils/datetime/Formatting";
-import { statusCode, TrainingType } from "../../api/constants";
+import { statusCode, TrainingType, UserTypeValue } from "../../api/constants";
 import TrainingParticipantsForm from "../trainingRequestFormComponents/TrainingParticipantsForm";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
 import programHook from "../../hooks/programHook";
@@ -215,7 +216,7 @@ export const TrainingRequestForm = () => {
       }
     }
   };
-  console.log(details)
+  console.log(details);
   const trainingRequestData = trainingRequestHook.useTrainingRequest(
     requestId ?? 0
   );
@@ -348,8 +349,8 @@ export const TrainingRequestForm = () => {
                     errors={errors?.schedules}
                   />
                   {<StepperButton next={true} index={0} />}
-                </StepperPanel> */}
-                {/* <StepperPanel header="Participants">
+                </StepperPanel>
+                <StepperPanel header="Participants">
                   <TrainingParticipantsForm
                     formData={formData}
                     handleResponse={handleResponse}
@@ -372,7 +373,7 @@ export const TrainingRequestForm = () => {
                 )}
                 <StepperPanel header="Summary">
                   <TrainingSummary formData={formData} />
-                  {getTrainingTypeId() === TrainingType.EXTERNAL && (
+                  {(getTrainingTypeId() === TrainingType.EXTERNAL && SessionGetRole() === UserTypeValue.ADMIN) && (
                     <>
                       <SectionHeading
                         title="Has Training Agreement"
