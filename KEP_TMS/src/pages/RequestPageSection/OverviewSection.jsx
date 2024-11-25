@@ -31,6 +31,8 @@ import { Dialog } from "primereact/dialog";
 import ActivityList from "../../components/List/ActivityList";
 import CommentBox from "../../components/General/CommentBox";
 import handleApproveRequest from "../../services/handlers/handleApproveRequest";
+import StatusColor from "../../components/General/StatusColor";
+import ActivityStatus from "../../components/General/ActivityStatus";
 const OverviewSection = ({
   data,
   showParticipants = false,
@@ -155,6 +157,7 @@ const OverviewSection = ({
       />
     </div>
   );
+  console.log(data)
   return (
     <>
       <Toast ref={toast} position="bottom-center" className="z-1" />
@@ -181,6 +184,8 @@ const OverviewSection = ({
             <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
             <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
             <span> DATE: {formatDateTime(data?.createdDate)}</span>
+            {(isAdmin || data?.requesterBadge === SessionGetEmployeeId())&&
+            <span> STATUS: <ActivityStatus status={data?.status?.id} /></span>}
           </div></>}
         </div>
         <div className="flex justify-content-between">
@@ -243,9 +248,10 @@ const OverviewSection = ({
           <>
             <br />
 
+            <hr />
             <div className="">
               <SectionHeading
-                title="Approvers"
+                title="Routes"
                 icon={<FontAwesomeIcon icon={faUsers} />}
               />
               <ApproverList
@@ -259,7 +265,6 @@ const OverviewSection = ({
             </div>
             {logs && (
               <>
-                <hr />
                 <ActivityList
                   data={logs}
                   label={"Activities"}
