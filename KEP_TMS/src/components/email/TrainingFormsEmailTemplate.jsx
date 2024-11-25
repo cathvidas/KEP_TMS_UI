@@ -97,9 +97,9 @@ const TrainingFormsEmailTemplate = ({
     const exams = examDetail?.filter((item) =>
       item?.traineeExam?.find((o) => o.traineeId === traineeId)
     );
-    return exams?.length === examDetail?.length
+    return examDetail?.length > 0 ? exams?.length === examDetail?.length
       ? "Completed"
-      : `${exams?.length}/${examDetail?.length}`;
+      : `${exams?.length}/${examDetail?.length}` : "N/A";
   };
   const columnItems = [
     {

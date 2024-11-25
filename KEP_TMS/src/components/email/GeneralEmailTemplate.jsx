@@ -6,14 +6,13 @@ import { Column } from "primereact/column";
 import { useEffect, useRef, useState } from "react";
 import proptype from "prop-types";
 import getStatusById from "../../utils/status/getStatusById";
-import { ActivityType, APP_DOMAIN, APPLICATION_BASE_URL, statusCode } from "../../api/constants";
+import { ActivityType, APPLICATION_BASE_URL, statusCode } from "../../api/constants";
 import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import commonService from "../../services/commonService";
 import ErrorTemplate from "../General/ErrorTemplate";
 import { SessionGetEmployeeId } from "../../services/sessions";
 const GeneralEmailTemplate = ({
-  toCC,
   requestData,
   userFormData,
   reportType,
@@ -102,7 +101,6 @@ const GeneralEmailTemplate = ({
         },null
     )})
   }
-  console.log(userFormData);
   return (
     <>
       <Card>
@@ -115,7 +113,7 @@ const GeneralEmailTemplate = ({
             <Col className="px-3">
               <h5>Email Content</h5>
               <Form.Group controlId="exampleForm.ControlInput1">
-                <Form.Label>SUbject</Form.Label>
+                <Form.Label>Subject</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Subject"
@@ -143,7 +141,7 @@ const GeneralEmailTemplate = ({
                   {addFormLink && (
                     <div className="px-2" ref={emailFormLinkRef}>
                       <p className="text-primary">
-                        {urlPlaceholder ? urlPlaceholder : `http://localhost:5173/${APP_DOMAIN}/TrainingDetail/${requestData?.id}/Reports`}
+                        {urlPlaceholder ? urlPlaceholder : `${APPLICATION_BASE_URL}TrainingDetail/${requestData?.id}/Reports`}
                       </p>
                     </div>
                   )}

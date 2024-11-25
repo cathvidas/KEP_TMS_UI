@@ -13,18 +13,13 @@ import { Modal } from "react-bootstrap";
 import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import trainingRequestHook from "../../hooks/trainingRequestHook";
 import userHook from "../../hooks/userHook";
-import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CommentBox from "../../components/General/CommentBox";
 import commonService from "../../services/commonService";
 import ActivityStatus from "../../components/General/ActivityStatus";
 import routingService from "../../services/common/routingService";
-
-const ForApprovaleffectiveness = () => {
+import proptype from "prop-types"
+const ForApprovaleffectiveness = ({data}) => {
   const [trigger, setTrigger] = useState(0);
-  const { data, loading } = effectivenessHook.useApproverAssignedEffectiveness(
-    SessionGetEmployeeId(),
-    trigger
-  );
   const [remark] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedData, setSelectedData] = useState({});
@@ -179,24 +174,15 @@ const ForApprovaleffectiveness = () => {
   const currentStatus = routingService.getApproverStatus(effectiveness?.data?.routings, SessionGetEmployeeId())
   return (
     <div className="p-3">
-      {loading ? (
-        <>
-          <SectionBanner />
-          <SkeletonDataTable />
-        </>
-      ) : (
-        <>
           <SectionBanner
             title="Training Effectiveness"
             subtitle="List of for Approval Training Effectiveness"
           />
           <CommonTable
-            dataTable={data?.filter(item=>item.routingActivity?.statusId !== statusCode.TOUPDATE)}
+            dataTable={data}
             title="Programs"
             columnItems={columnItems}
           />
-        </>
-      )}
       <CommentBox
       defaultValue={remark}
         header="Comments"
@@ -275,4 +261,7 @@ const ForApprovaleffectiveness = () => {
     </div>
   );
 };
+ForApprovaleffectiveness.propTypes = {
+  data: proptype.array
+}
 export default ForApprovaleffectiveness;

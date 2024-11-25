@@ -9,6 +9,7 @@ import commonHook from "../hooks/commonHook";
 import { SessionGetEmployeeId } from "../services/sessions";
 import ForApprovalReport from "./ApproverPageSection/ForApprovalReport";
 import ForEvaluationEffectiveness from "./ApproverPageSection/ForEvaluationEffectiveness";
+import { statusCode } from "../api/constants";
 
 const ApproverPage = () => {
   const { type, page } = useParams();
@@ -17,11 +18,12 @@ const ApproverPage = () => {
   const {data} = commonHook.useAllAssignedForApproval(
     SessionGetEmployeeId()
   );
+  console.log(data);
   const pageContent = [
     <ForApprovalRequest key={0} />,
-    <ForApprovaleffectiveness key={1} />,
+    <ForApprovaleffectiveness key={1} data={data?.effectiveness} />,
     <ForApprovalReport key={2}/>,
-    <ForEvaluationEffectiveness key={3}/>,
+    <ForEvaluationEffectiveness key={3}  data={data?.forEvaluation}/>,
   ];
   const items = [
     {
@@ -61,36 +63,11 @@ const ApproverPage = () => {
           command: () => navigate("/KEP_TMS/List/EffectivenessEvaluation"),
           active: currentContent === 3 ? true : false,
           template: MenuItemTemplate,
+          badge: data?.forEvaluation?.length > 0 ?{value: data?.forEvaluation?.length}:false
+       
         },
       ],
     },
-    // { separator: true, template: MenuItemTemplate },
-    // {
-    //   label: "Approved",
-    //   items: [
-    //     {
-    //       label: "Requests",
-    //       icon: "pi pi-list-check",
-    //       // command: () => navigate(`/KEP_TMS/List/Approved/Requests`),
-    //       template: MenuItemTemplate,
-    //       active: currentContent === 3 ? true : false,
-    //     },
-    //     {
-    //       label: "Effectiveness",
-    //       icon: "pi pi-file",
-    //       command: () => navigate(`/KEP_TMS/List/Approved/Effectiveness`),
-    //       template: MenuItemTemplate,
-    //       active: currentContent === 4 ? true : false,
-    //     },
-    //     {
-    //       label: "Report",
-    //       icon: "pi pi-file-check",
-    //       // command: () => navigate(`/KEP_TMS/List/Approved/Reports`),
-    //       template: MenuItemTemplate,
-    //       active: currentContent === 5 ? true : false,
-    //     },
-    //   ],
-    // },
   ];
   useEffect(() => {
     if (type === "ForApproval") {

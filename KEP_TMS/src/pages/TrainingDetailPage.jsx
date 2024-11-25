@@ -228,6 +228,7 @@ const TrainingDetailPage = () => {
                 navigate(`/KEP_TMS/TrainingDetail/${id}/Monitoring/Exam`),
               template: MenuItemTemplate,
               active: currentContent === 6 ? true : false,
+              disable: examList?.data?.length > 0 ? false : true,
             },
             {
               label: "Reports",

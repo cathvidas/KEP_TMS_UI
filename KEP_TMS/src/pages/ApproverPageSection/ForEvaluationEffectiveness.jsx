@@ -1,38 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CommonTable from "../../components/General/CommonTable";
 import { SectionBanner } from "../../components/General/Section";
 import effectivenessHook from "../../hooks/effectivenessHook";
-import { SessionGetEmployeeId } from "../../services/sessions";
-import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
-import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
-import userMapping from "../../services/DataMapping/userMapping";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import { Button } from "primereact/button";
 import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import SkeletonForm from "../../components/Skeleton/SkeletonForm";
-import trainingRequestHook from "../../hooks/trainingRequestHook";
 import { Card } from "react-bootstrap";
-import { statusCode } from "../../api/constants";
-import trainingDetailsService from "../../services/common/trainingDetailsService";
+import proptype from "prop-types";
+import userHook from "../../hooks/userHook";
 
-const ForEvaluationEffectiveness = () => {
+const ForEvaluationEffectiveness = ({data}) => {
   const [trigger, setTrigger] = useState(0);
   const [selectedData, setSelectedData] = useState({});
   const [showForm, setShowForm] = useState(false);
-  const [availableData, setAvailableData] = useState([]);
   const effectivessDetail = effectivenessHook.useEffectivenessById(
-    selectedData?.trainingEffectiveness?.id,trigger
+    selectedData?.trainingEffectiveness?.id
   );
+  const userDetail = userHook.useUserById(selectedData?.trainingEffectiveness?.employeeBadge);
   // const requestData = trainingRequestHook.useTrainingRequest(4);
-  const { data, loading } = effectivenessHook.useEvaluatorAssignedEffectiveness(
-    SessionGetEmployeeId(),
-    trigger
-  );
-useEffect(()=>{
-const filtered = data?.filter(item=> trainingDetailsService.checkIfTrainingEndsAlready(item?.requestData) && item.routingActivity?.statusId === statusCode.TOUPDATE)
-setAvailableData(filtered);
-},[data])
-  console.log(availableData, )
   const actionTemplate = (rowData) => (
     <>
       <div className="d-flex">
@@ -89,11 +75,7 @@ setAvailableData(filtered);
   ];
   return (
     <>
-      {loading ? (
-        <>
-          <SkeletonBanner /> <SkeletonDataTable />
-        </>
-      ) : !showForm ? (
+      { !showForm ? (
         <>
           <div className="p-3">
             <SectionBanner
@@ -102,7 +84,7 @@ setAvailableData(filtered);
             />
             <CommonTable
               columnItems={items}
-              dataTable={availableData}
+              dataTable={data}
               tableName={"For Evaluation Training Effectiveness"}
             />
           </div>
@@ -128,11 +110,12 @@ setAvailableData(filtered);
               <EffectivenessForm
                 evaluate
                 onFinish={() => setTrigger((prev) => prev + 1)}
-                data={selectedData?.requestData}
+                data={selectedData?.trainingEffectiveness?.trainingRequest}
                 formData={effectivessDetail?.data}
-                userData={selectedData?.userDetail}
-                currentRouting={effectivessDetail?.currentRouting}
-                auditTrail={effectivessDetail?.auditTrail}
+                userData={userDetail?.data}
+                currentRouting={effectivessDetail?.data?.currentRouting}
+                auditTrail={effectivessDetail?.data?.auditTrail
+                }
               />
             </Card>
           )}
@@ -141,4 +124,7 @@ setAvailableData(filtered);
     </>
   );
 };
+ForEvaluationEffectiveness.propTypes = {
+  data: proptype.array,
+}
 export default ForEvaluationEffectiveness;

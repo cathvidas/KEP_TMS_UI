@@ -3,6 +3,7 @@ import getStatusById from "../utils/status/getStatusById";
 import { statusCode } from "../api/constants";
 import { formatDateTime } from "../utils/datetime/Formatting";
 import routingService from "../services/common/routingService";
+import { sortDataByProperty } from "../services/common/sortRoutingsBySequence";
 
 const mappingHook = {
   useMappedActivityRoute: (approvers, activity) => {
@@ -71,5 +72,12 @@ const mappingHook = {
     }, [activityData, author]);
     return data;
   },
+  useEffectivenessPerformanceRatingDate: (data, auditTrails)=>{
+    if(auditTrails){
+    const creatorAudit = auditTrails?.filter(audit => audit?.createdBy === data?.createdBy);
+    const evaluatorAudit = auditTrails?.find(audit => audit?.createdBy === data?.evaluatorBadge);
+    sortDataByProperty(creatorAudit, 'createdDate')
+    return { creatorAudit: creatorAudit[creatorAudit?.length - 1]?.createdDate, evaluatorAudit: evaluatorAudit?.createdDate };}
+  }
 };
 export default mappingHook;

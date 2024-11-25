@@ -5,6 +5,7 @@ import trainingRequestService from "../services/trainingRequestService";
 import trainingReportService from "../services/trainingReportService";
 import effectivenessService from "../services/effectivenessService";
 import trainingDetailsService from "../services/common/trainingDetailsService";
+import { statusCode } from "../api/constants";
 
 const commonHook = {
   useAllDepartments: () => {
@@ -35,15 +36,32 @@ const commonHook = {
             await trainingRequestService.getTrainingRequestByApprover(id);
           const effectiveness =
             await effectivenessService.getApproverAssignedEffectiveness(id);
+            console.log(effectiveness);
           const reports =
             await trainingReportService.getApproverAssignedReports(id);
-            const updatedRequest = requests?.filter(item => trainingDetailsService.checkTrainingIfOutDated(item?.trainingRequest) === false)
+          const updatedRequest = requests?.filter(
+            (item) =>
+              trainingDetailsService.checkTrainingIfOutDated(
+                item?.trainingRequest
+              ) === false
+          );
+          const forApprovelEffectiveness =effectiveness?.filter(
+            (item) => item.routingActivity?.statusId !== statusCode.TOUPDATE
+          );
+          // Filter for evaluation (6 months from now)
+          const forEvaluation = effectiveness?.filter(
+            (item) =>
+              item.routingActivity?.statusId === statusCode.TOUPDATE &&
+              new Date(item?.trainingEffectiveness?.trainingRequest?.trainingEndDate) <= new Date(new Date().setMonth(new Date().getMonth() - 6))
+          );
+          
           setData({
             requests: updatedRequest,
-            effectiveness: effectiveness,
+            effectiveness: forApprovelEffectiveness,
             reports: reports,
+            forEvaluation: forEvaluation,
             overallCount:
-              updatedRequest.length + effectiveness.length + reports.length,
+              updatedRequest?.length + forApprovelEffectiveness?.length + reports?.length + forEvaluation?.length,
           });
         } catch (error) {
           setError(error.message);
@@ -106,15 +124,14 @@ const commonHook = {
     }, []);
     return { data, error, loading };
   },
-  useApproverApprovedForms: (assignedTo, activityIn)=>{
+  useApproverApprovedForms: (assignedTo, activityIn) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequests = async () => {
         handleResponseAsync(
-          () =>
-            commonService.getApprovedForms(assignedTo, activityIn),
+          () => commonService.getApprovedForms(assignedTo, activityIn),
           (e) => setData(e),
           (e) => setError(e),
           () => setLoading(false)
@@ -124,7 +141,7 @@ const commonHook = {
     }, [assignedTo, activityIn]);
     return { data, error, loading };
   },
-  useAllActivityApprovers:  (userBadge, activityIn, requestCost)=>{
+  useAllActivityApprovers: (userBadge, activityIn, requestCost) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -132,7 +149,11 @@ const commonHook = {
       const getRequests = async () => {
         handleResponseAsync(
           () =>
-            commonService.getActivityApprovers(userBadge, activityIn, requestCost),
+            commonService.getActivityApprovers(
+              userBadge,
+              activityIn,
+              requestCost
+            ),
           (e) => setData(e),
           (e) => setError(e),
           () => setLoading(false)

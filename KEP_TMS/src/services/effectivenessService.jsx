@@ -36,7 +36,7 @@ const effectivenessService = {
     return response?.data;
   },
   getEffectivenessById: async (id) => {
-    const response = await getEffectivenessByIdApi(id);
+    const response = id && await getEffectivenessByIdApi(id);
     if (response?.status === 1) {
       const approvers = await commonService.getActivityApprovers(
         response?.data?.createdBy,

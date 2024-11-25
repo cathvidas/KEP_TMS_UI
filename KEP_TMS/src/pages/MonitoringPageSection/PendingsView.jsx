@@ -5,17 +5,18 @@ import { useState } from "react";
 import { OtherConstant } from "../../api/constants";
 import { Button } from "primereact/button";
 import TrainingFormsEmailTemplate from "../../components/email/TrainingFormsEmailTemplate";
+import getStatusById from "../../utils/status/getStatusById";
 const PendingView = ({ data, formData, examDetail }) => {
   const [showEmailTemplate, setShowEmailTemplate] = useState(false);
   const getExamSumary = (traineeId) => {
     const exams = examDetail?.filter((item) =>
       item?.traineeExam?.find((o) => o.traineeId === traineeId)
     );
-    return exams?.length === examDetail?.length
+    return examDetail?.length > 0 ? exams?.length === examDetail?.length
       ? "Completed"
-      : `${exams?.length}/${examDetail?.length}`;
+      : `${exams?.length}/${examDetail?.length}` : "N/A";
   };
-  console.log(examDetail);
+  console.log(formData)
   const columnItems = [
     {
       field: "id",
@@ -44,8 +45,8 @@ const PendingView = ({ data, formData, examDetail }) => {
         <>
           {" "}
           {data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR
-            ? rowData?.effectivenessDetail?.currentRouting?.statusId ??
-              "Pending"
+            ? rowData?.effectivenessDetail?.currentRouting?.statusId ? getStatusById(rowData?.effectivenessDetail?.currentRouting?.statusId) :
+              "Not yet submitted"
             : "N/A"}
         </>
       ),
@@ -54,13 +55,13 @@ const PendingView = ({ data, formData, examDetail }) => {
       field: "Report",
       header: "Report",
       body: (rowData) => (
-        <>{rowData?.reportDetail?.currentRouting?.statusId ?? "Pending"}</>
+        <>{rowData?.reportDetail?.currentRouting?.statusId ? getStatusById(rowData?.reportDetail?.currentRouting?.statusId) : "Not yet submitted"}</>
       ),
     },
     {
       field: "Evaluation",
       header: "Evaluation",
-      body: (rowData) => <>{rowData?.evaluationDetail?.status ?? "Pending"}</>,
+      body: (rowData) => <>{rowData?.evaluationDetail?.status ?? "Not yet submitted"}</>,
     },
     {
       field: "exam",
@@ -84,7 +85,6 @@ const PendingView = ({ data, formData, examDetail }) => {
       </>
     );
   };
-  // const get
   return (
     <>
       {!showEmailTemplate ? (

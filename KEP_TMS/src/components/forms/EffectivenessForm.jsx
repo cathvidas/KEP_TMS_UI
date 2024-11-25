@@ -25,7 +25,6 @@ import { ActivityType, statusCode, UserTypeValue } from "../../api/constants";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import ApproverList from "../List/ApproversList";
 import ActivityList from "../List/ActivityList";
-import { CompareDateWithToday } from "../../utils/datetime/dateComparison";
 import getStatusCode from "../../utils/status/getStatusCode";
 import mappingHook from "../../hooks/mappingHook";
 import ActivityStatus from "../General/ActivityStatus";
@@ -38,7 +37,6 @@ const EffectivenessForm = ({
   currentRouting,
   auditTrail,
   isAdmin,
-  evaluate
 }) => {
   const [isAfter, setIsAfter] = useState(false);
   const [errors, setErrors] = useState({});
@@ -106,7 +104,7 @@ const EffectivenessForm = ({
     trainingTypeId: data?.trainingType?.id,
     totalTrainingHours: data?.durationInHours,
     evaluationDate: formatDateOnly(new Date(), "dash"),
-    trainingRequestId: data.id,
+    trainingRequestId: data?.id,
     annotation: annotation,
     EvaluatorBadge: userData?.superiorBadge,
     performanceCharacteristics: performanceCharacteristics,
@@ -184,7 +182,6 @@ const EffectivenessForm = ({
       projectPerformanceEvaluation,
       isAfter
     );
-    console.log(formErrors);
     setErrors(formErrors);
     if (isValid) {
       confirmAction({
@@ -214,13 +211,13 @@ const EffectivenessForm = ({
   useEffect(() => {
     setIsAfter(
       trainingDetailsService.checkIfTrainingEndsAlready(data)
-       &&  SessionGetEmployeeId() === formData?.evaluatorBadge
+       || SessionGetEmployeeId() !== formData?.evaluatorBadge
     );
   }, [data, formData]);
-
-  console.log(SessionGetEmployeeId() === formData?.evaluatorBadge,formData, isAfter, evaluate)
   const activityLogs = mappingHook.useMappedActivityLogs(formData, userData);
   const reportTemplateRef = useRef();
+const performanceRatingDate = mappingHook.useEffectivenessPerformanceRatingDate(formData, auditTrail)
+ console.log(performanceRatingDate, auditTrail)
   return (
     <>
       <Card.Body>
@@ -228,7 +225,7 @@ const EffectivenessForm = ({
           <div className=" flex justify-content-between  mb-2">
             <div className="flex">
               <i className="pi pi-check-circle text-success"></i>
-              Submitted: {formatDateTime(auditTrail?.createdDate) ?? "N/A"}
+              Submitted: {formatDateTime(formData?.createdDate) ?? "N/A"}
             </div>
             <div>
               Status: &nbsp;
@@ -524,7 +521,7 @@ const EffectivenessForm = ({
                         />
                         <small className="mt-1 d-block">
                           {isSubmitted
-                            ? formatDateOnly(auditTrail?.createdDate)
+                            ? formatDateOnly(performanceRatingDate?.creatorAudit)
                             : projectPerformanceEvaluation[index]
                                 ?.performanceBeforeTraining !== 0 &&
                               formatDateOnly(new Date())}
@@ -549,7 +546,7 @@ const EffectivenessForm = ({
                         />
                         <small className="mt-1 d-block">
                           {isSubmitted
-                            ? formatDateOnly(auditTrail?.createdDate)
+                            ? formatDateOnly(performanceRatingDate?.creatorAudit)
                             : projectPerformanceEvaluation[index]
                                 ?.projectedPerformance !== 0 &&
                               formatDateOnly(new Date())}
@@ -570,11 +567,11 @@ const EffectivenessForm = ({
                             handlePerfEvaluationOnChange(e, index)
                           }
                           cancel={false}
-                          disabled={!isAfter && !evaluate}
+                          disabled={!isAfter}
                         />
                         <small className="mt-1 d-block">
                           {isSubmitted
-                            ? ""
+                            ? formatDateOnly(performanceRatingDate?.evaluatorAudit)
                             : projectPerformanceEvaluation[index]
                                 ?.actualPerformance !== 0 &&
                               formatDateTime(new Date())}
@@ -595,11 +592,11 @@ const EffectivenessForm = ({
                             handlePerfEvaluationOnChange(e, index)
                           }
                           cancel={false}
-                          disabled={!isAfter && !evaluate}
+                          disabled={!isAfter}
                         />
                         <small className="mt-1 d-block">
                           {isSubmitted
-                            ? ""
+                            ? formatDateOnly(performanceRatingDate?.evaluatorAudit)
                             : projectPerformanceEvaluation[index]
                                 ?.evaluatedActualPerformance !== 0 &&
                               formatDateTime(new Date())}
@@ -657,7 +654,7 @@ const EffectivenessForm = ({
                 className="form-control"
                 rows={3}
                 placeholder="Comments/Remarks"
-                          disabled={!isAfter && !evaluate}
+                          disabled={!isAfter}
                           onChange={(e)=>setAnnotation(e.target.value)}
               ></textarea>
               <ErrorTemplate message={errors?.annotation}/>
@@ -727,7 +724,7 @@ const EffectivenessForm = ({
                     />
                   </>
                 )}
-              {(isAfter && evaluate) && (
+              {(isAfter) && (
                 <Button
                   type="button"
                   icon={"pi pi-pencil"}
@@ -773,5 +770,6 @@ EffectivenessForm.propTypes = {
   currentRouting: proptype.object,
   auditTrail: proptype.object,
   isAdmin: proptype.boolean,
+  evaluate: proptype.boolean,
 };
 export default EffectivenessForm;

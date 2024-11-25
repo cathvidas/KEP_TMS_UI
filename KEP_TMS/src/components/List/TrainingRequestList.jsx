@@ -32,7 +32,7 @@ const TrainingRequestList = ({
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-
+console.log(data)
   const [paginatorConfig, setPaginatorConfig] = useState({
     first: 0,
     rows: 10,
@@ -259,7 +259,7 @@ const TrainingRequestList = ({
                   body={approverColumnTemplate}
                 ></Column>
               )}
-              {/* {isTrainee && (
+              {isTrainee && (
                 <Column
                   field="approverPosition"
                   header="Status"
@@ -267,7 +267,7 @@ const TrainingRequestList = ({
                   style={{ minWidth: "12rem" }}
                   body={traineeStatusTemplate}
                 ></Column>
-              )} */}
+              )}
               <Column field="id" header="Action" body={actionTemplate}></Column>
             </DataTable>
             {enablePagination && (

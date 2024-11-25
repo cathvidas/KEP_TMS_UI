@@ -10,3 +10,7 @@ const sortRoutingBySequence = (data)=>{
     })
 }
 export default sortRoutingBySequence
+
+export const sortDataByProperty = (data, property)=>{
+    return data?.sort((a,b)=>b[property]-a[property]);
+}

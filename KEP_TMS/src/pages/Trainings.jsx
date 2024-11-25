@@ -11,7 +11,7 @@ import MenuContainer from "../components/menus/MenuContainer";
 import { UserTypeValue } from "../api/constants";
 
 const Trainings = () => {
-  const { mappedData, loading } =
+  const {data, mappedData, loading } =
     trainingRequestHook.useTrainingRequestByTraineeId(SessionGetEmployeeId());
   const trainerAssignedData = trainingRequestHook.useParticipantTrainings(
     SessionGetEmployeeId(),
@@ -25,12 +25,12 @@ const Trainings = () => {
     {
       items: [
         {
-          label: "Awaiting Effectiveness",
+          label: "All",
           icon: "pi pi-filed",
           command: () => navigate(`/KEP_TMS/Trainings/`),
           template: MenuItemTemplate,
           active: currentContent === 0 ? true : false,
-          count: mappedData?.submitted?.length,
+          count: data?.length,
         },
         {
           label: "Ongoing",
@@ -127,7 +127,7 @@ const Trainings = () => {
       setCurrentContent(7);
     } else {
       setCurrentContent(0);
-      setCurrentList(mappedData?.submitted);
+      setCurrentList(data);
     }
   }, [page, mappedData, trainerAssignedData]);
   const Content = () =>

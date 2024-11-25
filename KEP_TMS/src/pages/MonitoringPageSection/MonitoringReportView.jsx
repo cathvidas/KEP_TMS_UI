@@ -73,7 +73,7 @@ const MonitoringReportView = ({
       body: (rowData) => <>{rowData?.userDetail?.departmentName}</>,
     },
   ];
-
+console.log(examDetail)
   const addcolumns = () => {
     if (examDetail) {
       examDetail?.map((item, index) => {
