@@ -12,6 +12,7 @@ import { TrainingType } from "../../api/constants";
 import ExternalFacilitatorList from "../List/ExternalFacilitatorList";
 
 const TrainingSummary = ({ formData }) => {
+  console.log(formData)
   const [updatedData, setUpdatedData] = useState(formData);
   useEffect(()=>{
     const startDate = sortSchedules(formData?.trainingDates)[0]?.date;

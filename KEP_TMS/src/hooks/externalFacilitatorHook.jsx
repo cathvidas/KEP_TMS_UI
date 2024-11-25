@@ -52,13 +52,14 @@ const externalFacilitatorHook = {
     useEffect(() => {
       const getRequest = async () => {
         try {
-          facilitatorList?.map(async (facilitator) => {
-            const res =
-              await externalFacilitatorService.getExternaFacilitatorById(
+          const response = await Promise.all(
+            facilitatorList?.map((facilitator) => {
+              return externalFacilitatorService.getExternaFacilitatorById(
                 parseInt(facilitator?.value)
               );
-              setData((prev) => [...prev, res]);
-          });
+            })
+          );
+          setData(response);
           setLoading(false);
         } catch (e) {
           setError(e);

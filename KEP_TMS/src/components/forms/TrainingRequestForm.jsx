@@ -335,7 +335,7 @@ export const TrainingRequestForm = () => {
                 className="w-100"
                 style={{ flexBasis: "50rem" }}
               >
-                {/* <StepperPanel header="Details">
+                <StepperPanel header="Details">
                   <TrainingDetailsForm
                     handleResponse={handleResponse}
                     formData={formData}
@@ -359,7 +359,7 @@ export const TrainingRequestForm = () => {
                     trainingType={getTrainingTypeId()}
                   />
                   {<StepperButton back={true} next={true} index={1} />}
-                </StepperPanel> */}
+                </StepperPanel>
                 {getTrainingTypeId() === TrainingType.EXTERNAL && (
                   <StepperPanel header="Cost">
                     <TrainingCostForm

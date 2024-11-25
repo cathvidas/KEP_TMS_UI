@@ -111,7 +111,7 @@ const TrainingCostForm = ({
       // getRequest();
       setTrainers(formData.trainingFacilitators);
     }
-    console.log(formData)
+    // console.log(formData)
   }, [formData]);
   useEffect(() => {
     const mappedFacilitator = trainers?.map(({ value }) => ({

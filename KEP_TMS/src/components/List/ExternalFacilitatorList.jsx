@@ -47,7 +47,7 @@ const ExternalFacilitatorList = ({
   ];
   return (
     <>
-      <CommonTable columnItems={columnItems} dataTable={mappedData} />
+      <CommonTable columnItems={columnItems} dataTable={mappedData?.data} hideHeader/>
     </>
   );
 };
