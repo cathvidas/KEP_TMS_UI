@@ -11,6 +11,7 @@ import { Paginator } from "primereact/paginator";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import externalFacilitatorService from "../../services/externalFacilitatorService";
 import { actionSuccessful, confirmAction } from "../../services/sweetalert";
+import ExternalFacilitatorForm from "../../components/forms/ModalForms/ExternalFacilitatorForm";
 
 const ExternalFacilitatorListSection = () => {
   const [visible, setVisible] = useState({ detail: false, form: false });

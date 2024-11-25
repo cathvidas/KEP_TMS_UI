@@ -27,7 +27,8 @@ const CommonTable = ({
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     let _filters = { ...filters };
-    onInputChange(value);
+    if(onInputChange){
+    onInputChange(value);}
     _filters["global"].value = value;
     setFilters(_filters);
     setGlobalFilterValue(value);
