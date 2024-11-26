@@ -9,9 +9,9 @@ import getStatusById from "../../utils/status/getStatusById";
 import { ActivityType, APPLICATION_BASE_URL, statusCode } from "../../api/constants";
 import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
-import commonService from "../../services/commonService";
 import ErrorTemplate from "../General/ErrorTemplate";
 import { SessionGetEmployeeId } from "../../services/sessions";
+import emailService from "../../services/emailService";
 const GeneralEmailTemplate = ({
   requestData,
   userFormData,
@@ -94,7 +94,7 @@ const GeneralEmailTemplate = ({
       message: "Are you sure you want to send this email?",
       onConfirm: () => 
       handleResponseAsync(
-        ()=>commonService.sendEmailToMany(data),
+        ()=>emailService.sendEmailToMany(data),
         ()=>{actionSuccessful("Email sent successfully")
           onRefresh()
           onClose()

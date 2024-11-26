@@ -120,9 +120,7 @@ const Dashboard = () => {
       label: "Enrolled Trainings",
       color: "#608dfa",
       value:
-        assignedTraining?.mappedData?.ongoing?.length +
-        assignedTraining?.mappedData?.upcoming?.length +
-        assignedTraining?.mappedData?.attended?.length,
+        assignedTraining?.data?.length,
       icon: "pi pi-address-book",
       status: "Training",
       isRequest: false,

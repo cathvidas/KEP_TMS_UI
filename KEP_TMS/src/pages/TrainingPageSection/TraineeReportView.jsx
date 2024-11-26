@@ -203,7 +203,7 @@ const TraineeReportView = ({ data, refreshData, isTrainee }) => {
                         currentRouting={effectiveness?.data?.currentRouting}
                         auditTrail={
                           effectiveness?.data?.auditTrail?.length > 0 &&
-                          effectiveness?.data?.auditTrail[0]
+                          effectiveness?.data?.auditTrail
                         }
                       />
                     )}
@@ -258,5 +258,6 @@ const TraineeReportView = ({ data, refreshData, isTrainee }) => {
 TraineeReportView.propTypes = {
   data: proptype.object,
   refreshData: proptype.func,
+  isTrainee: proptype.bool,
 };
 export default TraineeReportView;

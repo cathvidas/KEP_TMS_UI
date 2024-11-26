@@ -1,5 +1,4 @@
 export const mapTRequestToTableData = (data)=>{
-    console.log(data)
     const mappedData = data?.map(item=>({
         id: item.id,
         requesterName: item?.requesterName,

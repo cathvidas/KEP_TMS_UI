@@ -6,8 +6,8 @@ import TextEditor from "../common/TextEditor";
 import TrainingRequestEmailtemplate from "../../email/TrainingRequestEmailtemplate";
 import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
-import commonService from "../../../services/commonService";
 import { SessionGetEmployeeId } from "../../../services/sessions";
+import emailService from "../../../services/emailService";
 const EmailForm = ({
   handleShow,
   handleClose,
@@ -44,7 +44,7 @@ const EmailForm = ({
         text: "Are you sure you want to send this email?",
         onConfirm: () => {
           handleResponseAsync(
-            () => commonService.sendEmail(emailData),
+            () => emailService.sendEmail(emailData),
             () => {actionSuccessful("Email sent successfully");
               setContent(false);
               handleClose();

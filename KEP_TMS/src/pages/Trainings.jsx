@@ -4,132 +4,29 @@ import TrainingRequestList from "../components/List/TrainingRequestList";
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import trainingRequestHook from "../hooks/trainingRequestHook";
-import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
-import MenuItemTemplate from "../components/General/MenuItemTemplate";
-import { useNavigate, useParams } from "react-router-dom";
-import MenuContainer from "../components/menus/MenuContainer";
-import { UserTypeValue } from "../api/constants";
+import { SessionGetEmployeeId } from "../services/sessions";
+import { useParams } from "react-router-dom";
 
 const Trainings = () => {
-  const {data, mappedData, loading } =
+  const {page} = useParams();
+  const [currentData, setCurrentData] = useState([]);
+  const {data, loading } = page?.toUpperCase() === "TRAINER" ? trainingRequestHook.useParticipantTrainings(
+    SessionGetEmployeeId(),
+    "trainer"
+  ) :
     trainingRequestHook.useTrainingRequestByTraineeId(SessionGetEmployeeId());
   const trainerAssignedData = trainingRequestHook.useParticipantTrainings(
     SessionGetEmployeeId(),
     "trainer"
   );
-  const { page } = useParams();
-  const navigate = useNavigate();
-  const [currentContent, setCurrentContent] = useState(0);
-  const [currentList, setCurrentList] = useState(0);
-  const items = [
-    {
-      items: [
-        {
-          label: "All",
-          icon: "pi pi-filed",
-          command: () => navigate(`/KEP_TMS/Trainings/`),
-          template: MenuItemTemplate,
-          active: currentContent === 0 ? true : false,
-          count: data?.length,
-        },
-        {
-          label: "Ongoing",
-          icon: "pi pi-clock",
-          command: () => navigate(`/KEP_TMS/Trainings/Ongoing`),
-          template: MenuItemTemplate,
-          active: currentContent === 1 ? true : false,
-          count: mappedData?.ongoing?.length,
-        },
-        {
-          label: "Upcoming",
-          icon: "pi pi-calendar-clock",
-          command: () => navigate(`/KEP_TMS/Trainings/upcoming`),
-          template: MenuItemTemplate,
-          active: currentContent === 2 ? true : false,
-          count: mappedData?.upcoming?.length,
-        },
-        {
-          label: "Attended",
-          icon: "pi pi-list-check",
-          command: () => navigate(`/KEP_TMS/Trainings/attended`),
-          template: MenuItemTemplate,
-          active: currentContent === 3 ? true : false,
-          count: mappedData?.attended?.length,
-        },
-      ],
-    },
-  ];
-  useEffect(() => {
-    if (
-      SessionGetRole() === UserTypeValue.FACILITATOR
-    ) {
-      items.push({
-        label: "Trainer Menu",
-        items: [
-          {
-            label: "Pending Action",
-            template: MenuItemTemplate,
-            command: () => navigate(`/KEP_TMS/Trainings/trainer_pendingAction`),
-            icon: "pi pi-exclamation-circle",
-            active: currentContent === 7 ? true : false,
-            count: trainerAssignedData?.mappedData?.approved?.length,
-          },
-          {
-            label: "Ongoing",
-            template: MenuItemTemplate,
-            command: () => navigate(`/KEP_TMS/Trainings/trainer_ongoing`),
-            icon: "pi pi-clock",
-            active: currentContent === 4 ? true : false,
-            count: trainerAssignedData?.mappedData?.ongoing?.length,
-          },
-          {
-            label: "Upcoming",
-            template: MenuItemTemplate,
-            command: () => navigate(`/KEP_TMS/Trainings/trainer_upcoming`),
-            icon: "pi pi-calendar-clock",
-            active: currentContent === 5 ? true : false,
-            count: trainerAssignedData?.mappedData?.upcoming?.length,
-          },
-          {
-            label: "Facilitated",
-            template: MenuItemTemplate,
-            command: () => navigate(`/KEP_TMS/Trainings/facilitated`),
-            icon: "pi pi-list-check",
-            active: currentContent === 6 ? true : false,
-            count: trainerAssignedData?.mappedData?.attended?.length,
-          },
-        ],
-      });
+  useEffect(() =>{
+    if (page?.toUpperCase() === "TRAINER") {
+      setCurrentData(trainerAssignedData.data)
     }
-  },[trainerAssignedData]);
-  useEffect(() => {
-    const currentPage = page?.toUpperCase();
-    if (currentPage === "ONGOING") {
-      setCurrentContent(1);
-      setCurrentList(mappedData?.ongoing);
-    } else if (currentPage === "UPCOMING") {
-      setCurrentContent(2);
-      setCurrentList(mappedData?.upcoming);
-    } else if (currentPage === "ATTENDED") {
-      setCurrentList(mappedData?.attended);
-      setCurrentContent(3);
-    } else if (currentPage === "TRAINER_ONGOING") {
-      setCurrentList(trainerAssignedData?.mappedData?.ongoing);
-      setCurrentContent(4);
-    } else if (currentPage === "TRAINER_UPCOMING") {
-      setCurrentList(trainerAssignedData?.mappedData?.upcoming);
-      setCurrentContent(5);
-    } else if (currentPage === "FACILITATED") {
-      setCurrentList(trainerAssignedData?.mappedData?.attended);
-      setCurrentContent(6);
-    } else if (currentPage === "TRAINER_PENDINGACTION") {
-      setCurrentList(trainerAssignedData?.mappedData?.approved);
-      setCurrentContent(7);
-    } else {
-      setCurrentContent(0);
-      setCurrentList(data);
+    else {
+      setCurrentData(data)
     }
-  }, [page, mappedData, trainerAssignedData]);
+  }, [page, data, trainerAssignedData])
   const Content = () =>
     loading ? (
       <>
@@ -139,14 +36,13 @@ const Trainings = () => {
     ) : (
       <>
         <div className={`d-flex g-0`}>
-          <MenuContainer itemList={items} />
           <div
             className={`p-3 pb-5 flex-grow-1`}
             style={{ minHeight: "calc(100vh - 50px)" }}
           >
             <TrainingRequestList
-              data={currentList}
-              headingTitle={`${items[0]?.items[currentContent]?.label} Trainings`}
+              data={currentData}
+              headingTitle={`Enrolled Trainings`}
               isTrainee
               allowEdit={false}
             />
@@ -157,7 +53,7 @@ const Trainings = () => {
   return (
     <>
       <Layout
-        navReference="Trainings"
+        navReference={page?.toUpperCase() === "TRAINER" ? "Trainings/Trainer" : "Trainings"}
         BodyComponent={Content}
         header={{
           title: "Trainings",

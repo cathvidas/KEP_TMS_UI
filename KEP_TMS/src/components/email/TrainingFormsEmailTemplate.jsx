@@ -12,11 +12,11 @@ import {
 } from "../../api/constants";
 import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
-import commonService from "../../services/commonService";
 import ErrorTemplate from "../General/ErrorTemplate";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import TableEmailTemplate from "./TableEmailTemplate";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
+import emailService from "../../services/emailService";
 const TrainingFormsEmailTemplate = ({
   requestData,
   userFormData,
@@ -84,7 +84,7 @@ const TrainingFormsEmailTemplate = ({
       message: "Are you sure you want to send this email?",
       onConfirm: () =>
         handleResponseAsync(
-          () => commonService.sendEmailToMany(data),
+          () => emailService.sendEmailToMany(data),
           () => {
             actionSuccessful("Email sent successfully");
             onClose();

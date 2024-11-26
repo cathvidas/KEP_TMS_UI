@@ -26,7 +26,7 @@ const CertificateContent = ({ trainings }) => {
   };
   return (
     <>
-      <div className="p-5">
+      <div>
         <center>
           <h4 style={{ textAlign: "center" }}>TRAINING CERTIFICATION</h4>
         </center>
@@ -43,7 +43,7 @@ const CertificateContent = ({ trainings }) => {
               className=" table-bordered "
               style={{
                 verticalAlign: "middle",
-                textAlign: "center",
+                // textAlign: "center",
                 borderWidth: " 1px",
                 padding: " 1px",
                 background: " transparent",
@@ -56,34 +56,27 @@ const CertificateContent = ({ trainings }) => {
                     <p
                       style={{
                         verticalAlign: "middle",
-                        textAlign: "center",
                         padding: "10px",
                       }}
                     >
                       Training Title
                     </p>
                   </th>
-                  <th>
-                    <p
+                  <th 
                       style={{
                         verticalAlign: "middle",
                         textAlign: "center",
                         padding: "10px",
-                      }}
-                    >
+                      }}>
                       Training Date
-                    </p>
                   </th>
-                  <th>
-                    <p
+                  <th
                       style={{
                         verticalAlign: "middle",
                         textAlign: "center",
                         padding: "10px",
-                      }}
-                    >
+                      }}>
                       Training Hours
-                    </p>
                   </th>
                 </tr>
               </thead>

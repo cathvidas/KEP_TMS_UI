@@ -9,7 +9,6 @@ import commonHook from "../hooks/commonHook";
 import { SessionGetEmployeeId } from "../services/sessions";
 import ForApprovalReport from "./ApproverPageSection/ForApprovalReport";
 import ForEvaluationEffectiveness from "./ApproverPageSection/ForEvaluationEffectiveness";
-import { statusCode } from "../api/constants";
 
 const ApproverPage = () => {
   const { type, page } = useParams();

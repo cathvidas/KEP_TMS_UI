@@ -1,6 +1,6 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
@@ -18,7 +18,50 @@ import {
   formatDateOnly,
 } from "../../utils/datetime/Formatting";
 import trainingDetailsService from "../../services/common/trainingDetailsService";
+import { SessionGetEmployeeId } from "../../services/sessions";
+import examHook from "../../hooks/examHook";
+import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
+const TraineeStatusTemplate = ({rowData}) => {
+  const traineeFormDetail = rowData?.trainingParticipants?.find(item => item?.employeeBadge === SessionGetEmployeeId())
+  const traineeExams = examHook.useAllTraineeExamByRequest(rowData?.id);
+  const getStatus = () => {
+    let detail = "Pending";
+    if (
+      rowData.status === "Submitted" &&
+      traineeFormDetail?.effectivenessId === null
+    ) {
+      detail = "Effectiveness,";
+    }
+    if (trainingDetailsService.checkIfTrainingEndsAlready(rowData)) {
+      if (traineeFormDetail?.evaluationId === null) {
+        detail += " Evaluation,";
+      }
+      if (traineeFormDetail?.reportId === null) {
+        detail += " Training Report,";
+      }
+      if (traineeExams?.length > 0) {
+        const exam = getTraineeExamDetail(traineeExams, SessionGetEmployeeId());
+        if (!exam?.submitted) {
+          detail += " Exam,";
+        }
+      }
+    }else{
+      detail = rowData?.status;
+    }
+    return detail;
+  };
 
+  return (
+    <>
+      <div>
+        {getStatus()}
+      </div>
+    </>
+  );
+};
+TraineeStatusTemplate.propTypes = {
+  rowData: proptype.object,
+}
 const TrainingRequestList = ({
   data,
   headingTitle,
@@ -32,7 +75,6 @@ const TrainingRequestList = ({
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-console.log(data)
   const [paginatorConfig, setPaginatorConfig] = useState({
     first: 0,
     rows: 10,
@@ -148,11 +190,15 @@ console.log(data)
             Report
           </div>
         )}
+        {getPendingItems(rowData)}
       </div>
     </>
   );
   
-
+const getPendingItems = async (data) =>{
+  const res = await trainingDetailsService.getPendingItems(data.id)
+  console.log("data",res)
+}
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2 align-items-center">
@@ -265,7 +311,7 @@ console.log(data)
                   header="Status"
                   sortable
                   style={{ minWidth: "12rem" }}
-                  body={traineeStatusTemplate}
+                  body={(rowData)=><TraineeStatusTemplate rowData={rowData}/>}
                 ></Column>
               )}
               <Column field="id" header="Action" body={actionTemplate}></Column>

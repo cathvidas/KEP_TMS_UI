@@ -8,14 +8,14 @@ import trainingRequestHook from "../../hooks/trainingRequestHook";
 import CommonTable from "../../components/General/CommonTable";
 import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 import {
-  formatCurrency,
-  formatDateOnly,
+  GenerateTrainingDates,
 } from "../../utils/datetime/Formatting";
 import { useState } from "react";
 import { Button } from "primereact/button";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CertificateTemplate from "../../components/certificate/CertificateTemplate";
 import CertificatesList from "../../components/certificate/CertificatesList";
+import { UserTypeValue } from "../../api/constants";
 const DetailItem = (data) => (
   <>
     <div className="flex py-1">
@@ -29,6 +29,7 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
   const { data, error, loading } = userHook.useUserById(id);
   const trainings = trainingRequestHook.useUserTrainingsSummary(id);
   const [showCertForm, setShowCertForm] = useState(false);
+  const [certificateTrainings, setCertificateTrainings] = useState([]);
   const columnItem = [
     {
       field: "id",
@@ -36,28 +37,15 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
       body: (_, { rowIndex }) => <>{rowIndex + 1}</>,
     },
     // {field: "id", header: "Id", },
-    { field: "requesterName", header: "Requestor" },
-    { field: "type", header: "Type" },
+    { field: "requesterName", header: "Name", body: <>{data?.fullname}</> },
+    // { field: "type", header: "Type" },
     { field: "program", header: "Program" },
-    { field: "category", header: "Category" },
-    { field: "provider", header: "Provider" },
     {
-      field: "startDate",
-      header: "Start Date",
-      body: (rowData) => <>{formatDateOnly(rowData.startDate)}</>,
+      field: "requesterName",
+      header: "Training Dates",
+      body: (rowData) => <>{GenerateTrainingDates(rowData.trainingDates)}</>,
     },
-    {
-      field: "endDate",
-      header: "End Date",
-      body: (rowData) => <>{formatDateOnly(rowData.endDate)}</>,
-    },
-    { field: "venue", header: "Venue" },
     { field: "durationInHours", header: "Total Hours" },
-    {
-      field: "totalFee",
-      header: "Cost",
-      body: (rowData) => <>{formatCurrency(rowData.totalFee)}</>,
-    },
   ];
   const countTotalHours = (trainings) => {
     let count = 0;
@@ -129,32 +117,49 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
                   <TabView className="custom-tab">
                     <TabPanel header={"Trainings Attended"}>
                       <CommonTable
+                      headerComponent={
+                         isAdmin ?
+                          <Button
+                            type="button"
+                            label="Generate Certificate"
+                            icon="pi pi-download"
+                            onClick={() => {setShowCertForm(true);
+                              setCertificateTrainings(trainings?.data?.attended)
+                            }}
+                            text
+                          />
+                        : null}
                         dataTable={mapTRequestToTableData(
                           trainings?.data?.attended
                         )}
                         columnItems={columnItem}
                       />
                     </TabPanel>
+                    {(trainings?.data?.facilitated?.length > 0 || data?.roleName === UserTypeValue.FACILITATOR) &&
                     <TabPanel header={"Trainings Facilitated"}>
                       <CommonTable
+                      headerComponent={
+                         isAdmin ?
+                          <Button
+                            type="button"
+                            label="Generate Certificate"
+                            icon="pi pi-download"
+                            onClick={() => {setShowCertForm(true);
+                              setCertificateTrainings(trainings?.data?.facilitated)
+                            }}
+                            text
+                          />
+                        : null}
                         dataTable={mapTRequestToTableData(
                           trainings?.data?.facilitated
                         )}
                         columnItems={columnItem}
                       />
-                    </TabPanel>
+                    </TabPanel>}
                     <TabPanel header={"Certificates"}>
-                      {!trainings?.loading && isAdmin && (
-                        <Button
-                          type="button"
-                          label="Generate Certificate"
-                          icon="pi pi-download"
-                          onClick={() => setShowCertForm(true)}
-                        />
-                      )}
                       <CertificatesList
                         userId={id}
-                        trainings={trainings?.data?.attended}
+                        trainings={certificateTrainings}
                       />
                     </TabPanel>
                   </TabView>

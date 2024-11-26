@@ -9,7 +9,6 @@ import Select from "react-select";
 import { mapProviderListToOptionFormat } from "../../services/DataMapping/ProviderData";
 import { TrainingType } from "../../api/constants";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
-import externalFacilitatorService from "../../services/externalFacilitatorService";
 
 const TrainingCostForm = ({
   formData,
@@ -40,7 +39,7 @@ const TrainingCostForm = ({
     if (externalFacilitator?.data?.results) {
       const newTrainerOptions = externalFacilitator.data.results.map(
         (item) => ({
-          value: `${item.id}`,
+          value: item.id,
           label: item.name,
         })
       );
@@ -92,31 +91,11 @@ const TrainingCostForm = ({
       setWithEarlyRate(false);
     }
     if (formData?.trainingType?.id === TrainingType.EXTERNAL) {
-      
-      // const getRequest = async () => {
-      //   try {
-      //     const list = [];
-      //     formData?.trainingFacilitators?.map(async (facilitator) => {
-      //       const res =
-      //         await externalFacilitatorService.getExternaFacilitatorById(
-      //           facilitator?.FacilitatorBadge
-      //         );
-      //       list.push(res);
-      //     });
-      //     console.log(list);
-      //   } catch (e) {
-      //     console.error(e);
-      //   }
-      // };
-      // getRequest();
       setTrainers(formData.trainingFacilitators);
     }
     // console.log(formData)
   }, [formData]);
   useEffect(() => {
-    const mappedFacilitator = trainers?.map(({ value }) => ({
-      FacilitatorBadge: value,
-    }));
     if (trainers) {
       // setFormData(prev=>({...prev, trainingFacilitators: mappedFacilitator}));
       setFormData((prev) => ({ ...prev, trainingFacilitators: trainers }));

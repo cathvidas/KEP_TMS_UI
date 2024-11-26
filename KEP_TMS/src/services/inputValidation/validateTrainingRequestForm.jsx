@@ -22,7 +22,7 @@ export const validateTrainingRequestForm = (formData)=>{
         // cutOffDate: new Date(),
         trainingDates: formData?.trainingDates?.map(({startTime, endTime, date})=>({startTime, endTime, date})),
         trainingFacilitators:formData.trainingFacilitators ?  formData?.trainingType?.id === TrainingType.EXTERNAL ? formData.trainingFacilitators.map(({value}) =>({
-          FacilitatorBadge:value
+          ExternalFacilitatorId:value
       })) : formData.trainingFacilitators.map(({employeeBadge}) =>({
             FacilitatorBadge:employeeBadge
         })):[],

@@ -211,7 +211,7 @@ const EffectivenessForm = ({
   useEffect(() => {
     setIsAfter(
       trainingDetailsService.checkIfTrainingEndsAlready(data)
-       || SessionGetEmployeeId() !== formData?.evaluatorBadge
+       && SessionGetEmployeeId() === formData?.evaluatorBadge
     );
   }, [data, formData]);
   const activityLogs = mappingHook.useMappedActivityLogs(formData, userData);
