@@ -222,7 +222,7 @@ const performanceRatingDate = mappingHook.useEffectivenessPerformanceRatingDate(
     <>
       <Card.Body>
         {isSubmitted && (
-          <div className=" flex justify-content-between  mb-2">
+          <div className=" flex flex-wrap justify-content-between  mb-2">
             <div className="flex">
               <i className="pi pi-check-circle text-success"></i>
               Submitted: {formatDateTime(formData?.createdDate) ?? "N/A"}

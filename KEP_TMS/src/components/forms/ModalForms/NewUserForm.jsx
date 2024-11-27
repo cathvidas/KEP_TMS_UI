@@ -102,7 +102,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
               <FormFieldItem
               required
                 error={error?.username}
-                label="userName"
+                label="NTName"
                 col="col-lg-4 col-sm-6"
                 FieldComponent={
                   <Form.Control

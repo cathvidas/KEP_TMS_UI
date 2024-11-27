@@ -204,7 +204,9 @@ ul.p-list-menu {
 .custom-tab .p-tabview-nav {
     margin-bottom: unset;
 }
-
+.custom-tab .p-tabview-panels{
+    padding: 1rem 0;
+}
 .custom.p-menuitem-link.active {
     background-color: var(--theme-color-light);
     color: black !important;
@@ -216,7 +218,9 @@ ul.p-list-menu {
     border-color: #ccc;
 }
 
-
+.modal {
+    padding: 0 !important;
+}
 /* Speed Dial CSS */
 .p-speeddial-action,
 .p-speeddial-action:hover {

@@ -62,7 +62,7 @@ const Dashboard = () => {
     {
       label: "Approved Request",
       color: "#50d0a2",
-      value: trainingRequests?.mappedData?.returned?.length,
+      value: trainingRequests?.mappedData?.approved?.length,
       icon: "pi pi-thumbs-up",
       status: "Disapproved",
       isRequest: true,
@@ -108,13 +108,8 @@ const Dashboard = () => {
       icon: "pi pi-tag",
       status: "FacilitatedTrainings",
       isRequest: false,
-      url: "/Trainings/facilitated",
-      disabled:
-        !(
-          trainerAssignedData?.mappedData?.approved?.length +
-          trainerAssignedData?.mappedData?.closed?.length +
-          trainerAssignedData?.mappedData?.published?.length
-        ) > 0,
+      url: "/Trainings/Trainer",
+      disabled: !(trainerAssignedData?.data?.length > 0 || SessionGetRole() === UserTypeValue.FACILITATOR),
     },
     {
       label: "Enrolled Trainings",
@@ -126,18 +121,18 @@ const Dashboard = () => {
       isRequest: false,
       url: "/Trainings",
     },
-    {
-      label: "Training Forms To Comply",
-      color: "#919090",
-      value:
-        assignedTraining?.mappedData?.ongoing?.length +
-        assignedTraining?.mappedData?.upcoming?.length +
-        assignedTraining?.mappedData?.attended?.length,
-      icon: "pi pi-file",
-      status: "Training",
-      isRequest: false,
-      url: "/Trainings",
-    },
+    // {
+    //   label: "Training Forms To Comply",
+    //   color: "#919090",
+    //   value:
+    //     assignedTraining?.mappedData?.ongoing?.length +
+    //     assignedTraining?.mappedData?.upcoming?.length +
+    //     assignedTraining?.mappedData?.attended?.length,
+    //   icon: "pi pi-file",
+    //   status: "Training",
+    //   isRequest: false,
+    //   url: "/Trainings",
+    // },
   ];
   const Content = () => {
     return (
@@ -180,7 +175,7 @@ const Dashboard = () => {
                                       {item.label}
                                     </span>
                                     <span className="font-bold h4">
-                                      {item.value ?? 0}
+                                      {item.value > 0 ? item.value : "0"} 
                                     </span>
                                   </div>
                                   <span

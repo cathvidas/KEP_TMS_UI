@@ -6,6 +6,7 @@ import trainingReportService from "../services/trainingReportService";
 import effectivenessService from "../services/effectivenessService";
 import trainingDetailsService from "../services/common/trainingDetailsService";
 import { statusCode } from "../api/constants";
+import userMapping from "../services/DataMapping/userMapping";
 
 const commonHook = {
   useAllDepartments: () => {
@@ -25,7 +26,7 @@ const commonHook = {
     }, []);
     return { data, error, loading };
   },
-  useAllAssignedForApproval: (id) => {
+  useAllAssignedForApproval: (id, trigger) => {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -70,7 +71,7 @@ const commonHook = {
         }
       };
       fetchData();
-    }, [id]);
+    }, [id, trigger]);
     return { data, error, loading };
   },
   useAllRoles: () => {
@@ -163,5 +164,45 @@ const commonHook = {
     }, [userBadge, activityIn, requestCost]);
     return { data, error, loading };
   },
+  useCurrentRouting: (requestId, activityIn) => {
+    const [data, setData] = useState({});
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const getRequests = async () => {
+          handleResponseAsync(
+            () => commonService.getCurrentRouting(requestId, activityIn),
+            (e) => setData(e),
+            (e) => setError(e),
+            () => setLoading(false)
+          );
+        };
+        getRequests();
+      },[requestId, activityIn]
+    );
+    return { data, error, loading };
+  },
+  useMappedInternalFacilitatorList: (faciList)=>{
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+          try {
+            const facilitators = await userMapping.mapUserIdList(
+              faciList,
+              "facilitatorBadge"
+            );
+            setData(facilitators);
+            setLoading(false);
+          } catch (err) {
+            setError(err?.message);
+          }
+      };
+      fetchData();
+    }, [faciList]);
+    console.log(data, error)
+    return { data, error, loading };
+  }
 };
 export default commonHook;

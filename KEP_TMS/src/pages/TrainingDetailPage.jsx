@@ -41,12 +41,13 @@ const TrainingDetailPage = () => {
     setTrigger((prev) => prev + 1);
   };
   const isFacilitator = data?.trainingFacilitators?.some(
-    (item) => item?.employeeBadge === SessionGetEmployeeId()
+    (item) => item?.facilitatorBadge === SessionGetEmployeeId()
   );
   const isRequestor = data?.requesterBadge === SessionGetEmployeeId();
   const isApprover = data?.approvers?.some(
     (item) => item?.employeeBadge === SessionGetEmployeeId()
   );
+  console.log(data)
   const isAdmin =
     SessionGetRole() === UserTypeValue.ADMIN ||
     SessionGetRole() === UserTypeValue.SUPER_ADMIN;
@@ -58,9 +59,6 @@ const TrainingDetailPage = () => {
     data?.trainingParticipants ?? []
   );
   const logs = mappingHook.useMappedActivityLogs(data, data?.requestor);
-  const traineeAccess =
-    data?.status?.id === statusCode.PUBLISHED ||
-    data?.status?.id === statusCode.CLOSED;
   const examList = examHook.useAllTraineeExamByRequest(data?.id);
   const navigate = useNavigate();
   const pageContent = [
@@ -161,7 +159,7 @@ const TrainingDetailPage = () => {
           command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Modules`),
           template: MenuItemTemplate,
           active: currentContent === 1 ? true : false,
-          disable: !(isAdmin || isFacilitator || (isTrainee && traineeAccess)),
+          disable: !(isAdmin || isFacilitator || isTrainee),
         },
         {
           label: isAdmin || isFacilitator ? "Questionnaire" : "Exam",
@@ -169,7 +167,7 @@ const TrainingDetailPage = () => {
           command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Exams`),
           template: MenuItemTemplate,
           active: currentContent === 2 ? true : false,
-          disable: !(isAdmin || isFacilitator || (isTrainee && traineeAccess)),
+          disable: !(isAdmin || isFacilitator || isTrainee),
         },
         {
           label: "Reports",
@@ -322,7 +320,7 @@ const TrainingDetailPage = () => {
   const bodyContent = () => {
     return (
       <div className={`d-flex g-0`}>
-        {(traineeAccess ||
+        {(isTrainee ||
           (!trainingDetailsService.checkTrainingIfOutDated(data) &&
             ((data?.status?.id === statusCode.APPROVED &&
               (isFacilitator || isAdmin)) ||
@@ -331,17 +329,18 @@ const TrainingDetailPage = () => {
           <MenuContainer
             itemList={items}
             action={
-              data?.status?.id === statusCode.APPROVED &&
-              (isAdmin || isFacilitator) ? (
-                <Button
-                  type="button"
-                  label="Publish"
-                  size="small"
-                  severity="info"
-                  className="rounded py-1"
-                  onClick={() => handlePublish(statusCode.PUBLISHED)}
-                />
-              ) : data?.status?.id === statusCode.PUBLISHED && isAdmin ? (
+              // data?.status?.id === statusCode.APPROVED &&
+              // (isAdmin || isFacilitator) ? (
+              //   <Button
+              //     type="button"
+              //     label="Publish"
+              //     size="small"
+              //     severity="info"
+              //     className="rounded py-1"
+              //     onClick={() => handlePublish(statusCode.PUBLISHED)}
+              //   />
+              // ) :
+               data?.status?.id === statusCode.PUBLISHED && isAdmin ? (
                 <Button
                   type="button"
                   label="Close Training"

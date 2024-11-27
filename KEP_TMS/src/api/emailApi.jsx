@@ -7,5 +7,8 @@ export const sendEmailToManyApi = async (data) =>{
     return await fetchFromApi(`/EmailActions/SendEmailToMany`, "POST", data);
 }
 export const updateEmailReminderIntervalApi = async (data) =>{
-    return await fetchFromApi(`/EmailActions/UpdateReminderInteval`, "POST", data);
+    return await fetchFromApi(`/EmailActions/UpdateReminderInterval`, "POST", data);
+}
+export const getEmailReminderIntervalApi = async () =>{
+    return await fetchFromApi(`/EmailActions/GetReminderInterval`);
 }

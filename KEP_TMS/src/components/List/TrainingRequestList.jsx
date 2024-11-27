@@ -1,67 +1,22 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
 import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
-import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 import proptype from "prop-types";
 import ExportBtn from "../General/ExportBtn";
-import { statusCode } from "../../api/constants";
-import countData from "../../utils/countData";
 import { Paginator } from "primereact/paginator";
 import {
   formatCurrency,
   formatDateOnly,
 } from "../../utils/datetime/Formatting";
-import trainingDetailsService from "../../services/common/trainingDetailsService";
 import { SessionGetEmployeeId } from "../../services/sessions";
-import examHook from "../../hooks/examHook";
-import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
-const TraineeStatusTemplate = ({rowData}) => {
-  const traineeFormDetail = rowData?.trainingParticipants?.find(item => item?.employeeBadge === SessionGetEmployeeId())
-  const traineeExams = examHook.useAllTraineeExamByRequest(rowData?.id);
-  const getStatus = () => {
-    let detail = "Pending";
-    if (
-      rowData.status === "Submitted" &&
-      traineeFormDetail?.effectivenessId === null
-    ) {
-      detail = "Effectiveness,";
-    }
-    if (trainingDetailsService.checkIfTrainingEndsAlready(rowData)) {
-      if (traineeFormDetail?.evaluationId === null) {
-        detail += " Evaluation,";
-      }
-      if (traineeFormDetail?.reportId === null) {
-        detail += " Training Report,";
-      }
-      if (traineeExams?.length > 0) {
-        const exam = getTraineeExamDetail(traineeExams, SessionGetEmployeeId());
-        if (!exam?.submitted) {
-          detail += " Exam,";
-        }
-      }
-    }else{
-      detail = rowData?.status;
-    }
-    return detail;
-  };
-
-  return (
-    <>
-      <div>
-        {getStatus()}
-      </div>
-    </>
-  );
-};
-TraineeStatusTemplate.propTypes = {
-  rowData: proptype.object,
-}
+import TraineeStatusTemplate from "../TrainingPageComponents/TraineeStatusColumn";
+import RequestStatusColumn from "../TrainingPageComponents/RequestStatusColumn";
 const TrainingRequestList = ({
   data,
   headingTitle,
@@ -98,15 +53,6 @@ const TrainingRequestList = ({
   const handleButtonClick = (id, page) => {
     navigate(`/KEP_TMS/${page}/${id}`);
   };
-  const checkTrainingDates = (rowData) => {
-    const detail = data?.find((item) => item.id == rowData.id);
-    return (
-      trainingDetailsService.checkTrainingIfOutDated(detail) &&
-      (detail?.status?.id === statusCode.SUBMITTED ||
-        detail?.status?.id === statusCode.FORAPPROVAL ||
-        detail?.status?.id === statusCode.APPROVED)
-    );
-  };
   const actionTemplate = (data) => {
     return (
       <div className="d-flex">
@@ -132,73 +78,6 @@ const TrainingRequestList = ({
       </div>
     );
   };
-  const approverColumnTemplate = (rowData) => {
-    const isOutDated = checkTrainingDates(rowData);
-    return (
-      <>
-        <div>
-          {isOutDated && (
-            <div className="text-danger flex gap-1">
-              <i className="rounded pi pi-info-circle d-block"></i>Outdated
-            </div>
-          )}
-          <span>
-            {" "}
-            {rowData.status == "ForApproval"
-              ? "For " + rowData.approverPosition + " Approval"
-              : rowData.status == "Approved"
-              ? "Awaiting Trainer Action"
-              : rowData.status == "Submitted"
-              ? "Awaiting for trainee effectiveness"
-              : rowData.status}
-          </span>
-          <br />
-          <b>
-            {rowData.status == "Submitted"
-              ? `${countData(
-                  rowData.trainingParticipants,
-                  "effectivenessId",
-                  4
-                )}/${rowData.totalParticipants} submitted`
-              : (rowData.status == "Published" || rowData.status == "Closed")
-              ? ""
-              : `- ${
-                  rowData.status == "Approved"
-                    ? rowData?.facilitatorName
-                    : rowData.approverFullName
-                }`}
-          </b>
-        </div>
-      </>
-    );
-  };
-  const traineeStatusTemplate = (rowData) => (
-    <>
-      <div>
-        {rowData.status == "Published" && (
-          <div className=" flex gap-1 text-secondary">
-            {trainingDetailsService.checkIfTrainingEndsAlready(rowData)
-              ? "Completed"
-              : trainingDetailsService.checkTrainingScheduleStatus?.isUpcomin
-              ? "Upcoming"
-              : "Ongoing"}
-          </div>
-        )}
-        {rowData.status == "Submitted" && (
-          <div className="text-secondary  gap-1">
-            <i className="rounded pi pi-info-circle "></i> Pending Effectiveness
-            Report
-          </div>
-        )}
-        {getPendingItems(rowData)}
-      </div>
-    </>
-  );
-  
-const getPendingItems = async (data) =>{
-  const res = await trainingDetailsService.getPendingItems(data.id)
-  console.log("data",res)
-}
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2 align-items-center">
@@ -229,7 +108,7 @@ const getPendingItems = async (data) =>{
           <>
             <DataTable
               ref={tableRef}
-              value={mapTRequestToTableData(data)}
+              value={data}
               stripedRows
               size="small"
               tableStyle={{ minWidth: "50rem" }}
@@ -252,10 +131,10 @@ const getPendingItems = async (data) =>{
                   sortable
                 ></Column>
               )}
-              <Column field="type" header="Type" sortable></Column>
-              <Column field="program" header="Program" sortable></Column>
-              <Column field="category" header="Category" sortable></Column>
-              <Column field="provider" header="Provider" sortable></Column>
+              <Column field="type" header="Type" sortable body={(rowData)=><>{rowData?.trainingType?.name}</>}></Column>
+              <Column field="program" header="Program" sortable body={(rowData)=><>{rowData?.trainingProgram?.name}</>}></Column>
+              <Column field="category" header="Category" sortable body={(rowData)=><>{rowData?.trainingCategory?.name}</>}></Column>
+              <Column field="provider" header="Provider" sortable body={(rowData)=><>{rowData?.trainingProvider?.name ?? "N/A"}</>}></Column>
               <Column field="venue" header="Venue" sortable></Column>
               <Column
                 field="trainingStartDate"
@@ -281,8 +160,8 @@ const getPendingItems = async (data) =>{
                   header="Total Fee"
                   sortable
                   style={{ width: "8%" }}
-                  body={(product) => {
-                    return formatCurrency(product?.totalFee);
+                  body={(rowData) => {
+                    return formatCurrency(rowData?.totalTrainingFee);
                   }}
                 ></Column>
               )}
@@ -302,7 +181,7 @@ const getPendingItems = async (data) =>{
                   header="Current Status"
                   sortable
                   style={{ minWidth: "12rem" }}
-                  body={approverColumnTemplate}
+                  body={(rowData) =><RequestStatusColumn value={rowData}/>}
                 ></Column>
               )}
               {isTrainee && (
@@ -311,7 +190,7 @@ const getPendingItems = async (data) =>{
                   header="Status"
                   sortable
                   style={{ minWidth: "12rem" }}
-                  body={(rowData)=><TraineeStatusTemplate rowData={rowData}/>}
+                  body={(rowData)=><TraineeStatusTemplate traineeId={SessionGetEmployeeId()} value={rowData}/>}
                 ></Column>
               )}
               <Column field="id" header="Action" body={actionTemplate}></Column>

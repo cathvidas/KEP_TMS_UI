@@ -31,8 +31,8 @@ import { Dialog } from "primereact/dialog";
 import ActivityList from "../../components/List/ActivityList";
 import CommentBox from "../../components/General/CommentBox";
 import handleApproveRequest from "../../services/handlers/handleApproveRequest";
-import StatusColor from "../../components/General/StatusColor";
 import ActivityStatus from "../../components/General/ActivityStatus";
+import TrainingFacilitatorList from "../../components/List/TrainingFacilitatorList";
 const OverviewSection = ({
   data,
   showParticipants = false,
@@ -157,7 +157,6 @@ const OverviewSection = ({
       />
     </div>
   );
-  console.log(data)
   return (
     <>
       <Toast ref={toast} position="bottom-center" className="z-1" />
@@ -170,14 +169,6 @@ const OverviewSection = ({
           </h3>
          
           <h6 className="text-muted text-center mb-3">Request ID: {data.id}</h6>
-           {/* <div className="position-absolute end-0 top-0 ">
-            <Button
-              type="button"
-              onClick={() => history.back()}
-              icon="pi pi-times"
-              text
-            />
-          </div>  */}
           {showApprovers &&
           <> <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
             <span> REQUESTOR: {data?.requestor?.fullname}</span>
@@ -201,7 +192,6 @@ const OverviewSection = ({
           icon={<FontAwesomeIcon icon={faCalendar} />}
         />
         <TrainingScheduleList schedules={data.trainingDates} />
-        {showParticipants && (
           <>
             <br />
             <SectionHeading
@@ -225,7 +215,6 @@ const OverviewSection = ({
               <EmptyState placeholder="No participants added" />
             )}
           </>
-        )}
         {showFacilitators && (
           <>
             <br />
@@ -233,21 +222,12 @@ const OverviewSection = ({
               title="Facilitator"
               icon={<FontAwesomeIcon icon={faUsers} />}
             />
-            {data.trainingFacilitators?.length > 0 ? (
-              <UserList
-                leadingElement={true}
-                userlist={data.trainingFacilitators}
-                property={"name"}
-              />
-            ) : (
-              <EmptyState placeholder="No facilitator added" />
-            )}
+           <TrainingFacilitatorList requestData={data}/>
           </>
         )}
         {showApprovers && (
           <>
             <br />
-
             <hr />
             <div className="">
               <SectionHeading

@@ -70,6 +70,7 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
                   <hr />
                   <DetailItem label="BadgeNo" value={data?.employeeBadge} />
                   <DetailItem label="Name" value={data?.fullname} />
+                  <DetailItem label="NTName" value={data?.username} />
                   <DetailItem label="Position" value={data?.position} />
                   <DetailItem label="Department" value={data?.departmentName} />
                   <DetailItem label="Email" value={data?.email} />

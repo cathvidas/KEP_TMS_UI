@@ -1,26 +1,13 @@
 import CommonTable from "../General/CommonTable";
-import { Button } from "primereact/button";
 import proptype from "prop-types"
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
+import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 
 const ExternalFacilitatorList = ({
   trainers,
-  removeTrainer,
-  showDeleteButton,
+  property
 }) => {
-  const mappedData = externalFacilitatorHook.useListExternalFacilitators(trainers)
-  const actionBodyTemplate = (data) => {
-    return (
-      <Button
-        type="button"
-        severity="danger"
-        icon="pi pi-trash"
-        text
-        // onClick={() => removeTrainer(data.employeeBadge)}
-      />
-    );
-  };
-  console.log(trainers, mappedData)
+  const mappedData = externalFacilitatorHook.useListExternalFacilitators(trainers, property)
   const columnItems = [
     {
       field: "",
@@ -39,15 +26,11 @@ const ExternalFacilitatorList = ({
       field: "depatmentOrganization",
       header: "Depatment Organization",
     },
-    // ...(showDeleteButton && {
-    //   field: "",
-    //   header: "Action",
-    //   body: actionBodyTemplate,
-    // }),
   ];
   return (
     <>
-      <CommonTable columnItems={columnItems} dataTable={mappedData?.data} hideHeader/>
+    {mappedData?.loading ? <SkeletonDataTable/> :
+      <CommonTable hidePaginator columnItems={columnItems} dataTable={mappedData?.data} hideHeader/>}
     </>
   );
 };
@@ -55,5 +38,6 @@ ExternalFacilitatorList.propTypes = {
   trainers: proptype.array,
   removeTrainer: proptype.func,
   showDeleteButton: proptype.bool,
+  property: proptype.string
 }
 export default ExternalFacilitatorList;

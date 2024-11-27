@@ -9,7 +9,7 @@ export const mapTRequestToTableData = (data)=>{
         objectives: item?.trainingObjectives,
         venue: item?.venue,
         category: item?.trainingCategory?.name,
-        provider: item?.trainingProvider?.name,
+        provider: item?.trainingProvider?.name ?? "N/A",
         trainingStartDate: item.trainingStartDate,
         trainingEndDate: item.trainingEndDate,
         totalFee: item?.totalTrainingFee,

@@ -162,14 +162,14 @@ const TraineeReportView = ({ data, refreshData, isTrainee }) => {
       severity: evaluation?.data && "success",
       template: (item) => TabMenuItemTemplate(item, 1),
       // disabled: ,
-      hide: data?.status?.id !== statusCode.PUBLISHED || !trainingDetailsService.checkIfTrainingEndsAlready(data),
+      hide: data?.status?.id !== statusCode.APPROVED || !trainingDetailsService.checkIfTrainingEndsAlready(data),
     },
     {
       label: "Evaluation Form",
       icon: evaluation?.data && "pi pi-check-circle",
       severity: evaluation?.data && "success",
       template: (item) => TabMenuItemTemplate(item, 2),
-      hide: data?.status?.id !== statusCode.PUBLISHED || !trainingDetailsService.checkIfTrainingEndsAlready(data),
+      hide: data?.status?.id !== statusCode.APPROVED || !trainingDetailsService.checkIfTrainingEndsAlready(data),
     },
   ];
   return data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR ||
@@ -209,7 +209,7 @@ const TraineeReportView = ({ data, refreshData, isTrainee }) => {
                     )}
                   </>
                 )}
-              {formIndex === 1 && data?.status?.id === statusCode.PUBLISHED && (
+              {formIndex === 1 && data?.status?.id === statusCode.APPROVED && (
                 <>
                   {report?.loading || userData?.loading ? (
                     <SkeletonForm />

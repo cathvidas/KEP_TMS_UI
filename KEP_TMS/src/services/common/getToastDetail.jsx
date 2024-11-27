@@ -24,15 +24,11 @@ const getToastDetail = (
   const isTrainee = data?.trainingParticipants?.find(
     (item) => item?.employeeBadge === user
   );
-  const isFacilitator = data?.trainingFacilitators?.some(
-    (f) => f.employeeBadge === user
-  );
   const status = data?.status?.id;
   const statusData = { show: true, summary: "", detail: {}, statusId: status };
   if (
     (status == statusCode.FORAPPROVAL ||
-      status == statusCode.SUBMITTED ||
-      status == statusCode.APPROVED) &&
+      status == statusCode.SUBMITTED) &&
     trainingDetailsService.checkTrainingIfOutDated(data)
   ) {
     statusData.detail =
@@ -81,17 +77,15 @@ const getToastDetail = (
       ) : (
         ""
       );
-  } else if (status == statusCode.APPROVED) {
-    statusData.summary = "Waiting for Facilitator's Action";
-    let facilitators = "";
-    data?.trainingFacilitators?.forEach((f) => {
-      facilitators += `${f?.fullname}; `;
-    });
-    statusData.severity = "info";
-    statusData.detail = isFacilitator
-      ? "Please add module or exam if necessary and publish the request"
-      : facilitators;
-  } else if (status == statusCode.SUBMITTED) {
+  } 
+  // else if (status == statusCode.APPROVED) {
+  //   statusData.summary = data?.trainingType?.id === TrainingType.INTERNAL ? "Waiting for Facilitator's Action" : "Waiting to be Published";
+  //   statusData.severity = "info";
+  //   statusData.detail = isFacilitator
+  //     ? "Please add module or exam if necessary and publish the request"
+  //     : "Waiting to be Published";
+  // }
+   else if (status == statusCode.SUBMITTED) {
     if (userReports && userReports?.effectivenessDetail?.id > 0) {
       const effStatus = userReports?.effectivenessDetail?.statusName;
       statusData.summary =effStatus === getStatusById(statusCode.DISAPPROVED) ? "Training Effectiveness Disapproved": "Training Effectiveness Submitted";

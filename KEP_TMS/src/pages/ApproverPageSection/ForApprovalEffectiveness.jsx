@@ -18,7 +18,7 @@ import commonService from "../../services/commonService";
 import ActivityStatus from "../../components/General/ActivityStatus";
 import routingService from "../../services/common/routingService";
 import proptype from "prop-types"
-const ForApprovaleffectiveness = ({data}) => {
+const ForApprovaleffectiveness = ({data, refreshData}) => {
   const [trigger, setTrigger] = useState(0);
   const [remark] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -97,6 +97,7 @@ const ForApprovaleffectiveness = ({data}) => {
             actionSuccessful("Sucess!", e.mesasge);
             setTimeout(() => {
               setTrigger(trigger + 1);
+              refreshData()
             }, 1000);
           },
           null
@@ -262,6 +263,7 @@ const ForApprovaleffectiveness = ({data}) => {
   );
 };
 ForApprovaleffectiveness.propTypes = {
-  data: proptype.array
+  data: proptype.array,
+  refreshData: proptype.func
 }
 export default ForApprovaleffectiveness;

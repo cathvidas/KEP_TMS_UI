@@ -57,7 +57,7 @@ const TrainingSummary = ({ formData }) => {
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
       {formData?.trainingType?.id === TrainingType.EXTERNAL ? <>
-      <ExternalFacilitatorList trainers={formData?.trainingFacilitators}/>
+      <ExternalFacilitatorList trainers={formData?.trainingFacilitators} property={"value"}/>
       </> :
       updatedData.trainingFacilitators?.length > 0 ? (
         <UserList

@@ -1,4 +1,5 @@
 import {
+  getEmailReminderIntervalApi,
   sendEmailApi,
   sendEmailToManyApi,
   updateEmailReminderIntervalApi,
@@ -22,6 +23,10 @@ const emailService = {
       throw new Error(response.message);
     }
     return response;
+  },
+  getEmailReminderInterval: async () => {
+    const response = await getEmailReminderIntervalApi();
+    return response?.status === 1 ? response?.data : [];
   },
 };
 export default emailService;

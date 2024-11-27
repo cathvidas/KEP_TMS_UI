@@ -13,7 +13,6 @@ import { TrainingType, UserTypeValue } from "../api/constants";
 import { SessionGetRole } from "../services/sessions";
 import NotFoundPage from "./NotFoundPage";
 import ExternalFacilitatorListSection from "./MasterListSection/externalFacilitatorListSection";
-import EmailIntervalSetting from "./MasterListSection/EmailIntervalSetting";
 
 const MasterListPage = () => {
   const page = useParams();
@@ -76,18 +75,6 @@ const MasterListPage = () => {
         },
       ],
     },
-    {
-      label: "Setting",
-      items: [
-        {
-          label: "Email Reminder Interval",
-          icon: "pi pi-cloeck",
-          command: () => navigate("/KEP_TMS/MasterList/Setting/EmailInterval"),
-          active: currentContent === 6 ? true : false,
-          template: MenuItemTemplate,
-        },
-      ],
-    },
   ];
 
   const pageContent = [
@@ -97,7 +84,6 @@ const MasterListPage = () => {
     <ExternalFacilitatorListSection key={3} />,
     <TrainingListSection key={4} trainingType={TrainingType.INTERNAL} />,
     <TrainingListSection key={5} trainingType={TrainingType.EXTERNAL} />,
-    <EmailIntervalSetting key={6} />,
   ];
   useEffect(() => {
     const pageName = page.category?.toUpperCase();
@@ -115,10 +101,6 @@ const MasterListPage = () => {
         setCurrentContent(4);
       } else if (pageType === "EXTERNAL") {
         setCurrentContent(5);
-      }
-    }else if(pageName === "SETTING"){
-      if (pageType === "EMAILINTERVAL"){
-        setCurrentContent(6);
       }
     } else {
       // navigate("/KEP_TMS/MasterList")

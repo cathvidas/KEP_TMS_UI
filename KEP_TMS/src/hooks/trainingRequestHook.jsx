@@ -26,10 +26,6 @@ const trainingRequestHook = {
               response.trainingParticipants,
               "employeeBadge"
             );
-            const facilitators = await userMapping.mapUserIdList(
-              response.trainingFacilitators,
-              "facilitatorBadge"
-            );
             const approvers = await commonService.getActivityApprovers(response?.requesterBadge, ActivityType.REQUEST, response?.totalTrainingFee);
             const requestor = await userService.getUserById(
               response.requesterBadge
@@ -47,7 +43,7 @@ const trainingRequestHook = {
             setData({
               ...response,
               trainingParticipants: participants,
-              trainingFacilitators: facilitators,
+              // trainingFacilitators: facilitators,
               requestor: requestor,
               routings,
               approvers,
@@ -83,28 +79,28 @@ const trainingRequestHook = {
           async (e) => {
             const updatedRequests = await Promise.all(
               e?.map(async (request) => {
-                const facilitators = await userMapping.mapUserIdList(
-                  request.trainingFacilitators,
-                  "facilitatorBadge"
-                );
-                const approver =
-                  await commonService.getCurrentRouting(
-                    request.id,
-                    ActivityType.REQUEST
-                  );
-                const user = await userService.getUserById(approver.assignedTo);
-                const routing = {
-                  approverUsername: user.username,
-                  approverFullName: user.lastname + ", " + user.firstname,
-                  statusId: approver.statusId,
-                  approverId: user.employeeBadge,
-                  approverPosition: user.position,
-                };
+                // const facilitators = await userMapping.mapUserIdList(
+                //   request.trainingFacilitators,
+                //   "facilitatorBadge"
+                // );
+                // const approver =
+                //   await commonService.getCurrentRouting(
+                //     request.id,
+                //     ActivityType.REQUEST
+                //   );
+                // const user = await userService.getUserById(approver.assignedTo);
+                // const routing = {
+                //   approverUsername: user.username,
+                //   approverFullName: user.lastname + ", " + user.firstname,
+                //   statusId: approver.statusId,
+                //   approverId: user.employeeBadge,
+                //   approverPosition: user.position,
+                // };
 
                 return {
                   ...request,
-                  trainingFacilitators: facilitators,
-                  routing, // Replace with detailed facilitator information
+                  // trainingFacilitators: facilitators,
+                  // routing, // Replace with detailed facilitator information
                 };
               })
             );

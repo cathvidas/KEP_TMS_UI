@@ -56,7 +56,7 @@ const Trainings = () => {
         navReference={page?.toUpperCase() === "TRAINER" ? "Trainings/Trainer" : "Trainings"}
         BodyComponent={Content}
         header={{
-          title: "Trainings",
+          title:page?.toUpperCase() === "TRAINER" ? "Trainings/Trainer" :  "Trainings",
           icon: <i className="pi pi-clipboard"></i>,
         }}
       />

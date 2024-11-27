@@ -45,7 +45,7 @@ const externalFacilitatorHook = {
       loading,
     };
   },
-  useListExternalFacilitators: (facilitatorList) => {
+  useListExternalFacilitators: (facilitatorList, property) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -54,9 +54,7 @@ const externalFacilitatorHook = {
         try {
           const response = await Promise.all(
             facilitatorList?.map((facilitator) => {
-              return externalFacilitatorService.getExternaFacilitatorById(
-                parseInt(facilitator?.value)
-              );
+              return externalFacilitatorService.getExternaFacilitatorById(facilitator[property]);
             })
           );
           setData(response);
@@ -67,7 +65,7 @@ const externalFacilitatorHook = {
         }
       };
       getRequest();
-    }, [facilitatorList]);
+    }, [facilitatorList, property]);
     return {
       data,
       error,

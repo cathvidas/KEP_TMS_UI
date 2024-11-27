@@ -11,17 +11,21 @@ import ForApprovalReport from "./ApproverPageSection/ForApprovalReport";
 import ForEvaluationEffectiveness from "./ApproverPageSection/ForEvaluationEffectiveness";
 
 const ApproverPage = () => {
+  const [trigger, setTrigger] = useState(0);
   const { type, page } = useParams();
   const navigate = useNavigate();
   const [currentContent, setCurrentContent] = useState(0);
   const {data} = commonHook.useAllAssignedForApproval(
-    SessionGetEmployeeId()
+    SessionGetEmployeeId(), trigger
   );
-  console.log(data);
+  const refreshData = () => {
+    setTrigger(prev=>prev + 1);
+  }
+  console.log(data)
   const pageContent = [
     <ForApprovalRequest key={0} />,
-    <ForApprovaleffectiveness key={1} data={data?.effectiveness} />,
-    <ForApprovalReport key={2}/>,
+    <ForApprovaleffectiveness key={1} data={data?.effectiveness} refreshData={refreshData}/>,
+    <ForApprovalReport key={2} data={data?.reports} refreshData={refreshData}/>,
     <ForEvaluationEffectiveness key={3}  data={data?.forEvaluation}/>,
   ];
   const items = [

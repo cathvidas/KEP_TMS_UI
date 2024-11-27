@@ -15,13 +15,9 @@ import CommentBox from "../../components/General/CommentBox";
 import trainingReportService from "../../services/trainingReportService";
 import commonService from "../../services/commonService";
 import ActivityStatus from "../../components/General/ActivityStatus";
-
-const ForApprovalReport = () => {
+import proptype from "prop-types"
+const ForApprovalReport = ({data, refreshData}) => {
   const [trigger, setTrigger] = useState(0);
-  const { data } = trainingReportHook.useApproverAssignedReports(
-    SessionGetEmployeeId(),
-    trigger
-  );
   const [showModal, setShowModal] = useState(false);
   const [selectedData, setSelectedData] = useState({});
   const requestData = selectedData?.trainingReport?.trainingRequest;
@@ -167,8 +163,7 @@ const ForApprovalReport = () => {
       body: actionTemplate,
     },
   ];
-  const currentStatus = "";
-  //  routingService.getCurrentApprover(report?.data?.routings, SessionGetEmployeeId());
+  const currentStatus = report?.data?.currentRouting;
   return (
     <div className="p-3">
       <SectionBanner
@@ -191,8 +186,11 @@ const ForApprovalReport = () => {
       />
       <Modal
         show={showModal}
-        onHide={() => setShowModal(false)}
-        fullscreen
+        onHide={() => {setShowModal(false);
+          refreshData();
+        }}
+        // fullscreen
+        size="xl"
         style={showAnnotation && { zIndex: 1050 }}
       >
         <Modal.Header closeButton>
@@ -218,7 +216,7 @@ const ForApprovalReport = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          {currentStatus.statusId === statusCode.FORAPPROVAL ? (
+          {currentStatus?.statusId === statusCode.FORAPPROVAL ? (
             <>
               <Button
                 size="small"
@@ -245,7 +243,7 @@ const ForApprovalReport = () => {
           ) : currentStatus?.statusId === statusCode.APPROVED ? (
             <ActivityStatus status={statusCode.APPROVED} />
           ) : (
-            currentStatus.statusId === statusCode.DISAPPROVED && (
+            currentStatus?.statusId === statusCode.DISAPPROVED && (
               <ActivityStatus
                 status={statusCode.DISAPPROVED}
                 icon="pi pi-times"
@@ -257,4 +255,8 @@ const ForApprovalReport = () => {
     </div>
   );
 };
+ForApprovalReport.propTypes = {
+  refreshData: proptype.func,
+  data: proptype.array,
+}
 export default ForApprovalReport;

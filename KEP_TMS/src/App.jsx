@@ -13,6 +13,7 @@ import UserPage from "./pages/UsersPage";
 import MasterListPage from "./pages/MasterListPage";
 import TrainingDetailPage from "./pages/TrainingDetailPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import SettingPage from "./pages/SettingPage";
 function App() {
   
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/KEP_TMS/AnalyticsPage" element={<AnalyticsPage />} />
         <Route path="/KEP_TMS/TrainingDetail/:id/:page?/:section?" element={<TrainingDetailPage />} />
         <Route path="/KEP_TMS/Users/:page?/:id?" element={<UserPage />} />
+        <Route path="/KEP_TMS/Setting" element={<SettingPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
