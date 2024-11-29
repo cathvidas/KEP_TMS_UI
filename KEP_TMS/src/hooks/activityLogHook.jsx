@@ -6,6 +6,7 @@ import examService from "../services/examService";
 import getTraineeExamDetail from "../services/common/getTraineeExamDetail";
 import trainingDetailsService from "../services/common/trainingDetailsService";
 import getStatusById from "../utils/status/getStatusById";
+import trainingRequestService from "../services/trainingRequestService";
 const activityLogHook = {
   useRequestAuditTrailActivityLogs: (auditTrail) => {
     const [logs, setLogs] = useState([]);
@@ -20,7 +21,7 @@ const activityLogHook = {
     }, [auditTrail]);
     return logs;
   },
-  useUserPendingTaskList: (id, assignedRequest) => {
+  useUserPendingTaskList: (id) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -28,16 +29,17 @@ const activityLogHook = {
     useEffect(() => {
       const fetchData = async () => {
         try {
+          const assignedRequest = await trainingRequestService.getTrainingRequestByParticipant(id);
+          console.log(assignedRequest);
           const pendingList = await Promise.all(
             assignedRequest?.map(async (item) => {
               const user = item?.trainingParticipants?.find((i) => i.employeeBadge === id);
               if (!user) return [];
-    
               const tasks = [];
     
               // Helper to push a task to the list
-              const addTask = (title, detail, link, date, status = null) => {
-                tasks.push({ title, status, detail, program: item?.trainingProgram?.name, link, date });
+              const addTask = (type, title, detail, link, date, status = null) => {
+                tasks.push({type, title, status, detail, program: item?.trainingProgram?.name, link, date });
               };
     
               // Effectiveness report
@@ -46,13 +48,13 @@ const activityLogHook = {
                 if (effectivenessReport) tasks.push({...effectivenessReport, program: item?.trainingProgram?.name});
               }
     
-              if(trainingDetailsService.checkIfTrainingEndsAlready()) {
+              if(trainingDetailsService.checkIfTrainingEndsAlready(item) && (item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED)) {
               // Training report
               const reportItem = await handleTrainingReport(user, item);
               if (reportItem) tasks.push({...reportItem, program: item?.trainingProgram?.name});
     
               // Evaluation
-              if (!user?.evaluationId) addTask("Pending Training Evaluation", "You have a pending training evaluation to be submitted.", `TrainingDetail/${item.id}/Reports`, item?.trainingStartDate);
+              if (!user?.evaluationId) addTask("Evaluation", "Pending Training Evaluation", "You have a pending training evaluation to be submitted.", `TrainingDetail/${item.id}/Form/Evaluation`, item?.trainingStartDate, "Not yet submitted");
     
               // Exam
               const examItems = await handleExams(item, id);
@@ -62,8 +64,6 @@ const activityLogHook = {
               return tasks;
             })
           );
-    
-          console.log(pendingList,pendingList.flat());
           setData(pendingList.flat()); // Flatten the array of arrays
           setLoading(false);
         } catch (err) {
@@ -71,7 +71,7 @@ const activityLogHook = {
         } 
       };
       fetchData();
-    }, [assignedRequest, id]);
+    }, [id]);
   
     return { data, loading, error };
   
@@ -89,12 +89,13 @@ const handleEffectivenessReport = async (user, item) => {
       if (effDetail?.statusName === getStatusById(statusCode.APPROVED) || effDetail?.statusName === getStatusById(statusCode.FORAPPROVAL)) return null;
       const title = effDetail?.statusName === getStatusById(statusCode.DISAPPROVED) ? "Effectiveness Report Disapproved" : "Pending Effectiveness Report";
       return {
+        type: "Effectiveness Report",
         title,
-        status: effDetail?.statusName,
+        status: effDetail?.statusName ?? "Not yet submitted",
         detail: effDetail?.statusName === getStatusById(statusCode.DISAPPROVED) 
           ? "Your effectiveness report has been disapproved. Click here to view more details." 
           : "You have a pending effectiveness report to be submitted.",
-        link: `TrainingDetail/${item.id}/Reports`,
+        link: `TrainingDetail/${item.id}/Form/Effectiveness`,
         date: effDetail?.currentRouting?.createdDate || item?.trainingStartDate,
       };
     } catch {
@@ -102,10 +103,11 @@ const handleEffectivenessReport = async (user, item) => {
     }
   }
   return {
+    type: "Effectiveness Report",
     title: "Pending Effectiveness Report",
     status: null,
     detail: "You have a pending effectiveness report to be submitted for this training request",
-    link: `TrainingDetail/${item.id}/Reports`,
+    link: `TrainingDetail/${item.id}/Form/Effectiveness`,
     date: item?.trainingStartDate,
   };
 };
@@ -117,12 +119,13 @@ const handleTrainingReport = async (user, item) => {
       const reportDetail = await trainingReportService.getTrainingReportById(user?.reportId);
       if (reportDetail?.status === getStatusById(statusCode.APPROVED) ||reportDetail?.status === getStatusById(statusCode.FORAPPROVAL) ) return null;
       return {
+        type: "Training Report",
         title: reportDetail?.status === getStatusById(statusCode.DISAPPROVED) ? "Training Report Disapproved" : "Pending Training Report",
-        status: reportDetail?.status,
+        status: reportDetail?.status ?? "Not yet submitted",
         detail: reportDetail?.status === getStatusById(statusCode.DISAPPROVED)
           ? "Your training report has been disapproved. Click here to view more details."
           : "You have a pending training report to be submitted.",
-        link: `TrainingDetail/${item.id}/Reports`,
+        link: `TrainingDetail/${item.id}/Form/Report`,
         date: reportDetail?.currentRouting?.createdDate || item?.trainingStartDate,
       };
     } catch {
@@ -130,10 +133,11 @@ const handleTrainingReport = async (user, item) => {
     }
   }
   return {
+    type: "Training Report",
     title: "Pending Training Report",
     status: null,
     detail: "You have a pending training report to be submitted for this training request",
-    link: `TrainingDetail/${item.id}/Reports`,
+    link: `TrainingDetail/${item.id}/Form/Report`,
     date: item?.trainingStartDate,
   };
 };
@@ -149,6 +153,7 @@ const handleExams = async (item, id) => {
     if (s.length === 0) {
       return {
         title: "Pending Exam",
+        type: "Exam",
         status: null,
         detail: "You have a pending exam to be submitted for this training request",
         program: item?.trainingProgram?.name,

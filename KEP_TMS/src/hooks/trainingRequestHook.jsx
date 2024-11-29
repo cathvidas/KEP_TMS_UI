@@ -4,7 +4,7 @@ import userMapping from "../services/DataMapping/userMapping";
 import userService from "../services/userService";
 import countStatus from "../utils/countStatus";
 import handleResponseAsync from "../services/handleResponseAsync";
-import { ActivityType } from "../api/constants";
+import { ActivityType, statusCode } from "../api/constants";
 import mapUserTrainings, { mappedTrainingRequestByStatus } from "../services/DataMapping/mapUserTrainings";
 import trainingReportService from "../services/trainingReportService";
 import evaluationService from "../services/evaluationService";
@@ -299,15 +299,13 @@ const trainingRequestHook = {
   },
   useTrainingRequestByTraineeId: (id) => {
     const [data, setData] = useState([]);
-    const [mappedData, setMappedData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
           () => trainingRequestService.getTrainingRequestByTraineeId(id),
-          (e) => {setData(e);
-            setMappedData(mappedTrainingRequestByStatus(e));
+          (e) => {setData(e?.filter(item=>item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED));
           },
           (e) => setError(e),
           () => setLoading(false)
@@ -317,22 +315,20 @@ const trainingRequestHook = {
     }, [id]);
     return {
       data,
-      mappedData,
       error,
       loading,
     };
   },
   useTrainingRequestByFacilitatorId: (id) => {
     const [data, setData] = useState([]);
-    const [mappedData, setMappedData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
-          () => trainingRequestService.getTrainingRequestByTraineeId(id),
-          (e) => {setData(e);
-            setMappedData(mappedTrainingRequestByStatus(e));
+          () => trainingRequestService.getTrainingRequestByFacilitatorId(id),
+          (e) => 
+            {setData(e?.filter(item=>item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED));
           },
           (e) => setError(e),
           () => setLoading(false)
@@ -342,7 +338,6 @@ const trainingRequestHook = {
     }, [id]);
     return {
       data,
-      mappedData,
       error,
       loading,
     };

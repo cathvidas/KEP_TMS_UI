@@ -21,6 +21,9 @@ export const getTrainingRequestByApproverApi = async (id) =>{
 export const getTrainingRequestByTraineeIdApi = async (id) =>{
     return await fetchFromApi(`TrainingRequest/GetByParticipant?participantBadge=${id}`);
 }
+export const getTrainingRequestByFacilitatorIdApi = async (id) =>{
+    return await fetchFromApi(`TrainingRequest/GetByFacilitator?facilitatorBadge=${id}`);
+}
 export const getPagedTrainingRequestApi = async (pageNumber, pageSize, searchValue) =>{
     return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);
 }
