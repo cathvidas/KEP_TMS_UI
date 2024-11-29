@@ -431,24 +431,17 @@ const reportTemplateRef = useRef();
                     }
                   />
                   <RateFieldItem
-                    label="Motivates learning"
+                    label="Balanced theory w/ real life applications/examples"
                     value={facilitatorRating[index]?.frFive}
                     readOnly={isSubmitted}
-                    onChange={(e) =>
-                      handlefacilitatorRating(e, "frFive", index)
-                    }
+                    onChange={(e) => handlefacilitatorRating(e, "frFive", index)}
                   />
                   <RateFieldItem
-                    label="Balanced theory w/ real life applications/examples"
+                    label="Clear & well organized lectures/activities (time management)"
                     value={facilitatorRating[index]?.frSix}
-                    onChange={(e) => handlefacilitatorRating(e, "frSix", index)}
-                  />
-                  <RateFieldItem
-                    label="Clear & well organized lectures/activities (time management) 5"
-                    value={facilitatorRating[index]?.frAverage}
                     readOnly={isSubmitted}
                     onChange={(e) =>
-                      handlefacilitatorRating(e, "frAverage", index)
+                      handlefacilitatorRating(e, "frSix", index)
                     }
                   />
                 </TabPanel>
