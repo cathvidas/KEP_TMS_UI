@@ -15,7 +15,7 @@ const validateTrainingSchedules = (trainingDates, validateDates) => {
               index: index,
               value: `Training Date ${
                 index + 1
-              } is invalid, as the training schedule is in the past. Please remove and select a different schedule.`,
+              } is invalid, as the training schedule is in the past. Please enter a valid future date.`,
             },
           ];
           hasErrors = true;
