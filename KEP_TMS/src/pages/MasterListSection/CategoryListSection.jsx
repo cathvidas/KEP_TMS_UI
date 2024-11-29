@@ -1,5 +1,4 @@
 import { Button } from "primereact/button";
-import { SectionBanner } from "../../components/General/Section";
 import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CommonTable from "../../components/General/CommonTable";
@@ -88,24 +87,29 @@ const CategoryListSection = () => {
       body: actionTemplate,
     },
   ];
-  const actionButton = () => {
-    return (
-      <div className=" flex flex-wrap justify-content- gap-3">
+  const header = (
+    <div className="flex justify-content-between">
+      <div className="flex flex-wrap gap-3">
+        <div className="flex theme-color" >
+          <h6 className="theme-color m-0 fw-bold" >
+           Training Categories
+          </h6>
+        </div>
         <Button
           type="button"
           icon="pi pi-plus"
-          severity="success"
-          className="rounded theme-bg py-1"
+          className="rounded  py-1"
           text
-          label={"category"}
+          outlined
+          label={"Add New"}
           onClick={() => {
             setVisible({ ...visible, form: true });
             setSelectedData(null);
           }}
         />
       </div>
-    );
-  };
+    </div>
+  );
   return (
     <>
       {loading ? (
@@ -115,13 +119,8 @@ const CategoryListSection = () => {
         </>
       ) : (
         <>
-          <SectionBanner
-            title={"Categories"}
-            subtitle="List of Training Programs"
-            ActionComponents={actionButton}
-          />{" "}
           <CommonTable
-          tableName="Training Categories"
+          headerComponent={header}
             dataTable={data}
             title="Programs"
             columnItems={columnItems}

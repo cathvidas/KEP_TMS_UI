@@ -96,9 +96,9 @@ const ExternalFacilitatorListSection = () => {
             className="pi pi-users fw-bold"
             style={{ fontSize: "1.5rem" }}
           ></i>
-          <h5 className="theme-color m-0 fw-bold" >
-            External Facilitators
-          </h5>
+          <h6 className="theme-color m-0 fw-bold" >
+            External Trainers
+          </h6>
         </div>
         <Button
           type="button"

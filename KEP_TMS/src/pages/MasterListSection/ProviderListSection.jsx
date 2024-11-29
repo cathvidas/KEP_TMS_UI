@@ -1,5 +1,4 @@
 import { Button } from "primereact/button";
-import { SectionBanner } from "../../components/General/Section";
 import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CommonTable from "../../components/General/CommonTable";
@@ -45,16 +44,16 @@ const ProviderListSection = () => {
       isUpdate ? { detail: false, form: true } : { detail: true, form: false }
     );
   };
-  const concatenateValue = (oldValue, newValue)=>{
-    if(!checkIfNullOrEmpty(oldValue) && !checkIfNullOrEmpty(newValue)){
+  const concatenateValue = (oldValue, newValue) => {
+    if (!checkIfNullOrEmpty(oldValue) && !checkIfNullOrEmpty(newValue)) {
       return `${oldValue}, ${newValue}`;
-    }else if(!checkIfNullOrEmpty(oldValue) && checkIfNullOrEmpty(newValue)){
+    } else if (!checkIfNullOrEmpty(oldValue) && checkIfNullOrEmpty(newValue)) {
       return oldValue;
-    }else if(checkIfNullOrEmpty(oldValue) && !checkIfNullOrEmpty(newValue)){
+    } else if (checkIfNullOrEmpty(oldValue) && !checkIfNullOrEmpty(newValue)) {
       return newValue;
     }
     return "";
-  }
+  };
   const formatAddressDetail = (rowData) => {
     let value = "";
     value = concatenateValue(value, rowData?.address?.building);
@@ -88,9 +87,7 @@ const ProviderListSection = () => {
       field: "Address",
       header: "Address",
       filterField: "concatenatedString",
-      body: (rowData) => (
-        <>{formatAddressDetail(rowData)}</>
-      ),
+      body: (rowData) => <>{formatAddressDetail(rowData)}</>,
     },
     {
       field: "statusName",
@@ -102,23 +99,27 @@ const ProviderListSection = () => {
       body: actionTemplate,
     },
   ];
-  const actionButton = () => {
-    return (
-      <div className=" flex flex-wrap justify-content- gap-3">
+  const header = (
+    <div className="flex justify-content-between">
+      <div className="flex flex-wrap gap-3">
+        <div className="flex theme-color">
+          <h6 className="theme-color m-0 fw-bold">Training Providers</h6>
+        </div>
         <Button
           type="button"
           icon="pi pi-plus"
-          severity="success"
-          className="rounded theme-bg py-1"
-          label={"providers"}
+          className="rounded  py-1"
+          text
+          outlined
+          label={"Add New"}
           onClick={() => {
             setVisible({ ...visible, form: true });
             setSelectedData(null);
           }}
         />
       </div>
-    );
-  };
+    </div>
+  );
   return (
     <>
       {loading ? (
@@ -128,13 +129,8 @@ const ProviderListSection = () => {
         </>
       ) : (
         <>
-          <SectionBanner
-            title={"Providers"}
-            subtitle="List of Training Providers"
-            ActionComponents={actionButton}
-          />{" "}
           <CommonTable
-          tableName={"Provider List"}
+            headerComponent={header}
             dataTable={data}
             title="Providers"
             columnItems={columnItems}

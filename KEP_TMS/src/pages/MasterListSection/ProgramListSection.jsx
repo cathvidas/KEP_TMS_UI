@@ -1,6 +1,5 @@
 import { Button } from "primereact/button";
 import ProgramForm from "../../components/forms/ModalForms/ProgramForm";
-import { SectionBanner } from "../../components/General/Section";
 import SkeletonBanner from "../../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import programHook from "../../hooks/programHook";
@@ -10,18 +9,35 @@ import { Modal } from "react-bootstrap";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 
 const ProgramListSection = () => {
-  const [visible, setVisible] = useState({detail: false, form: false});
-  const [trigger, setTrigger] = useState(0)
-  const { data, error, loading } = programHook.useAllPrograms(false,trigger);
+  const [visible, setVisible] = useState({ detail: false, form: false });
+  const [trigger, setTrigger] = useState(0);
+  const { data, error, loading } = programHook.useAllPrograms(false, trigger);
   const [selectedData, setSelectedData] = useState({});
 
-  const actionTemplate = (rowData)=><>
-  <div className="d-flex"> 
-  <Button type="button" size="small" text icon="pi pi-eye" severity="help" className="rounded-circle" onClick={()=>handleOnclick(rowData.id)}/>
-  <Button type="button" size="small" text icon="pi pi-pen-to-square" className="rounded-circle" onClick={()=>handleOnclick(rowData.id, true)}/>
-  {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
-  </div>
-  </>
+  const actionTemplate = (rowData) => (
+    <>
+      <div className="d-flex">
+        <Button
+          type="button"
+          size="small"
+          text
+          icon="pi pi-eye"
+          severity="help"
+          className="rounded-circle"
+          onClick={() => handleOnclick(rowData.id)}
+        />
+        <Button
+          type="button"
+          size="small"
+          text
+          icon="pi pi-pen-to-square"
+          className="rounded-circle"
+          onClick={() => handleOnclick(rowData.id, true)}
+        />
+        {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
+      </div>
+    </>
+  );
   const handleOnclick = (id, isUpdate = false) => {
     const selected = data.find((x) => x.id === id);
     setSelectedData(selected);
@@ -42,45 +58,56 @@ const ProgramListSection = () => {
   //       ),
   //     })
   // }
-  const columnItems = [{
-    // field: "id",
-    header: "No",
-    body: (_, {rowIndex}) => rowIndex + 1,
-  }, {
-    field: "name",
-    header: "Name",
-  },{
-    field: "description",
-    header: "Description",
-  },{
-    field: "createdDate",
-    header: "Created",
-    body: (rowData) => formatDateOnly(rowData.createdDate),
-  }, {
-    field: "statusName",
-    header: "Status",
-  }, {
-    field:"",
-    header: "Action",
-    body: actionTemplate
-  }
-]
-  const actionButton = () => {
-    return (
-      <div className=" flex flex-wrap justify-content- gap-3">
+  const columnItems = [
+    {
+      // field: "id",
+      header: "No",
+      body: (_, { rowIndex }) => rowIndex + 1,
+    },
+    {
+      field: "name",
+      header: "Name",
+    },
+    {
+      field: "description",
+      header: "Description",
+    },
+    {
+      field: "createdDate",
+      header: "Created",
+      body: (rowData) => formatDateOnly(rowData.createdDate),
+    },
+    {
+      field: "statusName",
+      header: "Status",
+    },
+    {
+      field: "",
+      header: "Action",
+      body: actionTemplate,
+    },
+  ];
+  const header = (
+    <div className="flex justify-content-between">
+      <div className="flex flex-wrap gap-3">
+        <div className="flex theme-color">
+          <h6 className="theme-color m-0 fw-bold">Training Programs</h6>
+        </div>
         <Button
           type="button"
           icon="pi pi-plus"
-          severity="success"
-          className="rounded theme-bg py-1 "
-          label={"programs"}
-          onClick={() => {setVisible({...visible, form:true})
-            setSelectedData(null)
+          className="rounded  py-1"
+          text
+          outlined
+          label={"Add New"}
+          onClick={() => {
+            setVisible({ ...visible, form: true });
+            setSelectedData(null);
           }}
         />
       </div>
-    );
-  };
+    </div>
+  );
   return (
     <>
       {loading ? (
@@ -88,17 +115,12 @@ const ProgramListSection = () => {
           <SkeletonBanner />
           <SkeletonDataTable />
         </>
-      ) : error ? 
-      <p>Error while processing your request</p>
-      : (
+      ) : error ? (
+        <p>Error while processing your request</p>
+      ) : (
         <>
-          <SectionBanner
-            title={"Programs"}
-            subtitle="List of Training Programs"
-            ActionComponents={actionButton}
-          />{" "}
           <CommonTable
-          tableName={"Training Programs"}
+            headerComponent={header}
             dataTable={data}
             title="Programs"
             columnItems={columnItems}
@@ -107,9 +129,9 @@ const ProgramListSection = () => {
             handleShow={visible.form}
             handleClose={() => setVisible({ ...visible, form: false })}
             selectedData={selectedData}
-            onReload={()=>{
-              setTrigger((prev)=>prev+1)
-              setVisible({...visible, form: false })
+            onReload={() => {
+              setTrigger((prev) => prev + 1);
+              setVisible({ ...visible, form: false });
             }}
           />
           <Modal
@@ -117,7 +139,7 @@ const ProgramListSection = () => {
             onHide={() => setVisible({ ...visible, detail: false })}
             size={"md"}
           >
-            <Modal.Header  closeButton>
+            <Modal.Header closeButton>
               <Modal.Title className={`h5 theme-color`}>
                 Program Details
               </Modal.Title>
@@ -146,14 +168,14 @@ const ProgramListSection = () => {
                 label="Close"
                 text
                 className="rounded mr-2"
-                onClick={() => setVisible({...visible, detail:false})}
+                onClick={() => setVisible({ ...visible, detail: false })}
               />
               <Button
                 type="button"
                 label="Edit"
                 icon="pi pi-pen-to-square"
                 className="rounded"
-                onClick={() => setVisible({form:true, detail:false})}
+                onClick={() => setVisible({ form: true, detail: false })}
               />
             </Modal.Footer>
           </Modal>
