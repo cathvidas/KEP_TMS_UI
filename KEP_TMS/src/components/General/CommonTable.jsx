@@ -36,7 +36,7 @@ const CommonTable = ({
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap">
-        {tableName && <h6 className="m-0  ">{tableName}</h6>}
+        {tableName && <h6 className="m-0  theme-color fw-bold">{tableName}</h6>}
         {headerComponent && 
         <>{headerComponent}</> }
         <IconField iconPosition="left" className="ms-auto" >

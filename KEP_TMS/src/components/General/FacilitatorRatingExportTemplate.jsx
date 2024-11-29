@@ -32,18 +32,13 @@ const FacilitatorRatingExportTemplate = ({
                 readOnly
               />
               <RateFieldItem
-                label="Motivates learning"
+                label="Balanced theory w/ real life applications/examples"
                 value={facilitatorRating[index]?.frFive}
                 readOnly
               />
               <RateFieldItem
-                label="Balanced theory w/ real life applications/examples"
-                value={facilitatorRating[index]?.frSix}
-                readOnly
-              />
-              <RateFieldItem
                 label="Clear & well organized lectures/activities (time management) 5"
-                value={facilitatorRating[index]?.frAverage}
+                value={facilitatorRating[index]?.frSix}
                 readOnly
               />
             </TabPanel>

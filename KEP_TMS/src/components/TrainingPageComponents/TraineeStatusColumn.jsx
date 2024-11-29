@@ -6,6 +6,7 @@ import proptype from "prop-types";
 const TraineeStatusTemplate = ({value, traineeId}) => {
     const traineeFormDetail = value?.trainingParticipants?.find(item => item?.employeeBadge === traineeId)
     const traineeExams = examHook.useAllTraineeExamByRequest(value?.id);
+    let isComplete = true;
     const getStatus = () => {
       let detail = "Pending";
       if (
@@ -13,19 +14,26 @@ const TraineeStatusTemplate = ({value, traineeId}) => {
         traineeFormDetail?.effectivenessId === null
       ) {
         detail = "Effectiveness,";
+        isComplete = false;
       }
       if (trainingDetailsService.checkIfTrainingEndsAlready(value)) {
         if (traineeFormDetail?.evaluationId === null) {
           detail += " Evaluation,";
+          isComplete = false;
         }
         if (traineeFormDetail?.reportId === null) {
           detail += " Training Report,";
+          isComplete = false;
         }
         if (traineeExams?.length > 0) {
           const exam = getTraineeExamDetail(traineeExams, traineeId);
           if (!exam?.submitted) {
             detail += " Exam,";
+            isComplete = false;
           }
+        }
+        if(isComplete){
+          return "Completed"
         }
       }else{
         detail = value?.status?.name;

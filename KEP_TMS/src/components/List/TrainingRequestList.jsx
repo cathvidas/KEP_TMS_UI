@@ -82,9 +82,9 @@ const TrainingRequestList = ({
     return (
       <div className="flex flex-wrap gap-2 align-items-center">
         <span className="me-auto flex">
-          <h5 className="m-0 theme-color" style={{ fontWeight: 600 }}>
+          <h6 className="m-0 theme-color" style={{ fontWeight: 600 }}>
             {headingTitle ? headingTitle : "Training Request List"}
-          </h5>
+          </h6>
         </span>
         <IconField iconPosition="left">
           <InputIcon className="pi pi-search ms-1" />
@@ -131,10 +131,10 @@ const TrainingRequestList = ({
                   sortable
                 ></Column>
               )}
-              <Column field="type" header="Type" sortable body={(rowData)=><>{rowData?.trainingType?.name}</>}></Column>
-              <Column field="program" header="Program" sortable body={(rowData)=><>{rowData?.trainingProgram?.name}</>}></Column>
-              <Column field="category" header="Category" sortable body={(rowData)=><>{rowData?.trainingCategory?.name}</>}></Column>
-              <Column field="provider" header="Provider" sortable body={(rowData)=><>{rowData?.trainingProvider?.name ?? "N/A"}</>}></Column>
+              <Column field="type" header="Type" sortable body={(rowData)=>rowData?.trainingType?.name}></Column>
+              <Column field="program" header="Program" sortable body={(rowData)=>rowData?.trainingProgram?.name}></Column>
+              <Column field="category" header="Category" sortable body={(rowData)=>rowData?.trainingCategory?.name}></Column>
+              <Column field="provider" header="Provider" sortable body={(rowData)=>rowData?.trainingProvider?.name ?? "N/A"}></Column>
               <Column field="venue" header="Venue" sortable></Column>
               <Column
                 field="trainingStartDate"

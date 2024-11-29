@@ -45,7 +45,7 @@ const EmailIntervalSetting = () => {
           icon={<p className="pi pi-gear"></p>}
         />
         <FormFieldItem
-          label={"Set Reminder Interval"}
+          label={"Set Interval"}
           subLabel="(in hours)"
           col={"col-lg-4"}
           FieldComponent={

@@ -5,12 +5,12 @@ import "../../assets/css/customPrimeReact.css"
 import { useState } from "react";
 import { Tooltip } from "primereact/tooltip";
 import TooltipTemplate from "../General/TooltipTemplate";
-const MenuContainer = ({itemList, action, label}) =>{ 
+const MenuContainer = ({itemList, action, label, fullHeight}) =>{ 
     const [visible, setVisible] = useState(true);
     return (
       <>
       <Tooltip target=".custom-target-icon" />
-        <div className={`position-sticky top-0 ${visible && "px-3 border-end"} z-1`} style={{ transition: "all .3s",minWidth: !visible ? "0px": "200px",  maxHeight: "calc(100vh - 55px)"}}>
+        <div className={`position-sticky bg-white top-0 ${visible && "px-3 border-end"} z-1`} style={{ transition: "all .3s",minWidth: !visible ? "0px": "200px",  maxHeight: fullHeight ?  "100vh": "calc(100vh - 55px)"}}>
           {visible ? (
             <>
               <div className="flex justify-content-between pt-2 border-bottom">
@@ -53,6 +53,7 @@ const MenuContainer = ({itemList, action, label}) =>{
 MenuContainer.propTypes ={
     itemList: proptype.array.isRequired,
     action: proptype.element,
-    label: proptype.string
+    label: proptype.string,
+    fullHeight: proptype.bool
 }
 export default MenuContainer;
