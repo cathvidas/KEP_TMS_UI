@@ -10,12 +10,14 @@ import { mapTRequestToTableData } from "../../services/DataMapping/TrainingReque
 import {
   GenerateTrainingDates,
 } from "../../utils/datetime/Formatting";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CertificateTemplate from "../../components/certificate/CertificateTemplate";
 import CertificatesList from "../../components/certificate/CertificatesList";
 import { UserTypeValue } from "../../api/constants";
+import evaluationService from "../../services/evaluationService";
+import ErrorTemplate from "../../components/General/ErrorTemplate";
 const DetailItem = (data) => (
   <>
     <div className="flex py-1">
@@ -25,20 +27,56 @@ const DetailItem = (data) => (
     </div>
   </>
 );
+const AverageRateTemplate = ({ requestData, userId }) => {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const evaluations = await Promise.all(
+          requestData?.trainingParticipants?.map(({ evaluationId }) => {
+            return evaluationId
+              ? evaluationService.getTrainingEvaluationById(evaluationId)
+              : null;
+          })
+        );
+        let totalAverage = 0;
+        let participants = 0;
+        evaluations?.map((item) => {
+          const rating = item?.facilitatorsRating?.find(
+            (rate) => rate?.facilitatorBadge === userId
+          );
+          if (rating) {
+            totalAverage = rating?.frAverage + totalAverage;
+            participants++;
+          }
+        });
+        if(participants > 0){
+          setData(totalAverage / participants);
+        }
+        setLoading(false)
+      } catch (err) {
+        setError(err);
+      }
+    };
+    fetchData();
+  }, [requestData]);
+  return <>
+  {loading ? error? <ErrorTemplate message={error}/> : <i className="pi pi-spinner pi-spin"></i>: <>{data ?? "No ratings Found"}</>}
+  </>
+};
 const UserDetailView = ({ id, adminList, isAdmin }) => {
   const { data, error, loading } = userHook.useUserById(id);
   const trainings = trainingRequestHook.useUserTrainingsSummary(id);
+  const facilitated = trainingRequestHook.useTrainingRequestByFacilitatorId(id);
+  const attended = trainingRequestHook.useTrainingRequestByTraineeId(id);
   const [showCertForm, setShowCertForm] = useState(false);
+  const [isFacilitator, setIsFacilitator] = useState(false);
   const [certificateTrainings, setCertificateTrainings] = useState([]);
   const columnItem = [
-    {
-      field: "id",
-      header: "No",
-      body: (_, { rowIndex }) => <>{rowIndex + 1}</>,
-    },
-    // {field: "id", header: "Id", },
+    {field: "id", header: "Request #", },
     { field: "requesterName", header: "Name", body: <>{data?.fullname}</> },
-    // { field: "type", header: "Type" },
     { field: "program", header: "Program" },
     {
       field: "requesterName",
@@ -46,6 +84,7 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
       body: (rowData) => <>{GenerateTrainingDates(rowData.trainingDates)}</>,
     },
     { field: "durationInHours", header: "Total Hours" },
+    { field: "totalParticipants", header: "Total Participants" },
   ];
   const countTotalHours = (trainings) => {
     let count = 0;
@@ -84,24 +123,24 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
                   <h6>Trainings Attended:</h6>
                   <DetailItem
                     label="No of Trainings"
-                    badge={trainings?.data?.attended?.length}
+                    badge={attended?.data?.length}
                     className="text-muted"
                   />
                   <DetailItem
                     label="Total Accumulated Hours"
-                    badge={countTotalHours(trainings?.data?.attended)}
+                    badge={countTotalHours(attended?.data)}
                     className="text-muted"
                   />
                   <br />
                   <h6>Trainings Facilitated:</h6>
                   <DetailItem
                     label="No of Trainings"
-                    badge={trainings?.data?.facilitated?.length}
+                    badge={facilitated?.data?.length}
                     className="text-muted"
                   />
                   <DetailItem
                     label="Total Accumulated Hours"
-                    badge={countTotalHours(trainings?.data?.facilitated)}
+                    badge={countTotalHours(facilitated?.data)}
                     className="text-muted"
                   />
                 </Col>
@@ -125,13 +164,14 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
                             label="Generate Certificate"
                             icon="pi pi-download"
                             onClick={() => {setShowCertForm(true);
-                              setCertificateTrainings(trainings?.data?.attended)
+                              setCertificateTrainings(attended?.data)
+                              setIsFacilitator(false)
                             }}
                             text
                           />
                         : null}
                         dataTable={mapTRequestToTableData(
-                          trainings?.data?.attended
+                          attended?.data
                         )}
                         columnItems={columnItem}
                       />
@@ -146,15 +186,16 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
                             label="Generate Certificate"
                             icon="pi pi-download"
                             onClick={() => {setShowCertForm(true);
-                              setCertificateTrainings(trainings?.data?.facilitated)
+                              setCertificateTrainings(facilitated?.data)
+                              setIsFacilitator(true)
                             }}
                             text
                           />
                         : null}
                         dataTable={mapTRequestToTableData(
-                          trainings?.data?.facilitated
+                          facilitated?.data
                         )}
-                        columnItems={columnItem}
+                        columnItems={[...columnItem, {header: "Evaluation Ratings", body: (rowData)=><AverageRateTemplate requestData={rowData} userId={id}/>}]}
                       />
                     </TabPanel>}
                     <TabPanel header={"Certificates"}>
@@ -182,7 +223,8 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
               />
             </div>
             <CertificateTemplate
-              trainings={trainings?.data?.attended}
+              trainings={certificateTrainings}
+              isFacilitator={isFacilitator}
               signatoryList={adminList}
             />
           </CardBody>
@@ -191,6 +233,11 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
     </>
   );
 };
+
+AverageRateTemplate.propTypes = {
+  requestData: proptype.object,
+  userId: proptype.string,
+}
 UserDetailView.propTypes = {
   id: proptype.string, // User Data
   adminList: proptype.array,
