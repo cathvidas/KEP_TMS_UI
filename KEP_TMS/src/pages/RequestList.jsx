@@ -11,9 +11,11 @@ import { statusCode } from "../api/constants";
 import TrainingRequestList from "../components/List/TrainingRequestList";
 import MenuContainer from "../components/menus/MenuContainer";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
+import { Button } from "primereact/button";
 const RequestList = () => {
   const { type } = useParams();
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
   const isAdmin =
     SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin"
       ? true
@@ -26,38 +28,6 @@ const RequestList = () => {
     value: getStatusCode(type),
     data: []
   });
-  // useEffect(() => {
-  //   if (filter.label?.toUpperCase() === "OUTDATED") {
-  //     let updatedList = [];
-  //     data.forEach((item) => {
-  //       if (
-  //         trainingDetailsService.checkTrainingIfOutDated(item) &&
-  //         (item?.status?.id === statusCode.SUBMITTED ||
-  //           item?.status?.id === statusCode.FORAPPROVAL ||
-  //           item?.status?.id === statusCode.APPROVED)
-  //       ) {
-  //         updatedList.push(item);
-  //       }
-  //     });
-  //     setRequests(updatedList);
-  //   } else if (filter.label === "Pending") {
-  //     const updatedList = data.filter(
-  //       (request) =>
-  //         !trainingDetailsService.checkTrainingIfOutDated(request) &&
-  //         (request?.status?.id === statusCode.FORAPPROVAL ||
-  //           request?.status?.id === statusCode.SUBMITTED ||
-  //           request?.status?.id === statusCode.APPROVED)
-  //     );
-  //     setRequests(updatedList);
-  //   } else if (filter?.value) {
-  //     const updatedList = data.filter(
-  //       (request) => request?.status?.id === filter.value
-  //     );
-  //     setRequests(updatedList);
-  //   } else {
-  //     setRequests(data);
-  //   }
-  // }, [filter.value, filter.label, type, data]);
   const [currentContent, setCurrentContent] = useState(0);
   const items = [
     {
@@ -69,10 +39,6 @@ const RequestList = () => {
           template: MenuItemTemplate,
           count: data?.length,
           active: currentContent === 8 ? true : false,
-          // badge:
-          //   mappedData?.ongoing?.length > 0
-          //     ? { value: mappedData?.ongoing?.length }
-          //     : false,
         },
         {
           label: "Submitted",
@@ -106,14 +72,14 @@ const RequestList = () => {
           count: mappedData?.returned?.length,
           active: currentContent === 3 ? true : false,
         },
-        {
-          label: "Published",
-          icon: "pi pi-clipboard",
-          command: () => navigate(`/KEP_TMS/RequestList/Publised`),
-          template: MenuItemTemplate,
-          count: mappedData?.published?.length,
-          active: currentContent === 4 ? true : false,
-        },
+        // {
+        //   label: "Published",
+        //   icon: "pi pi-clipboard",
+        //   command: () => navigate(`/KEP_TMS/RequestList/Publised`),
+        //   template: MenuItemTemplate,
+        //   count: mappedData?.published?.length,
+        //   active: currentContent === 4 ? true : false,
+        // },
         {
           label: "Closed",
           icon: "pi pi-check-circle",
@@ -188,10 +154,10 @@ const RequestList = () => {
       ) : (
         <>
           <div className={`d-flex `}>
-            <MenuContainer itemList={items} />
+            <MenuContainer fullHeight itemList={items} action={<Button type="button" label="Create New" className="theme-bg rounded" size="small" onClick={()=>setShowModal(true)}/>}/>
             <div
               className={`p-3 pb-5 flex-fill overflow-auto`}
-              style={{ minHeight: "calc(100vh - 50px)" }}
+              style={{ minHeight: "100vh" }}
             >
               <TrainingRequestList
                 userType={"user"}
@@ -216,7 +182,10 @@ const RequestList = () => {
         header={{
           title: "Training Request",
           icon: <FontAwesomeIcon icon={faStickyNote} />,
+          hide:true
         }}
+        showModalAction={showModal}
+        returnAction={(e)=>setShowModal(e)}
       />
     </>
   );

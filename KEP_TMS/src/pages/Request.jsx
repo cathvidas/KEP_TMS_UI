@@ -1,11 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ActionButton } from "../components/General/Button";
 import { TrainingRequestForm } from "../components/forms/TrainingRequestForm";
-import { SectionBanner } from "../components/General/Section";
 import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
-import Header from "../components/General/Header";
 import Layout from "../components/General/Layout";
-import { icon } from "@fortawesome/fontawesome-svg-core";
 
 const NewRequest = () => {
   const Content = () => {
@@ -18,6 +14,6 @@ const NewRequest = () => {
     );
   };
 
-  return <Layout BodyComponent={Content} header={{title: "Training Request", icon: <FontAwesomeIcon icon={faStickyNote} />}} />;
+  return <Layout BodyComponent={Content} header={{title: "Training Request", icon: <FontAwesomeIcon icon={faStickyNote} />, hide: true}} />;
 };
 export default NewRequest;

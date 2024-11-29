@@ -11,7 +11,7 @@ const SettingPage = () => {
   return SessionGetRole() === UserTypeValue.ADMIN ? (
     <Layout
       navReference="Setting"
-      header={{ title: "Settings", icon: <i className="pi pi-cog"></i> }}
+      header={{ title: "Settings", icon: <i className="pi pi-cog"></i>, hide:true }}
       BodyComponent={content}
     />
   ) : (
