@@ -3,7 +3,7 @@ import {
   GenerateTrainingDates,
   getMonthInString,
 } from "../../utils/datetime/Formatting";
-const CertificateContent = ({ trainings }) => {
+const CertificateContent = ({ trainings, isFacilitator }) => {
   const getDateToday = () => {
     const today = new Date();
     let dayString = "";
@@ -34,8 +34,7 @@ const CertificateContent = ({ trainings }) => {
         <p>To whom It may Concern:</p>
         <p></p>
         <p>
-          This is to certify that <strong>Trainee Name</strong> has undergone
-          the following training programs in the company:
+          This is to certify that <strong>Trainee Name</strong> has {isFacilitator ? "facilitated" : "undergone"} the following training programs in the company:
         </p>
         {trainings?.length > 0 ? (
           <>
@@ -43,11 +42,9 @@ const CertificateContent = ({ trainings }) => {
               className=" table-bordered "
               style={{
                 verticalAlign: "middle",
-                // textAlign: "center",
-                borderWidth: " 1px",
                 padding: " 1px",
                 background: " transparent",
-                border: " 1px solid rgba(0, 0, 0, 0.5)",
+                borderColor: "rgba(0, 0, 0, 0.5)",
               }}
             >
               <thead>
@@ -139,5 +136,6 @@ const CertificateContent = ({ trainings }) => {
 CertificateContent.propTypes = {
   trainings: proptype.array,
   signatory: proptype.object,
+  isFacilitator: proptype.bool, 
 };
 export default CertificateContent;

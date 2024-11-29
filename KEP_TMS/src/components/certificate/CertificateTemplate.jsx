@@ -8,7 +8,7 @@ import proptype from "prop-types";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import logo from "../../img/Knowles_Gray_RGB.png";
 import CertificateContent from "./CertificateContent";
-const CertificateTemplate = ({ trainings, signatoryList }) => {
+const CertificateTemplate = ({ trainings, signatoryList, isFacilitator }) => {
   const certRef = useRef();
   const certHeaderTempRef = useRef();
   const certHeaderRef = useRef();
@@ -32,7 +32,7 @@ const CertificateTemplate = ({ trainings, signatoryList }) => {
   }, [signatoryList]);
   const generateCertificate = () => {
     const div = document.createElement("div");
-    div.style.padding = "10px 0.5in";
+    // div.style.padding = "10px 0.5in";
     const header = certHeaderTempRef.current;
     const headerContent = header?.querySelector(".header-content");
     headerContent.innerHTML = certHeader;
@@ -62,6 +62,7 @@ const CertificateTemplate = ({ trainings, signatoryList }) => {
           signatory={signatoryList?.find(
             (item) => item?.employeeBadge === signatory?.value
           )}
+          isFacilitator={isFacilitator}
         />
       </div>
 
@@ -185,5 +186,6 @@ const CertificateTemplate = ({ trainings, signatoryList }) => {
 CertificateTemplate.propTypes = {
   trainings: proptype.array,
   signatoryList: proptype.array,
+  isFacilitator: proptype.bool,
 };
 export default CertificateTemplate;
