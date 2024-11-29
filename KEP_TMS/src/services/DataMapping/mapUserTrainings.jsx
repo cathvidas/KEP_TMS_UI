@@ -46,7 +46,11 @@ export const mappedTrainingRequestByStatus = (trainings) => {
   const closed = [];
   const inactive = [];
   const returned = [];
+  const currentTrainings = [];
   trainings?.forEach((item) => {
+    if (item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED ) {
+      currentTrainings.push(item);
+    }
     if (
       trainingDetailsService.checkTrainingIfOutDated(item) &&
       (item?.status?.id === statusCode.SUBMITTED ||
@@ -54,7 +58,8 @@ export const mappedTrainingRequestByStatus = (trainings) => {
         item?.status?.id === statusCode.APPROVED)
     ) {
       outdated.push(item);
-    }  if (item?.status?.id === statusCode.CLOSED) {
+    }
+    if (item?.status?.id === statusCode.CLOSED) {
       closed.push(item);
       attended.push(item);
     } else if (item?.status?.id === statusCode.PUBLISHED) {
@@ -71,15 +76,14 @@ export const mappedTrainingRequestByStatus = (trainings) => {
       }
     } else if (item?.status?.id === statusCode.APPROVED) {
       approved.push(item);
-    } 
-  else if (item?.status?.id === statusCode.DISAPPROVED) {
-    returned.push(item);
-  } else if (item?.status?.id === statusCode.FORAPPROVAL) {
+    } else if (item?.status?.id === statusCode.DISAPPROVED) {
+      returned.push(item);
+    } else if (item?.status?.id === statusCode.FORAPPROVAL) {
       forApproval.push(item);
     } else if (item?.status?.id === statusCode.SUBMITTED) {
       submitted.push(item);
       pending.push(item);
-    }else if (item?.status?.id === statusCode.INACTIVE) {
+    } else if (item?.status?.id === statusCode.INACTIVE) {
       inactive.push(item);
     }
   });
@@ -96,5 +100,6 @@ export const mappedTrainingRequestByStatus = (trainings) => {
     closed,
     returned,
     inactive,
+    currentTrainings
   };
 };

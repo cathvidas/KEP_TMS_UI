@@ -1,24 +1,16 @@
-import { statusCode } from "../api/constants";
 import Layout from "../components/General/Layout";
-import { SectionBanner } from "../components/General/Section";
 import TrainingRequestList from "../components/List/TrainingRequestList";
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import trainingRequestHook from "../hooks/trainingRequestHook";
-import trainingDetailsService from "../services/common/trainingDetailsService";
 import { SessionGetEmployeeId } from "../services/sessions";
 
 const TrainerPage = () => {
-  const { data, loading } = trainingRequestHook.useParticipantTrainings(
-    SessionGetEmployeeId(),
-    "trainer"
-  );
-  const updatedData = data?.filter(
-    (item) =>
-      (item?.status?.id === statusCode.APPROVED &&
-        !trainingDetailsService.checkTrainingIfOutDated(item)) ||
-      item?.status?.id === statusCode.PUBLISHED
-  );
+  const { data, loading } =
+    trainingRequestHook.useTrainingRequestByFacilitatorId(
+      SessionGetEmployeeId()
+    );
+
   const Content = () => (
     <div className="p-3">
       {loading ? (
@@ -28,14 +20,9 @@ const TrainerPage = () => {
         </>
       ) : (
         <>
-          <SectionBanner
-            title="Facilitated Trainings"
-            subtitle="List of Trainings Assigned to you"
-          />
-
           <TrainingRequestList
-            data={updatedData}
-            headingTitle="Training List"
+            data={data}
+            headingTitle="Assigned Trainings to Facilitate"
             isFacilitator
             allowEdit={false}
           />
@@ -46,10 +33,12 @@ const TrainerPage = () => {
   return (
     <>
       <Layout
+        navReference="FacilitatedTrainings"
         BodyComponent={Content}
         header={{
           title: "TrainerPage",
           icon: <i className="pi pi-clipboard"></i>,
+          hide: true,
         }}
       />
     </>
