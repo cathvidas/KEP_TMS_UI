@@ -93,18 +93,16 @@ const UserPage = () => {
       items: [
         {
           label: "All Users",
-          icon: "pi pi-eye",
           template: MenuItemTemplate,
           command: () => navigate("/KEP_TMS/Users"),
           active: currentContent === 1 ? true : false,
         },
-        {
-          label: "Trainees",
-          icon: "pi pi-users",
-          template: MenuItemTemplate,
-          command: () => navigate("/KEP_TMS/Users/Trainee"),
-          active: currentContent === 2 ? true : false,
-        },
+        // {
+        //   label: "Trainees",
+        //   template: MenuItemTemplate,
+        //   command: () => navigate("/KEP_TMS/Users/Trainee"),
+        //   active: currentContent === 2 ? true : false,
+        // },
         // {
         //   label: "Approvers",
         //   icon: "pi pi-users",
@@ -114,21 +112,18 @@ const UserPage = () => {
         // },
         {
           label: "Requester",
-          icon: "pi pi-users",
           template: MenuItemTemplate,
           command: () => navigate("/KEP_TMS/Users/Requester"),
           active: currentContent === 3 ? true : false,
         },
         {
           label: "Facilitators",
-          icon: "pi pi-users",
           template: MenuItemTemplate,
           command: () => navigate("/KEP_TMS/Users/Facilitator"),
           active: currentContent === 4 ? true : false,
         },
         {
           label: "Admins",
-          icon: "pi pi-users",
           template: MenuItemTemplate,
           command: () => navigate("/KEP_TMS/Users/Admin"),
           active: currentContent === 5 ? true : false,
@@ -197,6 +192,8 @@ const UserPage = () => {
         <div className={`d-flex g-0`}>
           {isAdmin && (
             <MenuContainer
+            label="Users"
+            fullHeight
               itemList={items}
               action={
                 <Button
@@ -211,7 +208,7 @@ const UserPage = () => {
           )}
           <div
             className={`p-3 pb-5 flex-grow-1`}
-            style={{ minHeight: "calc(100vh - 50px)" }}
+            style={{ minHeight: "100vh" }}
           >
             {loading ? <SkeletonDataTable /> : pageContent[currentContent]}
           </div>
@@ -229,7 +226,7 @@ const UserPage = () => {
   return (currentContent === 0 && SessionGetEmployeeId() === id) || isAdmin ? (
     <Layout
       navReference="Users"
-      header={{ title: "Users", icon: <i className="pi pi-users"></i> }}
+      header={{ title: "Users", icon: <i className="pi pi-users"></i>, hide:true }}
       BodyComponent={Content}
     />
   ) : (
