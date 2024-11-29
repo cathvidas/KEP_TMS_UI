@@ -32,7 +32,8 @@ import mappingHook from "../hooks/mappingHook";
 const TrainingDetailPage = () => {
   const [trigger, setTrigger] = useState(0);
   const { page, id, section } = useParams();
-
+  const [showMenu, setShowMenu]= useState(false);
+  const [formtype, setFormType] = useState(null);
   const { data, error, loading } = trainingRequestHook.useTrainingRequest(
     parseInt(id),
     trigger
@@ -47,7 +48,16 @@ const TrainingDetailPage = () => {
   const isApprover = data?.approvers?.some(
     (item) => item?.employeeBadge === SessionGetEmployeeId()
   );
-  console.log(data)
+  useEffect(() => {
+    if (
+      ((data?.status?.id === statusCode.APPROVED ||
+        data?.status?.id === statusCode.CLOSED) &&
+        (isFacilitator || isTrainee)) ||
+      isAdmin
+    ) {
+      setShowMenu(true);
+    }
+  }, [data]);
   const isAdmin =
     SessionGetRole() === UserTypeValue.ADMIN ||
     SessionGetRole() === UserTypeValue.SUPER_ADMIN;
@@ -92,13 +102,14 @@ const TrainingDetailPage = () => {
       isEditor={isAdmin || isFacilitator}
       isTrainee={isTrainee ? true : false}
     />,
+    <TraineeCertificateView key={3} data={data} isAdmin={isAdmin}/>,
     <TraineeReportView
-      key={3}
+      key={4}
       data={data}
       refreshData={refreshData}
       isTrainee={isTrainee}
+      activityType={formtype}
     />,
-    <TraineeCertificateView key={4} data={data} isAdmin={isAdmin}/>,
     <MonitoringReportView
       key={5}
       data={data}
@@ -155,7 +166,7 @@ const TrainingDetailPage = () => {
         },
         {
           label: "Modules",
-          icon: "pi pi-folder",
+          icon: "pi pi-book",
           command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Modules`),
           template: MenuItemTemplate,
           active: currentContent === 1 ? true : false,
@@ -166,34 +177,15 @@ const TrainingDetailPage = () => {
           icon: "pi pi-list-check",
           command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Exams`),
           template: MenuItemTemplate,
-          active: currentContent === 2 ? true : false,
+          active: currentContent === 2,
           disable: !(isAdmin || isFacilitator || isTrainee),
         },
         {
-          label: "Reports",
-          icon: "pi pi-address-book",
-          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Reports`),
-          template: MenuItemTemplate,
-          active: currentContent === 3 ? true : false,
-          notifBadge:
-            (data?.status?.id === statusCode.SUBMITTED &&
-              isTrainee &&
-              isTrainee?.effectivenessId === null) ||
-            (data?.status?.id === statusCode.PUBLISHED &&
-              isTrainee &&
-              (isTrainee?.reportId === null ||
-                isTrainee?.evaluationId === null) &&
-              trainingDetailsService.checkIfTrainingEndsAlready(data))
-              ? true
-              : false,
-          disable: !isTrainee,
-        },
-        {
           label: "Certificate",
-          icon: "pi pi-file-arrow-up",
+          icon: "pi pi-upload",
           command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Certificate`),
           template: MenuItemTemplate,
-          active: currentContent === 4 ? true : false,
+          active: currentContent === 3 ? true : false,
           disable: !(
             (isAdmin || isTrainee) &&
             trainingDetailsService.checkTrainingScheduleStatus(data)?.isEnd
@@ -201,6 +193,36 @@ const TrainingDetailPage = () => {
         },
       ],
     },
+    isTrainee ?{
+      label: "Forms",
+      items:[
+        {
+          label: "Effectiveness",
+          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Effectiveness`),
+          template: MenuItemTemplate,
+          active: currentContent === 4 && formtype === ActivityType.EFFECTIVENESS,
+          notifBadge: data?.status?.id === statusCode.SUBMITTED &&
+            isTrainee?.effectivenessId === null,
+            disable: data?.durationInHours < OtherConstant.EFFECTIVENESS_MINHOUR
+        },
+        {
+          label: "Training Report",
+          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Report`),
+          template: MenuItemTemplate,
+          active: currentContent === 4 && formtype === ActivityType.REPORT,
+          notifBadge: isTrainee?.reportId === null &&
+          trainingDetailsService.checkIfTrainingEndsAlready(data)
+        },
+        {
+          label: "Evaluation",
+          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Evaluation`),
+          template: MenuItemTemplate,
+          active: currentContent === 4 && formtype === ActivityType.EVALUATION,
+          notifBadge: isTrainee?.evaluationId === null &&
+          trainingDetailsService.checkIfTrainingEndsAlready(data),
+        },
+      ]
+    }:[],
     isAdmin
       ? {
           label: "Monitoring",
@@ -265,11 +287,20 @@ const TrainingDetailPage = () => {
       setCurrentContent(1);
     } else if (mainpage === "EXAMS") {
       setCurrentContent(2);
-    } else if (mainpage === "REPORTS") {
-      setCurrentContent(3);
     } else if (mainpage === "CERTIFICATE") {
-      setCurrentContent(4);
-    } else if (mainpage === "MONITORING") {
+      setCurrentContent(3);
+    }else if (mainpage === "FORM") {
+      if(pageSection === "EFFECTIVENESS"){
+        setCurrentContent(4)
+        setFormType(ActivityType.EFFECTIVENESS)
+      } else if(pageSection === "REPORT"){
+        setCurrentContent(4)
+        setFormType(ActivityType.REPORT)
+      }else if(pageSection === "EVALUATION"){
+        setCurrentContent(4)
+        setFormType(ActivityType.EVALUATION)
+      }
+    }  else if (mainpage === "MONITORING") {
       if (pageSection === "EFFECTIVENESS") {
         setCurrentContent(5);
       } else if (pageSection === "EXAM") {
@@ -320,26 +351,10 @@ const TrainingDetailPage = () => {
   const bodyContent = () => {
     return (
       <div className={`d-flex g-0`}>
-        {(isTrainee ||
-          (!trainingDetailsService.checkTrainingIfOutDated(data) &&
-            ((data?.status?.id === statusCode.APPROVED &&
-              (isFacilitator || isAdmin)) ||
-              (data?.status?.id === statusCode.SUBMITTED &&
-                (isTrainee || isAdmin))))) && (
+        {showMenu && (
           <MenuContainer
             itemList={items}
             action={
-              // data?.status?.id === statusCode.APPROVED &&
-              // (isAdmin || isFacilitator) ? (
-              //   <Button
-              //     type="button"
-              //     label="Publish"
-              //     size="small"
-              //     severity="info"
-              //     className="rounded py-1"
-              //     onClick={() => handlePublish(statusCode.PUBLISHED)}
-              //   />
-              // ) :
                data?.status?.id === statusCode.PUBLISHED && isAdmin ? (
                 <Button
                   type="button"
@@ -386,7 +401,7 @@ const TrainingDetailPage = () => {
           }
           header={{
             title: data?.trainingProgram?.name,
-            // hide: true
+            hide: !showMenu
             // icon: <i className="pi pi-lightbulb"></i>,
           }}
         />
