@@ -12,6 +12,7 @@ import commonHook from "../hooks/commonHook";
 import SkeletonCards from "../components/Skeleton/SkeletonCards";
 import { APP_DOMAIN, UserTypeValue } from "../api/constants";
 import { TabPanel, TabView } from "primereact/tabview";
+import activityLogHook from "../hooks/activityLogHook";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -19,6 +20,7 @@ const Dashboard = () => {
   const assignedTraining = trainingRequestHook.useTrainingRequestByTraineeId(
     SessionGetEmployeeId()
   );
+  const pendings =  activityLogHook.useUserPendingTaskList(SessionGetEmployeeId())
   const trainingRequests =
     SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin"
       ? trainingRequestHook.useAllTrainingRequests()
@@ -27,10 +29,6 @@ const Dashboard = () => {
     SessionGetEmployeeId(),
     "trainer"
   );
-  // const pendingTasks = activityLogHook.useUserPendingTaskList(
-  //   SessionGetEmployeeId(),
-  //   assignedTraining?.mappedData?.pending
-  // );
   const values = [
     {
       label: "Submitted",
@@ -117,22 +115,17 @@ const Dashboard = () => {
       value:
         assignedTraining?.data?.length,
       icon: "pi pi-address-book",
-      status: "Training",
       isRequest: false,
       url: "/Trainings",
     },
-    // {
-    //   label: "Training Forms To Comply",
-    //   color: "#919090",
-    //   value:
-    //     assignedTraining?.mappedData?.ongoing?.length +
-    //     assignedTraining?.mappedData?.upcoming?.length +
-    //     assignedTraining?.mappedData?.attended?.length,
-    //   icon: "pi pi-file",
-    //   status: "Training",
-    //   isRequest: false,
-    //   url: "/Trainings",
-    // },
+    {
+      label: "To Comply",
+      color: "#919090",
+      value: pendings?.data?.length,
+      icon: "pi pi-file",
+      isRequest: false,
+      url: "/Trainings/ToComply",
+    },
   ];
   const Content = () => {
     return (
@@ -148,7 +141,7 @@ const Dashboard = () => {
                 </>
               )}
 
-              <TabView className={`custom-tab ${(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) ? "" : "border-0"}`}>
+              <TabView className={`custom-tab ${(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) ? "" : "border-0 hide-nav"}`}>
                 <TabPanel header={(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) ? "Trainings" : ""}>
                   {assignedTraining?.loading ? (
                     <SkeletonCards />
@@ -275,7 +268,7 @@ const Dashboard = () => {
   return (
     <Layout
       navReference="Dashboard"
-      header={{ title: "Dashboard", icon: <FontAwesomeIcon icon={faHouse} /> }}
+      header={{ title: "Dashboard", icon: <FontAwesomeIcon icon={faHouse} />, hide:true, className: "border-bottom" }}
       BodyComponent={() => <Content />}
       showModalAction={showModal}
       returnAction={setShowModal}

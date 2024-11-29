@@ -110,10 +110,10 @@ const MasterListPage = () => {
   const Content = () => (
     <>
       <div className="d-flex ">
-        <MenuContainer itemList={items} />
+        <MenuContainer fullHeight label="Master List" itemList={items} />
         <div
           className="flex-fill overflow-auto p-3"
-          style={{ minHeight: "calc(100vh - 50px)" }}
+          style={{ minHeight: "100vh" }}
         >
           {pageContent[currentContent]}
         </div>
@@ -129,6 +129,7 @@ const MasterListPage = () => {
         header={{
           title: "Master List",
           icon: <FontAwesomeIcon icon={faClipboardList} />,
+          hide:true
         }}
       />
     : <NotFoundPage/>}</>

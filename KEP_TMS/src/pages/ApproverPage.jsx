@@ -113,6 +113,7 @@ const ApproverPage = () => {
         header={{
           title: "For Approval",
           icon: <i className="pi pi-pen-to-square"></i>,
+          hide: true
         }}
       />
     </>

@@ -4,14 +4,14 @@ import { Button } from "primereact/button";
 import { SessionGetRole } from "../../services/sessions";
 import { UserTypeValue } from "../../api/constants";
 
-const Header = ({ title, IconComponent, showModal, setShowModal,toggleSidebar }) => {
+const Header = ({ title, IconComponent, showModal, setShowModal,toggleSidebar, className, showRequestButton }) => {
   const handleShow = () => {
     setShowModal(!showModal);
   };
   return (
-    <Navbar className="header navbar-expand-md d-flex w-100  z-1 border-bottom px-2 " style={{background: "#fbfdfc"}}>
+    <Navbar className={`header navbar-expand-md d-flex w-100 py-0 z-1 px-2 border-bottom bg-white ${className}`} style={{background: "#fbfdfc"}}>
       <div className="d-block d-md-none">
-      <Button type="button" severity="secondary" text icon="pi pi-bars" onClick={toggleSidebar} /></div>
+      <Button type="button" severity="secondary" text icon="pi pi-bars" className="py-1" onClick={toggleSidebar} /></div>
       <a className="navbar-brand ms-2 d-flex align-items-center " href="#" style={{fontWeight: 500}}>
         <span
           className="d-flex gap-2 justify-content-center align-items-center bs-icon"
@@ -26,7 +26,7 @@ const Header = ({ title, IconComponent, showModal, setShowModal,toggleSidebar })
           </small>
         </span>
       </a>
-      {(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) &&
+      {((SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) && showRequestButton) &&
       <div
         className="ms-auto justify-content-end align-items-center"
       >
@@ -49,6 +49,8 @@ Header.propTypes = {
   showModal: proptype.bool,
   setShowModal: proptype.func,
   toggleSidebar: proptype.func,
+  className: proptype.string,
+  showRequestButton: proptype.bool,
 };
 
 export default Header;

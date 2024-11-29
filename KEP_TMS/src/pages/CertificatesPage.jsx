@@ -29,6 +29,7 @@ const CertificatesPage = () => {
       header={{
         title: "Training Certificates",
         icon: <i className="pi pi-trophy"></i>,
+        hide:true
       }}
     />
   );

@@ -64,12 +64,13 @@ const Layout = ({
             <Sidebars activeNavigation={navReference} hide={()=>setShowSidebar(false)} show={showSidebar} expanded={expanded}/>
             <div className=" flex-fill d-flex flex-column d-block expand-transition overflow-hidden w-100 vh-100">
               <div className=" position-sticky top-0 w-100">
-                {!header?.hide &&
+                {(!header?.hide || (header?.hide && expanded) )&&
                 <Header
                   title={header?.title}
-                  IconComponent={header?.icon}
+                  // IconComponent={header?.icon}
                   setShowModal={setShowModal}
                   toggleSidebar={()=>setShowSidebar(!showSidebar)}
+                  className={header?.className}
                 />}
               </div>
               <div className="overflow-auto flex-grow-1" style={{background: "#fbfdfc"}}>

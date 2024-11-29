@@ -34,7 +34,7 @@ const TraineeCertificateView = ({ data, isAdmin }) => {
   };
   return (
     <div>
-      <div className="flex justify-content-between align-items-center mb-2 mt-3">
+      <div className="flex justify-content-between align-items-center mb-2 ">
         <SectionHeading
           title="Training Certificate"
           icon={<i className="pi pi-trophy" />}
