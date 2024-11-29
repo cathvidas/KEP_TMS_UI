@@ -6,7 +6,6 @@ import ToastTemplate from "../../components/General/ToastTemplate";
 import handleApproveRequest from "../handlers/handleApproveRequest";
 import sortRoutingBySequence from "./sortRoutingsBySequence";
 import { extractChanges } from "../../utils/stringUtil";
-import trainingDetailsService from "./trainingDetailsService";
 
 const getToastDetail = (
   data,
@@ -26,31 +25,7 @@ const getToastDetail = (
   );
   const status = data?.status?.id;
   const statusData = { show: true, summary: "", detail: {}, statusId: status };
-  if (
-    (status == statusCode.FORAPPROVAL ||
-      status == statusCode.SUBMITTED) &&
-    trainingDetailsService.checkTrainingIfOutDated(data)
-  ) {
-    statusData.detail =
-      isAdmin || data?.requesterBadge === SessionGetEmployeeId()
-        ? "This training Request is outdated, please update training dates OR cancel training Request."
-        : "This training Request is outdated and is no longer available.";
-    statusData.summary = "OutDated Training Request";
-    statusData.severity = "error";
-    statusData.content =
-      isAdmin || data?.requesterBadge === SessionGetEmployeeId()
-        ? () => (
-          <ToastTemplate icon="pi pi-times-circle" summary={statusData.summary} detail={statusData.detail} 
-          leftButtonLabel="Cancel request" leftButtonSeverity="danger"
-          leftButtonIcon="pi pi-times-circle"
-          leftButtonCommand={cancelRequest}
-          rightButtonLabel="Update"
-          rightButtonIcon="pi pi-pencil"
-          rightButtonCommand={updateRequest}
-          />
-          )
-        : "";
-  } else if (status == statusCode.FORAPPROVAL) {
+   if (status == statusCode.FORAPPROVAL) {
     statusData.detail = [data?.currentRouting?.fullname];
     statusData.summary =
       user === data?.currentRouting?.employeeBadge
@@ -78,16 +53,10 @@ const getToastDetail = (
         ""
       );
   } 
-  // else if (status == statusCode.APPROVED) {
-  //   statusData.summary = data?.trainingType?.id === TrainingType.INTERNAL ? "Waiting for Facilitator's Action" : "Waiting to be Published";
-  //   statusData.severity = "info";
-  //   statusData.detail = isFacilitator
-  //     ? "Please add module or exam if necessary and publish the request"
-  //     : "Waiting to be Published";
-  // }
    else if (status == statusCode.SUBMITTED) {
     if (userReports && userReports?.effectivenessDetail?.id > 0) {
       const effStatus = userReports?.effectivenessDetail?.statusName;
+      statusData.show = false; 
       statusData.summary =effStatus === getStatusById(statusCode.DISAPPROVED) ? "Training Effectiveness Disapproved": "Training Effectiveness Submitted";
       statusData.detail =
         effStatus === getStatusById(statusCode.FORAPPROVAL)
@@ -138,11 +107,7 @@ const getToastDetail = (
         : "";
   } 
   else {
-    statusData.show = false;
-    // statusData.summary = data?.status?.name;
-    // statusData.detail = "";
-    // statusData.severity = status == statusCode.SUBMITTED ? "warning" : status === statusCode.PUBLISHED? "success": "secondary" ;
-  }
+    statusData.show = false;  }
   return statusData;
 };
 export default getToastDetail;

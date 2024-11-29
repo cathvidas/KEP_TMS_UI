@@ -2,6 +2,7 @@ import { TrainingType } from "../../api/constants";
 import { SessionGetEmployeeId } from "../sessions";
 
 export const validateTrainingRequestForm = (formData)=>{
+  console.log(formData)
     return{
         id: formData?.id,
         requesterBadge: formData.requesterBadge ?? SessionGetEmployeeId(),
@@ -22,9 +23,9 @@ export const validateTrainingRequestForm = (formData)=>{
         // cutOffDate: new Date(),
         trainingDates: formData?.trainingDates?.map(({startTime, endTime, date})=>({startTime, endTime, date})),
         trainingFacilitators:formData.trainingFacilitators ?  formData?.trainingType?.id === TrainingType.EXTERNAL ? formData.trainingFacilitators.map(({value}) =>({
-          ExternalFacilitatorId:value
-      })) : formData.trainingFacilitators.map(({employeeBadge}) =>({
-            FacilitatorBadge:employeeBadge
+          ExternalFacilitatorId:value??formData?.externalFacilitatorId
+      })) : formData.trainingFacilitators.map((faci) =>({
+            FacilitatorBadge:faci?.employeeBadge ?? faci?.facilitatorBadge
         })):[],
         statusId:formData?.status?.id,
         createdBy: SessionGetEmployeeId(),

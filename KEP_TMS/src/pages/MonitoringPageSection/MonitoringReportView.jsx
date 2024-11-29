@@ -236,8 +236,8 @@ console.log(examDetail)
                     }
                     auditTrail={
                       selectedData?.effectivenessDetail?.auditTrail
-                        ? selectedData?.effectivenessDetail?.auditTrail[0]
-                        : {}
+                        ? selectedData?.effectivenessDetail?.auditTrail
+                        : []
                     }
                     isAdmin
                   />
