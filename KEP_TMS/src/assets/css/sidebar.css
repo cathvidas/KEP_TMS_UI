@@ -15,7 +15,17 @@
     width: 100%;
     text-align: center;
 }
-
+.sidebar .nav-link{
+    color: #fff !important;
+}
+.sidebar .nav-link:hover{
+    background-color: var(--theme-color-light) !important;
+    color: #fff !important;
+}
+.sidebar .nav-link.active {
+    background-color: #ffffff !important;
+    color: var(--theme-color) !important;
+}
 .sidebar.expanded .nav-item a {
     width: 300px;
     text-align: start;

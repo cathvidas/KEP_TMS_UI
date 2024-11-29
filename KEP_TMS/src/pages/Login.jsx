@@ -9,7 +9,7 @@ import {
   // Button,
 } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
-import logo from "../img/Knowles_Green.png";
+import logo from "../img/logo-hd.png";
 import { useState } from "react";
 import validateLogin from "../utils/LoginValidation";
 import handleUserLogin from "../services/loginServices";
@@ -61,12 +61,12 @@ const Login = () => {
                   className="d-flex flex-column align-items-center p-4 p-xl-5 py-5 rounded"
                   style={{ background: " #f6fbf9" }}
                 >
-                  <Col className="col-md-9 col-xl-6 text-center mx-auto w-100">
-                    <img width="200" src={logo} height="" />
-                    <h4 style={{ color: "#2eb396" }}>
-                      Training Management System
+                  <Col className="col-md-12 text-center mx-auto w-100">
+                    <img width="250" src={logo} height="" />
+                    <h4 className="theme-color fw-bold" >
+                      HR Training System
                     </h4>
-                    <p className="w-lg-50 mb-3">Please log in your credentials</p>
+                    <p className="w-lg-50 mb-3">Please log in with your credentials.</p>
                   </Col>
                   <Form
                     className="text-center w-100"
