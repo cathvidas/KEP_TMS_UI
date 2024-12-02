@@ -1,4 +1,4 @@
-import { disapproveActivityApi, getActivityApproversApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getCurrentRoutingActivityApi, getRoutingActivityWithAuditTrailApi } from "../api/commonApi";
+import { disapproveActivityApi, getActivityApproversApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getCurrentRoutingActivityApi, getFaciliatorRatingApi, getRoutingActivityWithAuditTrailApi } from "../api/commonApi";
 import userMapping from "./DataMapping/userMapping";
 import userService from "./userService";
 
@@ -78,6 +78,10 @@ const commonService = {
       throw new Error(response.message);
     }
     return response;
+  },
+  getFacilitatorRating: async (reqId, userId) => {
+    const response = await getFaciliatorRatingApi(reqId, userId);
+    return response.status === 1 ? response?.data : null;
   },
 };
 

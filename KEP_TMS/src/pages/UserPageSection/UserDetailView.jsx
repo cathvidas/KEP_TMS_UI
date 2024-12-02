@@ -18,6 +18,8 @@ import CertificatesList from "../../components/certificate/CertificatesList";
 import { UserTypeValue } from "../../api/constants";
 import evaluationService from "../../services/evaluationService";
 import ErrorTemplate from "../../components/General/ErrorTemplate";
+import handleResponseAsync from "../../services/handleResponseAsync";
+import commonService from "../../services/commonService";
 const DetailItem = (data) => (
   <>
     <div className="flex py-1">
@@ -27,41 +29,23 @@ const DetailItem = (data) => (
     </div>
   </>
 );
-const AverageRateTemplate = ({ requestData, userId }) => {
+const AverageRateTemplate = ({ reqId, userId }) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const evaluations = await Promise.all(
-          requestData?.trainingParticipants?.map(({ evaluationId }) => {
-            return evaluationId
-              ? evaluationService.getTrainingEvaluationById(evaluationId)
-              : null;
-          })
-        );
-        let totalAverage = 0;
-        let participants = 0;
-        evaluations?.map((item) => {
-          const rating = item?.facilitatorsRating?.find(
-            (rate) => rate?.facilitatorBadge === userId
-          );
-          if (rating) {
-            totalAverage = rating?.frAverage + totalAverage;
-            participants++;
-          }
-        });
-        if(participants > 0){
-          setData(totalAverage / participants);
-        }
-        setLoading(false)
-      } catch (err) {
-        setError(err);
-      }
+      handleResponseAsync(() =>
+        commonService.getFacilitatorRating(
+          reqId,
+          userId),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        )
     };
     fetchData();
-  }, [requestData]);
+  }, [reqId, userId]);
   return <>
   {loading ? error? <ErrorTemplate message={error}/> : <i className="pi pi-spinner pi-spin"></i>: <>{data ?? "No ratings Found"}</>}
   </>
@@ -195,7 +179,7 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
                         dataTable={mapTRequestToTableData(
                           facilitated?.data
                         )}
-                        columnItems={[...columnItem, {header: "Evaluation Ratings", body: (rowData)=><AverageRateTemplate requestData={rowData} userId={id}/>}]}
+                        columnItems={[...columnItem, {header: "Evaluation Ratings", body: (rowData)=><AverageRateTemplate reqId={rowData?.id} userId={id}/>}]}
                       />
                     </TabPanel>}
                     <TabPanel header={"Certificates"}>
@@ -235,7 +219,7 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
 };
 
 AverageRateTemplate.propTypes = {
-  requestData: proptype.object,
+  reqId: proptype.number,
   userId: proptype.string,
 }
 UserDetailView.propTypes = {

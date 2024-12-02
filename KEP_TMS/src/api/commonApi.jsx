@@ -39,3 +39,6 @@ export const getActivityApproversApi = async (id, activityIn, requestTotalCost) 
     }else {
     return await fetchFromApi(`/Services/GetApprovers?userBadge=${id}&requestType=${activityIn}`);}
 }
+export const getFaciliatorRatingApi = async (requestId, facilitatorBadge) =>{
+    return await fetchFromApi(`/Services/GetFacilitatorRating?requestId=${requestId}&facilitatorBadge=${facilitatorBadge}`);
+}
