@@ -28,7 +28,7 @@ import ActivityList from "../List/ActivityList";
 import getStatusCode from "../../utils/status/getStatusCode";
 import mappingHook from "../../hooks/mappingHook";
 import ActivityStatus from "../General/ActivityStatus";
-import trainingDetailsService from "../../services/common/trainingDetailsService";
+import commonHook from "../../hooks/commonHook";
 const EffectivenessForm = ({
   data,
   userData,
@@ -91,13 +91,6 @@ const EffectivenessForm = ({
       }
     }
   }, [formData]);
-  const getFacilitators = () => {
-    let facilitators = "";
-    data?.trainingFacilitators?.map((x) => {
-      facilitators += `${x.fullname}  `;
-    });
-    return facilitators;
-  };
   const getFormData = {
     employeeBadge: SessionGetEmployeeId(),
     trainingProgramId: data?.trainingProgram?.id,
@@ -188,16 +181,17 @@ const EffectivenessForm = ({
         showLoaderOnConfirm: true,
         title: "Submit Evaluation",
         message: `Are you sure you want to submit this form?`,
-        confirmButtonText:"Submit",
+        confirmButtonText: "Submit",
         cancelButtonText: "Cancel",
         onConfirm: () =>
           handleResponseAsync(
-            () => effectivenessService.updateTrainingEffectiveness({
-                    ...getFormData,
-                    updatedBy: SessionGetEmployeeId(),
-                    id: formData.id,
-                    statusId: statusCode.CLOSED
-                  }),
+            () =>
+              effectivenessService.updateTrainingEffectiveness({
+                ...getFormData,
+                updatedBy: SessionGetEmployeeId(),
+                id: formData.id,
+                statusId: statusCode.CLOSED,
+              }),
             (e) => {
               actionSuccessful("Success!", e?.message);
               onFinish();
@@ -207,17 +201,18 @@ const EffectivenessForm = ({
       });
     }
   };
-
   useEffect(() => {
     setIsAfter(
-      trainingDetailsService.checkIfTrainingEndsAlready(data)
-       && SessionGetEmployeeId() === formData?.evaluatorBadge
+      SessionGetEmployeeId() === formData?.evaluatorBadge &&
+        data.currentRouting?.statusId === statusCode.TOUPDATE &&
+        new Date(data?.trainingEndDate) <=
+          new Date(new Date().setMonth(new Date().getMonth() - 6))
     );
   }, [data, formData]);
   const activityLogs = mappingHook.useMappedActivityLogs(formData, userData);
   const reportTemplateRef = useRef();
-const performanceRatingDate = mappingHook.useEffectivenessPerformanceRatingDate(formData, auditTrail)
- console.log(performanceRatingDate, auditTrail)
+  const performanceRatingDate =
+    mappingHook.useEffectivenessPerformanceRatingDate(formData, auditTrail);
   return (
     <>
       <Card.Body>
@@ -279,7 +274,11 @@ const performanceRatingDate = mappingHook.useEffectivenessPerformanceRatingDate(
               />
               <AutoCompleteField
                 label="Facilitator/s"
-                value={getFacilitators()}
+                value={
+                  commonHook.useFormattedFacilitatorList(
+                    data?.trainingFacilitators
+                  )?.data
+                }
                 className="col-12"
               />
               <AutoCompleteField
@@ -521,7 +520,9 @@ const performanceRatingDate = mappingHook.useEffectivenessPerformanceRatingDate(
                         />
                         <small className="mt-1 d-block">
                           {isSubmitted
-                            ? formatDateOnly(performanceRatingDate?.creatorAudit)
+                            ? formatDateOnly(
+                                performanceRatingDate?.creatorAudit
+                              )
                             : projectPerformanceEvaluation[index]
                                 ?.performanceBeforeTraining !== 0 &&
                               formatDateOnly(new Date())}
@@ -546,7 +547,9 @@ const performanceRatingDate = mappingHook.useEffectivenessPerformanceRatingDate(
                         />
                         <small className="mt-1 d-block">
                           {isSubmitted
-                            ? formatDateOnly(performanceRatingDate?.creatorAudit)
+                            ? formatDateOnly(
+                                performanceRatingDate?.creatorAudit
+                              )
                             : projectPerformanceEvaluation[index]
                                 ?.projectedPerformance !== 0 &&
                               formatDateOnly(new Date())}
@@ -571,7 +574,9 @@ const performanceRatingDate = mappingHook.useEffectivenessPerformanceRatingDate(
                         />
                         <small className="mt-1 d-block">
                           {isSubmitted
-                            ? formatDateOnly(performanceRatingDate?.evaluatorAudit)
+                            ? formatDateOnly(
+                                performanceRatingDate?.evaluatorAudit
+                              )
                             : projectPerformanceEvaluation[index]
                                 ?.actualPerformance !== 0 &&
                               formatDateTime(new Date())}
@@ -596,7 +601,9 @@ const performanceRatingDate = mappingHook.useEffectivenessPerformanceRatingDate(
                         />
                         <small className="mt-1 d-block">
                           {isSubmitted
-                            ? formatDateOnly(performanceRatingDate?.evaluatorAudit)
+                            ? formatDateOnly(
+                                performanceRatingDate?.evaluatorAudit
+                              )
                             : projectPerformanceEvaluation[index]
                                 ?.evaluatedActualPerformance !== 0 &&
                               formatDateTime(new Date())}
@@ -654,10 +661,10 @@ const performanceRatingDate = mappingHook.useEffectivenessPerformanceRatingDate(
                 className="form-control"
                 rows={3}
                 placeholder="Comments/Remarks"
-                          disabled={!isAfter}
-                          onChange={(e)=>setAnnotation(e.target.value)}
+                disabled={!isAfter}
+                onChange={(e) => setAnnotation(e.target.value)}
               ></textarea>
-              <ErrorTemplate message={errors?.annotation}/>
+              <ErrorTemplate message={errors?.annotation} />
             </Form.Group>
           </div>
 
@@ -724,7 +731,7 @@ const performanceRatingDate = mappingHook.useEffectivenessPerformanceRatingDate(
                     />
                   </>
                 )}
-              {(isAfter) && (
+              {isAfter && (
                 <Button
                   type="button"
                   icon={"pi pi-pencil"}

@@ -4,7 +4,8 @@ import ExternalFacilitatorList from "./ExternalFacilitatorList";
 import proptype from "prop-types"
 import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 import commonHook from "../../hooks/commonHook";
-const TrainingFacilitatorList = ({requestData})=>{
+const TrainingFacilitatorList = ({requestData, property})=>{
+  console.log(property)
   const internalfaci = requestData?.trainingType?.id === TrainingType.INTERNAL ? commonHook.useMappedInternalFacilitatorList(requestData?.trainingFacilitators):[];
   return (
     <>
@@ -17,7 +18,7 @@ const TrainingFacilitatorList = ({requestData})=>{
         />
       )}
       {requestData?.trainingType?.id === TrainingType.EXTERNAL && (
-        <ExternalFacilitatorList trainers={requestData?.trainingFacilitators} property={"externalFacilitatorId"}/>
+        <ExternalFacilitatorList trainers={requestData?.trainingFacilitators} property={property ?property: "externalFacilitatorId"}/>
       )}
     </>
   );

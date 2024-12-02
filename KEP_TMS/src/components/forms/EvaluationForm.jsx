@@ -15,6 +15,7 @@ import ErrorTemplate from "../General/ErrorTemplate";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import FacilitatorRatingExportTemplate from "../General/FacilitatorRatingExportTemplate";
+import commonHook from "../../hooks/commonHook";
 const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
   const [annotation, setAnnotation] = useState(evaluationConstant.annotation);
   const [contentMethodology, setContentMethodology] = useState(evaluationConstant.contentMethodology);
@@ -23,13 +24,6 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
   const [overallRating, setOverallRating] = useState(evaluationConstant.overallRating);
   const [errors, setErrors] = useState({})
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const getFacilitators = () => {
-    let facilitators = "";
-    data?.trainingFacilitators?.map((x) => {
-      facilitators += `${x?.fullname};  `;
-    });
-    return facilitators;
-  };
   const getFormData = {
     id: 0,
     trainingRequestId: data.id,
@@ -159,7 +153,7 @@ const reportTemplateRef = useRef();
             />
             <AutoCompleteField
               label="Facilitator/s"
-              value={getFacilitators()}
+              value={commonHook.useFormattedFacilitatorList(data?.trainingFacilitators)?.data}
               className="col-12"
             />
             <AutoCompleteField

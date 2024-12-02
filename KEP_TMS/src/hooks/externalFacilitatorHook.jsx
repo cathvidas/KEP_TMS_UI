@@ -51,6 +51,7 @@ const externalFacilitatorHook = {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequest = async () => {
+        console.log(facilitatorList, property)
         try {
           const response = await Promise.all(
             facilitatorList?.map((facilitator) => {
