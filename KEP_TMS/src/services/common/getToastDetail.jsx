@@ -26,14 +26,14 @@ const getToastDetail = (
   const status = data?.status?.id;
   const statusData = { show: true, summary: "", detail: {}, statusId: status };
    if (status == statusCode.FORAPPROVAL) {
-    statusData.detail = [data?.currentRouting?.fullname];
+    statusData.detail = [data?.currentRouting?.assignedDetail?.fullname];
     statusData.summary =
-      user === data?.currentRouting?.employeeBadge
+      user === data?.currentRouting?.assignedTo
         ? "Waiting for your Approval"
-        : `For ${data?.currentRouting?.position} Approval`;
+        : `For ${data?.currentRouting?.assignedDetail?.position} Approval`;
     statusData.severity = "info";
     statusData.content =
-      user === data?.currentRouting?.employeeBadge ? (
+      user === data?.currentRouting?.assignedTo ? (
         <>
           <ToastTemplate
             detail={"Click 'Approve' to approve or 'Disapprove' to reject"}
@@ -87,10 +87,8 @@ const getToastDetail = (
     const current = filteredData[0];
     const disApproverData = data?.approvers?.find(item=> item?.employeeBadge === current?.assignedTo);
     
-    const changes = current && JSON.parse(current?.changes);
-    const remarks = extractChanges(changes?.Remarks?? "");
     statusData.summary = "Training Request Disapproved";
-    statusData.detail = `Training Request was disapproved by ${disApproverData?.fullname ?? current?.assignedTo} with a message '${remarks?.toValue}.'`;
+    statusData.detail = `Training Request was disapproved by ${disApproverData?.fullname ?? current?.assignedTo} with a message '${current?.remarks}.'`;
     statusData.severity = "error";
     statusData.content =
       isAdmin || data?.requesterBadge === SessionGetEmployeeId()

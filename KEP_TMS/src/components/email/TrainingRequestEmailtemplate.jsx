@@ -4,7 +4,7 @@ import {
   formatDateOnly,
   formatDateTime,
 } from "../../utils/datetime/Formatting";
-import { statusCode } from "../../api/constants";
+import { statusCode, TrainingType } from "../../api/constants";
 import TableEmailTemplate from "./TableEmailTemplate";
 import {
   FormatTime,
@@ -13,6 +13,8 @@ import {
 } from "../../utils/datetime/FormatDateTime";
 import mappingHook from "../../hooks/mappingHook";
 import getStatusById from "../../utils/status/getStatusById";
+import commonHook from "../../hooks/commonHook";
+import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
 
 const TrainingRequestEmailtemplate = ({
   requestDetail,
@@ -28,6 +30,31 @@ const TrainingRequestEmailtemplate = ({
       </>
     );
   };
+  const mappedFaciList =
+    requestDetail?.trainingType?.id === TrainingType.INTERNAL
+      ? commonHook.useMappedInternalFacilitatorList(
+          requestDetail?.trainingFacilitators
+        )
+      : externalFacilitatorHook.useListExternalFacilitators(requestDetail?.trainingFacilitators, "externalFacilitatorId")
+     ;
+  console.log(mappedFaciList, requestDetail, requestDetail?.trainingType?.id=== TrainingType.EXTERNAL,externalFacilitatorHook.useListExternalFacilitators(requestDetail?.trainingFacilitators, "externalFacilitatorId") )
+  const faciList =  mappedFaciList?.data?.map((item, index) => {
+    if(requestDetail?.trainingType?.id === TrainingType.INTERNAL){
+    return{
+      no: index + 1,
+      name: item?.fullname,
+      position: item?.position,
+      department: item?.departmentName,
+    }}
+    else if(requestDetail?.trainingType?.id === TrainingType.EXTERNAL){
+      return{
+        no: index + 1,
+        name: item?.name,
+        position: item?.position,
+        department: item?.depatmentOrganization,
+      }
+    }
+  })
   const mappedApprovers = mappingHook.useMappedActivityRoute(
     requestDetail?.approvers,
     requestDetail?.routings
@@ -281,7 +308,7 @@ const TrainingRequestEmailtemplate = ({
           {tableHedear("TRAINING FACILITATORS")}
           <TableEmailTemplate
             items={participantsItems}
-            value={facilitatorsList}
+            value={faciList}
           />
           <p></p>
           {tableHedear("ROUTES")}
