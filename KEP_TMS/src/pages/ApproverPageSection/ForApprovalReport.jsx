@@ -44,26 +44,6 @@ const ForApprovalReport = ({data, refreshData}) => {
             setShowModal(true);
           }}
         />
-        <Button
-          type="button"
-          size="small"
-          text
-          icon="pi pi-thumbs-up"
-          className="rounded-circle"
-          onClick={() => approveReport(rowData?.trainingReport?.id, true)}
-        />
-        <Button
-          type="button"
-          size="small"
-          text
-          icon="pi pi-thumbs-down"
-          severity="danger"
-          className="rounded-circle"
-          onClick={() => {
-            setSelectedData(rowData);
-            setShowAnnotation(true);
-          }}
-        />
       </div>
     </>
   );

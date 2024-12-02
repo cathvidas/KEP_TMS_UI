@@ -49,30 +49,7 @@ const ForApprovaleffectiveness = ({data, refreshData}) => {
             setShowModal(true);
           }}
         />
-        <Button
-          type="button"
-          size="small"
-          text
-          icon="pi pi-thumbs-up"
-          className="rounded-circle"
-          onClick={() =>
-            approveEffectiveness(rowData?.trainingEffectiveness?.id, true)
-          }
-        />
-        <Button
-          type="button"
-          size="small"
-          text
-          icon="pi pi-thumbs-down"
-          severity="danger"
-          className="rounded-circle"
-          onClick={() => {
-            setSelectedData(rowData);
-            setShowAnnotation(true);
-          }}
-        />
-        {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
-      </div>
+          </div>
     </>
   );
   const approveEffectiveness = (id, isApprove) => {
@@ -97,7 +74,6 @@ const ForApprovaleffectiveness = ({data, refreshData}) => {
             actionSuccessful("Sucess!", e.mesasge);
             setTimeout(() => {
               setTrigger(trigger + 1);
-              refreshData()
             }, 1000);
           },
           null
@@ -187,7 +163,6 @@ const ForApprovaleffectiveness = ({data, refreshData}) => {
       <CommentBox
       defaultValue={remark}
         header="Comments"
-        // label="Remarks"
         description="Please provide a comment explaining the reason for returning this report."
         show={showAnnotation}
         onClose={() => setShowAnnotation(false)}
@@ -196,8 +171,10 @@ const ForApprovaleffectiveness = ({data, refreshData}) => {
       />
       <Modal
         show={showModal}
-        onHide={() => setShowModal(false)}
-        fullscreen
+        onHide={() => {setShowModal(false);
+          refreshData();
+        }}
+        size="xl"
         style={showAnnotation && { zIndex: 1050 }}
       >
         <Modal.Header closeButton>

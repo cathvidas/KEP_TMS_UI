@@ -34,7 +34,7 @@ const ForApprovalRequest = () => {
     getRequest();
   }, []);
 
-
+console.log(request)
   const actionTemplate = (data) => {
     return (
       
@@ -55,6 +55,10 @@ const ForApprovalRequest = () => {
     {
       field: "id",
       header: "Id",
+    },
+    {
+      field: "type",
+      header: "Type",
     },
     {
       field: "requesterName",

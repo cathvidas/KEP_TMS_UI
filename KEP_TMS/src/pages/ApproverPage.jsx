@@ -21,7 +21,6 @@ const ApproverPage = () => {
   const refreshData = () => {
     setTrigger(prev=>prev + 1);
   }
-  console.log(data)
   const pageContent = [
     <ForApprovalRequest key={0} />,
     <ForApprovaleffectiveness key={1} data={data?.effectiveness} refreshData={refreshData}/>,
