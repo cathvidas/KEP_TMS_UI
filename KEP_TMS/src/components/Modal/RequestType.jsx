@@ -10,7 +10,7 @@ import { TrainingType } from "../../api/constants";
 
 const RequestModal = ({ showModal, setShowModal }) => {
   const handleResponse = (res) => {
-    localStorage.setItem("request-type", res);
+    sessionStorage.setItem("request-type", res);
     setShowModal(false);
   };
   return (

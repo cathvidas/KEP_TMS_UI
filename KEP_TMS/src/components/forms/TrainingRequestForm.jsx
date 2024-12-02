@@ -79,18 +79,9 @@ export const TrainingRequestForm = () => {
     try {
       const formmatedData = { ...validateTrainingRequestForm(formData) };
       if (trainingType.toUpperCase() === "UPDATE" && requestId) {
-        const changeStatus =
-          formData?.status?.id === statusCode.SUBMITTED ||
-          formData?.status?.id === statusCode.FORAPPROVAL ||
-          formData?.status?.id === statusCode.DISAPPROVED;
         const updateData = {
           ...formmatedData,
           updatedBy: SessionGetEmployeeId(),
-          statusId: changeStatus
-            ? calculateTotalHours(formmatedData?.trainingDates) >= 960
-              ? statusCode.SUBMITTED
-              : statusCode.FORAPPROVAL
-            : formmatedData?.statusId,
         };
         handleResponseAsync(
           () => trainingRequestService.updateTrainingRequest(updateData),
@@ -134,7 +125,7 @@ export const TrainingRequestForm = () => {
   const handleButtonOnClick = (index) => {
     if (index === 0) {
       const validateDates =
-        details.current?.status?.id === statusCode.PUBLISHED ||
+        details.current?.status?.id === statusCode.APPROVED ||
         details.current?.status?.id === statusCode.CLOSED
           ? false
           : true;
@@ -216,7 +207,6 @@ export const TrainingRequestForm = () => {
       }
     }
   };
-  console.log(details);
   const trainingRequestData = trainingRequestHook.useTrainingRequest(
     requestId ?? 0
   );
@@ -372,7 +362,7 @@ export const TrainingRequestForm = () => {
                   </StepperPanel>
                 )}
                 <StepperPanel header="Summary">
-                  <TrainingSummary formData={formData} />
+                  <TrainingSummary formData={formData} update={trainingType.toUpperCase() === "UPDATE"}/>
                   {(getTrainingTypeId() === TrainingType.EXTERNAL && SessionGetRole() === UserTypeValue.ADMIN) && (
                     <>
                       <SectionHeading

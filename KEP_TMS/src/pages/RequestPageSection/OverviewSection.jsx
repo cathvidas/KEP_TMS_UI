@@ -222,7 +222,7 @@ const OverviewSection = ({
               title="Facilitator"
               icon={<FontAwesomeIcon icon={faUsers} />}
             />
-           <TrainingFacilitatorList requestData={data}/>
+           <TrainingFacilitatorList requestData={data} />
           </>
         )}
         {showApprovers && (

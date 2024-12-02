@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import sortSchedules from "../../utils/SortSchedule";
 import TrainingFacilitatorList from "../List/TrainingFacilitatorList";
 
-const TrainingSummary = ({ formData }) => {
+const TrainingSummary = ({ formData , update}) => {
   console.log(formData)
   const [updatedData, setUpdatedData] = useState(formData);
   useEffect(()=>{
@@ -55,7 +55,7 @@ const TrainingSummary = ({ formData }) => {
         title="Training Facilitator/s"
         icon={<FontAwesomeIcon icon={faUsers} />}
       />
-      <TrainingFacilitatorList requestData={formData}/>
+      <TrainingFacilitatorList requestData={formData} property={update ? "externalFacilitatorId":"value"}/>
       <br />
     </>
   );

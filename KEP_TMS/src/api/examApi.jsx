@@ -21,3 +21,6 @@ export const getAllTraineeExamByExamIdApi = async (id) => {
 export const deleteExamApi = async (id) => {
   return await fetchFromApi(`/Exam/DeleteExam?id=${id}`, "DELETE");
 };
+export const updateTraineeExamRetakeApi = async (data) => {
+  return await fetchFromApi(`/Exam/UpdateTraineeExam`, "PUT", data);
+};

@@ -69,7 +69,7 @@ const TrainingDetailPage = () => {
     data?.trainingParticipants ?? []
   );
   const logs = mappingHook.useMappedActivityLogs(data, data?.requestor);
-  const examList = examHook.useAllTraineeExamByRequest(data?.id);
+  const examList = examHook.useAllTraineeExamByRequest(data?.id, trigger);
   const navigate = useNavigate();
   const pageContent = [
     <OverviewSection
@@ -152,7 +152,6 @@ const TrainingDetailPage = () => {
     />,
     // <ActivityLogView key={7} logs={logs} />,
   ];
-
   const items = [
     {
       label: isAdmin ? "Detail" : "",
@@ -223,9 +222,9 @@ const TrainingDetailPage = () => {
         },
       ]
     }:[],
-    isAdmin
+    (isAdmin || (isFacilitator && examList?.data?.length > 0 ))
       ? {
-          label: "Monitoring",
+          label: "Trainee Monitoring",
           items: [
             {
               label: "Effectiveness",
@@ -237,7 +236,7 @@ const TrainingDetailPage = () => {
               template: MenuItemTemplate,
               active: currentContent === 5 ? true : false,
               disable:
-                data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR
+                (data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR && isAdmin)
                   ? false
                   : true,
             },
@@ -257,6 +256,7 @@ const TrainingDetailPage = () => {
                 navigate(`/KEP_TMS/TrainingDetail/${id}/Monitoring/Reports`),
               template: MenuItemTemplate,
               active: currentContent === 7 ? true : false,
+              disable: !isAdmin,
             },
             {
               label: "Evaluation",
@@ -267,6 +267,7 @@ const TrainingDetailPage = () => {
                 ),
               template: MenuItemTemplate,
               active: currentContent === 8 ? true : false,
+              disable: !isAdmin,
             },
             {
               label: "Summary",
@@ -275,6 +276,7 @@ const TrainingDetailPage = () => {
                 navigate(`/KEP_TMS/TrainingDetail/${id}/Monitoring/Summary`),
               template: MenuItemTemplate,
               active: currentContent === 9 ? true : false,
+              disable: !isAdmin,
             },
           ],
         }

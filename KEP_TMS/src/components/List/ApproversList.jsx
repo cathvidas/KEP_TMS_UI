@@ -5,8 +5,8 @@ import getStatusById from "../../utils/status/getStatusById";
 import { Button } from "primereact/button";
 import EmailForm from "../forms/ModalForms/EmailForm";
 import { useState } from "react";
-import { statusCode } from "../../api/constants";
-import { SessionGetEmployeeId } from "../../services/sessions";
+import { statusCode, UserTypeValue } from "../../api/constants";
+import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import mappingHook from "../../hooks/mappingHook";
 const ApproverList = ({data, activityTitle, activityType, hasEmailForm, activityLogs, optionColumn, emailFormTemplate}) => {
@@ -25,7 +25,7 @@ const ApproverList = ({data, activityTitle, activityType, hasEmailForm, activity
         type="button"
         icon="pi pi-envelope"
         text
-        disabled={rowData?.status?.statusId !== statusCode.FORAPPROVAL}
+        disabled={rowData?.status?.statusId !== statusCode.FORAPPROVAL || SessionGetRole() !== UserTypeValue.ADMIN}
         onClick={() => {setVisible(true);
           setEmailRecipient(rowData?.detail);
         }}

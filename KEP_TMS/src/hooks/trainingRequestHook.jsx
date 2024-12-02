@@ -47,7 +47,7 @@ const trainingRequestHook = {
               requestor: requestor,
               routings,
               approvers,
-              currentRouting: {...currentRouting, ...currentRouting?.assignedDetail},
+              currentRouting: {...currentRouting},
               auditTrail
             });
             setLoading(false)

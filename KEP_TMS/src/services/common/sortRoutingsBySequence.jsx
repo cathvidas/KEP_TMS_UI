@@ -1,9 +1,9 @@
 const sortRoutingBySequence = (data)=>{
     return data?.sort((a,b)=>{
-        if(a.sequence>b.sequence){
+        if(a.sequence>b.id){
             return 1;
         }
-        if(a.sequence<b.sequence){
+        if(a.sequence<b.id){
             return -1;
         }
         return 0;

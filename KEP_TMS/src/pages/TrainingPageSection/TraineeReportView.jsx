@@ -6,7 +6,7 @@ import proptype from "prop-types";
 import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import userHook from "../../hooks/userHook";
-import { ActivityType, OtherConstant, statusCode } from "../../api/constants";
+import { ActivityType, OtherConstant } from "../../api/constants";
 import effectivenessHook from "../../hooks/effectivenessHook";
 import trainingReportHook from "../../hooks/trainingReportHook";
 import evaluationHook from "../../hooks/evaluationHook";
@@ -36,86 +36,90 @@ const TraineeReportView = ({ data, refreshData, isTrainee, activityType }) => {
       refreshData();
     }, 1000);
   };
-  return data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR ||
-    (data?.durationInHours < OtherConstant.EFFECTIVENESS_MINHOUR &&
-      trainingDetailsService.checkIfTrainingEndsAlready(data)) ? (
-    <div className="w-100 oveflow-hidden">
-      {isTrainee && (
-        <>
-          <Card className="p overflow-hidden">
-            <Card.Body className="mt-0">
-              {activityType === ActivityType.EFFECTIVENESS &&
-                data?.durationInHours >=
-                  OtherConstant.EFFECTIVENESS_MINHOUR && (
-                  <>
-                    {effectiveness?.loading || userData?.loading ? (
-                      <SkeletonForm />
+  return (
+    <>
+      <div className="w-100 oveflow-hidden">
+        {isTrainee && (
+          <>
+            <Card className="p overflow-hidden">
+              <Card.Body className="mt-0">
+                {activityType === ActivityType.EFFECTIVENESS &&
+                  data?.durationInHours >=
+                    OtherConstant.EFFECTIVENESS_MINHOUR && (
+                    <>
+                      {effectiveness?.loading || userData?.loading ? (
+                        <SkeletonForm />
+                      ) : (
+                        <EffectivenessForm
+                          data={data}
+                          userData={userData?.data}
+                          formData={effectiveness?.data}
+                          onFinish={handleOnFinish}
+                          currentRouting={effectiveness?.data?.currentRouting}
+                          auditTrail={
+                            effectiveness?.data?.auditTrail?.length > 0 &&
+                            effectiveness?.data?.auditTrail
+                          }
+                        />
+                      )}
+                    </>
+                  )}
+                {(activityType === ActivityType.REPORT ||
+                  activityType === ActivityType.EVALUATION) &&
+                  (trainingDetailsService.checkIfTrainingEndsAlready(data) ? (
+                    activityType === ActivityType.REPORT ? (
+                      <>
+                        {report?.loading || userData?.loading ? (
+                          <SkeletonForm />
+                        ) : (
+                          <TrainingReportForm
+                            data={data}
+                            userData={userData?.data}
+                            defaultValue={report?.data ?? null}
+                            onFinish={handleOnFinish}
+                            isSubmitted={report?.data ? true : false}
+                            currentRouting={report?.data?.currentRouting}
+                            auditTrail={
+                              report?.data?.auditTrail?.length > 0 &&
+                              report?.data?.auditTrail[0]
+                            }
+                          />
+                        )}
+                      </>
                     ) : (
-                      <EffectivenessForm
-                        data={data}
-                        userData={userData?.data}
-                        formData={effectiveness?.data}
-                        onFinish={handleOnFinish}
-                        currentRouting={effectiveness?.data?.currentRouting}
-                        auditTrail={
-                          effectiveness?.data?.auditTrail?.length > 0 &&
-                          effectiveness?.data?.auditTrail
-                        }
-                      />
-                    )}
-                  </>
-                )}
-              {trainingDetailsService.checkIfTrainingEndsAlready(data) &&
-              (data?.status?.id === statusCode.APPROVED ||
-                data?.status?.id === statusCode.CLOSED) &&
-                 (
-                activityType === ActivityType.REPORT ? (
-                  <>
-                    {report?.loading || userData?.loading ? (
-                      <SkeletonForm />
-                    ) : (
-                      <TrainingReportForm
-                        data={data}
-                        userData={userData?.data}
-                        defaultValue={report?.data ?? null}
-                        onFinish={handleOnFinish}
-                        isSubmitted={report?.data ? true : false}
-                        currentRouting={report?.data?.currentRouting}
-                        auditTrail={
-                          report?.data?.auditTrail?.length > 0 &&
-                          report?.data?.auditTrail[0]
-                        }
-                      />
-                    )}
-                  </>
-                ) : activityType === ActivityType.EVALUATION ? (
-                  <>
-                    {evaluation?.loading || userData?.loading ? (
-                      <SkeletonForm />
-                    ) : (
-                      <EvaluationForm
-                        data={data}
-                        userData={userData?.data}
-                        onFinish={handleOnFinish}
-                        defaultValue={evaluation?.data}
-                      />
-                    )}
-                  </>
-                ) : (
-                  <></>
-                )
-              )}
-            </Card.Body>
-          </Card>
-          <Toast ref={toast} position="bottom-center" className="z-1" />
-        </>
-      )}
-    </div>
-  ) : (
-    <div className="d-flex justify-content-center align-items-center h-100 h1 opacity-50 text-muted">
-      No Details Available
-    </div>
+                      activityType === ActivityType.EVALUATION && (
+                        <>
+                          {evaluation?.loading || userData?.loading ? (
+                            <SkeletonForm />
+                          ) : (
+                            <EvaluationForm
+                              data={data}
+                              userData={userData?.data}
+                              onFinish={handleOnFinish}
+                              defaultValue={evaluation?.data}
+                            />
+                          )}
+                        </>
+                      )
+                    )
+                  ) : (
+                    <div className="d-flex justify-content-center align-items-center h-100 h1 opacity-50 text-muted">
+                      No Details Available
+                    </div>
+                  ))}
+              </Card.Body>
+            </Card>
+            <Toast ref={toast} position="bottom-center" className="z-1" />
+          </>
+        )}
+      </div>
+    </>
   );
+  // ) : (
+  //   <div className="d-flex justify-content-center align-items-center h-100 h1 opacity-50 text-muted">
+  //     No Details Available
+  //   </div>
+  // );
 };
 TraineeReportView.propTypes = {
   data: proptype.object,

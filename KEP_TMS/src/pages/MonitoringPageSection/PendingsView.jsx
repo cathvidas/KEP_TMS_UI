@@ -106,6 +106,7 @@ const PendingView = ({ data, formData, examDetail }) => {
           userFormData={formData?.data}
           requestData={data}
           onClose={() => setShowEmailTemplate(false)}
+          disableFormLink
         />
       )}{" "}
     </>

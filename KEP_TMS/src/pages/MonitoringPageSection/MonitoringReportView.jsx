@@ -73,7 +73,48 @@ const MonitoringReportView = ({
       body: (rowData) => <>{rowData?.userDetail?.departmentName}</>,
     },
   ];
-console.log(examDetail)
+  const examColumnTemplate = (rowData, item) => {
+    return    <>
+    {getTraineeExamDetail(item, rowData?.userDetail?.employeeBadge)
+      ?.submitted
+      ? `${
+          getTraineeExamDetail(
+            item,
+            rowData?.userDetail?.employeeBadge
+          )?.detail[0]?.totalScore
+        }/${item?.examDetail?.questionLimit}`
+      : StatusColor({
+          status:
+            getStatusById(
+              rowData[reportType]?.currentRouting?.statusId
+            ) ?? "Pending",
+          showStatus: true,
+        })}
+  </>
+  }
+  const examActionTemplate = (rowData) => {
+    console.log(rowData)
+    let submitted = false;
+    examDetail?.map((item) => {
+      if(!submitted) {
+      submitted = getTraineeExamDetail(item, rowData?.userDetail?.employeeBadge)?.submitted;}
+    });
+    return (
+      <>
+        <Button
+        text
+          icon="pi pi-eye"
+          className="rounded "
+          onClick={() => {
+            setSelectedData({ user: rowData?.userDetail?.employeeBadge, exam: examDetail }
+            );
+            setShowForm(true);
+          }}
+          disabled={!submitted}
+        />
+      </>
+    );
+  }
   const addcolumns = () => {
     if (examDetail) {
       examDetail?.map((item, index) => {
@@ -82,21 +123,7 @@ console.log(examDetail)
           header: `Exam${index + 1} Score`,
           body: (rowData) => (
             <>
-              {getTraineeExamDetail(item, rowData?.userDetail?.employeeBadge)
-                ?.submitted
-                ? `${
-                    getTraineeExamDetail(
-                      item?.traineeExam,
-                      rowData?.userDetail?.employeeBadge
-                    )?.detail[0]?.totalScore
-                  }/${item?.examDetail?.questionLimit}`
-                : StatusColor({
-                    status:
-                      getStatusById(
-                        rowData[reportType]?.currentRouting?.statusId
-                      ) ?? "Pending",
-                    showStatus: true,
-                  })}
+              {examColumnTemplate(rowData, item)}
             </>
           ),
         });
@@ -125,7 +152,7 @@ console.log(examDetail)
       hasApprover
         ? {
             field: "department",
-            header: "Approver",
+            header: "Current Approver",
             body: (rowData) => (
               <>
                 {rowData[reportType]?.currentRouting?.assignedDetail
@@ -137,7 +164,7 @@ console.log(examDetail)
       {
         field: "department",
         header: "Action",
-        body: actionTemplate,
+        body: typeId === ActivityType.EXAM ? examActionTemplate : actionTemplate,
       }
     );
   };
@@ -210,10 +237,11 @@ console.log(examDetail)
                       <ExamDetails
                         traineeExam={
                           getTraineeExamDetail(
-                            item?.traineeExam,
+                            item,
                             selectedData?.user
                           )?.detail
                         }
+                        refreshData={onRefresh}
                         examDetail={item?.examDetail}
                         isAdmin
                       />

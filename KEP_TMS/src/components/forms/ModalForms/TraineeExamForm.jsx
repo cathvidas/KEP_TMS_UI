@@ -95,7 +95,7 @@ const TraineeExamForm = ({ data, examCount, closeForm, handleRefresh }) => {
     handleResponseAsync(
       () => examService.saveTraineeExam(newData),
       () => {
-        localStorage.removeItem("examLog");
+        sessionStorage.removeItem("examLog");
         handleRefresh();
         ("");
       }
@@ -128,7 +128,7 @@ const TraineeExamForm = ({ data, examCount, closeForm, handleRefresh }) => {
       traineeBadge: SessionGetEmployeeId(),
     };
     if (startExam) {
-      localStorage.setItem("examLog", JSON.stringify(newData));
+      sessionStorage.setItem("examLog", JSON.stringify(newData));
     }
   }, [startExam, answers, randomizeItem]);
   return (

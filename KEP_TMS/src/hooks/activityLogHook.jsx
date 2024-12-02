@@ -147,10 +147,25 @@ const handleExams = async (item, id) => {
   if (!trainingDetailsService.checkIfTrainingEndsAlready(item)) return [];
 
   const exams = await examService.getExamByRequestId(item.id);
+  console.log(exams)
   const examItems = await Promise.all(exams?.map(async (exam) => {
     const traineeExams = await examService.getAllTraineeExamByExamId(exam.id);
-    const s = getTraineeExamDetail(traineeExams, id);
-    if (s.length === 0) {
+    
+    const traineeExamList = [];
+    traineeExams?.map(item=>{
+      const isExist = traineeExamList.find((x) => x.traineeId === item.createdBy);
+      if(isExist){
+        isExist.examList.push(item);
+      }else{
+        traineeExamList.push({
+          traineeId: item.createdBy,
+          examList: [item],
+        }
+        )
+      }
+    })
+    const detailExam = getTraineeExamDetail({traineeExam: traineeExamList}, id)
+    if (!detailExam?.submitted) {
       return {
         title: "Pending Exam",
         type: "Exam",
@@ -160,10 +175,11 @@ const handleExams = async (item, id) => {
         link: `TrainingDetail/${item.id}/Exams`,
         date: item?.trainingStartDate,
       };
-    } else if (s.length < 3 && !s.isPassed) {
+    } else if (detailExam?.submitted && detailExam?.isRetake) {
       return {
-        title: "Failed Exam",
-        status: "Pending",
+        type: "Exam",
+        title: "Retake Exam",
+        status: "Retake",
         detail: "You have failed on this exam, please retake the exam",
         program: item?.trainingProgram?.name,
         link: `TrainingDetail/${item.id}/Exams`,

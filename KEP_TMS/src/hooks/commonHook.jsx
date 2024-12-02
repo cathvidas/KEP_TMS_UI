@@ -7,6 +7,8 @@ import effectivenessService from "../services/effectivenessService";
 import trainingDetailsService from "../services/common/trainingDetailsService";
 import { statusCode } from "../api/constants";
 import userMapping from "../services/DataMapping/userMapping";
+import externalFacilitatorService from "../services/externalFacilitatorService";
+import userService from "../services/userService";
 
 const commonHook = {
   useAllDepartments: () => {
@@ -203,6 +205,35 @@ const commonHook = {
     }, [faciList]);
     console.log(data, error)
     return { data, error, loading };
-  }
+  },
+  useFormattedFacilitatorList: (faciList)=>{
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+          try {
+            let formattedFacilitators = "";
+            const faciNames = await Promise.all(faciList?.map(async faci=>{
+              if(faci?.isExternal){
+                const faciDetail = await externalFacilitatorService.getExternaFacilitatorById(faci?.externalFacilitatorId);
+                console.log(faciDetail)
+                return faciDetail?.name;
+              }else{
+                const userDetail = await userService.getUserById(faci?.facilitatorBadge);
+                return userDetail?.fullname;
+              }
+            }))
+            formattedFacilitators = faciNames.join("; ");
+            setData(formattedFacilitators);
+            setLoading(false);
+          } catch (err) {
+            setError(err?.message);
+          }
+      };
+      fetchData();
+    }, [faciList]);
+    return { data, error, loading };
+  },
 };
 export default commonHook;

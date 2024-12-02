@@ -66,15 +66,15 @@ const Dashboard = () => {
       isRequest: true,
       url: "/RequestList/Approved",
     },
-    {
-      label: "Published Request",
-      color: "#345ed3",
-      value: trainingRequests?.mappedData?.published?.length,
-      icon: "pi pi-clipboard",
-      status: "Published",
-      isRequest: true,
-      url: "/RequestList/Publised",
-    },
+    // {
+    //   label: "Published Request",
+    //   color: "#345ed3",
+    //   value: trainingRequests?.mappedData?.published?.length,
+    //   icon: "pi pi-clipboard",
+    //   status: "Published",
+    //   isRequest: true,
+    //   url: "/RequestList/Publised",
+    // },
     {
       label: "Closed Request",
       color: "#c084fc",
@@ -106,7 +106,7 @@ const Dashboard = () => {
       icon: "pi pi-tag",
       status: "FacilitatedTrainings",
       isRequest: false,
-      url: "/Trainings/Trainer",
+      url: "/FacilitatedTrainings",
       disabled: !(trainerAssignedData?.data?.length > 0 || SessionGetRole() === UserTypeValue.FACILITATOR),
     },
     {
