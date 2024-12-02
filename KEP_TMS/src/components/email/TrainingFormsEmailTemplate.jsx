@@ -17,6 +17,7 @@ import { SessionGetEmployeeId } from "../../services/sessions";
 import TableEmailTemplate from "./TableEmailTemplate";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 import emailService from "../../services/emailService";
+import commonHook from "../../hooks/commonHook";
 const TrainingFormsEmailTemplate = ({
   requestData,
   userFormData,
@@ -24,6 +25,7 @@ const TrainingFormsEmailTemplate = ({
   typeId,
   onClose,
   examDetail,
+  disableFormLink,
 }) => {
   const formType =
     typeId == ActivityType.EFFECTIVENESS
@@ -33,7 +35,7 @@ const TrainingFormsEmailTemplate = ({
       : typeId == ActivityType.EVALUATION
       ? "Evaluation"
       : "Request";
-  const [addFormLink, setAddFormLink] = useState(true);
+  const [addFormLink, setAddFormLink] = useState(!disableFormLink);
   const [showRecipients, setShowRecipients] = useState(true);
   const [emailContent, setEmailContent] = useState("");
   const [error, setError] = useState("");
@@ -42,7 +44,6 @@ const TrainingFormsEmailTemplate = ({
   );
   const [recipients, setRecipients] = useState([]);
   const [urlPlaceholder, setUrlPlaceholder] = useState("view more details");
-  console.log(userFormData)
   useEffect(() => {
     if (userFormData) {
         setRecipients(userFormData);
@@ -150,13 +151,6 @@ const TrainingFormsEmailTemplate = ({
     evaluation: item?.evaluationDetail?.id ? "Submitted" : "Not yet Submitted",
     exam: getExamSumary(item?.userDetail?.employeeBadge),
   }));
-  const getFacilitators = () => {
-    let facilitators = "";
-    requestData?.trainingFacilitators?.map((x) => {
-      facilitators += `${x?.fullname}; `;
-    });
-    return facilitators;
-  };
   return (
     <>
       <Card>
@@ -210,6 +204,7 @@ const TrainingFormsEmailTemplate = ({
                   )}
                 </div>
               </Form.Group>
+              {!disableFormLink && <>
               <hr />
               <Form.Check
                 className="mt-2"
@@ -227,7 +222,7 @@ const TrainingFormsEmailTemplate = ({
                     placeholder="Link placeholder"
                   />
                 </>
-              )}
+              )}</>}
 
               <div ref={emailTempContentRef} className="d-none">
                 <p>
@@ -276,7 +271,7 @@ const TrainingFormsEmailTemplate = ({
                       <td style={{ backgroundColor: "#f2f2f2" }}>
                         <strong>Facilitator/s:</strong>
                       </td>
-                      <td>{getFacilitators()}</td>
+                      <td>{commonHook.useFormattedFacilitatorList(requestData?.trainingFacilitators)?.data}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -343,5 +338,6 @@ TrainingFormsEmailTemplate.propTypes = {
   onClose: proptype.func,
   onRefresh: proptype.func,
   examDetail: proptype.array,
+  disableFormLink: proptype.bool,
 };
 export default TrainingFormsEmailTemplate;

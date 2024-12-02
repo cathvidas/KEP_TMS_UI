@@ -69,6 +69,20 @@ const GeneralEmailTemplate = ({
   const emailTempContentRef = useRef(null);
   const emailGreetingRef = useRef(null);
   const emailFormLinkRef = useRef(null);
+  const getPageLink = ()=>{
+    const base = `${APPLICATION_BASE_URL}TrainingDetail/${requestData?.id}`
+    if(typeId === ActivityType.REPORT){
+      return `${base}/Form/Report`
+    }
+    else if(typeId === ActivityType.EVALUATION){
+      return `${base}/Form/Evaluation`
+    }else if(typeId === ActivityType.EFFECTIVENESS){
+      return `${base}/Form/Effectiveness`
+    }else{
+      return `${base}`
+    }
+  }
+  console.log(getPageLink())
   const generateEamilContent = () => {
     let content = "";
     if (addRecipient) {
@@ -76,7 +90,7 @@ const GeneralEmailTemplate = ({
     }
     content += emailContent;
     if (addFormLink) {
-      content += `<a href="${APPLICATION_BASE_URL}TrainingDetail/${requestData?.id}/Reports" className="text-primary">${urlPlaceholder ? urlPlaceholder : `${APPLICATION_BASE_URL}TrainingDetail/${requestData?.id}/Reports`}</a>`;
+      content += `<a href="${getPageLink()}" className="text-primary">${urlPlaceholder ? urlPlaceholder : `${APPLICATION_BASE_URL}TrainingDetail/${requestData?.id}/Reports`}</a>`;
     }
     if(recipients?.length > 0){
     const rec = recipients?.map(item=> {
