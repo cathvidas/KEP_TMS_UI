@@ -25,11 +25,10 @@ const ExamView = ({ reqData, isTrainee, isEditor }) => {
   );
   const [showTraineeExam, setShowTraineeExam] = useState(false);
   const examList = examHook.useAllTraineeExamByRequest(reqData?.id, trigger);
-
   useEffect(() => {
     const insertData = async () => {
-      const examLog = JSON.parse(localStorage.getItem("examLog"));
-      localStorage.removeItem("examLog");
+      const examLog = JSON.parse(sessionStorage.getItem("examLog"));
+      sessionStorage.removeItem("examLog");
       if (examLog) {
         await saveTraineeExamApi(examLog);
       }
@@ -65,6 +64,7 @@ const ExamView = ({ reqData, isTrainee, isEditor }) => {
                 }}
                 traineeExam={getExamDetail(selectedExam)?.detail}
                 examDetail={selectedExam?.examDetail}
+                refreshData={()=>setTrigger(prev=>prev +1)}
               />
             ) : showExam ? (
               <>
@@ -91,8 +91,7 @@ const ExamView = ({ reqData, isTrainee, isEditor }) => {
                             <div className="text-center">
                               {getUser?.id ? (
                                 getExamDetail(item)?.submitted ? (
-                                  getExamDetail(item)?.detail?.length < 3 &&
-                                  !getExamDetail(item)?.isPassed ? (
+                                  getExamDetail(item)?.isRetake  ? (
                                     <Button
                                       label="Retake"
                                       icon="pi pi-pencil"

@@ -1,4 +1,4 @@
-import { createExamApi, deleteExamApi, getAllTraineeExamByExamIdApi, getExamByRequestIdApi, getTraineeExamApi, saveTraineeExamApi, updateExamApi } from "../api/examApi";
+import { createExamApi, deleteExamApi, getAllTraineeExamByExamIdApi, getExamByRequestIdApi, getTraineeExamApi, saveTraineeExamApi, updateExamApi, updateTraineeExamRetakeApi } from "../api/examApi";
 
 const examService = {
   createExam: async (data) => {
@@ -41,12 +41,19 @@ const examService = {
     const response = id && await getAllTraineeExamByExamIdApi(id);
     return response?.status === 1 ? response?.data : [];
   },
+  updateTraineeExamRetake: async (id, forRetake) => {
+    const response = await updateTraineeExamRetakeApi({id, forRetake});
+    if (response.status !== 1) {
+      throw new Error(response.message);
+    }
+    return response?.data;
+  },
   saveStoredExamLog: async () => {
-    const examLog = JSON.parse(localStorage.getItem("examLog"));
+    const examLog = JSON.parse(sessionStorage.getItem("examLog"));
     if(examLog){
     const response = await saveTraineeExamApi(examLog);
     if (response.status === 1) {
-      localStorage.removeItem("examLog")
+      sessionStorage.removeItem("examLog")
     }
     }
   },
