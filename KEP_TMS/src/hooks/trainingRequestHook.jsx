@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import trainingRequestService from "../services/trainingRequestService";
 import userMapping from "../services/DataMapping/userMapping";
 import userService from "../services/userService";
-import countStatus from "../utils/countStatus";
 import handleResponseAsync from "../services/handleResponseAsync";
 import { ActivityType, statusCode } from "../api/constants";
 import mapUserTrainings, { mappedTrainingRequestByStatus } from "../services/DataMapping/mapUserTrainings";
@@ -116,52 +115,6 @@ const trainingRequestHook = {
     return {
       data,
       mappedData,
-      error,
-      loading,
-    };
-  },
-  useStatusCount: (id) => {
-    const [data, setData] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      const fetchData = async () => {
-        handleResponseAsync(
-          () => trainingRequestService.getAllTrainingRequests(),
-          (e) => {
-            const userRequest =
-              id != null ? e?.filter((x) => x.requesterBadge === id) : e;
-            setData(countStatus(e, userRequest));
-          },
-          (e) => setError(e),
-          () => setLoading(false)
-        );
-      };
-      fetchData();
-    }, [id]);
-    return {
-      data,
-      error,
-      loading,
-    };
-  },
-  useAssignedApprovalTrainingRequest: (id) => {
-    const [data, setData] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      const fetchData = async () => {
-        handleResponseAsync(
-          () => trainingRequestService.getTrainingRequestByApprover(id),
-          (e) => setData(e),
-          (e) => setError(e),
-          () => setLoading(false)
-        );
-      };
-      fetchData();
-    }, [id]);
-    return {
-      data,
       error,
       loading,
     };

@@ -16,7 +16,6 @@ import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CertificateTemplate from "../../components/certificate/CertificateTemplate";
 import CertificatesList from "../../components/certificate/CertificatesList";
 import { UserTypeValue } from "../../api/constants";
-import evaluationService from "../../services/evaluationService";
 import ErrorTemplate from "../../components/General/ErrorTemplate";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import commonService from "../../services/commonService";

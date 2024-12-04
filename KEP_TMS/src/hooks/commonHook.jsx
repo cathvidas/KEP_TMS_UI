@@ -42,12 +42,7 @@ const commonHook = {
             console.log(effectiveness);
           const reports =
             await trainingReportService.getApproverAssignedReports(id);
-          const updatedRequest = requests?.filter(
-            (item) =>
-              trainingDetailsService.checkTrainingIfOutDated(
-                item?.trainingRequest
-              ) === false
-          );
+       
           const forApprovelEffectiveness =effectiveness?.filter(
             (item) => item.routingActivity?.statusId !== statusCode.TOUPDATE
           );
@@ -59,12 +54,12 @@ const commonHook = {
           );
           
           setData({
-            requests: updatedRequest,
+            requests: requests,
             effectiveness: forApprovelEffectiveness,
             reports: reports,
             forEvaluation: forEvaluation,
             overallCount:
-              updatedRequest?.length + forApprovelEffectiveness?.length + reports?.length + forEvaluation?.length,
+              requests?.length + forApprovelEffectiveness?.length + reports?.length + forEvaluation?.length,
           });
         } catch (error) {
           setError(error.message);

@@ -8,7 +8,6 @@ import CommonTable from "../../components/General/CommonTable";
 import trainingRequestService from "../../services/trainingRequestService";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
-import trainingDetailsService from "../../services/common/trainingDetailsService";
 
 const ForApprovalRequest = () => {
   const [request, setRequest] = useState([]);
@@ -17,9 +16,7 @@ const ForApprovalRequest = () => {
     const getRequest = async () => {
       try {
         const res = await trainingRequestService.getTrainingRequestByApprover(SessionGetEmployeeId());
-      
-    const updatedRequest = res?.filter(item => !trainingDetailsService.checkTrainingIfOutDated(item?.trainingRequest))
-        const mappedData = mapForApprovalRequestToTableData(updatedRequest);
+        const mappedData = mapForApprovalRequestToTableData(res);
         const updated = await Promise.all(
           mappedData.map(async (x) => {
             const user = await getUserApi(x.requestorId);
@@ -34,7 +31,6 @@ const ForApprovalRequest = () => {
     getRequest();
   }, []);
 
-console.log(request)
   const actionTemplate = (data) => {
     return (
       

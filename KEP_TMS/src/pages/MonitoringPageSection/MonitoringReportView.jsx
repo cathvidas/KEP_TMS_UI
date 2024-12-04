@@ -8,11 +8,12 @@ import { Card } from "react-bootstrap";
 import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import EvaluationForm from "../../components/forms/EvaluationForm";
-import { ActivityType } from "../../api/constants";
+import { ActivityType, UserTypeValue } from "../../api/constants";
 import getStatusById from "../../utils/status/getStatusById";
 import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
 import ExamDetails from "../../components/Exam/ExamDetails";
 import GeneralEmailTemplate from "../../components/email/GeneralEmailTemplate";
+import { SessionGetRole } from "../../services/sessions";
 const MonitoringReportView = ({
   data,
   reportType,
@@ -209,7 +210,7 @@ const MonitoringReportView = ({
               </div>
 
               <CommonTable
-                headerComponent={<HeaderComponent />}
+                headerComponent={SessionGetRole() === UserTypeValue.ADMIN ?<HeaderComponent /> : null}
                 dataTable={formData?.data}
                 columnItems={columnItems}
               />
