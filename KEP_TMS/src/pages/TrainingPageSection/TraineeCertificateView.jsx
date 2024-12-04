@@ -119,6 +119,7 @@ const TraineeCertificateView = ({ data, isAdmin }) => {
             setShowModal(true);
             setDataToUpdate(e);
           }}
+          onFinish={()=>setTrigger(prev=>prev + 1)}
         />
       ) : (
         <div className="flex justify-content-center align-items-center py-5">

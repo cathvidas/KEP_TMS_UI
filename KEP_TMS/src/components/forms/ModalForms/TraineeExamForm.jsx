@@ -217,15 +217,6 @@ const TraineeExamForm = ({ data, examCount, closeForm, handleRefresh }) => {
                 icon="pi pi-arrow-left"
                 onClick={closeForm}
               />
-              {score?.score < getPassingScore(randomizeItem.length) && (
-                <Button
-                  type="button"
-                  label="retake"
-                  icon="pi pi-refresh"
-                  onClick={retakeExam}
-                  disabled={examCount >= 3}
-                />
-              )}
             </div>
           )}
           {/* </Card.Body> */}
