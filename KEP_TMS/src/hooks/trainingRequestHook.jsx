@@ -10,6 +10,7 @@ import evaluationService from "../services/evaluationService";
 import effectivenessService from "../services/effectivenessService";
 import commonService from "../services/commonService";
 import routingService from "../services/common/routingService";
+import externalFacilitatorService from "../services/externalFacilitatorService";
 
 const trainingRequestHook = {
   useTrainingRequest: (id,trigger) => {
@@ -39,10 +40,21 @@ const trainingRequestHook = {
               if(!currentRouting?.assignedDetail){
                 currentRouting.assignedDetail = await userService.getUserById(currentRouting?.assignedTo);
               }
-            setData({
+           const faciList =await Promise.all(
+             response?.trainingFacilitators?.map(async (faci) => {
+               const detail = faci?.isExternal
+                 ? await externalFacilitatorService.getExternaFacilitatorById(
+                     faci?.externalFacilitatorId
+                   )
+                 : await userService.getUserById(faci?.facilitatorBadge);
+                 
+               return { ...faci, faciDetail: detail };
+             })
+           );
+              setData({
               ...response,
               trainingParticipants: participants,
-              // trainingFacilitators: facilitators,
+              trainingFacilitators: faciList,
               requestor: requestor,
               routings,
               approvers,
