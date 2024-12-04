@@ -77,15 +77,15 @@ const UploadModuleForm = ({
     const newFiles = Array.from(e.target.files);
     let validForm = true;
     newFiles.forEach((file) => {
-      if (file.size > 5 * 1024 * 1024) {
+      if (file.size > 20 * 1024 * 1024) {
         setErrors({
           ...errors,
-          [file.name]: "File size should not exceed 5MB",
+          file: "File size should not exceed 5MB",
         });
         validForm = false;
       }
       if (files.some((x) => x.name === file.name)) {
-        setErrors({ ...errors, [file.name]: "File name already exists" });
+        setErrors({ ...errors, file: "File name already exists" });
         validForm = false;
       }
       if (

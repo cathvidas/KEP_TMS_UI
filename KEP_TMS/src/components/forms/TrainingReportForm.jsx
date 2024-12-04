@@ -297,6 +297,7 @@ const TrainingReportForm = ({
             data={defaultValue}
             activityTitle="Training Report"
             activityType={ActivityType.REPORT}
+            hasEmailForm={isAdmin}
           />
           <hr />
           <ActivityList data={logs} label={"Activities"} />

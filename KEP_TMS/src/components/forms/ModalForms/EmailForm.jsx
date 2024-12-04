@@ -3,22 +3,17 @@ import { useEffect, useRef, useState } from "react";
 import proptype from "prop-types";
 import { Button } from "primereact/button";
 import TextEditor from "../common/TextEditor";
-import TrainingRequestEmailtemplate from "../../email/TrainingRequestEmailtemplate";
 import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import { SessionGetEmployeeId } from "../../../services/sessions";
 import emailService from "../../../services/emailService";
+import ApproverPendingsEmailTemplate from "../../email/ApproverPendingsEmailTemplate";
 const EmailForm = ({
   handleShow,
   handleClose,
-  activityTitle,
-  activityId,
-  activityData,
   recipient,
-  routeList,
-  activityLogs,
 }) => {
-  const [subject, setSubject] = useState(`Follow-Up: Pending Approval for ${activityTitle ? activityTitle : "Training Request"} #${activityData?.id}`);
+  const [subject, setSubject] = useState(`Follow-Up: Pending Approvals`);
   const [errors, setErrors] = useState({});
   const [content, setContent] = useState(false);
   const formTemplateRef = useRef();
@@ -73,7 +68,8 @@ const validateEmailContent = () => {
     <>
       {" "}
       <div ref={formTemplateRef} className="d-none">
-          <TrainingRequestEmailtemplate requestDetail={activityData} recipient={recipient} routeList={routeList} activityLogs={activityLogs} activityTitle={activityTitle}/>
+          {/* <TrainingRequestEmailtemplate requestDetail={activityData} recipient={recipient} routeList={routeList} activityLogs={activityLogs} activityTitle={activityTitle}/> */}
+          <ApproverPendingsEmailTemplate userId={recipient?.employeeBadge}/>
       </div>
       <Modal
         show={handleShow}
@@ -168,14 +164,14 @@ const validateEmailContent = () => {
               <Modal.Body className="p-0">
                 <div className="pb-4 px-4 border-bottom text-center">
                   <h5 className="">
-                    Send Follow Up Email for{" "}
-                    {activityTitle ? activityTitle : "Training Request"}{" "}
-                    Approval?
+                    Send Follow Up Email to {recipient?.fullname}
+                    {/* {activityTitle ? activityTitle : "Training Request"}{" "} */}
+                    ?
                   </h5>
-                  <span className="text-muted h-6 d-block">
+                  {/* <span className="text-muted h-6 d-block">
                     {activityTitle ? activityTitle : "Training Request"} ID:{" "}
                     {activityId}
-                  </span>
+                  </span> */}
                   <div className="px-5 d-flex flex-column mx-4">
                     <Button
                       type="button"

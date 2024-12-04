@@ -16,6 +16,31 @@ import { formatDateTime } from "../../utils/datetime/Formatting";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import FacilitatorRatingExportTemplate from "../General/FacilitatorRatingExportTemplate";
 import commonHook from "../../hooks/commonHook";
+import externalFacilitatorService from "../../services/externalFacilitatorService";
+import userService from "../../services/userService";
+import { TrainingType } from "../../api/constants";
+const FacilitatorDetail = ({data}) => {
+  const [faciName, setFaciName] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if(data?.isExternal){
+          const response = await externalFacilitatorService.getExternaFacilitatorById(data?.externalFacilitatorId);
+          setFaciName(response?.name);
+        }
+        else{
+          const response = await userService.getUserById(data?.facilitatorBadge);
+          setFaciName(response?.fullname);
+        }
+      } catch (error) {
+        console.console(error);
+      }
+      
+    }
+    fetchData();
+  })
+  return faciName;
+}
 const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
   const [annotation, setAnnotation] = useState(evaluationConstant.annotation);
   const [contentMethodology, setContentMethodology] = useState(evaluationConstant.contentMethodology);
@@ -32,7 +57,6 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
     programLogisticsRating: programLogisticsRating,
     overallRating: overallRating,
     annotation: annotation,
-    facilitatorRating: facilitatorRating,
     createdBy: SessionGetEmployeeId()
   }
   const handleOnChange = (value, name, field, setField) => {
@@ -52,7 +76,8 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
       confirmAction({
         onConfirm: () => {
           handleResponseAsync(
-            () => evaluationService.createTrainingEvaluation(getFormData),
+            () => evaluationService.createTrainingEvaluation(data?.traininingType?.id === TrainingType.INTERNAL ? {...getFormData, 
+              facilitatorRating: facilitatorRating,} :getFormData),
             (e) => {actionSuccessful("Success", e.message);
               onFinish();
             },
@@ -85,9 +110,11 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
     let faciList = []
     data?.trainingFacilitators.map((faci, index)=>{
       if (!facilitatorRating[index]?.frOne > 0 || !facilitatorRating[index]?.frTwo > 0 ||!facilitatorRating[index]?.frThree >0
-        || !facilitatorRating[index]?.frFour > 0 ||!facilitatorRating[index]?.frFive > 0 || !facilitatorRating[index]?.frSix > 0 || !facilitatorRating[index]?.frAverage > 0
+        || !facilitatorRating[index]?.frFour > 0 ||!facilitatorRating[index]?.frFive > 0 || !facilitatorRating[index]?.frSix > 0 
       ) {
-        faciList.push(faci.fullname)
+        console.log(faci)
+        if(!faci.isExternal){
+        faciList.push(faci?.faciDetail?.fullname ?? faci?.facilitatorBadge)}
       }
     })
     if(faciList.length !== 0){
@@ -136,6 +163,7 @@ newLogs.push({
   label: `Created by ${userData?.fullname ?? defaultValue?.auditTrail?.createdBy}`,
   date: formatDateTime(defaultValue?.createdDate),
 });
+console.log(data)
 const reportTemplateRef = useRef();
   return (
     <Card.Body>
@@ -382,7 +410,8 @@ const reportTemplateRef = useRef();
               )
             }
           />
-          <hr />
+          {data?.trainingType?.id === TrainingType.INTERNAL && <>
+            <hr />
           <label className="form-label m-0">FACILITATOR/S: </label>
 
           {errors.facilitatorRating && (
@@ -392,7 +421,7 @@ const reportTemplateRef = useRef();
             {data?.trainingFacilitators.map((faci, index) => {
               return (
                 <TabPanel
-                  header={faci?.fullname}
+                  header={!faci?.isExternal ? faci?.faciDetail?.fullname: "" }
                   className="active"
                   key={faci?.id}
                 >
@@ -445,7 +474,7 @@ const reportTemplateRef = useRef();
           
           <div className="d-none showExport">
             <FacilitatorRatingExportTemplate facilitators={data?.trainingFacilitators} facilitatorRating={facilitatorRating}/>
-          </div>
+          </div></>}
           <hr />
           {errors.overallRating && (
             <ErrorTemplate message={errors.overallRating} />

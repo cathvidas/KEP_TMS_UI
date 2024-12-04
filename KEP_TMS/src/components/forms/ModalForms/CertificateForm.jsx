@@ -10,10 +10,10 @@ import {
   confirmAction,
 } from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
-import { SessionGetEmployeeId } from "../../../services/sessions";
+import { SessionGetEmployeeId, SessionGetRole } from "../../../services/sessions";
 import certificateService from "../../../services/certificateService";
 import attachmentService from "../../../services/attachmentService";
-import { attachmentType } from "../../../api/constants";
+import { attachmentType, UserTypeValue } from "../../../api/constants";
 const CertificateForm = ({
   showModal,
   hideModal,
@@ -112,7 +112,7 @@ const CertificateForm = ({
       newErrors.file = "Attachment is required";
       isValid = false;
     }
-    if (userOptions && !formData.user?.value) {
+    if ((userOptions && SessionGetRole() === UserTypeValue.ADMIN) && !formData.user?.value) {
       newErrors.user = "Participant is required";
       isValid = false;
     }
@@ -227,7 +227,7 @@ const CertificateForm = ({
                 }
               />
             )}
-            {userOptions && (
+            {(userOptions && SessionGetRole() === UserTypeValue.ADMIN)&& (
               <FormFieldItem
                 label={"Participant"}
                 error={errors.user}
