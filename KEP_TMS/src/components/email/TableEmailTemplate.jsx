@@ -1,7 +1,12 @@
 import proptype from "prop-types"
-const TableEmailTemplate = ({ items, value }) => {
+import userHook from "../../hooks/userHook";
+const TableEmailTemplate = ({ items, value, label, hideInNull = false }) => {
   return (
     <>
+    {((hideInNull && value?.length > 0) || !hideInNull) && <>
+     <p>
+            <strong>{label}</strong>
+        </p>
       <table
         border="1"
         cellPadding="5"
@@ -37,7 +42,9 @@ const TableEmailTemplate = ({ items, value }) => {
                 {items?.map((x) => (
                   <>
                     <td style={{ padding: "5px"}}>
-                        {item[x?.field]}
+                      {x?.getName ?
+                        userHook.useUserById(item[x?.field])?.data?.fullname:
+                        item[x?.field]}
                     </td>
                   </>
                 ))}
@@ -46,11 +53,14 @@ const TableEmailTemplate = ({ items, value }) => {
           ))}
         </tbody>
       </table>
+      </>}
     </>
   );
 };
 TableEmailTemplate.propTypes = {
     items: proptype.array,
     value: proptype.array,
+    label: proptype.string,
+    hideInNull: proptype.bool,
 }
 export default TableEmailTemplate;

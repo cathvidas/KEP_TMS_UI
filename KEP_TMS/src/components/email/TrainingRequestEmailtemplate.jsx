@@ -37,7 +37,6 @@ const TrainingRequestEmailtemplate = ({
         )
       : externalFacilitatorHook.useListExternalFacilitators(requestDetail?.trainingFacilitators, "externalFacilitatorId")
      ;
-  console.log(mappedFaciList, requestDetail, requestDetail?.trainingType?.id=== TrainingType.EXTERNAL,externalFacilitatorHook.useListExternalFacilitators(requestDetail?.trainingFacilitators, "externalFacilitatorId") )
   const faciList =  mappedFaciList?.data?.map((item, index) => {
     if(requestDetail?.trainingType?.id === TrainingType.INTERNAL){
     return{
