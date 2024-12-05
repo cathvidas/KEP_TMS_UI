@@ -1,3 +1,6 @@
+import RequestStatusColumn from "../../components/TrainingPageComponents/RequestStatusColumn";
+import { formatCurrency } from "../../utils/datetime/Formatting";
+
 export const mapTRequestToTableData = (data)=>{
     const mappedData = data?.map(item=>({
         id: item.id,
@@ -12,11 +15,10 @@ export const mapTRequestToTableData = (data)=>{
         provider: item?.trainingProvider?.name ?? "N/A",
         trainingStartDate: item.trainingStartDate,
         trainingEndDate: item.trainingEndDate,
-        totalFee: item?.totalTrainingFee,
+        totalFee: formatCurrency(item?.totalTrainingFee),
         approverId: item?.routing?.approverId,
         approverFullName: item?.routing?.approverFullName,
         approverUsername: item?.routing?.approverUsername,
-        approverPosition: item?.routing?.approverPosition,
         facilitatorName: item?.trainingFacilitators[0]?.fullname ,
         totalParticipants: item?.totalParticipants,
         trainingParticipants: item?.trainingParticipants,

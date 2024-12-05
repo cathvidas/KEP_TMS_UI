@@ -23,15 +23,6 @@ const TrainingParticipantsForm = ({
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-  const onGlobalFilterChange = (value) => {
-    if (filters.global.value !== value && value !== undefined) {
-      setFilters((prev) => ({
-        ...prev,
-        global: { ...prev.global, value },
-      }));
-    }
-  };
-
   const [data, setFormData] = useState(formData);
   const [showModal, setShowModal] = useState(false);
   const [filter, setFilter] = useState({ name: "", department: "" });
@@ -40,6 +31,17 @@ const TrainingParticipantsForm = ({
     facilitators: [],
     provider: "",
   });
+  const onGlobalFilterChange = (data) => {
+    console.log(data)
+    setFilter(data)
+    if (filters.global.value !== data?.value && data?.value !== undefined) {
+      setFilters((prev) => ({
+        ...prev,
+        global: { ...prev.global, value: data?.value }
+      }));
+    }
+  };
+
   const [error, setError] = useState({});
   useEffect(() => {
     setError(errors);

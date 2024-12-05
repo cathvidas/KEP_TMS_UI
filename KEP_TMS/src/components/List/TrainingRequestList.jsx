@@ -17,6 +17,7 @@ import {
 import { SessionGetEmployeeId } from "../../services/sessions";
 import TraineeStatusTemplate from "../TrainingPageComponents/TraineeStatusColumn";
 import RequestStatusColumn from "../TrainingPageComponents/RequestStatusColumn";
+import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 const TrainingRequestList = ({
   data,
   headingTitle,
@@ -99,6 +100,9 @@ const TrainingRequestList = ({
       </div>
     );
   };
+  const getRequestById = (id) => {
+    return data?.find((item) => item.id === id);
+  } 
   const header = renderHeader();
   const tableRef = useRef(null);
   return (
@@ -108,7 +112,7 @@ const TrainingRequestList = ({
           <>
             <DataTable
               ref={tableRef}
-              value={data}
+              value={mapTRequestToTableData(data)}
               stripedRows
               size="small"
               tableStyle={{ minWidth: "50rem" }}
@@ -131,10 +135,10 @@ const TrainingRequestList = ({
                   sortable
                 ></Column>
               )}
-              <Column field="type" header="Type" sortable body={(rowData)=>rowData?.trainingType?.name}></Column>
-              <Column field="program" header="Program" sortable body={(rowData)=>rowData?.trainingProgram?.name}></Column>
-              <Column field="category" header="Category" sortable body={(rowData)=>rowData?.trainingCategory?.name}></Column>
-              <Column field="provider" header="Provider" sortable body={(rowData)=>rowData?.trainingProvider?.name ?? "N/A"}></Column>
+              <Column field="type" header="Type" sortable></Column>
+              <Column field="program" header="Program" sortable ></Column>
+              <Column field="category" header="Category" sortable ></Column>
+              <Column field="provider" header="Provider" sortable ></Column>
               <Column field="venue" header="Venue" sortable></Column>
               <Column
                 field="trainingStartDate"
@@ -160,9 +164,6 @@ const TrainingRequestList = ({
                   header="Total Fee"
                   sortable
                   style={{ width: "8%" }}
-                  body={(rowData) => {
-                    return formatCurrency(rowData?.totalTrainingFee);
-                  }}
                 ></Column>
               )}
               {(isAdmin || isRequestor) && 
@@ -179,18 +180,16 @@ const TrainingRequestList = ({
                 <Column
                   field="approverPosition"
                   header="Current Status"
-                  sortable
                   style={{ minWidth: "12rem" }}
-                  body={(rowData) =><RequestStatusColumn value={rowData}/>}
+                  body={(rowData) =><RequestStatusColumn value={getRequestById(rowData?.id)}/>}
                 ></Column>
               )}
               {isTrainee && (
                 <Column
                   field="approverPosition"
                   header="Status"
-                  sortable
                   style={{ minWidth: "12rem" }}
-                  body={(rowData)=><TraineeStatusTemplate traineeId={SessionGetEmployeeId()} value={rowData}/>}
+                  body={(rowData)=><TraineeStatusTemplate traineeId={SessionGetEmployeeId()} value={getRequestById(rowData?.id)}/>}
                 ></Column>
               )}
               <Column field="id" header="Action" body={actionTemplate}></Column>

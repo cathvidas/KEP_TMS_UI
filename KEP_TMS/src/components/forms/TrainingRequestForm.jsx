@@ -110,7 +110,7 @@ export const TrainingRequestForm = () => {
           (res) => {
             actionSuccessful(
               "Success",
-              "training request successfully submitted, please wait for approval"
+              "Training request successfully submitted."
             );
             setTimeout(() => {
               navigate("/KEP_TMS/TrainingDetail/" + res?.data?.id);

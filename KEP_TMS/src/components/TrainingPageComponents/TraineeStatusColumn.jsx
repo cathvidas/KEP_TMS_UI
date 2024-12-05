@@ -42,13 +42,7 @@ const TraineeStatusTemplate = ({value, traineeId}) => {
       return detail;
     };
   
-    return (
-      <>
-        <div>
-          {getStatus()}
-        </div>
-      </>
-    );
+    return getStatus();
   };
   TraineeStatusTemplate.propTypes = {
     value: proptype.object,

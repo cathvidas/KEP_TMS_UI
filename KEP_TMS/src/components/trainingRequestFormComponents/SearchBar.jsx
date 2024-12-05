@@ -11,12 +11,12 @@ const SearchBar = ({handleOnInput, options}) => {
   const [filter, setFilter] = useState({value: "", department: ""});
   
   useEffect(()=>{
-    handleOnInput(filter.value)
-  }, [filter.value,handleOnInput])
+    handleOnInput(filter)
+  }, [filter,handleOnInput])
   
-  useEffect(()=>{
-    setFilter({...filter, value: filter.department})
-  }, [filter.department])
+  // useEffect(()=>{
+  //   setFilter({...filter, value: filter.department})
+  // }, [filter.department])
 
   return (
     <>
