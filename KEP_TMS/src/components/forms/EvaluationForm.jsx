@@ -480,7 +480,8 @@ const reportTemplateRef = useRef();
             <ErrorTemplate message={errors.overallRating} />
           )}
           <div className="d-flex align-items-center justify-content-between mb-1">
-            <p className="m-0 fw-bold">Overall Rating of the program:</p>
+            <p className="m-0 fw-bold">Overall Rating of the program:
+            <span className="form-label required"></span></p>
             <Rating
               cancel={false}
               value={overallRating}
@@ -490,7 +491,8 @@ const reportTemplateRef = useRef();
           </div>
           <hr />
           <Form.Group className="mt-2">
-            <b>Comments on the module & other suggestions for Improvement:</b>
+            <b>Comments on the module & other suggestions for Improvement:
+            <span className="form-label required"></span></b>
             <textarea
               className="form-control"
               name=""
