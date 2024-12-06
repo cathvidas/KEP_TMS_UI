@@ -13,6 +13,7 @@ import SkeletonCards from "../components/Skeleton/SkeletonCards";
 import { APP_DOMAIN, UserTypeValue } from "../api/constants";
 import { TabPanel, TabView } from "primereact/tabview";
 import activityLogHook from "../hooks/activityLogHook";
+import { Skeleton } from "primereact/skeleton";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -92,8 +93,9 @@ const Dashboard = () => {
       value: approval?.data?.overallCount,
       icon: "pi pi-pen-to-square",
       status: "Approver",
-      isRequest: true,
+      isRequest: false,
       url: "/List/ForApproval",
+      loading: approval?.loading,
       // disabled: !approval?.data?.overallCount > 0,
     },
     {
@@ -106,6 +108,7 @@ const Dashboard = () => {
       icon: "pi pi-tag",
       status: "FacilitatedTrainings",
       isRequest: false,
+      loading: trainerAssignedData?.loading,
       url: "/FacilitatedTrainings",
       disabled: !(trainerAssignedData?.data?.length > 0 || SessionGetRole() === UserTypeValue.FACILITATOR),
     },
@@ -117,6 +120,7 @@ const Dashboard = () => {
       icon: "pi pi-address-book",
       isRequest: false,
       url: "/Trainings",
+      loading: assignedTraining?.loading,
     },
     {
       label: "To Comply",
@@ -125,6 +129,7 @@ const Dashboard = () => {
       icon: "pi pi-file",
       isRequest: false,
       url: "/Trainings/ToComply",
+      loading: pendings?.loading,
     },
   ];
   const Content = () => {
@@ -141,8 +146,22 @@ const Dashboard = () => {
                 </>
               )}
 
-              <TabView className={`custom-tab ${(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) ? "" : "border-0 hide-nav"}`}>
-                <TabPanel header={(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) ? "Trainings" : ""}>
+              <TabView
+                className={`custom-tab ${
+                  SessionGetRole() === UserTypeValue.ADMIN ||
+                  SessionGetRole() === UserTypeValue.REQUESTOR
+                    ? ""
+                    : "border-0 hide-nav"
+                }`}
+              >
+                <TabPanel
+                  header={
+                    SessionGetRole() === UserTypeValue.ADMIN ||
+                    SessionGetRole() === UserTypeValue.REQUESTOR
+                      ? "Trainings"
+                      : ""
+                  }
+                >
                   {assignedTraining?.loading ? (
                     <SkeletonCards />
                   ) : (
@@ -167,9 +186,13 @@ const Dashboard = () => {
                                     <span className="text-secondary h5">
                                       {item.label}
                                     </span>
-                                    <span className="font-bold h4">
-                                      {item.value > 0 ? item.value : "0"} 
-                                    </span>
+                                    {item?.loading ? (
+                                      <i className="text-secondary pi pi-spin pi-spinner-dotted"></i>
+                                    ) : (
+                                      <span className="font-bold h4">
+                                        {item.value > 0 ? item.value : "0"}
+                                      </span>
+                                    )}
                                   </div>
                                   <span
                                     className="p-3 ratio ratio-1x1 d-flex justify-content-center align-items-center text-center rounded-circle"
@@ -197,64 +220,66 @@ const Dashboard = () => {
                     </>
                   )}
                 </TabPanel>
-                {(SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) &&
-                <TabPanel header={"Training Requests"}>
-                  {trainingRequests?.loading ? (
-                    <SkeletonCards />
-                  ) : (
-                    (SessionGetRole() === UserTypeValue.ADMIN ||
-                      SessionGetRole() === UserTypeValue.REQUESTOR ||
-                      trainingRequests?.data?.length > 0) && (
-                      <>
-                        <Row className="g-2 row-cols-lg-4">
-                          {values.map((item, index) => (
-                            <Col key={index}>
-                              <Card
-                                className="shadow-sm p-3 h-100 btn"
-                                style={{
-                                  background: item.color + "1c",
-                                  borderColor: item.color,
-                                }}
-                                onClick={() =>
-                                  navigate(`${APP_DOMAIN + item.url}`)
-                                }
-                              >
-                                <div className="flex justify-content-between gap-2">
-                                  <div className="flex flex-column gap-1">
-                                    <span className="text-secondary h5">
-                                      {item.label}
-                                    </span>
-                                    <span className="font-bold h4">
-                                      {item.value ?? 0}
+                {(SessionGetRole() === UserTypeValue.ADMIN ||
+                  SessionGetRole() === UserTypeValue.REQUESTOR) && (
+                  <TabPanel header={"Training Requests"}>
+                    {trainingRequests?.loading ? (
+                      <SkeletonCards />
+                    ) : (
+                      (SessionGetRole() === UserTypeValue.ADMIN ||
+                        SessionGetRole() === UserTypeValue.REQUESTOR ||
+                        trainingRequests?.data?.length > 0) && (
+                        <>
+                          <Row className="g-2 row-cols-lg-4">
+                            {values.map((item, index) => (
+                              <Col key={index}>
+                                <Card
+                                  className="shadow-sm p-3 h-100 btn"
+                                  style={{
+                                    background: item.color + "1c",
+                                    borderColor: item.color,
+                                  }}
+                                  onClick={() =>
+                                    navigate(`${APP_DOMAIN + item.url}`)
+                                  }
+                                >
+                                  <div className="flex justify-content-between gap-2">
+                                    <div className="flex flex-column gap-1">
+                                      <span className="text-secondary h5">
+                                        {item.label}
+                                      </span>
+                                      <span className="font-bold h4">
+                                        {item.value ?? 0}
+                                      </span>
+                                    </div>
+                                    <span
+                                      className="p-3 ratio ratio-1x1 d-flex justify-content-center align-items-center text-center rounded-circle"
+                                      style={{
+                                        backgroundColor: item.color,
+                                        color: "#ffffff",
+                                        width: "4rem",
+                                      }}
+                                    >
+                                      <i
+                                        className={item.icon}
+                                        style={{
+                                          top: "unset",
+                                          left: "unset",
+                                          fontSize: "2rem",
+                                          height: "unset",
+                                        }}
+                                      />
                                     </span>
                                   </div>
-                                  <span
-                                    className="p-3 ratio ratio-1x1 d-flex justify-content-center align-items-center text-center rounded-circle"
-                                    style={{
-                                      backgroundColor: item.color,
-                                      color: "#ffffff",
-                                      width: "4rem",
-                                    }}
-                                  >
-                                    <i
-                                      className={item.icon}
-                                      style={{
-                                        top: "unset",
-                                        left: "unset",
-                                        fontSize: "2rem",
-                                        height: "unset",
-                                      }}
-                                    />
-                                  </span>
-                                </div>
-                              </Card>
-                            </Col>
-                          ))}
-                        </Row>
-                      </>
-                    )
-                  )}
-                </TabPanel>}
+                                </Card>
+                              </Col>
+                            ))}
+                          </Row>
+                        </>
+                      )
+                    )}
+                  </TabPanel>
+                )}
               </TabView>
               <br />
             </Col>
