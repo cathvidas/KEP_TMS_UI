@@ -6,7 +6,7 @@ import Select from "react-select";
 import { useEffect, useState } from "react";
 import userConstant from "../../../services/constants/userConstant";
 import validateUserDetails from "../../../services/inputValidation/validateUserDetails";
-import { actionFailed, actionSuccessful, confirmAction } from "../../../services/sweetalert";
+import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import userService from "../../../services/userService";
 import { SessionGetEmployeeId, SessionGetRole } from "../../../services/sessions";
@@ -38,11 +38,12 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                 createdBy: SessionGetEmployeeId()
             }
             confirmAction({
+              showLoaderOnConfirm: true,
                 onConfirm: ()=>
                     handleResponseAsync(
                         ()=>isUpdate? userService.updateUser(newFormData) : userService.createUser(newFormData),
                         () => actionSuccessful("Success!", isUpdate ? "User updated successfully": "User created successfully"),
-                        (e) => actionFailed("Error!", e.message),
+                        null,
                         onFinish
                     )
             })

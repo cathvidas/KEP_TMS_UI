@@ -8,6 +8,7 @@ import trainingRequestHook from "../../hooks/trainingRequestHook";
 import CommonTable from "../../components/General/CommonTable";
 import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 import {
+  formatDateTime,
   GenerateTrainingDates,
 } from "../../utils/datetime/Formatting";
 import { useEffect, useState } from "react";
@@ -26,6 +27,7 @@ const DetailItem = (data) => (
     <div className="flex py-1">
       <h6 className={`mb-0 ${data?.className}`}>{data.label}:</h6>
       {data.value && <span>{data.value}</span>}
+      {data.user && <span>{userHook.useUserById(data.user)?.data?.fullname ?? data?.user}</span>}
       {data.badge && <Badge value={data.badge} />}
     </div>
   </>
@@ -60,7 +62,7 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
   const attended = trainingRequestHook.useTrainingRequestByTraineeId(id);
   const [showCertForm, setShowCertForm] = useState(false);
   const [isFacilitator, setIsFacilitator] = useState(false);
-  const [certificateTrainings, setCertificateTrainings] = useState([]);
+  const [certificateTrainings, setCertificateTrainings] = useState(null);
   const columnItem = [
     {field: "id", header: "Request #", },
     { field: "requesterName", header: "Name", body: <>{data?.fullname}</> },
@@ -101,8 +103,13 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
                   <DetailItem label="Department" value={data?.departmentName} />
                   <DetailItem label="Email" value={data?.email} />
                   <DetailItem label="User Type" value={data?.roleName} />
+                  <DetailItem label="Immediate Superior" value={data?.superiorName} />
                   <DetailItem label="Status" value={data?.statusName} />
-                  <DetailItem label="Password" value={data?.password} />
+                  {/* <DetailItem label="Password" value={data?.password} /> */}
+                  <DetailItem label="Created By" user={data?.createdBy} />
+                  <DetailItem label="Created Date" value={formatDateTime(data?.createdDate)} />
+                  <DetailItem label="Updated By" user={data?.updatedBy ?? "N/A"} />
+                  <DetailItem label="Updated Date" value={data?.updatedDate ? formatDateTime(data?.updatedDate) : 'N/A'} />
                   <Button type="button" icon="pi pi-user-edit" size="small" text label="Edit" onClick={() => setShowUpdateForm(true)}/>
                 </Col>
                 <Col className="border-start">
