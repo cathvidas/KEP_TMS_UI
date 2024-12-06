@@ -1,4 +1,3 @@
-import RequestStatusColumn from "../../components/TrainingPageComponents/RequestStatusColumn";
 import { formatCurrency } from "../../utils/datetime/Formatting";
 
 export const mapTRequestToTableData = (data)=>{
@@ -25,7 +24,6 @@ export const mapTRequestToTableData = (data)=>{
         durationInHours: item?.durationInHours,
         createdDate: item?.createdDate,
         trainingDates: item?.trainingDates,
-        // facilitatorName: item?trainingFac 
 
     }))
     return mappedData
