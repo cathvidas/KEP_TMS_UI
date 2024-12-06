@@ -17,7 +17,7 @@ const handleResponseAsync = async (
     if(onError){
       onError(error)
     }else{
-      actionFailed("Error", error.message)
+      actionFailed("Error", error.message ?? "Something went wrong")
     }
   } finally{
     if(onFinish){
