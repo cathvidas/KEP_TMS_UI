@@ -94,7 +94,7 @@ const Dashboard = () => {
       status: "Approver",
       isRequest: true,
       url: "/List/ForApproval",
-      disabled: !approval?.data?.overallCount > 0,
+      // disabled: !approval?.data?.overallCount > 0,
     },
     {
       label: "Facilitated Trainings",
