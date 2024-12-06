@@ -76,7 +76,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
       confirmAction({
         onConfirm: () => {
           handleResponseAsync(
-            () => evaluationService.createTrainingEvaluation(data?.traininingType?.id === TrainingType.INTERNAL ? {...getFormData, 
+            () => evaluationService.createTrainingEvaluation(data?.trainingType?.id === TrainingType.INTERNAL ? {...getFormData, 
               facilitatorRating: facilitatorRating,} :getFormData),
             (e) => {actionSuccessful("Success", e.message);
               onFinish();

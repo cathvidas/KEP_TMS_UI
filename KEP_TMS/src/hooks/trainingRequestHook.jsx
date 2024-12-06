@@ -11,6 +11,7 @@ import effectivenessService from "../services/effectivenessService";
 import commonService from "../services/commonService";
 import routingService from "../services/common/routingService";
 import externalFacilitatorService from "../services/externalFacilitatorService";
+import trainingDetailsService from "../services/common/trainingDetailsService";
 
 const trainingRequestHook = {
   useTrainingRequest: (id,trigger) => {
@@ -40,6 +41,7 @@ const trainingRequestHook = {
               if(!currentRouting?.assignedDetail){
                 currentRouting.assignedDetail = await userService.getUserById(currentRouting?.assignedTo);
               }
+              console.log(response)
            const faciList =await Promise.all(
              response?.trainingFacilitators?.map(async (faci) => {
                const detail = faci?.isExternal
@@ -262,7 +264,7 @@ const trainingRequestHook = {
     }, [pageNumber, pageSize, searchValue]);
     return { data, error, loading };
   },
-  useTrainingRequestByTraineeId: (id) => {
+  useTrainingRequestByTraineeId: (id, attended) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -270,14 +272,14 @@ const trainingRequestHook = {
       const fetchData = async () => {
         handleResponseAsync(
           () => trainingRequestService.getTrainingRequestByTraineeId(id),
-          (e) => {setData(e?.filter(item=>item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED));
+          (e) => {setData(e?.filter(item=> (attended ? trainingDetailsService.checkIfTrainingEndsAlready(item) : true) && (item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED) ));
           },
           (e) => setError(e),
           () => setLoading(false)
         );
       };
       fetchData();
-    }, [id]);
+    }, [id, attended]);
     return {
       data,
       error,

@@ -36,7 +36,12 @@ const TraineeStatusTemplate = ({value, traineeId}) => {
         if(isComplete){
           return "Completed"
         }
-      }else{
+      }else if(trainingDetailsService.checkTrainingScheduleStatus(value)?.isUpcoming){
+        detail = "Upcoming"
+      }else if(trainingDetailsService.checkTrainingScheduleStatus(value)?.isOngoing){
+        detail = "Ongoing"
+      }
+      else{
         detail = value?.status?.name;
       }
       return detail;

@@ -29,8 +29,10 @@ import getStatusCode from "../../utils/status/getStatusCode";
 import mappingHook from "../../hooks/mappingHook";
 import ActivityStatus from "../General/ActivityStatus";
 import commonHook from "../../hooks/commonHook";
+import routingService from "../../services/common/routingService";
 const EffectivenessForm = ({
   data,
+  evaluate,
   userData,
   formData,
   onFinish,
@@ -203,10 +205,7 @@ const EffectivenessForm = ({
   };
   useEffect(() => {
     setIsAfter(
-      SessionGetEmployeeId() === formData?.evaluatorBadge &&
-        data.currentRouting?.statusId === statusCode.TOUPDATE &&
-        new Date(data?.trainingEndDate) <=
-          new Date(new Date().setMonth(new Date().getMonth() - 6))
+      SessionGetEmployeeId() === formData?.evaluatorBadge && evaluate
     );
   }, [data, formData]);
   const activityLogs = mappingHook.useMappedActivityLogs(formData, userData);
@@ -573,13 +572,13 @@ const EffectivenessForm = ({
                           disabled={!isAfter}
                         />
                         <small className="mt-1 d-block">
-                          {isSubmitted
+                          {(isSubmitted && performanceRatingDate?.evaluatorAudit)
                             ? formatDateOnly(
                                 performanceRatingDate?.evaluatorAudit
                               )
                             : projectPerformanceEvaluation[index]
                                 ?.actualPerformance !== 0 &&
-                              formatDateTime(new Date())}
+                                formatDateOnly(new Date())}
                         </small>
                       </td>
                       <td
@@ -600,13 +599,13 @@ const EffectivenessForm = ({
                           disabled={!isAfter}
                         />
                         <small className="mt-1 d-block">
-                          {isSubmitted
+                          {(isSubmitted &&performanceRatingDate?.evaluatorAudit)
                             ? formatDateOnly(
                                 performanceRatingDate?.evaluatorAudit
                               )
                             : projectPerformanceEvaluation[index]
                                 ?.evaluatedActualPerformance !== 0 &&
-                              formatDateTime(new Date())}
+                                formatDateOnly(new Date())}
                         </small>
                       </td>
                       {projectPerformanceEvaluation?.length > 1 &&
@@ -776,7 +775,7 @@ EffectivenessForm.propTypes = {
   onFinish: proptype.func,
   currentRouting: proptype.object,
   auditTrail: proptype.object,
-  isAdmin: proptype.boolean,
-  evaluate: proptype.boolean,
+  isAdmin: proptype.bool,
+  evaluate: proptype.bool,
 };
 export default EffectivenessForm;

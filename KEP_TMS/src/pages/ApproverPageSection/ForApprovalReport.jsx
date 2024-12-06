@@ -16,6 +16,7 @@ import trainingReportService from "../../services/trainingReportService";
 import commonService from "../../services/commonService";
 import ActivityStatus from "../../components/General/ActivityStatus";
 import proptype from "prop-types"
+import routingService from "../../services/common/routingService";
 const ForApprovalReport = ({data, refreshData}) => {
   const [trigger, setTrigger] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -143,7 +144,7 @@ const ForApprovalReport = ({data, refreshData}) => {
       body: actionTemplate,
     },
   ];
-  const currentStatus = report?.data?.currentRouting;
+  const currentStatus = routingService.getApproverStatus(report?.data?.routings, SessionGetEmployeeId());
   return (
     <div className="p-3">
       <SectionBanner
@@ -196,6 +197,7 @@ const ForApprovalReport = ({data, refreshData}) => {
           )}
         </Modal.Body>
         <Modal.Footer>
+          {/*  */}
           {currentStatus?.statusId === statusCode.FORAPPROVAL ? (
             <>
               <Button

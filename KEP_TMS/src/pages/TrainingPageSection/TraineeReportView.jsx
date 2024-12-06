@@ -47,7 +47,7 @@ const TraineeReportView = ({ data, refreshData, isTrainee, activityType }) => {
                   data?.durationInHours >=
                     OtherConstant.EFFECTIVENESS_MINHOUR && (
                     <>
-                      {effectiveness?.loading || userData?.loading ? (
+                      {effectiveness?.loading? (
                         <SkeletonForm />
                       ) : (
                         <EffectivenessForm
@@ -69,7 +69,7 @@ const TraineeReportView = ({ data, refreshData, isTrainee, activityType }) => {
                   (trainingDetailsService.checkIfTrainingEndsAlready(data) ? (
                     activityType === ActivityType.REPORT ? (
                       <>
-                        {report?.loading || userData?.loading ? (
+                        {report?.loading  ? (
                           <SkeletonForm />
                         ) : (
                           <TrainingReportForm
@@ -89,7 +89,7 @@ const TraineeReportView = ({ data, refreshData, isTrainee, activityType }) => {
                     ) : (
                       activityType === ActivityType.EVALUATION && (
                         <>
-                          {evaluation?.loading || userData?.loading ? (
+                          {evaluation?.loading  ? (
                             <SkeletonForm />
                           ) : (
                             <EvaluationForm

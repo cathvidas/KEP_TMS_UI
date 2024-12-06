@@ -25,7 +25,7 @@ const ApproverPage = () => {
     <ForApprovalRequest key={0} />,
     <ForApprovaleffectiveness key={1} data={data?.effectiveness} refreshData={refreshData}/>,
     <ForApprovalReport key={2} data={data?.reports} refreshData={refreshData}/>,
-    <ForEvaluationEffectiveness key={3}  data={data?.forEvaluation}/>,
+    <ForEvaluationEffectiveness key={3}  data={data?.forEvaluation} refreshData={refreshData}/>,
   ];
   const items = [
     {

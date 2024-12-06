@@ -8,7 +8,7 @@ import {
 
 const externalFacilitatorService = {
   getExternaFacilitatorById: async (id) => {
-    const response = await getExternalFacilitatorByIdApi(id);
+    const response = id && await getExternalFacilitatorByIdApi(id);
     return response?.status === 1 ? response?.data : {};
   },
   getPagedExternaFacilitator: async (pageNumber, pageSize, searchValue) => {

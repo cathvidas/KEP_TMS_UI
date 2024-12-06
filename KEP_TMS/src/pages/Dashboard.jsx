@@ -13,7 +13,6 @@ import SkeletonCards from "../components/Skeleton/SkeletonCards";
 import { APP_DOMAIN, UserTypeValue } from "../api/constants";
 import { TabPanel, TabView } from "primereact/tabview";
 import activityLogHook from "../hooks/activityLogHook";
-import { Skeleton } from "primereact/skeleton";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -186,13 +185,15 @@ const Dashboard = () => {
                                     <span className="text-secondary h5">
                                       {item.label}
                                     </span>
-                                    {item?.loading ? (
-                                      <i className="text-secondary pi pi-spin pi-spinner-dotted"></i>
-                                    ) : (
-                                      <span className="font-bold h4">
-                                        {item.value > 0 ? item.value : "0"}
-                                      </span>
-                                    )}
+                                    <span className="font-bold h4">
+                                      {item?.loading ? (
+                                        <i className="text-secondary pi pi-spin pi-spinner-dotted"></i>
+                                      ) : item.value > 0 ? (
+                                        item.value
+                                      ) : (
+                                        "0"
+                                      )}
+                                    </span>
                                   </div>
                                   <span
                                     className="p-3 ratio ratio-1x1 d-flex justify-content-center align-items-center text-center rounded-circle"

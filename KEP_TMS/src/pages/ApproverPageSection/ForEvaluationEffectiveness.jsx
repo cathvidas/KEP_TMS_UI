@@ -9,15 +9,20 @@ import SkeletonForm from "../../components/Skeleton/SkeletonForm";
 import { Card } from "react-bootstrap";
 import proptype from "prop-types";
 import userHook from "../../hooks/userHook";
+import routingService from "../../services/common/routingService";
+import { SessionGetEmployeeId } from "../../services/sessions";
+import { statusCode } from "../../api/constants";
 
-const ForEvaluationEffectiveness = ({data}) => {
+const ForEvaluationEffectiveness = ({data, refreshData}) => {
   const [trigger, setTrigger] = useState(0);
   const [selectedData, setSelectedData] = useState({});
   const [showForm, setShowForm] = useState(false);
   const effectivessDetail = effectivenessHook.useEffectivenessById(
-    selectedData?.trainingEffectiveness?.id
+    selectedData?.trainingEffectiveness?.id, trigger
   );
   const userDetail = userHook.useUserById(selectedData?.trainingEffectiveness?.employeeBadge);
+  
+  const currentRouting = routingService.getApproverStatus(effectivessDetail?.data?.routings, SessionGetEmployeeId());
   // const requestData = trainingRequestHook.useTrainingRequest(4);
   const actionTemplate = (rowData) => (
     <>
@@ -103,12 +108,13 @@ const ForEvaluationEffectiveness = ({data}) => {
                   onClick={() => {
                     setShowForm(false);
                     setSelectedData({});
+                    refreshData();
                   }}
                 />
               </div>
               
               <EffectivenessForm
-                evaluate
+                evaluate={currentRouting?.statusId === statusCode.TOUPDATE}
                 onFinish={() => setTrigger((prev) => prev + 1)}
                 data={selectedData?.trainingEffectiveness?.trainingRequest}
                 formData={effectivessDetail?.data}
@@ -126,5 +132,6 @@ const ForEvaluationEffectiveness = ({data}) => {
 };
 ForEvaluationEffectiveness.propTypes = {
   data: proptype.array,
+  refreshData: proptype.func,
 }
 export default ForEvaluationEffectiveness;

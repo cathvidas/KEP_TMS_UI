@@ -59,7 +59,7 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const trainings = trainingRequestHook.useUserTrainingsSummary(id);
   const facilitated = trainingRequestHook.useTrainingRequestByFacilitatorId(id);
-  const attended = trainingRequestHook.useTrainingRequestByTraineeId(id);
+  const attended = trainingRequestHook.useTrainingRequestByTraineeId(id, true);
   const [showCertForm, setShowCertForm] = useState(false);
   const [isFacilitator, setIsFacilitator] = useState(false);
   const [certificateTrainings, setCertificateTrainings] = useState(null);
