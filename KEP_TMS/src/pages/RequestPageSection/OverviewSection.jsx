@@ -230,10 +230,7 @@ const OverviewSection = ({
             <br />
             <hr />
             <div className="">
-              <SectionHeading
-                title="Routes"
-                icon={<FontAwesomeIcon icon={faUsers} />}
-              />
+              <h6 className="theme-color fw-bold">Routes</h6>
               <ApproverList
                 data={data}
                 activityType={ActivityType.REQUEST}
