@@ -137,6 +137,7 @@ const UserPage = () => {
       id={id}
       adminList={filterdata(UserTypeValue.ADMIN)}
       isAdmin={isAdmin}
+      options={options}
     />,
     <AllUserPageSection key={1} options={options} data={data} reloadData={refreshData} />,
     <AllUserPageSection

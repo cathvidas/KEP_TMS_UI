@@ -3,7 +3,7 @@ import userService from "../services/userService";
 import handleResponseAsync from "../services/handleResponseAsync";
 
 const userHook = {
-    useUserById: (id) => {
+    useUserById: (id, trigger) => {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ const userHook = {
         );
       };
       fetchData();
-    }, [id]);
+    }, [id, trigger]);
     return {
       data,
       error,

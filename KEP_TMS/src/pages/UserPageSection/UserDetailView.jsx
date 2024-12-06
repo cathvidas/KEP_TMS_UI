@@ -19,6 +19,8 @@ import { UserTypeValue } from "../../api/constants";
 import ErrorTemplate from "../../components/General/ErrorTemplate";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import commonService from "../../services/commonService";
+import NewUserForm from "../../components/forms/ModalForms/NewUserForm";
+import mapUserUpdateDetail from "../../services/DataMapping/mapUserUpdateDetails";
 const DetailItem = (data) => (
   <>
     <div className="flex py-1">
@@ -49,8 +51,10 @@ const AverageRateTemplate = ({ reqId, userId }) => {
   {loading ? error? <ErrorTemplate message={error}/> : <i className="pi pi-spinner pi-spin"></i>: <>{data ?? "No ratings Found"}</>}
   </>
 };
-const UserDetailView = ({ id, adminList, isAdmin }) => {
-  const { data, error, loading } = userHook.useUserById(id);
+const UserDetailView = ({ id, adminList, isAdmin , options}) => {
+  const [trigger, setTrigger] = useState(0);
+  const { data, error, loading } = userHook.useUserById(id, trigger);
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
   const trainings = trainingRequestHook.useUserTrainingsSummary(id);
   const facilitated = trainingRequestHook.useTrainingRequestByFacilitatorId(id);
   const attended = trainingRequestHook.useTrainingRequestByTraineeId(id);
@@ -99,6 +103,7 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
                   <DetailItem label="User Type" value={data?.roleName} />
                   <DetailItem label="Status" value={data?.statusName} />
                   <DetailItem label="Password" value={data?.password} />
+                  <Button type="button" icon="pi pi-user-edit" size="small" text label="Edit" onClick={() => setShowUpdateForm(true)}/>
                 </Col>
                 <Col className="border-start">
                   <h5 className="theme-color">Training Summary</h5>
@@ -213,6 +218,18 @@ const UserDetailView = ({ id, adminList, isAdmin }) => {
           </CardBody>
         </Card>
       )}
+      
+      <NewUserForm
+        showForm={showUpdateForm}
+        closeForm={setShowUpdateForm}
+        options={options}
+        defaultData={mapUserUpdateDetail(data, options?.options)}
+        headerTitle={"Update User Details"}
+        isUpdate
+        onFinish={()=>{setTrigger(prev=>prev + 1);
+          setShowUpdateForm(false);
+        }}
+      />
     </>
   );
 };
@@ -225,5 +242,6 @@ UserDetailView.propTypes = {
   id: proptype.string, // User Data
   adminList: proptype.array,
   isAdmin: proptype.bool,
+  options: proptype.object,
 };
 export default UserDetailView;

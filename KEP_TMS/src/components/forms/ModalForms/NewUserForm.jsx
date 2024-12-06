@@ -9,8 +9,9 @@ import validateUserDetails from "../../../services/inputValidation/validateUserD
 import { actionFailed, actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import userService from "../../../services/userService";
-import { SessionGetEmployeeId } from "../../../services/sessions";
-const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false, headerTitle, onFinish})=>{
+import { SessionGetEmployeeId, SessionGetRole } from "../../../services/sessions";
+import { UserTypeValue } from "../../../api/constants";
+const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false, headerTitle, onFinish, isAdmin = SessionGetRole()=== UserTypeValue.ADMIN})=>{
     const [formData, setFormData] = useState(userConstant);
     const [showPass, setShowPass] = useState(false);
     const [error, setError] = useState({});
@@ -82,6 +83,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                     value={formData.firstname}
                     name="firstname"
                     onChange={handleOnChange}
+                    disabled={isUpdate && !isAdmin}
                   />
                 }
               />
@@ -96,6 +98,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                     value={formData.lastname}
                     name="lastname"
                     onChange={handleOnChange}
+                    disabled={isUpdate && !isAdmin}
                   />
                 }
               />
@@ -110,6 +113,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                     value={formData.username}
                     name="username"
                     onChange={handleOnChange}
+                    disabled={isUpdate && !isAdmin}
                   />
                 }
               />
@@ -145,6 +149,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                     onChange={(e) =>
                       handleSelectOnChange("superiorBadge", e.value)
                     }
+                    isDisabled={isUpdate && !isAdmin}
                   />
                 }
               />
@@ -166,6 +171,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                     onChange={(e) =>
                       handleSelectOnChange("departmentId", e.value)
                     }
+                    isDisabled={isUpdate && !isAdmin}
                   />
                 }
               />
@@ -185,6 +191,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                         )
                       }
                       onChange={(e) => handleSelectOnChange("positionId", e.value)}
+                      isDisabled={isUpdate && !isAdmin}
                     />
                 }
               />
@@ -204,6 +211,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                     )
                   }
                   onChange={(e) => handleSelectOnChange("employeeTypeId", e.value)}
+                  isDisabled={isUpdate && !isAdmin}
                   />
                 }
               />
@@ -222,6 +230,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                         (x) => x.value === formData?.roleId
                       )
                     }
+                    isDisabled={isUpdate && !isAdmin}
                     onChange={(e) => handleSelectOnChange("roleId", e.value)}
                   />
                 }
@@ -260,6 +269,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
                         (x) => x.value === formData?.statusId
                       )
                     }
+                    isDisabled={isUpdate && !isAdmin}
                     onChange={(e) =>
                       handleSelectOnChange("statusId", e.value)
                     }
@@ -287,5 +297,6 @@ NewUserForm.propTypes = {
     defaultData: proptype.object,  // Default data for form
     headerTitle: proptype.string,
     onFinish: proptype.func,  // Function to handle form submission
+    isAdmin: proptype.bool, //
 }
 export default NewUserForm;
