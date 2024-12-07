@@ -54,10 +54,13 @@ const ExamDetails = ({ handleClose, traineeExam, examDetail, isAdmin , refreshDa
       <Card className={!handleClose && "border-0"}>
         <Card.Body>
           <div className="flex">
-            <h4 className="theme-color m-0 me-auto">{mappedDetail?.title}</h4>
+            <div className="me-auto">
+            <h4 className="theme-color m-0">{mappedDetail?.title}</h4>
+</div>
             {isAdmin && (
               <div>
                 <span className="fw-bold">Total takes: {mappedDetail?.examList?.length}</span>
+                {mappedDetail?.examList?.length > 0 &&
                 <div className="flex">
                 <Form.Check
                   checked={forRetake?.forRetake}
@@ -75,7 +78,7 @@ const ExamDetails = ({ handleClose, traineeExam, examDetail, isAdmin , refreshDa
                   htmlFor="disabled-retake-switch"
                 >
                   {!forRetake?.forRetake ? "Allow retake" : "Disable retake"}
-                </label></div>
+                </label></div>}
               </div>
             )}
             {handleClose && (
@@ -89,7 +92,7 @@ const ExamDetails = ({ handleClose, traineeExam, examDetail, isAdmin , refreshDa
             )}
           </div>
           <hr />
-          {mappedDetail?.examList?.map((traineeExamItem, i) => (
+          {mappedDetail?.examList?.length > 0 ? mappedDetail?.examList?.map((traineeExamItem, i) => (
             <>
               {((!viewLogs && i === 0) || viewLogs) && (
                 <Row>
@@ -224,7 +227,9 @@ const ExamDetails = ({ handleClose, traineeExam, examDetail, isAdmin , refreshDa
               </div>
               {i < mappedDetail?.examList?.length - 1 && viewLogs && <hr />}
             </>
-          ))}
+          )): <div className="text-center py-5">
+            Haven&apos;t taken the exam yet
+            </div>}
         </Card.Body>
       </Card>
     </>

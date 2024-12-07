@@ -10,7 +10,7 @@ import getPassingScore from "../../../utils/common/getPassingScore";
 import { SessionGetEmployeeId } from "../../../services/sessions";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import examService from "../../../services/examService";
-const TraineeExamForm = ({ data, examCount, closeForm, handleRefresh }) => {
+const TraineeExamForm = ({ data, closeForm, handleRefresh }) => {
   const [totalTime, setTotalTime] = useState(0);
   const [startExam, setStartExam] = useState(true);
   const [randomizeItem, setRandomizeItem] = useState([]);
@@ -95,20 +95,12 @@ const TraineeExamForm = ({ data, examCount, closeForm, handleRefresh }) => {
     handleResponseAsync(
       () => examService.saveTraineeExam(newData),
       () => {
-        sessionStorage.removeItem("examLog");
-        handleRefresh();
         ("");
-      }
+      },()=>{""}, 
+      ()=>{
+        handleRefresh();
+        sessionStorage.removeItem("examLog")}
     );
-  };
-  const retakeExam = () => {
-    randomizeExamQuestions();
-    setStartExam(true);
-    setTimer(0);
-    setCurrentIndex(0);
-    setChosenAnswer(null);
-    setAnswers([]);
-    setScore({ showScore: false, score: 0 });
   };
   useEffect(() => {
     const correctAnswers = answers.filter(

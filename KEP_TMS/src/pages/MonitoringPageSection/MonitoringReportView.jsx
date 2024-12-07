@@ -35,10 +35,7 @@ const MonitoringReportView = ({
           text
           className="rounded-circle"
           onClick={() => {
-            setSelectedData(
-              typeId === ActivityType.EXAM && examDetail
-                ? { user: rowData?.userDetail?.employeeBadge, exam: examDetail }
-                : rowData
+            setSelectedData(rowData
             );
             setShowForm(true);
           }}
@@ -107,7 +104,7 @@ const MonitoringReportView = ({
           icon="pi pi-eye"
           className="rounded "
           onClick={() => {
-            setSelectedData({ user: rowData?.userDetail?.employeeBadge, exam: examDetail }
+            setSelectedData({ userDetail: rowData?.userDetail, exam: examDetail }
             );
             setShowForm(true);
           }}
@@ -184,6 +181,7 @@ const MonitoringReportView = ({
     );
   };
   addcolumns();
+  console.log(selectedData)
   return (
     <>
       {!showForm ? (
@@ -220,13 +218,14 @@ const MonitoringReportView = ({
       ) : (
         <>
           <Card>
-            <Card.Header className="text-end">
+            <Card.Header className="flex ">
+              {selectedData?.userDetail?.fullname && <h5 className="m-0">{selectedData?.userDetail?.fullname}</h5>}
               <Button
                 type="button"
                 icon="pi pi-times"
                 size="small"
                 text
-                className="rounded-circle"
+                className="rounded-circle ms-auto"
                 onClick={() => setShowForm(false)}
               />
             </Card.Header>
@@ -239,7 +238,7 @@ const MonitoringReportView = ({
                         traineeExam={
                           getTraineeExamDetail(
                             item,
-                            selectedData?.user
+                            selectedData?.userDetail?.employeeBadge
                           )?.detail
                         }
                         refreshData={onRefresh}
