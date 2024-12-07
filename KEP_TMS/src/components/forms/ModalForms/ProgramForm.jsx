@@ -79,6 +79,7 @@ const ProgramForm = ({ handleShow, handleClose, selectedData, onReload }) => {
     e.preventDefault();
     if (validateForm()) {
       confirmAction({
+        showLoaderOnConfirm: true,
         title: selectedData != null ? "Update Program" : "Add Program",
         text:
           selectedData != null

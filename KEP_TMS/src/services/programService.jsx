@@ -1,4 +1,4 @@
-import { createProgramApi, deleteProgramApi, getAllProgramsApi, getProgramApi, updateProgramApi } from "../api/programApi";
+import { createProgramApi, deleteProgramApi, getAllProgramsApi, getPagedProgramApi, getProgramApi, updateProgramApi } from "../api/programApi";
 
 const programService ={
     getAllPrograms: async () => {
@@ -8,6 +8,18 @@ const programService ={
     getProgramById: async (id) => {
         const response = await getProgramApi(id);
         return response?.status === 1 ? response?.data: {};
+    },
+    getPagedPrograms: async (pageNumber, pageSize, searchValue) => {
+      try {
+        const response = await getPagedProgramApi(
+          pageNumber,
+          pageSize,
+          searchValue
+        );
+        return response;
+      } catch {
+        return {};
+      }
     },
     createProgram: async (program) => {
         const response = await createProgramApi(program);

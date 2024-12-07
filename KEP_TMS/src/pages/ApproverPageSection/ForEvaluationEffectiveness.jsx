@@ -21,7 +21,6 @@ const ForEvaluationEffectiveness = ({data, refreshData}) => {
     selectedData?.trainingEffectiveness?.id, trigger
   );
   const userDetail = userHook.useUserById(selectedData?.trainingEffectiveness?.employeeBadge);
-  
   const currentRouting = routingService.getApproverStatus(effectivessDetail?.data?.routings, SessionGetEmployeeId());
   // const requestData = trainingRequestHook.useTrainingRequest(4);
   const actionTemplate = (rowData) => (

@@ -6,14 +6,13 @@ import proptype from "prop-types";
 import { useEffect, useState } from "react";
 import { SectionHeading } from "../General/Section";
 import Select from "react-select";
-import { mapProviderListToOptionFormat } from "../../services/DataMapping/ProviderData";
 import { TrainingType } from "../../api/constants";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
+import providerHook from "../../hooks/providerHook";
 
 const TrainingCostForm = ({
   formData,
   handleResponse,
-  providersData,
   error,
 }) => {
   const [data, setFormData] = useState(formData);
@@ -28,13 +27,23 @@ const TrainingCostForm = ({
     size: 10,
     value: "",
   });
+  const [providerConfig, setProviderConfig] = useState({
+    page: 1,
+    size: 10,
+    value: "",
+  });
   const externalFacilitator =
     externalFacilitatorHook.usePagedExternalFacilitator(
       pageConfig.page,
       pageConfig.size,
       pageConfig.value
     );
-  // console.log(externalFacilitator, formData);
+    const providersData =
+      providerHook.usePagedProvider(
+        providerConfig.page,
+        providerConfig.size,
+        providerConfig.value
+      );
   useEffect(() => {
     if (externalFacilitator?.data?.results) {
       const newTrainerOptions = externalFacilitator.data.results.map(
@@ -58,6 +67,12 @@ const TrainingCostForm = ({
     }
   }, [externalFacilitator?.data]);
   useEffect(() => {
+  setProviders(providersData?.data?.results?.filter(item=> item?.status?.name === "Active")?.map(({ id, name }) => ({
+    label: name,
+    value: id,
+  })))
+  }, [providersData?.data?.results]);
+  useEffect(() => {
     if (handleResponse != null) {
       handleResponse(data);
     }
@@ -71,9 +86,6 @@ const TrainingCostForm = ({
       setFormData((prev) => ({ ...prev, cutOffDate: "", discountedRate: 0 }));
     }
   }, [withEarlyRate]);
-  useEffect(() => {
-    setProviders(mapProviderListToOptionFormat(providersData?.data));
-  }, [providersData]);
 
   useEffect(() => {
     setTotalCost(data.trainingParticipants?.length * cost);
@@ -114,10 +126,21 @@ const TrainingCostForm = ({
         required
         FieldComponent={
           <Select
-            isLoading={providersData?.isLoading}
-            value={providers.filter(
-              (x) => x.value === data.trainingProvider?.id
-            )}
+            isLoading={providersData?.loading}
+            value={
+              data?.trainingProvider?.id
+                ? {
+                    label: data?.trainingProvider?.name,
+                    value: data?.trainingProvider?.id,
+                  }
+                : ""
+            }
+            onMenuScrollToBottom={() =>
+              setProviderConfig((prev) => ({ ...prev, size: prev.size + 10 }))
+            }
+            onInputChange={(e) =>
+              setProviderConfig((prev) => ({ ...prev, value: e }))
+            }
             options={providers}
             onChange={(e) =>
               setFormData((obj) => ({
@@ -143,11 +166,23 @@ const TrainingCostForm = ({
               setPageConfig((prev) => ({ ...prev, size: prev.size + 10 }))
             }
             isMulti
-            value={data?.trainingFacilitators}
+            value={data?.trainingFacilitators?.map(({ faciDetail }) => ({
+              label: faciDetail?.name,
+              value: faciDetail?.id,
+            }))}
             options={trainerOptions}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, trainingFacilitators: e }))
-            }
+            onChange={(e) => {
+              console.log(e)
+              setFormData((obj) => ({
+                ...obj,
+                trainingFacilitators: e?.map(item=>({
+                  faciDetail: {
+                    id: item.value,
+                    name: item.label,
+                  }
+                }))
+              }));
+            }}
           />
         }
       />
@@ -160,7 +195,7 @@ const TrainingCostForm = ({
         <Col className="col-12 col-md-4">
           <FormFieldItem
             label="Training Fee"
-            subLabel={'(per pax)'}
+            subLabel={"(per pax)"}
             col={"col-md-10"}
             FieldComponent={
               <input

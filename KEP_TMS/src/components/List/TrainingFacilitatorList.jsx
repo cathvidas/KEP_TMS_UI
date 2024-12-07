@@ -5,7 +5,6 @@ import proptype from "prop-types"
 import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 import commonHook from "../../hooks/commonHook";
 const TrainingFacilitatorList = ({requestData, property})=>{
-  console.log(property)
   const internalfaci = requestData?.trainingType?.id === TrainingType.INTERNAL ? commonHook.useMappedInternalFacilitatorList(requestData?.trainingFacilitators):[];
   return (
     <>
@@ -25,5 +24,6 @@ const TrainingFacilitatorList = ({requestData, property})=>{
 }
 TrainingFacilitatorList.propTypes = {
   requestData: proptype.object.isRequired,
+  property: proptype.string
 }
 export default TrainingFacilitatorList;

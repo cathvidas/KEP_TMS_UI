@@ -70,6 +70,7 @@ const CommonTable = ({
           stripedRows
           dataKey={dataKey}
           rows={10}
+          emptyMessage="No records found"
           key={"id"}
           tableStyle={{ minWidth: "50rem" }}
           rowsPerPageOptions={[5, 10, 25, 50]}

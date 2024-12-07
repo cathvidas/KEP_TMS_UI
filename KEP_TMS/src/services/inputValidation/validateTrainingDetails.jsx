@@ -3,12 +3,12 @@ const validateTrainingDetails = (details) => {
     const newErrors = {};
   
     if (!details?.trainingCategory?.id) {
-      newErrors.categoryId = "This field is required.";
+      newErrors.trainingCategory = "This field is required.";
       hasErrors = true;
     }
   
     if (!details?.trainingProgram?.id) {
-      newErrors.trainingProgramId = "This field is required.";
+      newErrors.trainingProgram = "This field is required.";
       hasErrors = true;
     }
   

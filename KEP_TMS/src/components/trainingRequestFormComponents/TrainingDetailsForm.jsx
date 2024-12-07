@@ -6,13 +6,21 @@ import Select from "react-select";
 import { SectionHeading } from "../General/Section";
 import proptype from "prop-types";
 import { useEffect, useState } from "react";
-const TrainingDetailsForm = ({ handleResponse, formData , error, programs, categories}) => {
+import programHook from "../../hooks/programHook";
+const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) => {
   const [details, setDetails] = useState(formData);
   const [options, setOptions] = useState({ programs: [], categories: [] });
   const [errors, setErrors] = useState(error);
-  
+  const [pageConfig, setPageConfig] = useState({
+    page: 1,
+    size: 10,
+    value: "",
+  });
+  const programs = programHook.usePagedPrograms(pageConfig.page,
+    pageConfig.size,
+    pageConfig.value)
   useEffect(() => {
-    const mappedPrograms = programs?.data?.map(({ id, name }) => ({
+    const mappedPrograms = programs?.data?.results?.filter(item=> item?.statusName === "Active")?.map(({ id, name }) => ({
       label: name,
       value: id,
     }));
@@ -24,7 +32,7 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, programs, categ
       programs: mappedPrograms,
       categories: mappedCategories,
     });
-  }, [programs?.loading, categories?.loading]);
+  }, [programs?.data?.results, categories?.data]);
   useEffect(()=>{
     setErrors(error);
   },[error])
@@ -41,7 +49,6 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, programs, categ
     setErrors({ ...errors, [name]: value ? "" : "This field is required." });
     setDetails((obj) => ({ ...obj, [name]: value }));
   };
-  
   return (
     <>
       <Row className="">
@@ -51,24 +58,31 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, programs, categ
         />
         <FormFieldItem
           required
-          error={errors?.trainingProgramId}
+          error={errors?.trainingProgram}
           col="col-md-6"
           label={"Program"}
           FieldComponent={
             <Select
+            onInputChange={(e) =>
+              setPageConfig((prev) => ({ ...prev, value: e }))
+            }
+            onMenuScrollToBottom={() =>
+              setPageConfig((prev) => ({ ...prev, size: prev.size + 10 }))
+            }
             isLoading={programs?.loading ? true : false}
               options={options.programs}
               name="TProgram"              
-              value={options.programs.filter(
-                (x) => x.value === details.trainingProgram?.id
-              )}
+              value={details?.trainingProgram?.id ? {
+                label: details?.trainingProgram?.name,
+                value: details?.trainingProgram?.id,
+              }: ""}
               onChange={(e) => handleOnChange("trainingProgram", {id: e.value, name: e.label})}
             />
           }
         />
         <FormFieldItem
           required
-          error={errors?.categoryId}
+          error={errors?.trainingCategory}
           col="col-md-6"
           label={"Category"}
           FieldComponent={

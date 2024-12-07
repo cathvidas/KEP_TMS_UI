@@ -38,7 +38,33 @@ const providerHook = {
       getProgram();
     }, [id]);
     return { data, error, loading };
-  }
+  },
+  usePagedProvider: (pageNumber, pageSize, searchValue, trigger) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequest = async () => {
+        handleResponseAsync(
+          () =>
+            providerService.getPagedProviders(
+              pageNumber,
+              pageSize,
+              searchValue
+            ),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      getRequest();
+    }, [pageNumber, pageSize, searchValue, trigger]);
+    return {
+      data,
+      error,
+      loading,
+    };
+  },
 };
 
 export default providerHook;

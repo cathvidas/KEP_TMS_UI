@@ -91,6 +91,7 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
     const isValid = validateForm();
     if (isValid) {
       confirmAction({
+        showLoaderOnConfirm: true,
         title: isUpdate ? "Update Provider" : "Add Provider",
         text:
           selectedData != null

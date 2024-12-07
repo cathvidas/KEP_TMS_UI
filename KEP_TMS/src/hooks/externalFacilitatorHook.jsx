@@ -51,11 +51,10 @@ const externalFacilitatorHook = {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequest = async () => {
-        console.log(facilitatorList, property)
         try {
           const response = await Promise.all(
             facilitatorList?.map((facilitator) => {
-              return externalFacilitatorService.getExternaFacilitatorById(facilitator[property]);
+              return externalFacilitatorService.getExternaFacilitatorById(facilitator?.faciDetail?.id ?? facilitator?.externalFacilitatorId ?? facilitator[property]);
             })
           );
           setData(response);

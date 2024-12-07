@@ -7,11 +7,20 @@ import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
+import { Paginator } from "primereact/paginator";
 
 const ProgramListSection = () => {
   const [visible, setVisible] = useState({ detail: false, form: false });
   const [trigger, setTrigger] = useState(0);
-  const { data, error, loading } = programHook.useAllPrograms(false, trigger);
+  const [paginatorConfig, setPaginatorConfig] = useState({
+    first: 0,
+    rows: 10,
+    page: 1,
+    value:null,
+  });
+  
+  const { data, error, loading } = programHook.usePagedPrograms(paginatorConfig.page, paginatorConfig.rows, paginatorConfig.value, trigger);
+  // const { data, error, loading } = programHook.useAllPrograms(false, trigger);
   const [selectedData, setSelectedData] = useState({});
 
   const actionTemplate = (rowData) => (
@@ -24,7 +33,9 @@ const ProgramListSection = () => {
           icon="pi pi-eye"
           severity="help"
           className="rounded-circle"
-          onClick={() => handleOnclick(rowData.id)}
+          onClick={() => {setSelectedData(rowData);
+            setVisible({ ...visible, detail: true });
+          }}
         />
         <Button
           type="button"
@@ -32,19 +43,14 @@ const ProgramListSection = () => {
           text
           icon="pi pi-pen-to-square"
           className="rounded-circle"
-          onClick={() => handleOnclick(rowData.id, true)}
+          onClick={() => {setSelectedData(rowData);
+            setVisible({ ...visible, form: true });
+          }}
         />
         {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
       </div>
     </>
   );
-  const handleOnclick = (id, isUpdate = false) => {
-    const selected = data.find((x) => x.id === id);
-    setSelectedData(selected);
-    setVisible(
-      isUpdate ? { detail: false, form: true } : { detail: true, form: false }
-    );
-  };
   // const handleDelete = (id) => {
   //     confirmAction({
   //       title: "Confirm Deletion",
@@ -121,9 +127,33 @@ const ProgramListSection = () => {
         <>
           <CommonTable
             headerComponent={header}
-            dataTable={data}
+            dataTable={data?.results}
             title="Programs"
             columnItems={columnItems}
+            hidePaginator
+            hideOnEmpty={false}
+            onInputChange={(e)=>
+              setPaginatorConfig((prev) => ({
+                ...prev,
+                value: e,
+                page: 1,
+                first: 0,
+              }))}
+          />
+          <Paginator
+            first={paginatorConfig?.first ?? 1}
+            pageLinkSize={5}
+            rows={paginatorConfig.rows}
+            totalRecords={data?.totalRecords}
+            rowsPerPageOptions={[10, 20, 30, 50, 100]}
+            onPageChange={(e) =>
+              setPaginatorConfig((prev) => ({
+                ...prev,
+                first: e.first,
+                rows: e.rows,
+                page: e.page+1,
+              }))
+            }
           />
           <ProgramForm
             handleShow={visible.form}

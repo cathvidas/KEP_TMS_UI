@@ -25,7 +25,6 @@ import { formatDateTime } from "../../utils/datetime/Formatting";
 import { statusCode, TrainingType, UserTypeValue } from "../../api/constants";
 import TrainingParticipantsForm from "../trainingRequestFormComponents/TrainingParticipantsForm";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
-import programHook from "../../hooks/programHook";
 import categoryHook from "../../hooks/categoryHook";
 import providerHook from "../../hooks/providerHook";
 import commonHook from "../../hooks/commonHook";
@@ -38,7 +37,6 @@ import { SectionHeading } from "../General/Section";
 export const TrainingRequestForm = () => {
   const trainingType = useParams().type;
   const requestId = useParams().id;
-  const programs = programHook.useAllPrograms(true);
   const categories = categoryHook.useAllCategories(true);
   const providers = providerHook.useAllProviders(true);
   const departments = commonHook.useAllDepartments();
@@ -330,7 +328,6 @@ export const TrainingRequestForm = () => {
                     handleResponse={handleResponse}
                     formData={formData}
                     error={errors?.details}
-                    programs={programs}
                     categories={categories}
                   />
                   <TrainingScheduleForm
@@ -350,7 +347,7 @@ export const TrainingRequestForm = () => {
                   />
                   {<StepperButton back={true} next={true} index={1} />}
                 </StepperPanel>
-                {getTrainingTypeId() === TrainingType.EXTERNAL && (
+                {formData?.trainingType?.id === TrainingType.EXTERNAL && (
                   <StepperPanel header="Cost">
                     <TrainingCostForm
                       formData={formData}

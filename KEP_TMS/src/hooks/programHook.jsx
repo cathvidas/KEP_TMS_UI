@@ -38,7 +38,33 @@ const programHook = {
       getProgram();
     }, [id]);
     return { data, error, loading };
-  }
+  },
+  usePagedPrograms: (pageNumber, pageSize, searchValue, trigger) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequest = async () => {
+        handleResponseAsync(
+          () =>
+            programService.getPagedPrograms(
+              pageNumber,
+              pageSize,
+              searchValue
+            ),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      getRequest();
+    }, [pageNumber, pageSize, searchValue, trigger]);
+    return {
+      data,
+      error,
+      loading,
+    };
+  },
 };
 
 export default programHook;

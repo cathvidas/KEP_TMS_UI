@@ -11,7 +11,6 @@ import sortSchedules from "../../utils/SortSchedule";
 import TrainingFacilitatorList from "../List/TrainingFacilitatorList";
 
 const TrainingSummary = ({ formData , update}) => {
-  console.log(formData)
   const [updatedData, setUpdatedData] = useState(formData);
   useEffect(()=>{
     const startDate = sortSchedules(formData?.trainingDates)[0]?.date;
@@ -62,6 +61,6 @@ const TrainingSummary = ({ formData , update}) => {
 };
 TrainingSummary.propTypes = {
   formData: proptype.object,
-  handleResponse: proptype.func,
+  update: proptype.bool
 };
 export default TrainingSummary;

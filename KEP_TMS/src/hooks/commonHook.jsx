@@ -4,7 +4,6 @@ import handleResponseAsync from "../services/handleResponseAsync";
 import trainingRequestService from "../services/trainingRequestService";
 import trainingReportService from "../services/trainingReportService";
 import effectivenessService from "../services/effectivenessService";
-import trainingDetailsService from "../services/common/trainingDetailsService";
 import { statusCode } from "../api/constants";
 import userMapping from "../services/DataMapping/userMapping";
 import externalFacilitatorService from "../services/externalFacilitatorService";
@@ -39,7 +38,6 @@ const commonHook = {
             await trainingRequestService.getTrainingRequestByApprover(id);
           const effectiveness =
             await effectivenessService.getApproverAssignedEffectiveness(id);
-            console.log(effectiveness);
           const reports =
             await trainingReportService.getApproverAssignedReports(id);
        
@@ -50,7 +48,7 @@ const commonHook = {
           const forEvaluation = effectiveness?.filter(
             (item) =>
               item.routingActivity?.statusId === statusCode.TOUPDATE &&
-              new Date(item?.trainingEffectiveness?.trainingRequest?.trainingEndDate) <= new Date(new Date().setMonth(new Date().getMonth() - 6))
+              new Date(item?.trainingEffectiveness?.trainingRequest?.trainingEndDate) <= new Date(new Date().setMonth(new Date().getMonth() - 6)) && item.routingActivity?.assignedTo !== id
           );
           
           setData({
@@ -198,7 +196,6 @@ const commonHook = {
       };
       fetchData();
     }, [faciList]);
-    console.log(data, error)
     return { data, error, loading };
   },
   useFormattedFacilitatorList: (faciList)=>{
@@ -212,7 +209,6 @@ const commonHook = {
             const faciNames = await Promise.all(faciList?.map(async faci=>{
               if(faci?.isExternal){
                 const faciDetail = await externalFacilitatorService.getExternaFacilitatorById(faci?.externalFacilitatorId);
-                console.log(faciDetail)
                 return faciDetail?.name;
               }else{
                 const userDetail = await userService.getUserById(faci?.facilitatorBadge);

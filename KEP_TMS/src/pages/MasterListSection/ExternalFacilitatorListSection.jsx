@@ -23,9 +23,8 @@ const ExternalFacilitatorListSection = () => {
     value:null,
   });
   
-  const { data, loading } = externalFacilitatorHook.usePagedExternalFacilitator(paginatorConfig.page, paginatorConfig.rows, paginatorConfig.value, trigger);
+  const { data,error, loading } = externalFacilitatorHook.usePagedExternalFacilitator(paginatorConfig.page, paginatorConfig.rows, paginatorConfig.value, trigger);
   const [selectedData, setSelectedData] = useState({});
-  console.log(data, paginatorConfig)
   const actionTemplate = (rowData) => (
     <>
       <div className="d-flex">
@@ -137,15 +136,17 @@ const ExternalFacilitatorListSection = () => {
           <SkeletonBanner />
           <SkeletonDataTable />
         </>
+      ) :error ? (
+        <p>Error while processing your request</p>
       ) : (
         <>
           <CommonTable
           headerComponent={header}
             dataTable={data?.results}
-            title="Programs"
+            title="External Facilitators"
             columnItems={columnItems}
             hidePaginator
-            hideOnEmpty
+            hideOnEmpty={false}
             onInputChange={(e)=>
               setPaginatorConfig((prev) => ({
                 ...prev,

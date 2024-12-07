@@ -1,4 +1,4 @@
-import { createProviderApi, deleteProviderApi, getAllProvidersApi, getProviderById, updateProviderApi } from "../api/providerApi"
+import { createProviderApi, deleteProviderApi, getAllProvidersApi, getPagedProviderApi, getProviderById, updateProviderApi } from "../api/providerApi"
 
 const providerService ={
     getProviderById: async (id)=>{
@@ -8,6 +8,18 @@ const providerService ={
     getAllProviders: async ()=>{
         const response = await getAllProvidersApi();
         return response?.status === 1 ? response?.data: [];
+    },
+    getPagedProviders: async (pageNumber, pageSize, searchValue) => {
+      try {
+        const response = await getPagedProviderApi(
+          pageNumber,
+          pageSize,
+          searchValue
+        );
+        return response;
+      } catch {
+        return {};
+      }
     },
     updateProvider: async (data)=>{
         const response = await updateProviderApi(data);

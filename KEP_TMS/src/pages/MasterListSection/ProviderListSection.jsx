@@ -8,11 +8,20 @@ import providerHook from "../../hooks/providerHook";
 import ProviderForm from "../../components/forms/ModalForms/ProviderForm";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 import { checkIfNullOrEmpty } from "../../utils/stringUtil";
+import { Paginator } from "primereact/paginator";
 
 const ProviderListSection = () => {
   const [trigger, setTrigger] = useState(0);
   const [visible, setVisible] = useState({ detail: false, form: false });
-  const { data, loading } = providerHook.useAllProviders(false, trigger);
+  const [paginatorConfig, setPaginatorConfig] = useState({
+    first: 0,
+    rows: 10,
+    page: 1,
+    value:null,
+  });
+  
+  const { data, error,loading } = providerHook.usePagedProvider(paginatorConfig.page, paginatorConfig.rows, paginatorConfig.value, trigger);
+  // const { data, loading } = providerHook.useAllProviders(false, trigger);
   const [selectedData, setSelectedData] = useState({});
   const actionTemplate = (rowData) => (
     <>
@@ -54,6 +63,7 @@ const ProviderListSection = () => {
     }
     return "";
   };
+  console.log(data?.results)
   const formatAddressDetail = (rowData) => {
     let value = "";
     value = concatenateValue(value, rowData?.address?.building);
@@ -92,6 +102,7 @@ const ProviderListSection = () => {
     {
       field: "statusName",
       header: "Status",
+      body: (rowData) => <>{rowData?.status?.name ?? "N/A"}</>,
     },
     {
       field: "",
@@ -127,13 +138,39 @@ const ProviderListSection = () => {
           <SkeletonBanner />
           <SkeletonDataTable />
         </>
-      ) : (
+      ) :error ? (
+        <p>Error while processing your request</p>
+      ) :  (
         <>
           <CommonTable
             headerComponent={header}
-            dataTable={data}
+            dataTable={data?.results}
             title="Providers"
             columnItems={columnItems}
+            hidePaginator
+            hideOnEmpty={false}
+            onInputChange={(e)=>
+              setPaginatorConfig((prev) => ({
+                ...prev,
+                value: e,
+                page: 1,
+                first: 0,
+              }))}
+          />
+          <Paginator
+            first={paginatorConfig?.first ?? 1}
+            pageLinkSize={5}
+            rows={paginatorConfig.rows}
+            totalRecords={data?.totalRecords}
+            rowsPerPageOptions={[10, 20, 30, 50, 100]}
+            onPageChange={(e) =>
+              setPaginatorConfig((prev) => ({
+                ...prev,
+                first: e.first,
+                rows: e.rows,
+                page: e.page+1,
+              }))
+            }
           />
           <ProviderForm
             handleShow={visible.form}
@@ -152,45 +189,47 @@ const ProviderListSection = () => {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <h6>Name: </h6>
-              <p>{selectedData?.name}</p>
-              <h6>Category: </h6>
-              <p>{selectedData?.categoryName}</p>
-              <h6>Address: </h6>
               <p>
-                <i>Building: </i> {selectedData?.address?.building}
+              <strong>Name: </strong>
+              {selectedData?.name}</p>
+              <strong>Category: </strong>
+              <p>
+              {selectedData?.categoryName}</p>
+              <strong>Address: </strong>
+              <p>
+                <i>Building: </i> {selectedData?.address?.building ?? "N/A"}
               </p>
               <p>
-                <i>Street: </i> {selectedData?.address?.street}
+                <i>Street: </i> {selectedData?.address?.street ?? "N/A"}
               </p>
               <p>
-                <i>Barangay: </i> {selectedData?.address?.barangay}
+                <i>Barangay: </i> {selectedData?.address?.barangay ?? "N/A"}
               </p>
               <p>
-                <i>Landmark: </i> {selectedData?.address?.landmark}
+                <i>Landmark: </i> {selectedData?.address?.landmark ?? "N/A"}
               </p>
               <p>
                 <i>City/Municipality: </i>{" "}
-                {selectedData?.address?.city_Municipality}
+                {selectedData?.address?.city_Municipality ?? "N/A"}
               </p>
               <p>
-                <i>Province: </i> {selectedData?.address?.province}
+                <i>Province: </i> {selectedData?.address?.province ?? "N/A"}
               </p>
               <p>
-                <i>Country: </i> {selectedData?.address?.country}
+                <i>Country: </i> {selectedData?.address?.country ?? "N/A"}
               </p>
               <p>
-                <i>Postal Code: </i> {selectedData?.address?.postalCode}
+                <i>Postal Code: </i> {selectedData?.address?.postalCode ?? "N/A"}
               </p>
-              <h6>Status: </h6>
-              <p>{selectedData?.statusName}</p>
-              <h6 className="m-0">Created: </h6>
+              <strong>Status:</strong>
+              {selectedData?.statusName ?? selectedData?.status?.name}
               <p>
+              <strong>Created: </strong>
                 {formatDateOnly(selectedData?.createdDate)} by{" "}
                 {selectedData?.createdBy}
               </p>
-              <h6 className="m-0">Updated: </h6>
               <p>
+              <strong>Updated: </strong>
                 {formatDateOnly(selectedData?.updatedDate)} by{" "}
                 {selectedData?.updatedBy}
               </p>
