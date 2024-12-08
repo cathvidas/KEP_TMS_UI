@@ -132,7 +132,7 @@ const TraineeExamForm = ({ data, closeForm, handleRefresh }) => {
           <div className="flex flex-wrap justify-content-end gap-1 mb-3">
             <div className="me-auto">
               <h4 className="m-0">{data?.title}</h4>
-              <small>{formatSeconds(timer)}</small>
+              {/* <small>{formatSeconds(timer)}</small> */}
             </div>
             <div className="flex flex-wrap justify-content-end gap-1">
               {randomizeItem?.map((_, index) => (
@@ -200,7 +200,7 @@ const TraineeExamForm = ({ data, closeForm, handleRefresh }) => {
                   }
                 />
               </div>
-              <h5>Total Time: {formatSeconds(totalTime, true)}</h5>
+              {/* <h5>Total Time: {formatSeconds(totalTime, true)}</h5> */}
               <br />
               <Button
                 type="button"
