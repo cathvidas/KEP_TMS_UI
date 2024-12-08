@@ -128,7 +128,7 @@ const CertificateForm = ({
       }
       newData.append("EmployeeBadge", (userOptions && formData?.user?.value) ? formData?.user?.value :userId);
       newData.append("CreatedBy", SessionGetEmployeeId());
-      newData.append("Detail", formData.certificateDetail);
+      newData.append("Detail", formData.certificateDetail ?? "");
 
       confirmAction({
         showLoaderOnConfirm: true,
@@ -215,7 +215,7 @@ const CertificateForm = ({
           <Row>
             {(!oldTraining || update) && (
               <FormFieldItem
-                label={"Training Name"}
+                label={"Training Program"}
                 required
                 error={errors.training}
                 FieldComponent={

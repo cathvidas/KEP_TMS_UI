@@ -122,7 +122,6 @@ export const GenerateTrainingDates = (trainings) => {
         dates.push({ year: year, month: [{ month: month, days: [day] }] });
       }
     });
-    console.log(dates, trainings);
   }
   const dateString = dates.map((item) => {
     return item.month
