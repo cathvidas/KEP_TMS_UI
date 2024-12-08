@@ -12,7 +12,7 @@ const CertificatesList = ({ userId, trainings }) => {
   const [showCerticateDetail, setShowCerticateDetail] = useState(false);
   const [selectedData, setSelectedData] = useState({});
   const [showModal, setShowModal] = useState(false);
-  const [trigger, setTrigger] = useState({});
+  const [trigger, setTrigger] = useState(0);
   const [trainingsOption, setTrainingsOption] = useState([]);
   const [dataToUpdate, setDataToUpdate] = useState(null);
   const certificates = certificateHook.useAllTraineeCertificates(

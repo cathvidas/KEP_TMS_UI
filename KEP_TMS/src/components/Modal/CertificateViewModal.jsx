@@ -163,6 +163,7 @@ const CertificateViewModal = ({ data, hideModalFunction, onFinish, onUpdate, hid
                             src={`${API_BASE_URL}/Attachment/GetCertificateFile?attachmentId=${e?.id}`}
                             alt="Image"
                             width="100%"
+                            height="100%"
                           className="object-fit-cover h-100 w-100"
                             preview
                           />

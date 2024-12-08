@@ -160,10 +160,14 @@ const CertificateForm = ({
         handleResponseAsync(
           () => certificateService.updateCertificate(updatedData),
           () => {
-            "";
+            if(files.length > 0){
+              uploadNewAttachments()}else{
+                actionSuccessful("Success", "Certificate updated successfully");
+                onFinish(true);
+                setUpdate(false);
+              }
           },
           null,
-          uploadNewAttachments()
         );
       },
     });
@@ -199,7 +203,7 @@ const CertificateForm = ({
           () => attachmentService.deleteAttachment(id),
           null,
           null,
-          onFinish(false)
+          onFinish(true)
         );
       },
     });
@@ -249,7 +253,7 @@ const CertificateForm = ({
                   type="text"
                   className="form-control"
                   placeholder="Certificate name or details..."
-                  value={formData?.certificateDetail}
+                  value={formData?.certificateDetail ?? ""}
                   onChange={(e) =>
                     setFormData({
                       ...formData,

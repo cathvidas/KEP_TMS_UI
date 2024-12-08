@@ -196,7 +196,7 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
                     <TabPanel header={"Certificates"}>
                       <CertificatesList
                         userId={id}
-                        trainings={certificateTrainings}
+                        trainings={attended?.data}
                       />
                     </TabPanel>
                   </TabView>
