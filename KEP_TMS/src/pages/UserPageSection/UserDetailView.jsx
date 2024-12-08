@@ -25,7 +25,7 @@ import mapUserUpdateDetail from "../../services/DataMapping/mapUserUpdateDetails
 const DetailItem = (data) => (
   <>
     <div className="flex py-1">
-      <h6 className={`mb-0 ${data?.className}`}>{data.label}:</h6>
+      <h6 className={`mb-0 fw-bold ${data?.className}`}>{data.label}:</h6>
       {data.value && <span>{data.value}</span>}
       {data.user && <span>{userHook.useUserById(data.user)?.data?.fullname ?? data?.user}</span>}
       {data.badge && <Badge value={data.badge} />}
@@ -115,7 +115,7 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
                 <Col className="border-start">
                   <h5 className="theme-color">Training Summary</h5>
                   <hr />
-                  <h6>Trainings Attended:</h6>
+                  <h6 className="theme-color fw-bold">Trainings Attended:</h6>
                   <DetailItem
                     label="No of Trainings"
                     badge={attended?.data?.length}
@@ -127,7 +127,7 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
                     className="text-muted"
                   />
                   <br />
-                  <h6>Trainings Facilitated:</h6>
+                  <h6 className="theme-color fw-bold">Trainings Facilitated:</h6>
                   <DetailItem
                     label="No of Trainings"
                     badge={facilitated?.data?.length}
