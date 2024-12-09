@@ -82,12 +82,12 @@ const examHook = {
                   item.id
                 );
                 traineeExam?.map(item=>{
-                  const isExist = traineeExamList.find((x) => x.traineeId === item.createdBy);
+                  const isExist = traineeExamList?.find((x) => x.traineeId === item.trainingParticipantId);
                   if(isExist){
-                    isExist.examList.push(item);
+                    isExist.examList = [...isExist.examList, item]
                   }else{
                     traineeExamList.push({
-                      traineeId: item.createdBy,
+                      traineeId: item.trainingParticipantId,
                       examList: [item],
                     }
                     )

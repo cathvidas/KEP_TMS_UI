@@ -3,7 +3,6 @@ import { ActivityType, statusCode } from '../../api/constants';
 import commonHook from '../../hooks/commonHook';
 import countData from '../../utils/countData';
 const RequestStatusColumn = ({value})=>{
-  console.log(value)
     const currentRouting = commonHook.useCurrentRouting(value?.id, ActivityType.REQUEST);
     return (
       <>
