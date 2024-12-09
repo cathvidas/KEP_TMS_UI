@@ -1,6 +1,6 @@
 import proptype from "prop-types";
 import { useEffect, useState } from "react";
-import { Form, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { Button } from "primereact/button";
 import { FormFieldItem } from "../../trainingRequestFormComponents/FormElements";
 import ErrorTemplate from "../../General/ErrorTemplate";
@@ -66,13 +66,20 @@ handleUpdateQuestion
   const handleAddOption = () => {
     if (option?.content) {
       const newOptions = details?.answerOptions ?? [];
-      newOptions.push(option);
-      setDetails({
-        ...details,
-        answerOptions: newOptions,
-      });
-      setOption({ content: "", isCorrect: false });
-      setErrors({ ...errors, option: "" });
+      option.content = option.content.trim();
+      const isExist = newOptions.find((x) => x.content === option.content);
+      if (!isExist) {
+        newOptions.push(option);
+        setDetails({
+          ...details,
+          answerOptions: newOptions,
+        });
+        setOption({ content: "", isCorrect: false });
+        setErrors({ ...errors, option: "" });
+        
+      }else{
+        setErrors({ ...errors, option: "Option already exist" });
+      }
     } else {
       setErrors({ ...errors, option: "Please input an option" });
     }
@@ -89,8 +96,7 @@ handleUpdateQuestion
   };
   return (
     <>
-      <Modal show={showModal} onHide={() => {closeModal(); removeFormData()
-      }}>
+      <Modal show={showModal} >
         <Modal.Header className="border-0" closeButton>
           <Modal.Title className={`h5 theme-color`}>{`${defaultData ? "Update" : "Add"} Item`} </Modal.Title>
         </Modal.Header>
