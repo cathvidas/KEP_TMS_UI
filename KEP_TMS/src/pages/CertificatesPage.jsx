@@ -4,10 +4,7 @@ import { SessionGetEmployeeId } from "../services/sessions";
 import CertificatesList from "../components/certificate/CertificatesList";
 import SkeletonList from "../components/Skeleton/SkeletonList";
 const CertificatesPage = () => {
-  const { data, loading } = trainingRequestHook.useUserTrainingsSummary(
-    SessionGetEmployeeId()
-  );
-
+  const { data, loading } = trainingRequestHook.useTrainingRequestByTraineeId(SessionGetEmployeeId(), true);
   const contentBody = () => (
     <>
       {loading ? (
@@ -16,7 +13,7 @@ const CertificatesPage = () => {
         <div className="px-3">
           <CertificatesList
             userId={SessionGetEmployeeId()}
-            trainings={data?.attended}
+            trainings={data}
           />
         </div>
       )}

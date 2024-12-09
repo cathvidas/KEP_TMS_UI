@@ -76,7 +76,6 @@ handleUpdateQuestion
         });
         setOption({ content: "", isCorrect: false });
         setErrors({ ...errors, option: "" });
-        
       }else{
         setErrors({ ...errors, option: "Option already exist" });
       }
