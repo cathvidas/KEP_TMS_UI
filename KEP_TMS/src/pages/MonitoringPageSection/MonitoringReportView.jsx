@@ -257,7 +257,7 @@ const MonitoringReportView = ({
                   <EffectivenessForm
                     data={data}
                     userData={selectedData?.userDetail}
-                    formData={selectedData[reportType]}
+                    formData={selectedData?.effectivenessDetail}
                     currentRouting={
                       selectedData?.effectivenessDetail?.currentRouting
                     }
@@ -274,7 +274,6 @@ const MonitoringReportView = ({
                     data={data}
                     userData={selectedData?.userDetail}
                     defaultValue={selectedData[reportType]}
-                    // currentRouting={{}}
                     isSubmitted
                     isAdmin
                     auditTrail={
@@ -289,7 +288,7 @@ const MonitoringReportView = ({
                   <EvaluationForm
                     data={data}
                     userData={selectedData?.userDetail}
-                    formData={selectedData[reportType]}
+                    defaultValue={selectedData?.evaluationDetail}
                   />
                 )}
               </>
