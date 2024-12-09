@@ -157,7 +157,7 @@ const Dashboard = () => {
                   header={
                     SessionGetRole() === UserTypeValue.ADMIN ||
                     SessionGetRole() === UserTypeValue.REQUESTOR
-                      ? "Trainings"
+                      ? "Activities"
                       : ""
                   }
                 >
