@@ -135,7 +135,7 @@ const MonitoringReportView = ({
             body: (rowData) => (
               <>
                 {typeId === ActivityType.EVALUATION
-                  ? rowData[reportType]?.status
+                  ? rowData[reportType]?.status ?? "Not yet submitted"
                   : StatusColor({
                       status:
                         getStatusById(
@@ -181,7 +181,6 @@ const MonitoringReportView = ({
     );
   };
   addcolumns();
-  console.log(selectedData)
   return (
     <>
       {!showForm ? (
