@@ -14,7 +14,14 @@ import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import certificateService from "../../services/certificateService";
 import { Image } from "primereact/image";
-const CertificateViewModal = ({ data, hideModalFunction, onFinish, onUpdate, hideHeader, customHeader }) => {
+const CertificateViewModal = ({
+  data,
+  hideModalFunction,
+  onFinish,
+  onUpdate,
+  hideHeader,
+  customHeader,
+}) => {
   const [showPDF, setShowPDF] = useState(false);
   const [selectedItem, setSlectedItem] = useState({});
   const removeCertificate = (id) => {
@@ -90,10 +97,33 @@ const CertificateViewModal = ({ data, hideModalFunction, onFinish, onUpdate, hid
             <>
               {(!hideHeader || (hideHeader && index !== 0)) && <hr />}
               <div className="flex justify-content-between">
-                <h5 className="theme-color m-0">
-                  <i className="pi pi-info-circle"></i> &nbsp;
-                  {item?.detail}
-                </h5>
+                <div className="me-auto">
+                  <h5 className="theme-color m-0">
+                    {item.detail && (
+                      <>
+                        <i className="pi pi-info-circle"></i> &nbsp;
+                        {item?.detail}
+                      </>
+                    )}
+                  </h5>
+                  <small>
+                    {SessionGetEmployeeId() === item?.createBy
+                      ? "Created on"
+                      : "Uploaded By: " + item?.createBy + " on"}{" "}
+                    {formatDateTime(item?.createDate)}
+                  </small>
+                  {item?.updateDate && (
+                    <>
+                      {" || "}
+                      <small>
+                        {SessionGetEmployeeId() === item?.updateBy
+                          ? "Updated on"
+                          : "Updated By: " + item?.updateBy + " on"}{" "}
+                        {formatDateTime(item?.updateDate)}
+                      </small>
+                    </>
+                  )}
+                </div>
                 <ButtonGroup>
                   <Button
                     type="button"
@@ -114,23 +144,6 @@ const CertificateViewModal = ({ data, hideModalFunction, onFinish, onUpdate, hid
                   />
                 </ButtonGroup>{" "}
               </div>
-              <small>
-                {SessionGetEmployeeId() === item?.createBy
-                  ? "Created on"
-                  : "Uploaded By: " + item?.createBy + " on"}{" "}
-                {formatDateTime(item?.createDate)}
-              </small>
-              {item?.updateDate && (
-                <>
-                  {" || "}
-                  <small>
-                    {SessionGetEmployeeId() === item?.updateBy
-                      ? "Updated on"
-                      : "Updated By: " + item?.updateBy + " on"}{" "}
-                    {formatDateTime(item?.updateDate)}
-                  </small>
-                </>
-              )}
               <Row className="row-cols-md-3 mt-2 g-3 justify-content-center">
                 {item?.attachments?.map((e) => (
                   <>
@@ -158,13 +171,13 @@ const CertificateViewModal = ({ data, hideModalFunction, onFinish, onUpdate, hid
                           </small>
                         </div>
                       ) : (
-                        <div className="bg-light flex justify-content-center overflow-hidden h-100" >
+                        <div className="bg-light flex justify-content-center overflow-hidden h-100">
                           <Image
                             src={`${API_BASE_URL}/Attachment/GetCertificateFile?attachmentId=${e?.id}`}
                             alt="Image"
                             width="100%"
                             height="100%"
-                          className="object-fit-cover h-100 w-100"
+                            className="object-fit-cover h-100 w-100"
                             preview
                           />
                         </div>

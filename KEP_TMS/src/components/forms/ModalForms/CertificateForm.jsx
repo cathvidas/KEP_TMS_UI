@@ -201,9 +201,10 @@ const CertificateForm = ({
       onConfirm: () => {
         handleResponseAsync(
           () => attachmentService.deleteAttachment(id),
+          ()=>{
+            actionSuccessful("Success", "File deleted successfully");
+            onFinish(true)},
           null,
-          null,
-          onFinish(true)
         );
       },
     });
