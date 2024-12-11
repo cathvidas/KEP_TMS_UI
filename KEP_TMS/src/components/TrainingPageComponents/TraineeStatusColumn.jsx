@@ -6,7 +6,6 @@ import proptype from "prop-types";
 const TraineeStatusTemplate = ({value, traineeId}) => {
     const traineeFormDetail = value?.trainingParticipants?.find(item => item?.employeeBadge === traineeId)
     const traineeExams = examHook.useAllTraineeExamByRequest(value?.id);
-    console.log(getTraineeExamDetail(traineeExams, traineeId), traineeExams)
     let isComplete = true;
     const getStatus = () => {
       let detail = "Pending";

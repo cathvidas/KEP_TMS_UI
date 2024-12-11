@@ -172,7 +172,6 @@ const TrainingCostForm = ({
             }))}
             options={trainerOptions}
             onChange={(e) => {
-              console.log(e)
               setFormData((obj) => ({
                 ...obj,
                 trainingFacilitators: e?.map(item=>({

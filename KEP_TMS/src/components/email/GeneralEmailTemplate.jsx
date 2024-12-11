@@ -82,7 +82,6 @@ const GeneralEmailTemplate = ({
       return `${base}`
     }
   }
-  console.log(getPageLink())
   const generateEamilContent = () => {
     let content = "";
     if (addRecipient) {

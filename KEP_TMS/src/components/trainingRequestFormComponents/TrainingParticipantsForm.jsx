@@ -19,7 +19,6 @@ const TrainingParticipantsForm = ({
   departments,
   trainingType,
 }) => {
-  console.log(trainingType, TrainingType.INTERNAL);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -32,7 +31,6 @@ const TrainingParticipantsForm = ({
     provider: "",
   });
   const onGlobalFilterChange = (data) => {
-    console.log(data)
     setFilter(data)
     if (filters.global.value !== data?.value && data?.value !== undefined) {
       setFilters((prev) => ({

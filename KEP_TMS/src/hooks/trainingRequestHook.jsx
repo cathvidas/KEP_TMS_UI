@@ -41,7 +41,6 @@ const trainingRequestHook = {
               if(!currentRouting?.assignedDetail){
                 currentRouting.assignedDetail = await userService.getUserById(currentRouting?.assignedTo);
               }
-              console.log(response)
            const faciList =await Promise.all(
              response?.trainingFacilitators?.map(async (faci) => {
                const detail = faci?.isExternal

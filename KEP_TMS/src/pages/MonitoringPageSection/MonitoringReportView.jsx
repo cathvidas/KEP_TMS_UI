@@ -91,7 +91,6 @@ const MonitoringReportView = ({
   </>
   }
   const examActionTemplate = (rowData) => {
-    console.log(rowData)
     let submitted = false;
     examDetail?.map((item) => {
       if(!submitted) {

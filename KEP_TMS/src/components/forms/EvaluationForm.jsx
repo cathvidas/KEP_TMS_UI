@@ -112,7 +112,6 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
       if (!facilitatorRating[index]?.frOne > 0 || !facilitatorRating[index]?.frTwo > 0 ||!facilitatorRating[index]?.frThree >0
         || !facilitatorRating[index]?.frFour > 0 ||!facilitatorRating[index]?.frFive > 0 || !facilitatorRating[index]?.frSix > 0 
       ) {
-        console.log(faci)
         if(!faci.isExternal){
         faciList.push(faci?.faciDetail?.fullname ?? faci?.facilitatorBadge)}
       }
@@ -163,7 +162,6 @@ newLogs.push({
   label: `Created by ${userData?.fullname ?? defaultValue?.auditTrail?.createdBy}`,
   date: formatDateTime(defaultValue?.createdDate),
 });
-console.log(data)
 const reportTemplateRef = useRef();
   return (
     <Card.Body>

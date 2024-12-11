@@ -16,7 +16,6 @@ const PendingView = ({ data, formData, examDetail }) => {
       ? "Completed"
       : `${exams?.length}/${examDetail?.length}` : "N/A";
   };
-  console.log(formData)
   const columnItems = [
     {
       field: "id",

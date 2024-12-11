@@ -17,13 +17,11 @@ const EmailIntervalSetting = () => {
         ()=>emailService.getEmailReminderInterval(),
         (response)=>{setReminderInterval(response?.reminderTimeInterval);
           setDefaultInterval(response);
-          console.log(response)
         },
         ()=>{""}
       )}
       fetchData();
     },[trigger])
-    console.log(reminderInterval)
     const handleSubmit = () => {
         confirmAction({
             title: "Are you sure?",

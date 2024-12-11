@@ -30,7 +30,6 @@ const activityLogHook = {
       const fetchData = async () => {
         try {
           const assignedRequest = await trainingRequestService.getTrainingRequestByParticipant(id);
-          console.log(assignedRequest);
           const pendingList = await Promise.all(
             assignedRequest?.map(async (item) => {
               const user = item?.trainingParticipants?.find((i) => i.employeeBadge === id);

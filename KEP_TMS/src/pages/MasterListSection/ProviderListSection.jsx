@@ -63,7 +63,6 @@ const ProviderListSection = () => {
     }
     return "";
   };
-  console.log(data?.results)
   const formatAddressDetail = (rowData) => {
     let value = "";
     value = concatenateValue(value, rowData?.address?.building);
