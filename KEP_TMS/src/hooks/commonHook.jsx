@@ -40,24 +40,30 @@ const commonHook = {
             await effectivenessService.getApproverAssignedEffectiveness(id);
           const reports =
             await trainingReportService.getApproverAssignedReports(id);
-       
-          const forApprovelEffectiveness =effectiveness?.filter(
+
+          const forApprovelEffectiveness = effectiveness?.filter(
             (item) => item.routingActivity?.statusId !== statusCode.TOUPDATE
           );
           // Filter for evaluation (6 months from now)
           const forEvaluation = effectiveness?.filter(
             (item) =>
               item.routingActivity?.statusId === statusCode.TOUPDATE &&
-              new Date(item?.trainingEffectiveness?.trainingRequest?.trainingEndDate) <= new Date(new Date().setMonth(new Date().getMonth() - 6)) && item.routingActivity?.assignedTo !== id
+              new Date(
+                item?.trainingEffectiveness?.trainingRequest?.trainingEndDate
+              ) <= new Date(new Date().setMonth(new Date().getMonth() - 6)) &&
+              item.routingActivity?.assignedTo !== id
           );
-          
+
           setData({
             requests: requests,
             effectiveness: forApprovelEffectiveness,
             reports: reports,
             forEvaluation: forEvaluation,
             overallCount:
-              requests?.length + forApprovelEffectiveness?.length + reports?.length + forEvaluation?.length,
+              requests?.length +
+              forApprovelEffectiveness?.length +
+              reports?.length +
+              forEvaluation?.length,
           });
         } catch (error) {
           setError(error.message);
@@ -164,63 +170,70 @@ const commonHook = {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        const getRequests = async () => {
-          handleResponseAsync(
-            () => commonService.getCurrentRouting(requestId, activityIn),
-            (e) => setData(e),
-            (e) => setError(e),
-            () => setLoading(false)
-          );
-        };
-        getRequests();
-      },[requestId, activityIn]
-    );
+      const getRequests = async () => {
+        handleResponseAsync(
+          () => commonService.getCurrentRouting(requestId, activityIn),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      getRequests();
+    }, [requestId, activityIn]);
     return { data, error, loading };
   },
-  useMappedInternalFacilitatorList: (faciList)=>{
+  useMappedInternalFacilitatorList: (faciList) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const fetchData = async () => {
-          try {
-            const facilitators = await userMapping.mapUserIdList(
-              faciList,
-              "facilitatorBadge"
-            );
-            setData(facilitators);
-            setLoading(false);
-          } catch (err) {
-            setError(err?.message);
-          }
+        try {
+          const facilitators = await userMapping.mapUserIdList(
+            faciList,
+            "facilitatorBadge"
+          );
+          setData(facilitators);
+          setLoading(false);
+        } catch (err) {
+          setError(err?.message);
+        }
       };
       fetchData();
     }, [faciList]);
     return { data, error, loading };
   },
-  useFormattedFacilitatorList: (faciList)=>{
-    const [data, setData] = useState([]);
+  useFormattedFacilitatorList: (faciList) => {
+    const [data, setData] = useState("");
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const fetchData = async () => {
-          try {
-            let formattedFacilitators = "";
-            const faciNames = await Promise.all(faciList?.map(async faci=>{
-              if(faci?.isExternal){
-                const faciDetail = await externalFacilitatorService.getExternaFacilitatorById(faci?.externalFacilitatorId);
+        try {
+          let formattedFacilitators = "";
+          console.log(faciList);
+          const faciNames = await Promise.all(
+            faciList?.map(async (faci) => {
+              if (faci?.isExternal) {
+                const faciDetail =
+                  await externalFacilitatorService.getExternaFacilitatorById(
+                    faci?.externalFacilitatorId
+                  );
                 return faciDetail?.name;
-              }else{
-                const userDetail = await userService.getUserById(faci?.facilitatorBadge);
+              } else {
+                const userDetail = await userService.getUserById(
+                  faci?.facilitatorBadge
+                );
                 return userDetail?.fullname;
               }
-            }))
-            formattedFacilitators = faciNames.join("; ");
-            setData(formattedFacilitators);
-            setLoading(false);
-          } catch (err) {
-            setError(err?.message);
-          }
+            })
+          );
+          formattedFacilitators = faciNames.join("; ");
+          setData(formattedFacilitators);
+          setLoading(false);
+        } catch (err) {
+          setError(err?.message);
+        }
       };
       fetchData();
     }, [faciList]);

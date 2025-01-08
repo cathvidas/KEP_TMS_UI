@@ -38,6 +38,8 @@ const CertificateForm = ({
       "image/gif",
       "image/jpeg",
       "image/png",
+      "video/mp4",
+      "video/webm",
       "application/pdf",
     ];
     newFiles.forEach((file) => {
@@ -45,10 +47,10 @@ const CertificateForm = ({
       if (file.size > 5 * 1024 * 1024) {
         setErrors({
           ...errors,
-          [file.name]: "File size should not exceed 5MB",
+          file: "File size should not exceed 5MB"
         });
         validForm = false;
-      }
+      }    
       if (files.some((x) => x.name === file.name)) {
         setErrors({ ...errors, [file.name]: "File name already exists" });
         validForm = false;
@@ -63,7 +65,7 @@ const CertificateForm = ({
         validForm = false;
       }
       if (!validImageTypes.includes(fileType)) {
-        setErrors({ ...errors, file: "Upload only pdf files" });
+        setErrors({ ...errors, file: "Selected file is not supported. Allowed file types: .jpeg, .jpg, .png, .pdf" });
         validForm = false;
       }
     });

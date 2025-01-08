@@ -1,36 +1,55 @@
 import { Button } from "primereact/button";
 import Proptypes from "prop-types";
+import externalFacilitatorService from "../../services/externalFacilitatorService";
+import userService from "../../services/userService";
 
 const ExportBtn=({ data })=> {
   ExportBtn.propTypes = {
     data: Proptypes.array,
   };
-  const handleDownload = (e) => {
+  const handleDownload = async (e) => {
     e.preventDefault();
-  
-    const mapFacilitator = (dataList) => {
-      let facilitators = "";
-      dataList?.map((x) => {
-        facilitators += `${x?.fullname}; `;
-      });
-      return facilitators;
+    const fetchFaci = async (faciList) => {
+      try {
+        let formattedFacilitators = "";
+        const faciNames = await Promise.all(
+          faciList?.map(async (faci) => {
+            if (faci?.isExternal) {
+              const faciDetail =
+                await externalFacilitatorService.getExternaFacilitatorById(
+                  faci?.externalFacilitatorId
+                );
+              return faciDetail?.name;
+            } else {
+              const userDetail = await userService.getUserById(
+                faci?.facilitatorBadge
+              );
+              return userDetail?.fullname;
+            }
+          })
+        );
+        formattedFacilitators = faciNames.join("; ");
+        return(formattedFacilitators);
+      } catch (err) {
+        return "Error: " + err.message
+      }
     };
-    const requestData = data?.map((dataItem) => ({
-      RequestID: dataItem.id,
-      requesterBadge: dataItem.requesterBadge,
-      requesterName: dataItem.requesterName,
-      Type: dataItem.trainingType.name,
-      Program: dataItem.trainingProgram.name,
-      Category: dataItem.trainingCategory.name,
-      Provider: dataItem.trainingProvider.name,
+    const requestData = await Promise.all(data?.map(async (dataItem) => ({
+      RequestID: dataItem?.id,
+      requesterBadge: dataItem?.requesterBadge,
+      requesterName: dataItem?.requesterName,
+      Type: dataItem?.trainingType?.name,
+      Program: dataItem?.trainingProgram?.name,
+      Category: dataItem?.trainingCategory?.name,
+      Provider: dataItem?.trainingProvider?.name,
       Venue: dataItem?.venue,
-      StartDate: dataItem.trainingStartDate,
-      EndDate: dataItem.trainingEndDate,
-      TotalTrainingFee: dataItem.totalTrainingFee,
-      TrainingHours: dataItem.durationInHours,
-      TotalTrainingParticipants: dataItem.totalParticipants,
-      TrainingFacilitators: mapFacilitator(dataItem.trainingFacilitators),
-    }));
+      StartDate: dataItem?.trainingStartDate,
+      EndDate: dataItem?.trainingEndDate,
+      TotalTrainingFee: dataItem?.totalTrainingFee,
+      TrainingHours: dataItem?.durationInHours,
+      TotalTrainingParticipants: dataItem?.totalParticipants,
+      TrainingFacilitators: await fetchFaci(dataItem?.trainingFacilitators),
+    })));
   
     const csvRequestHeaders = [
       "Request ID",
@@ -69,8 +88,6 @@ const ExportBtn=({ data })=> {
     link.click();
   };
   
-  
-
   return (
     <Button
       icon="pi pi-download"

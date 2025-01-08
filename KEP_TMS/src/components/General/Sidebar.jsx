@@ -94,7 +94,7 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
       <div
         className={`${show ? "d-block" : "d-none"} ${
           expanded ? "expanded position-fixed" : "position-sticky"
-        } bg-body  d-md-block  sidebar top-0 min-vh-100 bottom-0 z-1 border-right z-2`}
+        } bg-body d-md-block sidebar top-0 min-vh-100 bottom-0 z-1 border-right z-2`}
         style={{
           borderRight:
             "var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)",
@@ -167,6 +167,7 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
                   icon="pi pi-list"
                 />
               <NavItem item="Setting" title="Setting" icon={"pi pi-cog"} />
+              {/* <NavItem item="Files" title="Files" icon={"pi pi-file"} /> */}
               </>
             )}
           </ul>

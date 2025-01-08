@@ -11,7 +11,6 @@ import proptype from "prop-types";
 import ExportBtn from "../General/ExportBtn";
 import { Paginator } from "primereact/paginator";
 import {
-  formatCurrency,
   formatDateOnly,
 } from "../../utils/datetime/Formatting";
 import { SessionGetEmployeeId } from "../../services/sessions";

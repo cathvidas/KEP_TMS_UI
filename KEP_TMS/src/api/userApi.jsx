@@ -18,3 +18,16 @@ export const createUserApi = async (data) => {
 export const updateUserApi = async (data) => {
   return await fetchFromApi("/Users/UpdateUser", "PUT", data);
 };
+
+//KEP Common
+
+export const getpagedEmployeesApi = async (pageNumber, pageSize, searchValue) => {
+  if (searchValue) {
+    return await fetchFromApi(
+      `/Users/GetPagedEmployees?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`
+    );
+  }
+  return await fetchFromApi(
+    `/Users/GetPagedEmployees?pageNumber=${pageNumber}&pageSize=${pageSize}`
+  );
+};

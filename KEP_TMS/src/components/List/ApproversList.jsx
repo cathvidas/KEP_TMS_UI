@@ -73,8 +73,7 @@ const ApproverList = ({data, activityTitle, activityType, hasEmailForm, activity
         <Column header="Action" body={actionBodyTemplate}></Column>}
       </DataTable>
       {hasEmailForm &&
-      <EmailForm handleShow={visible} handleClose={() => setVisible(false)} activityTitle={activityTitle} activityId={data?.id} activityType={activityType}
-      activityData={data} recipient={emailRecipient} activityLogs={activityLogs} formTemplate={emailFormTemplate}
+      <EmailForm handleShow={visible} handleClose={() => setVisible(false)} recipient={emailRecipient} 
       />}
     </>
   );

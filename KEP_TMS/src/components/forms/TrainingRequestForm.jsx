@@ -25,8 +25,6 @@ import { formatDateTime } from "../../utils/datetime/Formatting";
 import { statusCode, TrainingType, UserTypeValue } from "../../api/constants";
 import TrainingParticipantsForm from "../trainingRequestFormComponents/TrainingParticipantsForm";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
-import categoryHook from "../../hooks/categoryHook";
-import providerHook from "../../hooks/providerHook";
 import commonHook from "../../hooks/commonHook";
 import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
 import trainingRequestService from "../../services/trainingRequestService";
@@ -34,11 +32,11 @@ import trainingRequestHook from "../../hooks/trainingRequestHook";
 import validateTrainingSchedules from "../../services/inputValidation/validateTrainingSchedules";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import { SectionHeading } from "../General/Section";
+import categoryHook from "../../hooks/categoryHook";
 export const TrainingRequestForm = () => {
   const trainingType = useParams().type;
   const requestId = useParams().id;
   const categories = categoryHook.useAllCategories(true);
-  const providers = providerHook.useAllProviders(true);
   const departments = commonHook.useAllDepartments();
   const details = useRef({});
   const [isUpdate, setIsUpdate] = useState(false);
@@ -352,7 +350,6 @@ export const TrainingRequestForm = () => {
                     <TrainingCostForm
                       formData={formData}
                       handleResponse={handleResponse}
-                      providersData={providers}
                       error={errors}
                     />
                     {<StepperButton back={true} next={true} index={2} />}

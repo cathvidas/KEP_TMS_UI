@@ -25,6 +25,8 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
     useEffect(()=>{
         if(defaultData){
             setFormData(defaultData);
+        }else{
+            setFormData(userConstant);
         }
     },[defaultData])
     const handleSubmit = ()=>{
@@ -49,6 +51,7 @@ const NewUserForm = ({showForm, closeForm, options, defaultData, isUpdate= false
             })
         }
     }
+    console.log(formData, defaultData)
     return (
       <>
         <Modal show={showForm} onHide={closeForm} size="lg">
