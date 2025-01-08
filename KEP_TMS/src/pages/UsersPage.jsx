@@ -199,7 +199,7 @@ const UserPage = () => {
               action={
                 <Button
                   type="button"
-                  label="Add User"
+                  label="New User"
                   className="theme-bg rounded py-1"
                   icon="pi pi-plus"
                   onClick={() => setShowForm(true)}
