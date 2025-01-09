@@ -33,7 +33,7 @@ const mappingHook = {
       mappedActivityLogs.push({
         id: 1,
         name: author?.fullname,
-        process: "New / Submitted",
+        process: "Submitted",
         status: activityLogs?.length > 0 ? "Submitted" : "New",
         remark: "N/A",
         date: formatDateTime(activityData?.createdDate),
@@ -42,12 +42,11 @@ const mappingHook = {
         const activity = {
           id: index + 2,
           name: log?.userDetail.fullname,
-          process: log?.userDetail?.position + " Approval",
+          process: 
+          log?.statusId === statusCode.FORAPPROVAL
+            ? "Pending" : getStatusById(log?.statusId),
           status: getStatusById(log?.statusId),
-          remark:
-            log?.statusId === statusCode.FORAPPROVAL
-              ? "Pending"
-              : log?.remarks ?? getStatusById(log?.statusId),
+          remark: log?.remarks ?? "N/A" ,
           date: log?.updatedDate ? formatDateTime(log?.updatedDate) : "N/A",
         };
         if (log.statusId === statusCode.TOUPDATE) {
