@@ -21,7 +21,7 @@ const CategoryListSection = () => {
           size="small"
           text
           icon="pi pi-eye"
-          severity="help"
+          severity="success"
           className="rounded-circle"
           onClick={() => handleOnclick(rowData.id)}
         />
@@ -29,7 +29,7 @@ const CategoryListSection = () => {
           type="button"
           size="small"
           text
-          icon="pi pi-pen-to-square"
+          icon="pi pi-pencil"
           className="rounded-circle"
           onClick={() => handleOnclick(rowData.id, true)}
         />
