@@ -68,7 +68,7 @@ const ProgramListSection = () => {
     {
       // field: "id",
       header: "No",
-      body: (_, { rowIndex }) => rowIndex + 1,
+      body: (_, { rowIndex }) => <>{paginatorConfig.first + 1+ rowIndex}</>,
     },
     {
       field: "name",
