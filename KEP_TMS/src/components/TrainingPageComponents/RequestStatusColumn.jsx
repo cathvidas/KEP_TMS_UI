@@ -7,6 +7,7 @@ const RequestStatusColumn = ({value})=>{
     return (
       <>
         <div>
+          {value?.status?.id == statusCode.DRAFTED ?<span className='text-danger fst-italic'>Draft</span>: <>
           <span>
             {" "}
             {value.status?.id == statusCode.FORAPPROVAL
@@ -25,7 +26,7 @@ const RequestStatusColumn = ({value})=>{
                 )}/${value.totalParticipants} submitted`
               : (value.status?.id == statusCode.PUBLISHED || value.status?.id == statusCode.CLOSED)
             }
-          </b>
+          </b></>}
         </div>
       </>
     );

@@ -225,7 +225,7 @@ const OverviewSection = ({
            <TrainingFacilitatorList requestData={data} />
           </>
         )}
-        {showApprovers && (
+        {showApprovers&& data?.status?.id != statusCode.DRAFTED && (
           <>
             <br />
             <hr />
@@ -251,6 +251,7 @@ const OverviewSection = ({
           </>
         )}
       </div>
+      {data?.status?.id != statusCode.DRAFTED && <>
       <Dialog
         header="History Log"
         visible={showLogModal}
@@ -295,10 +296,7 @@ const OverviewSection = ({
             buttonClassName="p-button-default rounded-circle "
           />
         </div>
-      )}
-         {/* <EmailForm handleShow activityTitle={"Tra"} activityId={data?.id} activityType={ActivityType.REQUEST}
-      activityData={data} recipient={{email: "", fullname: ""}} activityLogs={[]} */}
-      {/* /> */}
+      )}</>}
     </>
   );
 };

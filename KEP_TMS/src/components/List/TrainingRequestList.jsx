@@ -17,6 +17,7 @@ import { SessionGetEmployeeId } from "../../services/sessions";
 import TraineeStatusTemplate from "../TrainingPageComponents/TraineeStatusColumn";
 import RequestStatusColumn from "../TrainingPageComponents/RequestStatusColumn";
 import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
+import { statusCode } from "../../api/constants";
 const TrainingRequestList = ({
   data,
   headingTitle,
@@ -56,6 +57,7 @@ const TrainingRequestList = ({
   const actionTemplate = (data) => {
     return (
       <div className="d-flex">
+        {data?.statusId != statusCode.DRAFTED &&
         <Button
           type="button"
           icon="pi pi-eye"
@@ -64,7 +66,7 @@ const TrainingRequestList = ({
           className="rounded"
           text
           onClick={() => handleButtonClick(data.id, "TrainingDetail")}
-        />
+        />}
         {allowEdit && (
           <Button
             type="button"

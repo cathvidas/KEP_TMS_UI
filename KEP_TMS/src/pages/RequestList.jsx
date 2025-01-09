@@ -96,6 +96,14 @@ const RequestList = () => {
           count: mappedData?.inactive?.length,
           active: currentContent === 6 ? true : false,
         },
+        {
+          label: "Draft",
+          icon: "pi pi-times-circle",
+          command: () => navigate(`/KEP_TMS/RequestList/Draft`),
+          template: MenuItemTemplate,
+          count: mappedData?.draft?.length,
+          active: currentContent === 7 ? true : false,
+        },
         // {
         //   separator:true,
         //   template: MenuItemTemplate,
@@ -138,7 +146,10 @@ const RequestList = () => {
     } else if (currentPage === "OUTDATED") {
       setFilter({ value: null, label: "Outdated", data: mappedData?.outdated });
       setCurrentContent(7);
-    } else {
+    } else if (currentPage === "DRAFT") {
+      setCurrentContent(1);
+      setFilter({ value: statusCode.DRAFTED, label: "Draft", data: mappedData?.draft });
+    }  else {
       setCurrentContent(8);
       setFilter({ value: statusCode.PUBLISHED, label: "All Training", data:  data});
     }

@@ -46,6 +46,7 @@ export const mappedTrainingRequestByStatus = (trainings) => {
   const closed = [];
   const inactive = [];
   const returned = [];
+  const draft = [];
   const currentTrainings = [];
   trainings?.forEach((item) => {
     if (item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED ) {
@@ -85,6 +86,8 @@ export const mappedTrainingRequestByStatus = (trainings) => {
       pending.push(item);
     } else if (item?.status?.id === statusCode.INACTIVE) {
       inactive.push(item);
+    } else if (item?.status?.id === statusCode.DRAFTED) {
+      draft.push(item);
     }
   });
   return {
@@ -100,6 +103,7 @@ export const mappedTrainingRequestByStatus = (trainings) => {
     closed,
     returned,
     inactive,
-    currentTrainings
+    currentTrainings,
+    draft
   };
 };

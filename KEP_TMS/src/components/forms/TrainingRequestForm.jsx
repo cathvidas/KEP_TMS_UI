@@ -71,7 +71,7 @@ export const TrainingRequestForm = () => {
     },
     [details]
   );
-  const handleFormSubmission = async () => {
+  const handleFormSubmission = async (draft = false) => {
     try {
       const formmatedData = { ...validateTrainingRequestForm(formData) };
       if (trainingType.toUpperCase() === "UPDATE" && requestId) {
@@ -100,25 +100,28 @@ export const TrainingRequestForm = () => {
             calculateTotalHours(formmatedData?.trainingDates) >= 960
               ? statusCode.SUBMITTED
               : statusCode.FORAPPROVAL,
+              isDraft: draft
         };
-        handleResponseAsync(
-          () => trainingRequestService.createTrainingRequest(updateData),
-          (res) => {
-            actionSuccessful(
-              "Success",
-              "Training request successfully submitted."
-            );
-            setTimeout(() => {
-              navigate("/KEP_TMS/TrainingDetail/" + res?.data?.id);
-            }, 2500);
-          }
-        );
+        
+          handleResponseAsync(
+            () => trainingRequestService.createTrainingRequest(updateData),
+            (res) => {
+              actionSuccessful(
+                "Success",
+                `Training request successfully ${draft ? "saved" : "submitted"}.`
+              );
+              setTimeout(() => {
+                navigate("/KEP_TMS/TrainingDetail/" + res?.data?.id);
+              }, 2500);
+            }
+          );
+       
       }
     } catch (error) {
       actionFailed("Error", error);
     }
   };
-  const handleButtonOnClick = (index) => {
+  const handleButtonOnClick = (index, isDraft) => {
     if (index === 0) {
       const validateDates =
         details.current?.status?.id === statusCode.APPROVED ||
@@ -141,14 +144,19 @@ export const TrainingRequestForm = () => {
       }
 
       // Proceed to next step only if both details and schedules are valid
-      if (detailsValid && !schedulesIsValid.hasErrors) {
+      
+      if ((detailsValid && !schedulesIsValid.hasErrors) || isDraft) {
         setFormData((prev) => ({ ...prev, ...details.current }));
-        stepperRef.current.nextCallback();
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          details: {},
-          schedules: "",
-        }));
+        if (isDraft) {
+          saveTrainingRequest();
+        } else {
+          stepperRef.current.nextCallback();
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            details: {},
+            schedules: "",
+          }));
+        }
       }
       //stepperRef.current.nextCallback();
     } else if (index === 1) {
@@ -169,13 +177,16 @@ export const TrainingRequestForm = () => {
         }
       }
       setErrors({ ...errors, participants: newErrors });
-      if (!hasErrors) {
+      if (!hasErrors || isDraft) {
         setFormData((prev) => ({ ...prev, ...details.current }));
+        if (isDraft) {
+          saveTrainingRequest();
+        } else {
         stepperRef.current.nextCallback();
         setErrors((prevErrors) => ({
           ...prevErrors,
           participants: {},
-        }));
+        }));}
       }
     } else if (index === 2) {
       let hasError = false;
@@ -193,13 +204,16 @@ export const TrainingRequestForm = () => {
         }
       }
       setErrors({ ...errors, provider: newErrors.provider });
-      if (!hasError) {
+      if (!hasError || isDraft) {
         setFormData((prev) => ({ ...prev, ...details.current }));
+        if (isDraft) {
+          saveTrainingRequest();
+        } else {
         stepperRef.current.nextCallback();
         setErrors((prevErrors) => ({
           ...prevErrors,
           provider: "",
-        }));
+        }));}
       }
     }
   };
@@ -219,6 +233,15 @@ export const TrainingRequestForm = () => {
       });
     }
   }, [trainingType, trainingRequestData?.data, requestId]);
+  const saveTrainingRequest = async () => {
+    confirmAction({
+      title: 'Save as Draft',
+      text: 'Are you sure you want to save this training request as a draft?',
+      confirmButtonText: 'Save',
+      showLoaderOnConfirm: true,
+      onConfirm: ()=> handleFormSubmission(true),
+    })
+  }
   const StepperButton = (button) => {
     return (
       <div className="flex pt-4 justify-content-between">
@@ -232,14 +255,25 @@ export const TrainingRequestForm = () => {
           />
         )}
         {button.next && (
+          <>
           <Button
             type="button"
             className="ms-auto rounded"
+            label="Save"
+            icon="pi pi-save"
+            severity="warning"
+            iconPos="right"
+            title="save as draft"
+            onClick={() => handleButtonOnClick(button.index, true)}
+          />
+          <Button
+            type="button"
+            className=" rounded"
             label="Next"
             icon="pi pi-arrow-right"
             iconPos="right"
             onClick={() => handleButtonOnClick(button.index)}
-          />
+          /></>
         )}
         {button.submit && (
           <Button

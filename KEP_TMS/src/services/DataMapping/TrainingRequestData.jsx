@@ -6,6 +6,7 @@ export const mapTRequestToTableData = (data)=>{
         requesterName: item?.requesterName,
         requesterBadge: item?.requesterBadge,
         status: item?.status?.name,
+        statusId: item?.status?.id,
         program: item.trainingProgram?.name,
         type: item?.trainingType?.name,
         objectives: item?.trainingObjectives,
