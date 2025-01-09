@@ -16,6 +16,7 @@ import handleResponseAsync from "../../services/handleResponseAsync";
 import userService from "../../services/userService";
 import { UserTypeValue } from "../../api/constants";
 import { SessionGetEmployeeId } from "../../services/sessions";
+import { ButtonGroup } from "primereact/buttongroup";
 
 const AllUserPageSection = ({
   userType,
@@ -29,7 +30,7 @@ const AllUserPageSection = ({
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const navigate = useNavigate();
   const actionTemplate = (rowData) => (
-    <>
+    <ButtonGroup className="d-flex">
       <Button
         type="button"
         size="small"
@@ -63,7 +64,7 @@ const AllUserPageSection = ({
           onClick={() => handleRemoveUser(rowData)}
         />
       )}
-    </>
+    </ButtonGroup>
   );
   const handleRemoveUser = (data) => {
     const roleId = options?.options?.roles?.filter(
