@@ -8,6 +8,7 @@ import Select from "react-select";
 import { statusCode } from "../../../api/constants";
 import programService from "../../../services/programService";
 import handleResponseAsync from "../../../services/handleResponseAsync";
+import ErrorTemplate from "../../General/ErrorTemplate";
 const ProgramForm = ({ handleShow, handleClose, selectedData, onReload }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
@@ -125,14 +126,13 @@ const ProgramForm = ({ handleShow, handleClose, selectedData, onReload }) => {
                     required
                   />
                   {errors.name && (
-                    <small className="text-red">{errors.name}</small>
+                    <ErrorTemplate message={errors?.name} />
                   )}
                 </Form.Group>
               </Col>
               <Col className="col-12">
                 <Form.Group>
                   <Form.Label className="required">Description</Form.Label>
-
                   <textarea
                     className="form-control"
                     value={formData?.description ?? ""}
@@ -143,7 +143,7 @@ const ProgramForm = ({ handleShow, handleClose, selectedData, onReload }) => {
                     required
                   ></textarea>
                   {errors.description && (
-                    <small className="text-red">{errors.description}</small>
+                    <ErrorTemplate message={errors?.description} />
                   )}
                 </Form.Group>
               </Col>
@@ -161,8 +161,8 @@ const ProgramForm = ({ handleShow, handleClose, selectedData, onReload }) => {
                       }
                       name="status"
                     />
-                    {errors.description && (
-                      <small className="text-red">{errors.description}</small>
+                    {errors.status && (
+                      <ErrorTemplate message={errors?.status} />
                     )}
                   </Form.Group>
                 </Col>

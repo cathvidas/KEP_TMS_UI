@@ -8,6 +8,7 @@ import Select from "react-select";
 import { statusCode } from "../../../api/constants";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import categoryService from "../../../services/categoryService";
+import ErrorTemplate from "../../General/ErrorTemplate";
 const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
@@ -129,9 +130,7 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                     onChange={handleOnChange}
                     required
                   />
-                  {errors.name && (
-                    <small className="text-red">{errors.name}</small>
-                  )}
+                  {errors.name && <ErrorTemplate message={errors?.name} />}
                 </Form.Group>
               </Col>
               <Col className="col-12">
@@ -148,7 +147,7 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                     required
                   ></textarea>
                   {errors.description && (
-                    <small className="text-red">{errors.description}</small>
+                    <ErrorTemplate message={errors?.description} />
                   )}
                 </Form.Group>
               </Col>
@@ -166,8 +165,8 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                       }
                       name="status"
                     />
-                    {errors.description && (
-                      <small className="text-red">{errors.description}</small>
+                    {errors.status && (
+                      <ErrorTemplate message={errors?.status} />
                     )}
                   </Form.Group>
                 </Col>
