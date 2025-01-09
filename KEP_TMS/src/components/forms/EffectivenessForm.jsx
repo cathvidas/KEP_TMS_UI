@@ -53,46 +53,45 @@ const EffectivenessForm = ({
   const [isUpdate, setIsUpdate] = useState(false);
   useEffect(() => {
     if (formData) {
-      const effectivenessData = formData;
-      setAnnotation(effectivenessData?.annotation);
-      setPerformanceCharacteristics(
-        effectivenessData?.performanceCharacteristics?.map(
-          ({ content, id, rating, effectivenessId }) => ({
-            content,
-            id,
-            rating,
-            effectivenessId,
-          })
-        ) ?? [effectivenessConstant.performanceCharacteristics]
-      );
-      setProjectPerformanceEvaluation(
-        effectivenessData?.projectPerformanceEvaluation?.map(
-          ({
-            actualPerformance,
-            content,
-            effectivenessId,
-            evaluatedActualPerformance,
-            id,
-            performanceBeforeTraining,
-            projectedPerformance,
-          }) => ({
-            actualPerformance,
-            content,
-            effectivenessId,
-            evaluatedActualPerformance,
-            id,
-            performanceBeforeTraining,
-            projectedPerformance,
-          })
-        ) ?? [effectivenessConstant.projectPerformanceEvaluation]
-      );
+      populateData();
       setIsSubmitted(true);
       setShowLogs(true);
-      if (formData?.statusName === getStatusById(statusCode.DISAPPROVED)) {
-        setIsUpdate(true);
-      }
     }
   }, [formData]);
+  const populateData = ()=>{
+    const effectivenessData = formData;
+    setAnnotation(effectivenessData?.annotation);
+    setPerformanceCharacteristics(
+      effectivenessData?.performanceCharacteristics?.map(
+        ({ content, id, rating, effectivenessId }) => ({
+          content,
+          id,
+          rating,
+          effectivenessId,
+        })
+      ) ?? [effectivenessConstant.performanceCharacteristics]
+    );
+    setProjectPerformanceEvaluation(
+      effectivenessData?.projectPerformanceEvaluation?.map(
+        ({
+          actualPerformance,
+          content,
+          effectivenessId,
+          evaluatedActualPerformance,
+          id,
+          performanceBeforeTraining,
+          projectedPerformance,
+        }) => ({
+          actualPerformance,
+          content,
+          effectivenessId,
+          evaluatedActualPerformance,
+          id,
+          performanceBeforeTraining,
+          projectedPerformance,
+        })
+      ) ?? [effectivenessConstant.projectPerformanceEvaluation]
+    );}
   const getFormData = {
     employeeBadge: SessionGetEmployeeId(),
     trainingProgramId: data?.trainingProgram?.id,
@@ -572,13 +571,13 @@ const EffectivenessForm = ({
                           disabled={!isAfter}
                         />
                         <small className="mt-1 d-block">
-                          {(isSubmitted && performanceRatingDate?.evaluatorAudit)
+                          {isSubmitted && performanceRatingDate?.evaluatorAudit
                             ? formatDateOnly(
                                 performanceRatingDate?.evaluatorAudit
                               )
                             : projectPerformanceEvaluation[index]
                                 ?.actualPerformance !== 0 &&
-                                formatDateOnly(new Date())}
+                              formatDateOnly(new Date())}
                         </small>
                       </td>
                       <td
@@ -599,13 +598,13 @@ const EffectivenessForm = ({
                           disabled={!isAfter}
                         />
                         <small className="mt-1 d-block">
-                          {(isSubmitted &&performanceRatingDate?.evaluatorAudit)
+                          {isSubmitted && performanceRatingDate?.evaluatorAudit
                             ? formatDateOnly(
                                 performanceRatingDate?.evaluatorAudit
                               )
                             : projectPerformanceEvaluation[index]
                                 ?.evaluatedActualPerformance !== 0 &&
-                                formatDateOnly(new Date())}
+                              formatDateOnly(new Date())}
                         </small>
                       </td>
                       {projectPerformanceEvaluation?.length > 1 &&
@@ -696,11 +695,26 @@ const EffectivenessForm = ({
                     />
                   </>
                 )}
+              {formData?.statusName == getStatusById(statusCode.DISAPPROVED) && (
+                <Button
+                  type="button"
+                  icon={!isUpdate && "pi pi-pencil"}
+                  label={isUpdate ? "Cancel" : "Edit"}
+                  className="rounded ms-auto"
+                  severity="secondary"
+                  text={isUpdate}
+                  onClick={() => {
+                    setIsUpdate(!isUpdate);
+                    populateData();
+                  }}
+                />
+              )}
               {data?.trainingParticipants?.some(
                 (x) => x.employeeBadge === SessionGetEmployeeId()
               ) &&
                 (!isSubmitted || isUpdate) && (
                   <>
+                  {!isUpdate &&
                     <Button
                       type="button"
                       icon="pi pi-eraser"
@@ -716,6 +730,7 @@ const EffectivenessForm = ({
                         ]);
                       }}
                     />
+                    }
                     <Button
                       type="button"
                       icon={isUpdate ? "pi pi-pencil" : "pi pi-cloud-upload"}

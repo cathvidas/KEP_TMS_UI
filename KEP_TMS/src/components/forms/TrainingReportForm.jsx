@@ -52,22 +52,21 @@ const TrainingReportForm = ({
   };
   useEffect(() => {
     if (defaultValue) {
-      const updatedData = {
-        id: defaultValue?.id,
-        trainingTakeaways: defaultValue?.trainingTakeaways,
-        actionPlan: defaultValue.actionPlan,
-        timeframe: defaultValue.timeframe,
-        statusId: getStatusCode(defaultValue.status),
-        activityRemarks: defaultValue.activityRemarks,
-      };
-      setFormData({ ...updatedData });
-      setIsUpdate(
-        defaultValue?.status === getStatusById(statusCode.DISAPPROVED)
-      );
+      populateData();
       setShowLogs(true);
     }
   }, [defaultValue, isSubmitted]);
-
+const populateData = () => {
+  const updatedData = {
+    id: defaultValue?.id,
+    trainingTakeaways: defaultValue?.trainingTakeaways,
+    actionPlan: defaultValue.actionPlan,
+    timeframe: defaultValue.timeframe,
+    statusId: getStatusCode(defaultValue.status),
+    activityRemarks: defaultValue.activityRemarks,
+  };
+  setFormData({ ...updatedData });
+};
   const handleSubmit = () => {
     const isValid = validateForm();
     if (isValid) {
@@ -261,25 +260,41 @@ const TrainingReportForm = ({
               />
             </>
           )}
+        {formData?.statusId == statusCode.DISAPPROVED && (
+          <Button
+            type="button"
+            icon={!isUpdate && "pi pi-pencil"}
+            label={isUpdate ? "Cancel" : "Edit"}
+            className="rounded ms-auto"
+            severity="secondary"
+            text={isUpdate}
+            onClick={() => {
+              setIsUpdate(!isUpdate);
+              populateData();
+            }}
+          />
+        )}
         {data?.trainingParticipants?.some(
           (x) => x.employeeBadge === SessionGetEmployeeId()
         ) &&
           (!defaultValue || isUpdate) && (
             <>
+              {!isUpdate && (
+                <Button
+                  type="button"
+                  icon="pi pi-eraser"
+                  label="Reset"
+                  className="rounded ms-auto"
+                  severity="secondary"
+                  onClick={() => {
+                    setFormData(trainingreportConstant);
+                  }}
+                />
+              )}
               <Button
                 type="button"
-                icon="pi pi-eraser"
-                label="Reset"
-                className="rounded ms-auto"
-                severity="secondary"
-                onClick={() => {
-                  setFormData(trainingreportConstant);
-                }}
-              />
-              <Button
-                type="button"
-                icon={isUpdate ? "pi pi-pencil" : "pi pi-cloud-upload"}
-                label={isUpdate ? "Update Form" : "Submit Form"}
+                icon={"pi pi-save"}
+                label={"Submit Form"}
                 className="rounded ms-2"
                 severity="success"
                 onClick={handleSubmit}
