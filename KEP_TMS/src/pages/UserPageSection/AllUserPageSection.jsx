@@ -35,7 +35,7 @@ const AllUserPageSection = ({
         size="small"
         text
         icon="pi pi-eye"
-        severity="help"
+        severity="success"
         className="rounded-circle"
         onClick={() =>
           navigate(`/KEP_TMS/Users/Detail/${rowData.employeeBadge}`)
@@ -45,7 +45,7 @@ const AllUserPageSection = ({
         type="button"
         size="small"
         text
-        icon="pi pi-user-edit"
+        icon="pi pi-pencil"
         className="rounded-circle"
         onClick={() => {
           setDefaultValue(rowData);
