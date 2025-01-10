@@ -28,7 +28,7 @@ const mappingHook = {
     routingService.sortRoutingBySequence(activityData?.routings, false);
     const [data, setData] = useState([]);
     useEffect(() => {
-      const activityLogs = activityData?.routings;
+      const activityLogs = activityData?.routings?.filter(log=>log.statusId != statusCode.INACTIVE);
       const mappedActivityLogs = [];
       mappedActivityLogs.push({
         id: 1,
