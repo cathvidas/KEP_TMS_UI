@@ -172,14 +172,14 @@ export const TrainingRequestForm = () => {
       if (details.current.trainingParticipants?.length > 0) {
         <></>;
       } else {
-        newErrors.trainees = "Please add participants";
+        newErrors.trainees = "No participants added";
         hasErrors = true;
       }
-      if (getTrainingTypeId() === TrainingType.INTERNAL) {
+      if (formData?.trainingType?.id === TrainingType.INTERNAL) {
         if (details.current.trainingFacilitators?.length > 0) {
           <></>;
         } else {
-          newErrors.facilitators = "Please add facilitator";
+          newErrors.facilitators = "No facilitator/s added";
           hasErrors = true;
         }
       }

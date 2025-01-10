@@ -77,7 +77,7 @@ const TrainingParticipantsForm = ({
         .filter(
           (x) =>
             !data.trainingFacilitators?.some(
-              (y) => x.employeeBadge === y.employeeBadge
+              (y) => x.employeeBadge === y.facilitatorBadge
             )
         );
 
@@ -127,7 +127,6 @@ const TrainingParticipantsForm = ({
               (y) => x.employeeBadge === y.employeeBadge
             )
         );
-
         setFormData({
           ...data,
           trainingParticipants: [
@@ -141,25 +140,34 @@ const TrainingParticipantsForm = ({
         const newParticipants = participants.facilitators.filter(
           (x) =>
             !data?.trainingFacilitators?.some(
-              (y) => x.employeeBadge === y.employeeBadge
+              (y) => y.facilitatorBadge === x.employeeBadge
             )
         );
-
+        const mapped = newParticipants.map(item=>{
+          return {facilitatorBadge:item.employeeBadge, faciDetail: item}
+        })
         setFormData({
           ...data,
           trainingFacilitators: [
             ...data.trainingFacilitators,
-            ...newParticipants,
+            ...mapped,
           ],
         });
       }
     }
+    setShowModal(false);
   };
 
-  const removeParticipant = (type, employeeBadge) => {
+  const removeParticipant = (employeeBadge) => {
     setFormData({
       ...data,
-      [type]: data[type].filter((obj) => obj.employeeBadge !== employeeBadge),
+      trainingParticipants: data?.trainingParticipants.filter((obj) => obj.employeeBadge !== employeeBadge),
+    });
+  };
+
+  const removeFacilitator = (employeeBadge) => {  setFormData({
+      ...data,
+      trainingFacilitators: data?.trainingFacilitators.filter((obj) => obj.facilitatorBadge  !== employeeBadge ),
     });
   };
   const bodyContent = (
@@ -168,19 +176,19 @@ const TrainingParticipantsForm = ({
       <SearchBar handleOnInput={onGlobalFilterChange} options={departments} />
       <div
         className="overflow-auto max-vh-100 mt-2"
-        style={{ maxHeight: "calc(100vh - 275px)" }}
       >
         <UserList
           leadingElement={true}
           userlist={
             currentSelected === "facilitators"
-              ? filteredList.users.filter((x) => x.roleName === "Facilitator")
+              ? filteredList.users.filter((x) => x?.roleName === "Facilitator")
               : filteredList.users
           }
           trailingElement={{ input: true }}
           property={"name"}
           handleParticipants={handleParticipants}
           filterTemp={filters}
+          showSelected
         />
       </div>
     </>
@@ -211,7 +219,7 @@ const TrainingParticipantsForm = ({
             trailingElement={{ action: true }}
             col="3"
             property={"name"}
-            action={(e) => removeParticipant("trainingParticipants", e)}
+            action={(e) => removeParticipant(e)}
             scrollHeight={"400px"}
           />
         </>
@@ -244,11 +252,11 @@ const TrainingParticipantsForm = ({
           </span>
           <UserList
             leadingElement={true}
-            userlist={data.trainingFacilitators}
+            userlist={data.trainingFacilitators?.map(item=>item?.faciDetail ?? item)
+            }
             trailingElement={{ action: true }}
             col="3"
-            property={"name"}
-            action={(e) => removeParticipant("trainingFacilitators", e)}
+            action={(e) => removeFacilitator(e)}
           />
         </>
       ) : (
