@@ -24,6 +24,7 @@ export const statusCode = {
   PUBLISHED: 8,
   FAILED: 9,
   TOUPDATE: 10,
+  DRAFTED: 12,
 };
 
 export const TrainingType = {

@@ -60,6 +60,7 @@ export const TrainingRequestForm = () => {
       return TrainingType.EXTERNAL;
     }
   };
+  console.log(getTrainingTypeId(), trainingType, formData)
   const stepperRef = useRef(null);
   useEffect(() => {
     stepperRef.current?.setActiveStep(0);
@@ -71,23 +72,29 @@ export const TrainingRequestForm = () => {
     },
     [details]
   );
-  const handleFormSubmission = async (draft = false) => {
+  const handleFormSubmission = async (draft = false, data) => {
     try {
-      const formmatedData = { ...validateTrainingRequestForm(formData) };
+      const formmatedData = { ...validateTrainingRequestForm(data ? data : formData) };
+      console.log(formData, formmatedData)
       if (trainingType.toUpperCase() === "UPDATE" && requestId) {
         const updateData = {
           ...formmatedData,
           updatedBy: SessionGetEmployeeId(),
+          isDraft: draft,
+          statusId: !draft  && formmatedData?.statusId === statusCode.DRAFTED ?
+            calculateTotalHours(formmatedData?.trainingDates) >= 960 // 16 hours in minutes
+              ? statusCode.SUBMITTED
+              : statusCode.FORAPPROVAL : formmatedData?.statusId,
         };
         handleResponseAsync(
           () => trainingRequestService.updateTrainingRequest(updateData),
           () => {
             actionSuccessful(
               "updated",
-              "training request successfully submitted."
+              `training request successfully ${draft ? "saved" : "submitted"}.`
             );
             setTimeout(() => {
-              navigate("/KEP_TMS/TrainingDetail/" + formmatedData.id);
+              navigate(draft ? "/KEP_TMS/RequestList/Draft" : "/KEP_TMS/TrainingDetail/" + formmatedData.id);
             }, 2500);
           }
         );
@@ -111,7 +118,7 @@ export const TrainingRequestForm = () => {
                 `Training request successfully ${draft ? "saved" : "submitted"}.`
               );
               setTimeout(() => {
-                navigate("/KEP_TMS/TrainingDetail/" + res?.data?.id);
+                navigate(draft ? "/KEP_TMS/RequestList/Draft" : "/KEP_TMS/TrainingDetail/" + res?.data?.id);
               }, 2500);
             }
           );
@@ -135,7 +142,7 @@ export const TrainingRequestForm = () => {
       const { hasErrors, newErrors } = validateTrainingDetails(details.current);
       let detailsValid = !hasErrors;
       // Set errors for details
-      if (hasErrors || schedulesIsValid.hasErrors) {
+      if (!isDraft && (hasErrors || schedulesIsValid.hasErrors)) {
         setErrors((prevErrors) => ({
           ...prevErrors,
           details: newErrors,
@@ -148,7 +155,7 @@ export const TrainingRequestForm = () => {
       if ((detailsValid && !schedulesIsValid.hasErrors) || isDraft) {
         setFormData((prev) => ({ ...prev, ...details.current }));
         if (isDraft) {
-          saveTrainingRequest();
+          saveTrainingRequest({ ...formData, ...details.current });
         } else {
           stepperRef.current.nextCallback();
           setErrors((prevErrors) => ({
@@ -180,7 +187,7 @@ export const TrainingRequestForm = () => {
       if (!hasErrors || isDraft) {
         setFormData((prev) => ({ ...prev, ...details.current }));
         if (isDraft) {
-          saveTrainingRequest();
+          saveTrainingRequest({ ...formData, ...details.current });
         } else {
         stepperRef.current.nextCallback();
         setErrors((prevErrors) => ({
@@ -207,7 +214,7 @@ export const TrainingRequestForm = () => {
       if (!hasError || isDraft) {
         setFormData((prev) => ({ ...prev, ...details.current }));
         if (isDraft) {
-          saveTrainingRequest();
+          saveTrainingRequest({ ...formData, ...details.current });
         } else {
         stepperRef.current.nextCallback();
         setErrors((prevErrors) => ({
@@ -215,6 +222,8 @@ export const TrainingRequestForm = () => {
           provider: "",
         }));}
       }
+    }else{
+      saveTrainingRequest({ ...formData, ...details.current });
     }
   };
   const trainingRequestData = trainingRequestHook.useTrainingRequest(
@@ -233,13 +242,13 @@ export const TrainingRequestForm = () => {
       });
     }
   }, [trainingType, trainingRequestData?.data, requestId]);
-  const saveTrainingRequest = async () => {
+  const saveTrainingRequest = async (data) => {
     confirmAction({
       title: 'Save as Draft',
       text: 'Are you sure you want to save this training request as a draft?',
       confirmButtonText: 'Save',
       showLoaderOnConfirm: true,
-      onConfirm: ()=> handleFormSubmission(true),
+      onConfirm:async ()=> await handleFormSubmission(true, data),
     })
   }
   const StepperButton = (button) => {
@@ -254,21 +263,22 @@ export const TrainingRequestForm = () => {
             onClick={() => stepperRef.current.prevCallback()}
           />
         )}
+        {formData?.status?.id === statusCode.DRAFTED &&
+        <Button
+          type="button"
+          className="ms-auto rounded"
+          label="Save"
+          icon="pi pi-save"
+          severity="warning"
+          iconPos="right"
+          title="save as draft"
+          onClick={() => handleButtonOnClick(button.index, true)}
+        />}
         {button.next && (
           <>
           <Button
             type="button"
-            className="ms-auto rounded"
-            label="Save"
-            icon="pi pi-save"
-            severity="warning"
-            iconPos="right"
-            title="save as draft"
-            onClick={() => handleButtonOnClick(button.index, true)}
-          />
-          <Button
-            type="button"
-            className=" rounded"
+            className={`${formData?.status?.id === statusCode.DRAFTED ? "" : "ms-auto"} rounded`}
             label="Next"
             icon="pi pi-arrow-right"
             iconPos="right"
@@ -278,9 +288,9 @@ export const TrainingRequestForm = () => {
         {button.submit && (
           <Button
             type="button"
-            className="ms-auto rounded"
+            className="rounded"
             label="Submit"
-            icon="pi pi-arrow-right"
+            icon="pi pi-cloud-upload"
             iconPos="right"
             severity="success"
             onClick={() =>
@@ -375,7 +385,7 @@ export const TrainingRequestForm = () => {
                     handleResponse={handleResponse}
                     errors={errors?.participants}
                     departments={departments?.data}
-                    trainingType={getTrainingTypeId()}
+                    trainingType={formData?.trainingType?.id}
                   />
                   {<StepperButton back={true} next={true} index={1} />}
                 </StepperPanel>

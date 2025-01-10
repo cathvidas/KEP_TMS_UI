@@ -22,6 +22,9 @@ const trainingRequestService = {
   },
   updateTrainingRequest: async (data) => {
     const response = await updateTrainingRequestApi(data);
+    if(response.status !== 1){
+      throw new Error(response.message);
+    }
     return response;
   },
   createTrainingRequest: async (data) => {

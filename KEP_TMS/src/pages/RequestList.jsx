@@ -50,7 +50,7 @@ const RequestList = () => {
         },
         {
           label: "For Approval",
-          icon: "pi pi-file-edit",
+          icon: "pi pi-pen-to-square",
           command: () => navigate(`/KEP_TMS/RequestList/ForApproval`),
           template: MenuItemTemplate,
           count: mappedData?.forApproval?.length,
@@ -98,7 +98,7 @@ const RequestList = () => {
         },
         {
           label: "Draft",
-          icon: "pi pi-times-circle",
+          icon: "pi pi-file-edit",
           command: () => navigate(`/KEP_TMS/RequestList/Draft`),
           template: MenuItemTemplate,
           count: mappedData?.draft?.length,
@@ -147,7 +147,7 @@ const RequestList = () => {
       setFilter({ value: null, label: "Outdated", data: mappedData?.outdated });
       setCurrentContent(7);
     } else if (currentPage === "DRAFT") {
-      setCurrentContent(1);
+      setCurrentContent(7);
       setFilter({ value: statusCode.DRAFTED, label: "Draft", data: mappedData?.draft });
     }  else {
       setCurrentContent(8);
