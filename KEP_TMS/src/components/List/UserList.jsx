@@ -27,9 +27,6 @@ export const UserList = ({
     }
   }, [removeEmpBadge]);
 
-  useEffect(()=>{
-    setSelected([]);
-  }, [filterTemp])
   useEffect(() => {
     if (handleParticipants) {
       handleParticipants(selected)
