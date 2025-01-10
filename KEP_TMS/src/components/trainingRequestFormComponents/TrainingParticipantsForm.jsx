@@ -296,5 +296,7 @@ TrainingParticipantsForm.propTypes = {
   formData: proptype.object,
   handleResponse: proptype.func,
   errors: proptype.oneOfType([proptype.object, proptype.string]),
+  departments: proptype.array,
+  trainingType: proptype.oneOf([TrainingType.INTERNAL, TrainingType.EXTERNAL]),
 };
 export default TrainingParticipantsForm;
