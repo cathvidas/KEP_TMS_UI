@@ -55,7 +55,7 @@ const validateTrainingEffectiveness = (
       !projectPerformanceEvaluation[i]?.content &&
       validEvaluation &&
       (projectPerformanceEvaluation[i]?.performanceBeforeTraining !== 0 ||
-        projectPerformanceEvaluation[i]?.projectedPerformance !== 0)
+        projectPerformanceEvaluation[i]?.projectedPerformance !== 0 || (projectPerformanceEvaluation[i]?.actualPerformance !== 0 && isAfter))
     ) {
       formErrors.projectPerformanceEvaluation = `No Activity defined on row ${
         i + 1
@@ -104,7 +104,7 @@ const validateTrainingEffectiveness = (
     ) {
       formErrors.projectPerformanceEvaluation = `Actual performance for Project Performance Evaluation Activity ${
         i + 1
-      } should be greater than the projected performance`;
+      } should be equal or greater than the projected performance`;
       validEvaluation = false;
     }
     if (

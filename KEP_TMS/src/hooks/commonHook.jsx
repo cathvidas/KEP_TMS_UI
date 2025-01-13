@@ -44,14 +44,14 @@ const commonHook = {
           const forApprovelEffectiveness = effectiveness?.filter(
             (item) => item.routingActivity?.statusId !== statusCode.TOUPDATE
           );
-          // Filter for evaluation (6 months from now)
+          // Filter evaluation (6 months from now)
           const forEvaluation = effectiveness?.filter(
             (item) =>
               item.routingActivity?.statusId === statusCode.TOUPDATE &&
               new Date(
                 item?.trainingEffectiveness?.trainingRequest?.trainingEndDate
               ) <= new Date(new Date().setMonth(new Date().getMonth() - 6)) &&
-              item.routingActivity?.assignedTo !== id
+              item.routingActivity?.assignedTo === id
           );
 
           setData({

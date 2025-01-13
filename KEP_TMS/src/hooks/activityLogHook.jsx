@@ -84,19 +84,55 @@ export default activityLogHook;
 const handleEffectivenessReport = async (user, item) => {
   if (user?.effectivenessId > 0) {
     try {
-      const effDetail = await effectivenessService.getEffectivenessById(user?.effectivenessId);
-      if (effDetail?.statusName === getStatusById(statusCode.APPROVED) || effDetail?.statusName === getStatusById(statusCode.FORAPPROVAL)) return null;
-      const title = effDetail?.statusName === getStatusById(statusCode.DISAPPROVED) ? "Effectiveness Report Disapproved" : "Pending Effectiveness Report";
-      return {
-        type: "Effectiveness Report",
-        title,
-        status: effDetail?.statusName ?? "Not yet submitted",
-        detail: effDetail?.statusName === getStatusById(statusCode.DISAPPROVED) 
-          ? "Your effectiveness report has been disapproved. Click here to view more details." 
-          : "You have a pending effectiveness report to be submitted.",
-        link: `TrainingDetail/${item.id}/Form/Effectiveness`,
-        date: effDetail?.currentRouting?.createdDate || item?.trainingStartDate,
-      };
+      const effDetail = await effectivenessService.getEffectivenessById(
+        user?.effectivenessId
+      );
+      if (effDetail) {
+        const isAfter = trainingDetailsService.checkIfTrainingEndsAlready(item);
+
+        if (
+          effDetail?.statusName === getStatusById(statusCode.APPROVED) ||
+          effDetail?.statusName === getStatusById(statusCode.FORAPPROVAL)
+        ) {
+          if (isAfter && !checkIfActualPerformanceRated(effDetail)) {
+            return {
+              type: "Effectiveness Report",
+              title:"Actual Performance Rating",
+              status: "Awaiting",
+              detail: "You have a pending effectiveness report to be updated.",
+              link: `TrainingDetail/${item.id}/Form/Effectiveness`,
+              date:
+                effDetail?.currentRouting?.createdDate ||
+                item?.trainingStartDate,
+            };
+          } else {
+            return null;
+          }
+        } else if (
+          effDetail?.statusName === getStatusById(statusCode.DISAPPROVED)
+        ) {
+          return {
+            type: "Effectiveness Report",
+            title: "Effectiveness Report Disapproved",
+            status: effDetail?.statusName,
+            detail:
+              "Your effectiveness report has been disapproved. Click here to view more details.",
+            link: `TrainingDetail/${item.id}/Form/Effectiveness`,
+            date:
+              effDetail?.currentRouting?.createdDate || item?.trainingStartDate,
+          };
+        }
+      } else {
+        return {
+          type: "Effectiveness Report",
+          title: "Pending Effectiveness Report",
+          status: "Not yet submitted",
+          detail: "You have a pending effectiveness report to be submitted.",
+          link: `TrainingDetail/${item.id}/Form/Effectiveness`,
+          date:
+            effDetail?.currentRouting?.createdDate || item?.trainingStartDate,
+        };
+      }
     } catch {
       return null;
     }
@@ -105,11 +141,37 @@ const handleEffectivenessReport = async (user, item) => {
     type: "Effectiveness Report",
     title: "Pending Effectiveness Report",
     status: null,
-    detail: "You have a pending effectiveness report to be submitted for this training request",
+    detail:
+      "You have a pending effectiveness report to be submitted for this training request",
     link: `TrainingDetail/${item.id}/Form/Effectiveness`,
     date: item?.trainingStartDate,
   };
 };
+
+export const checkIfActualPerformanceRated = (item) => {
+  let isRated = true;
+  if(!item){
+    return false;
+  }
+  item?.projectPerformanceEvaluation?.map((x) =>{
+    if(x?.actualPerformance === 0 && x?.content){
+      isRated = false;
+    }
+  })
+  return isRated;
+}
+export const checkIfEvaluatedActualPerformanceRated = (item) => {
+  let isRated = true;
+  if(!item){
+    return false;
+  }
+  item?.projectPerformanceEvaluation?.map((x) =>{
+    if(x?.evaluatedActualPerformance === 0 && x?.content){
+      isRated = false;
+    }
+  })
+  return isRated;
+}
 
 // Handle Training Report
 const handleTrainingReport = async (user, item) => {
