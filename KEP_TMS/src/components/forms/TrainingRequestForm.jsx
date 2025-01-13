@@ -60,7 +60,6 @@ export const TrainingRequestForm = () => {
       return TrainingType.EXTERNAL;
     }
   };
-  console.log(getTrainingTypeId(), trainingType, formData)
   const stepperRef = useRef(null);
   useEffect(() => {
     stepperRef.current?.setActiveStep(0);
@@ -75,7 +74,6 @@ export const TrainingRequestForm = () => {
   const handleFormSubmission = async (draft = false, data) => {
     try {
       const formmatedData = { ...validateTrainingRequestForm(data ? data : formData) };
-      console.log(formData, formmatedData)
       if (trainingType.toUpperCase() === "UPDATE" && requestId) {
         const updateData = {
           ...formmatedData,
@@ -263,7 +261,7 @@ export const TrainingRequestForm = () => {
             onClick={() => stepperRef.current.prevCallback()}
           />
         )}
-        {formData?.status?.id === statusCode.DRAFTED &&
+        {(trainingType.toUpperCase() !== "UPDATE" || formData?.status?.id === statusCode.DRAFTED) &&
         <Button
           type="button"
           className="ms-auto rounded"
@@ -278,7 +276,7 @@ export const TrainingRequestForm = () => {
           <>
           <Button
             type="button"
-            className={`${formData?.status?.id === statusCode.DRAFTED ? "" : "ms-auto"} rounded`}
+            className={`${trainingType.toUpperCase() !== "UPDATE" || formData?.status?.id === statusCode.DRAFTED ? "" : "ms-auto"} rounded`}
             label="Next"
             icon="pi pi-arrow-right"
             iconPos="right"
