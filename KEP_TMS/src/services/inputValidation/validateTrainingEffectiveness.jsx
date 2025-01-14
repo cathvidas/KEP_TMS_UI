@@ -19,8 +19,9 @@ const validateTrainingEffectiveness = (
   }
   let characteristicsCount = 0;
   performanceCharacteristics?.forEach((_, i) => {
+    var trimmedContent = performanceCharacteristics[i]?.content?.trim();
     if (
-      !performanceCharacteristics[i]?.content &&
+      !trimmedContent &&
       validCharacteristic &&
       performanceCharacteristics[i]?.rating !== 0
     ) {
@@ -31,7 +32,7 @@ const validateTrainingEffectiveness = (
     } else if (
       performanceCharacteristics[i]?.rating === 0 &&
       validCharacteristic &&
-      performanceCharacteristics[i]?.content
+      trimmedContent
     ) {
       formErrors.performanceCharacteristics = `No ratings added in Performance characteristic ${
         i + 1
@@ -39,7 +40,7 @@ const validateTrainingEffectiveness = (
       validCharacteristic = false;
     } else if (
       validCharacteristic &&
-      performanceCharacteristics[i]?.content &&
+      trimmedContent &&
       performanceCharacteristics[i]?.rating !== 0
     ) {
       characteristicsCount += 1;
@@ -51,8 +52,9 @@ const validateTrainingEffectiveness = (
   let evaluationCount = 0;
 
   projectPerformanceEvaluation?.forEach((_, i) => {
+    var trimmedContent = projectPerformanceEvaluation[i]?.content?.trim();
     if (
-      !projectPerformanceEvaluation[i]?.content &&
+      !trimmedContent &&
       validEvaluation &&
       (projectPerformanceEvaluation[i]?.performanceBeforeTraining !== 0 ||
         projectPerformanceEvaluation[i]?.projectedPerformance !== 0 || (projectPerformanceEvaluation[i]?.actualPerformance !== 0 && isAfter))
@@ -64,7 +66,7 @@ const validateTrainingEffectiveness = (
     } else if (
       projectPerformanceEvaluation[i]?.projectedPerformance === 0 &&
       (projectPerformanceEvaluation[i]?.performanceBeforeTraining !== 0 ||
-        projectPerformanceEvaluation[i]?.content) &&
+        trimmedContent) &&
       validEvaluation
     ) {
       formErrors.projectPerformanceEvaluation = `No ratings added on projected performance row ${
@@ -75,7 +77,7 @@ const validateTrainingEffectiveness = (
       projectPerformanceEvaluation[i]?.projectedPerformance <=
         projectPerformanceEvaluation[i]?.performanceBeforeTraining &&
       validEvaluation &&
-      projectPerformanceEvaluation[i]?.content
+      trimmedContent
     ) {
       formErrors.projectPerformanceEvaluation = `Projected performance rating should be greater than the performance before training rating on row ${
         i + 1
@@ -83,7 +85,7 @@ const validateTrainingEffectiveness = (
       validEvaluation = false;
     } else if (
       validEvaluation &&
-      projectPerformanceEvaluation[i]?.content &&
+      trimmedContent &&
       projectPerformanceEvaluation[i]?.projectedPerformance !== 0
     ) {
       evaluationCount += 1;
@@ -96,7 +98,7 @@ const validateTrainingEffectiveness = (
     }
 
     if (
-      projectPerformanceEvaluation[i]?.content &&
+      trimmedContent &&
       projectPerformanceEvaluation[i]?.actualPerformance <
         projectPerformanceEvaluation[i]?.projectedPerformance &&
       validEvaluation &&
@@ -108,7 +110,7 @@ const validateTrainingEffectiveness = (
       validEvaluation = false;
     }
     if (
-      projectPerformanceEvaluation[i]?.content &&
+      trimmedContent &&
       projectPerformanceEvaluation[i]?.evaluatedActualPerformance === 0 &&
       validEvaluation &&
       forEvaluation
