@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import userService from "../services/userService";
 import handleResponseAsync from "../services/handleResponseAsync";
+import { UserTypeValue } from "../api/constants";
 
 const userHook = {
     useUserById: (id, trigger) => {
@@ -38,10 +39,10 @@ const userHook = {
             (e) => {
               setData(e);
               e?.map((user) => {
-                if (user?.roleName === "Admin") {
+                if (user?.roleName === UserTypeValue.ADMIN) {
                   setAdmins((admins) => [...admins, user]);
                 }
-                if (user?.roleName === "Facilitator") {
+                if (user?.roleName === UserTypeValue.FACILITATOR) {
                   setFacilitators((facilitators) => [...facilitators, user]);
                 }
               });

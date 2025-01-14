@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import getStatusCode from "../utils/status/getStatusCode";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
-import { statusCode } from "../api/constants";
+import { statusCode, UserTypeValue } from "../api/constants";
 import TrainingRequestList from "../components/List/TrainingRequestList";
 import MenuContainer from "../components/menus/MenuContainer";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
@@ -16,8 +16,14 @@ const RequestList = () => {
   const { type } = useParams();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [paginatorConfig, setPaginatorConfig] = useState({
+    first: 0,
+    rows: 10,
+    page: 1,
+    value:null,
+  });
   const isAdmin =
-    SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin"
+    SessionGetRole() == UserTypeValue.ADMIN || SessionGetRole() == UserTypeValue.SUPER_ADMIN
       ? true
       : false;
   const { data, mappedData, error, loading } = isAdmin

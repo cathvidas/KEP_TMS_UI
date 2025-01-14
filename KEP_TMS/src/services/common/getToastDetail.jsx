@@ -1,11 +1,10 @@
-import { statusCode } from "../../api/constants";
+import { statusCode, UserTypeValue } from "../../api/constants";
 import countData from "../../utils/countData";
 import { SessionGetEmployeeId, SessionGetRole } from "../sessions";
 import getStatusById from "../../utils/status/getStatusById";
 import ToastTemplate from "../../components/General/ToastTemplate";
 import handleApproveRequest from "../handlers/handleApproveRequest";
 import sortRoutingBySequence from "./sortRoutingsBySequence";
-import { extractChanges } from "../../utils/stringUtil";
 
 const getToastDetail = (
   data,
@@ -17,7 +16,7 @@ const getToastDetail = (
   reloadData
 ) => {
   const isAdmin =
-    SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin"
+    SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.SUPER_ADMIN
       ? true
       : false;
   const isTrainee = data?.trainingParticipants?.find(

@@ -133,9 +133,9 @@ const AllUserPageSection = ({
     <>
       <CommonTable
         headerComponent={
-          userType === "Requester" ||
-          userType === "Facilitator" ||
-          userType === "Admin"
+          userType === UserTypeValue.REQUESTOR ||
+          userType === UserTypeValue.FACILITATOR ||
+          userType === UserTypeValue.ADMIN
             ? header
             : null
         }
