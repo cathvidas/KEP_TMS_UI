@@ -11,7 +11,7 @@ import { FilterMatchMode } from "primereact/api";
 import EmptyState from "./EmptyState";
 import { Button } from "primereact/button";
 import { Modal } from "react-bootstrap";
-import { TrainingType } from "../../api/constants";
+import { TrainingType, UserTypeValue } from "../../api/constants";
 const TrainingParticipantsForm = ({
   formData,
   handleResponse,
@@ -181,7 +181,7 @@ const TrainingParticipantsForm = ({
           leadingElement={true}
           userlist={
             currentSelected === "facilitators"
-              ? filteredList.users.filter((x) => x?.roleName === "Facilitator")
+              ? filteredList.users.filter((x) => x?.roleName === UserTypeValue.FACILITATOR || x?.roleName === UserTypeValue.ADMIN)
               : filteredList.users
           }
           trailingElement={{ input: true }}
