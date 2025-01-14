@@ -730,34 +730,25 @@ const EffectivenessForm = ({
                 (x) => x.employeeBadge === SessionGetEmployeeId()
               ) && (
                 <>
-                  {formData?.statusName ==
-                    getStatusById(statusCode.DISAPPROVED) && (
+                  {(formData?.statusName ==
+                    getStatusById(statusCode.DISAPPROVED) ||!actualPerfRating.isRated && isSubmitted ) && (
                     <Button
                       type="button"
-                      icon={!isUpdate && "pi pi-pencil"}
-                      label={isUpdate ? "Cancel" : "Edit"}
+                      icon={!(isUpdate || actualPerfRating.isRating) && "pi pi-pencil"}
+                      label={(isUpdate || actualPerfRating.isRating) ? "Cancel" : "Edit"}
                       className="rounded ms-auto"
                       severity="secondary"
-                      text={isUpdate}
+                      text={isUpdate || actualPerfRating.isRating}
                       onClick={() => {
-                        setIsUpdate(!isUpdate);
-                        populateData();
-                      }}
-                    />
-                  )}
-                  {!actualPerfRating.isRated && isSubmitted && (
-                    <Button
-                      type="button"
-                      icon={!actualPerfRating.isRating && "pi pi-pencil"}
-                      label={actualPerfRating.isRating ? "Cancel" : "Edit"}
-                      className="rounded ms-auto"
-                      severity="secondary"
-                      text={isUpdate}
-                      onClick={() => {
-                        setActualPerfRating((prev) => ({
-                          ...prev,
-                          isRating: !actualPerfRating.isRating,
-                        }));
+                        if(formData?.statusName ==
+                          getStatusById(statusCode.DISAPPROVED)){
+                        setIsUpdate(!isUpdate);}
+                        if(!actualPerfRating.isRated && isSubmitted){
+                          setActualPerfRating((prev) => ({
+                            ...prev,
+                            isRating: !actualPerfRating.isRating,
+                          }));
+                        }
                         populateData();
                       }}
                     />

@@ -67,7 +67,7 @@ const validateTrainingEffectiveness = (
         projectPerformanceEvaluation[i]?.content) &&
       validEvaluation
     ) {
-      formErrors.projectPerformanceEvaluation = `No ratings added on Projected performance for Project Performance Evaluation ${
+      formErrors.projectPerformanceEvaluation = `No ratings added on projected performance row ${
         i + 1
       }`;
       validEvaluation = false;
@@ -77,7 +77,7 @@ const validateTrainingEffectiveness = (
       validEvaluation &&
       projectPerformanceEvaluation[i]?.content
     ) {
-      formErrors.projectPerformanceEvaluation = `Projected performance should be greater than Performance before training for Project Performance Evaluation ${
+      formErrors.projectPerformanceEvaluation = `Projected performance rating should be greater than the performance before training rating on row ${
         i + 1
       }`;
       validEvaluation = false;
@@ -91,7 +91,7 @@ const validateTrainingEffectiveness = (
 
     if (evaluationCount === 0 && validEvaluation) {
       formErrors.projectPerformanceEvaluation =
-        "Add at least one project performance evaluation activity";
+        "Add at least one task";
       validEvaluation = false;
     }
 
@@ -102,7 +102,7 @@ const validateTrainingEffectiveness = (
       validEvaluation &&
       isAfter
     ) {
-      formErrors.projectPerformanceEvaluation = `Actual performance for Project Performance Evaluation Activity ${
+      formErrors.projectPerformanceEvaluation = `Actual performance in row ${
         i + 1
       } should be equal or greater than the projected performance`;
       validEvaluation = false;
