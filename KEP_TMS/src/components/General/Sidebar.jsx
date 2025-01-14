@@ -7,6 +7,8 @@ import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import { Button } from "primereact/button";
 import { confirmAction } from "../../services/sweetalert";
 import { APP_DOMAIN, hasRequestAccess, UserTypeValue } from "../../api/constants";
+import commonHook from "../../hooks/commonHook";
+import { Badge } from "primereact/badge";
 
 const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
   const navigate = useNavigate();
@@ -16,14 +18,14 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
   const firstname = sessionStorage.getItem("firstname");
   const lastname = sessionStorage.getItem("lastname");
   const fullname = sessionStorage.getItem("fullname");
-
+const approvalCount = commonHook.useAllAssignedForApproval(SessionGetEmployeeId())?.data?.overallCount;
   const NavItem = ({
     item,
     icon,
     title,
     iconComponent,
     onClick,
-    hideLabel = false,
+    hideLabel = false,badgeValue
   }) => {
     return (
       <li className="nav-item">
@@ -44,10 +46,12 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
               expanded ? "row gap-3" : "column gap-1"
             } text-center`}
           >
+           
             {iconComponent ? (
               <>{iconComponent}</>
             ) : (
-              icon && <i className={icon} style={{ fontSize: "1.4rem" }}></i>
+              icon && <i className={icon + " p-overlay-badge"} style={{ fontSize: "1.4rem" }}> {badgeValue > 0 && 
+                <Badge value={badgeValue} severity="danger" size="small" style={{fontSize: "0.7rem", minWidth: "1.2rem", height: "1.2rem", lineHeight: "1.3rem"}}></Badge>}</i>
             )}
             {!hideLabel && (
               <small
@@ -68,6 +72,7 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
   NavItem.propTypes = {
     item: proptype.string.isRequired,
     icon: proptype.string,
+    badgeValue: proptype.number,
     title: proptype.string.isRequired,
     iconComponent: proptype.object,
     onClick: proptype.func,
@@ -147,11 +152,13 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
                 icon="pi pi-clipboard"
               />
             )}
+            {approvalCount > 0 &&
             <NavItem
               item={"List/ForApproval"}
               title="For Approval"
               icon="pi pi-pen-to-square"
-            />
+              badgeValue={approvalCount}
+            />}
             <NavItem
               item="Certificates"
               title="Certificates"
