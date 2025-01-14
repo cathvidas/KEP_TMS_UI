@@ -10,13 +10,14 @@ import { useNavigate } from "react-router-dom";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import commonHook from "../hooks/commonHook";
 import SkeletonCards from "../components/Skeleton/SkeletonCards";
-import { APP_DOMAIN, UserTypeValue } from "../api/constants";
+import { APP_DOMAIN, hasRequestAccess, UserTypeValue } from "../api/constants";
 import { TabPanel, TabView } from "primereact/tabview";
 import activityLogHook from "../hooks/activityLogHook";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const approval = commonHook.useAllAssignedForApproval(SessionGetEmployeeId());
+  
   const assignedTraining = trainingRequestHook.useTrainingRequestByTraineeId(
     SessionGetEmployeeId()
   );
@@ -146,17 +147,13 @@ const Dashboard = () => {
               )}
 
               <TabView
-                className={`custom-tab ${
-                  SessionGetRole() === UserTypeValue.ADMIN ||
-                  SessionGetRole() === UserTypeValue.REQUESTOR
+                className={`custom-tab ${hasRequestAccess
                     ? ""
                     : "border-0 hide-nav"
                 }`}
               >
                 <TabPanel
-                  header={
-                    SessionGetRole() === UserTypeValue.ADMIN ||
-                    SessionGetRole() === UserTypeValue.REQUESTOR
+                  header={hasRequestAccess
                       ? "Activities"
                       : ""
                   }
@@ -221,14 +218,12 @@ const Dashboard = () => {
                     </>
                   )}
                 </TabPanel>
-                {(SessionGetRole() === UserTypeValue.ADMIN ||
-                  SessionGetRole() === UserTypeValue.REQUESTOR) && (
+                {(hasRequestAccess) && (
                   <TabPanel header={"Training Requests"}>
                     {trainingRequests?.loading ? (
                       <SkeletonCards />
                     ) : (
-                      (SessionGetRole() === UserTypeValue.ADMIN ||
-                        SessionGetRole() === UserTypeValue.REQUESTOR ||
+                      (hasRequestAccess ||
                         trainingRequests?.data?.length > 0) && (
                         <>
                           <Row className="g-2 row-cols-lg-4">

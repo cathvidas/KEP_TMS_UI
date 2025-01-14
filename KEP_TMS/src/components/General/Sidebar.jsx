@@ -6,7 +6,7 @@ import icon2 from "/src/img/logo-nobg.png";
 import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import { Button } from "primereact/button";
 import { confirmAction } from "../../services/sweetalert";
-import { APP_DOMAIN, UserTypeValue } from "../../api/constants";
+import { APP_DOMAIN, hasRequestAccess, UserTypeValue } from "../../api/constants";
 
 const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
   const navigate = useNavigate();
@@ -128,8 +128,7 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
           </Link>
           <ul className="nav nav-pills flex-column nav-flush w-100 mb-auto">
             <NavItem item={"Dashboard"} title="Dashboard" icon={"pi pi pi-home"} />
-            {(SessionGetRole() === UserTypeValue.ADMIN ||
-              SessionGetRole() === UserTypeValue.REQUESTOR) && (
+            {hasRequestAccess && (
               <NavItem
                 item={"RequestList"}
                 title="Training Requests"

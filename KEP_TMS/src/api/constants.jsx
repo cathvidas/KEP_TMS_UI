@@ -1,3 +1,5 @@
+import { SessionGetRole } from "../services/sessions";
+
 const localhost = {
     API_BASE_URL: "http://localhost:5030/api",
     APPLICATION_BASE_URL: "http://localhost:5173/KEP_TMS/"
@@ -63,3 +65,7 @@ export const attachmentType = {
 export const OtherConstant = {
   EFFECTIVENESS_MINHOUR : 16
 }
+
+export const hasRequestAccess = SessionGetRole() === UserTypeValue.ADMIN ||
+SessionGetRole() === UserTypeValue.REQUESTOR ||
+SessionGetRole() === UserTypeValue.FACILITATOR;
