@@ -98,15 +98,15 @@ const populateData = () => {
   const validateForm = () => {
     let formErrors = {};
     let isValid = true;
-    if (!formData.trainingTakeaways) {
+    if (!formData.trainingTakeaways.trim()) {
       formErrors.trainingTakeaways = "This field is required";
       isValid = false;
     }
-    if (!formData.actionPlan) {
+    if (!formData.actionPlan.trim()) {
       formErrors.actionPlan = "This field is required";
       isValid = false;
     }
-    if (!formData.timeframe) {
+    if (!formData.timeframe.trim()) {
       formErrors.timeframe = "This field is required";
       isValid = false;
     }
@@ -260,7 +260,8 @@ const populateData = () => {
               />
             </>
           )}
-        {formData?.statusId == statusCode.DISAPPROVED && (
+        {(formData?.statusId == statusCode.DISAPPROVED && data?.trainingParticipants?.some(
+          (x) => x.employeeBadge === SessionGetEmployeeId())) && (
           <Button
             type="button"
             icon={!isUpdate && "pi pi-pencil"}
@@ -294,7 +295,7 @@ const populateData = () => {
               <Button
                 type="button"
                 icon={"pi pi-save"}
-                label={"Submit Form"}
+                label={"Submit"}
                 className="rounded ms-2"
                 severity="success"
                 onClick={handleSubmit}
