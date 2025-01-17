@@ -10,24 +10,34 @@ import { actionFailed, actionSuccessful, confirmAction } from "../../../services
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import userService from "../../../services/userService";
 import { SessionGetEmployeeId } from "../../../services/sessions";
-const AddUserForm = ({showForm, closeForm, userType, data, userRoles, optionList, onFinish})=>{
-    const [selectedUser, setSelectedUser] = useState({label:"", value:""})
+import userHook from "../../../hooks/userHook";
+const AddUserForm = ({showForm, closeForm, userType, userRoles, optionList, onFinish})=>{
+    const [selectedUser, setSelectedUser] = useState({label:"", value:""})  
+    const [paginatorConfig, setPaginatorConfig] = useState({
+      first: 0,
+      rows: 5,
+      page: 1,
+      value: null,
+    }); 
+    
+    const users = userHook.useAllUsers(paginatorConfig.page, paginatorConfig.rows, paginatorConfig.value);
     const [options, setOptions] = useState([]);
     const [error, setError] = useState("");
     useEffect(() => {
-      const filteredData = data?.filter((user) => user.roleName !== userType);
+      const filteredData = users?.data?.results?.filter((user) => user.roleName !== userType);
      const mappedData = filteredData?.map((user) => (
        { label: user?.fullname, value: user?.employeeBadge })
       );
       setOptions(mappedData)
-    }, [data, userType]);
+    }, [users?.data?.results, userType]);
     const handleSubmit = () => {
       const isValid = validateForm();
-      const userData = data?.filter(
+      const userData = users?.data?.results?.filter(
         (user) => user.employeeBadge === selectedUser.value
       )?.[0];
       const roleId = userRoles?.filter((role) => role?.label === userType)?.[0]
         ?.value;
+        console.log(userData, roleId, userRoles, userType);
       if (isValid && userData && roleId) {
         const newData = { ...mapUserUpdateDetail(userData, optionList), roleId: roleId, updatedBy: SessionGetEmployeeId() };
         confirmAction({
@@ -45,7 +55,7 @@ const AddUserForm = ({showForm, closeForm, userType, data, userRoles, optionList
     const validateForm = () => {
       let newErrors = "";
       let isValid = true;
-      const isExist = data?.some((user) => user.roleName === userType && user.employeeBadge === selectedUser.value);
+      const isExist = users?.data?.results?.some((user) => user.roleName === userType && user.employeeBadge === selectedUser.value);
       if (isExist) {
         newErrors = `This user is already ${userType === UserTypeValue.FACILITATOR ? "a": "an"} ${userType} `;
         isValid = false;
@@ -71,6 +81,12 @@ const AddUserForm = ({showForm, closeForm, userType, data, userRoles, optionList
                 error={error}
                 FieldComponent={
                     <Select
+                    onMenuScrollToBottom={() =>
+                      setPaginatorConfig((prev) => ({ ...prev, rows: prev.rows + 10 }))
+                    }    onInputChange={(e) =>
+                      setPaginatorConfig((prev) => ({ ...prev, value: e }))
+                    }
+                      isLoading={users?.loading}
                     options={options} 
                     value={selectedUser}   
                       onChange={setSelectedUser}

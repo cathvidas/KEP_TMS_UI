@@ -23,7 +23,7 @@ const Dashboard = () => {
   );
   const pendings =  activityLogHook.useUserPendingTaskList(SessionGetEmployeeId())
   const trainingRequests =
-    SessionGetRole() == UserTypeValue.ADMIN || SessionGetRole() == UserTypeValue.SUPER_ADMIN
+    SessionGetRole() == UserTypeValue.ADMIN
       ? trainingRequestHook.useAllTrainingRequests()
       : trainingRequestHook.useAllTrainingRequests(SessionGetEmployeeId());
   const trainerAssignedData = trainingRequestHook.useParticipantTrainings(

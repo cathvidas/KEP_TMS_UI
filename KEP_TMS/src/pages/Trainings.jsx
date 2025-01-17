@@ -48,7 +48,21 @@ const Trainings = () => {
         active: currentContent === 1 ? true : false,
       },
     ]
-  }]
+  },
+  {
+    label: "For Evaluation",
+    items: [
+      {
+        label: "Trainee Effectiveness",
+      //   icon: "pi pi-arrow-down-left-and-arrow-up-right-to-center",
+        command: () => navigate("/KEP_TMS/List/EffectivenessEvaluation"),
+        active: currentContent === 3 ? true : false,
+        template: MenuItemTemplate,
+        badge: data?.forEvaluation?.length > 0 ?{value: data?.forEvaluation?.length}:false
+     
+      },
+    ],
+  },]
   const Content = () => (
     <>
       <div className={`d-flex g-0`}>

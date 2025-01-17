@@ -63,6 +63,7 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
   const [showCertForm, setShowCertForm] = useState(false);
   const [isFacilitator, setIsFacilitator] = useState(false);
   const [certificateTrainings, setCertificateTrainings] = useState(null);
+  const superiorName = userHook.useUserById(data?.superiorBadge)?.data?.fullname;
   const columnItem = [
     {field: "id", header: "Request #", },
     { field: "requesterName", header: "Name", body: <>{data?.fullname}</> },
@@ -103,14 +104,14 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
                   <DetailItem label="Department" value={data?.departmentName} />
                   <DetailItem label="Email" value={data?.email} />
                   <DetailItem label="User Type" value={data?.roleName} />
-                  <DetailItem label="Immediate Superior" value={data?.superiorName} />
+                  <DetailItem label="Immediate Superior" value={superiorName} />
                   <DetailItem label="Status" value={data?.statusName} />
                   {/* <DetailItem label="Password" value={data?.password} /> */}
                   <DetailItem label="Created By" user={data?.createdBy} />
                   <DetailItem label="Created Date" value={formatDateTime(data?.createdDate)} />
                   <DetailItem label="Updated By" user={data?.updatedBy ?? "N/A"} />
                   <DetailItem label="Updated Date" value={data?.updatedDate ? formatDateTime(data?.updatedDate) : 'N/A'} />
-                  <Button type="button" icon="pi pi-user-edit" size="small" text label="Edit" onClick={() => setShowUpdateForm(true)}/>
+               {isAdmin &&  <Button type="button" icon="pi pi-user-edit" size="small" text label="Edit" onClick={() => setShowUpdateForm(true)}/>}
                 </Col>
                 <Col className="border-start">
                   <h5 className="theme-color">Training Summary</h5>

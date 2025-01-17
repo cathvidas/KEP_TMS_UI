@@ -24,6 +24,7 @@ export const formatDateTime = (value, hasSecond) => {
 };
 
 export const formatDateOnly = (value, type = "slash") => {
+  if(!value) return "N/A";
   const date = new Date(value);
 
   if (isNaN(date.getTime())) {

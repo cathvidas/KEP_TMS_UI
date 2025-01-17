@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import { FilterMatchMode } from "primereact/api";
 import { InputText } from "primereact/inputtext";
 import "../../assets/css/customPrimeReact.css"
+import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 
 const CommonTable = ({
   dataTable,
@@ -19,6 +20,7 @@ const CommonTable = ({
   dataKey,
   onInputChange,
   hideOnEmpty=true,
+  loading
 }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -55,6 +57,7 @@ const CommonTable = ({
   const dataRef = useRef();
   return (
     <>
+    {loading ? <SkeletonDataTable/> : <>
       <div className=" w-100 overflowX-auto" style={{ overflowX: "auto" }}>
         {((dataTable?.length > 0 && hideOnEmpty) || !hideOnEmpty) ?<>
         <DataTable
@@ -88,7 +91,7 @@ const CommonTable = ({
         : <>
         <div className="text-center py-5">No data available</div> 
         </>}
-      </div>
+      </div></>}
     </>
   );
 };
@@ -102,6 +105,7 @@ CommonTable.propTypes = {
   hidePaginator: proptype.bool,
   dataKey: proptype.string,
   onInputChange: proptype.func,
-  hideOnEmpty: proptype.bool
+  hideOnEmpty: proptype.bool,
+  loading: proptype.bool,
 };
 export default CommonTable;

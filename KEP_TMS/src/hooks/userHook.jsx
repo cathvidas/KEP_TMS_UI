@@ -26,6 +26,59 @@ const userHook = {
     };
     }
     , 
+    useAllUsers:(pageNumber, pageSize, searchValue, trigger) => {
+      const [data, setData] = useState();
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      useEffect(() => {
+        const getRequest = async () => {
+          handleResponseAsync(
+            () =>
+              userService.getAllUsers(
+                pageNumber,
+                pageSize,
+                searchValue
+              ),
+            (e) => setData(e),
+            (e) => setError(e),
+            () => setLoading(false)
+          );
+        };
+        getRequest();
+      }, [pageNumber, pageSize, searchValue, trigger]);
+      return {
+        data,
+        error,
+        loading,
+      };
+    },
+    useUsersByRole:(pageNumber, pageSize, role, searchValue, trigger) => {
+      const [data, setData] = useState();
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      useEffect(() => {
+        const getRequest = async () => {
+          handleResponseAsync(
+            () =>
+              userService.getUsersByRole(
+                pageNumber,
+                pageSize,
+                role,
+                searchValue
+              ),
+            (e) => setData(e),
+            (e) => setError(e),
+            () => setLoading(false)
+          );
+        };
+        getRequest();
+      }, [pageNumber, pageSize, searchValue, role,trigger]);
+      return {
+        data,
+        error,
+        loading,
+      };
+    },
     useAllUsersAndEmployee : (trigger)=>{
       const [data, setData] = useState([]);
       const [admins, setAdmins] = useState([]);

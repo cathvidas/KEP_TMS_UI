@@ -4,33 +4,26 @@ import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import AllUserPageSection from "./UserPageSection/AllUserPageSection";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import UserDetailView from "./UserPageSection/UserDetailView";
 import { Button } from "primereact/button";
 import NewUserForm from "../components/forms/ModalForms/NewUserForm";
-import userHook from "../hooks/userHook";
-import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import commonHook from "../hooks/commonHook";
 import { statusCode, UserTypeValue } from "../api/constants";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import NotFoundPage from "./NotFoundPage";
 
 const UserPage = () => {
-  const [trigger, setTrigger] = useState(0)
   const [showForm, setShowForm] = useState(false);
   const { page, id } = useParams();
   const navigate = useNavigate();
-  const [currentContent, setCurrentContent] = useState(0);
-  const { data, loading } = userHook.useAllUsersAndEmployee(trigger);
+  // const { data, loading } = userHook.useAllUsersAndEmployee(trigger);
   const [options, setOptions] = useState({ options: [], loading: true });
   const roles = commonHook.useAllRoles();
   const departments = commonHook.useAllDepartments();
   const positions = commonHook.useAllPositions();
-  const empTypes = commonHook.useAllEmployeeTypes();
-  const filterdata = (userType) => {
-    return userType ? data?.filter((item) => item.roleName === userType) : data;
-  };
+  const empTypes = commonHook.useAllEmployeeTypes();  
+  const [userType, setUserType] = useState("");
+  
   const refreshData = ()=>{
-    setTrigger(prev=>prev+1);
     setShowForm(false);
   }
   useEffect(() => {
@@ -56,10 +49,10 @@ const UserPage = () => {
         label: emptype.name,
         value: emptype.id,
       }));
-      const mappedUsers = data?.map((user) => ({
-        label: user.fullname,
-        value: user.employeeBadge,
-      }));
+      // const mappedUsers = data?.map((user) => ({
+      //   label: user.fullname,
+      //   value: user.employeeBadge,
+      // }));
       setOptions((prev) => ({
         ...prev,
         loading: false,
@@ -67,7 +60,7 @@ const UserPage = () => {
           ...options.options,
           roles: mappedRoles,
           departments: mappedDepartments,
-          users: mappedUsers,
+          // users: mappedUsers,
           positions: mappedPositions,
           empTypes: mappedEmpTypes,
           status: [
@@ -78,7 +71,7 @@ const UserPage = () => {
       }));
     }
   }, [
-    data,
+    // data,
     roles?.loading,
     departments?.loading,
     positions?.loading,
@@ -95,7 +88,7 @@ const UserPage = () => {
           label: "All Users",
           template: MenuItemTemplate,
           command: () => navigate("/KEP_TMS/Users"),
-          active: currentContent === 1 ? true : false,
+          active: userType === null,
         },
         // {
         //   label: "Trainees",
@@ -114,87 +107,42 @@ const UserPage = () => {
           label: "Requester",
           template: MenuItemTemplate,
           command: () => navigate("/KEP_TMS/Users/Requester"),
-          active: currentContent === 3 ? true : false,
+          active: userType === UserTypeValue.REQUESTOR,
         },
         {
           label: "Facilitators",
           template: MenuItemTemplate,
           command: () => navigate("/KEP_TMS/Users/Facilitator"),
-          active: currentContent === 4 ? true : false,
+          active: userType === UserTypeValue.FACILITATOR,
         },
         {
           label: "Admins",
           template: MenuItemTemplate,
           command: () => navigate("/KEP_TMS/Users/Admin"),
-          active: currentContent === 5 ? true : false,
+          active: userType === UserTypeValue.ADMIN,
         },
       ],
     },
   ];
-  const pageContent = [
-    <UserDetailView
-      key={0}
-      id={id}
-      adminList={filterdata(UserTypeValue.ADMIN)}
-      isAdmin={isAdmin}
-      options={options}
-    />,
-    <AllUserPageSection key={1} options={options} data={data} reloadData={refreshData} />,
-    <AllUserPageSection
-      key={2}
-      options={options}
-      data={data}
-      userType={UserTypeValue.TRAINEE}
-      reloadData={refreshData}
-    />,
-    <AllUserPageSection
-      key={3}
-      options={options}
-      data={data}
-      userType={UserTypeValue.REQUESTOR}
-      isFilter
-      reloadData={refreshData}
-    />,
-    <AllUserPageSection
-      key={4}
-      options={options}
-      data={data}
-      userType={UserTypeValue.FACILITATOR}
-      isFilter
-      reloadData={refreshData}
-    />,
-    <AllUserPageSection
-      key={5}
-      options={options}
-      data={data}
-      userType={UserTypeValue.ADMIN}
-      reloadData={refreshData}
-      isFilter
-    />,
-  ];
   useEffect(() => {
-    if (page && id) {
-      setCurrentContent(0);
-    } else if (page === "Trainee") {
-      setCurrentContent(2);
-    } else if (page === "Requester") {
-      setCurrentContent(3);
+    if (page === "Requester") {
+      setUserType(UserTypeValue.REQUESTOR);
     } else if (page === "Facilitator") {
-      setCurrentContent(4);
+      setUserType(UserTypeValue.FACILITATOR);
     } else if (page === "Admin") {
-      setCurrentContent(5);
+      setUserType(UserTypeValue.ADMIN);
     } else {
-      setCurrentContent(1);
+      setUserType(null);
     }
   }, [page, id]);
   const Content = () => {
     return (
       <>
         <div className={`d-flex g-0`}>
-          {isAdmin && (
+          {(isAdmin && !id) && (
             <MenuContainer
-            label="Users"
-            fullHeight
+              label="Users"
+              fullHeight
               itemList={items}
               action={
                 <Button
@@ -211,7 +159,14 @@ const UserPage = () => {
             className={`p-3 pb-5 flex-grow-1`}
             style={{ minHeight: "100vh" }}
           >
-            {loading ? <SkeletonDataTable /> : pageContent[currentContent]}
+            <AllUserPageSection
+              key={3}
+              options={options}
+              id={id}
+              userType={userType}
+              isFilter
+              reloadData={refreshData}
+            />
           </div>
         </div>
         <NewUserForm
@@ -224,7 +179,7 @@ const UserPage = () => {
       </>
     );
   };
-  return (currentContent === 0 && SessionGetEmployeeId() === id) || isAdmin ? (
+  return (SessionGetEmployeeId() === id) || isAdmin ? (
     <Layout
       navReference="Users"
       header={{ title: "Users", icon: <i className="pi pi-users"></i>, hide:true }}

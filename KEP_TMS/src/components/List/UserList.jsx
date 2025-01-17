@@ -16,7 +16,8 @@ export const UserList = ({
   column,
   allowEffectiveness = false,
   sortable= false,
-  selectionMode,showSelected
+  selectionMode,showSelected,
+  handleScroll
 }) => {
   // const [filters, setFilters] = useState(filterTemp);
   const [selected, setSelected] = useState([]);
@@ -60,7 +61,13 @@ export const UserList = ({
   }
   const getUnselectedUser = ()=>{
     return userlist.filter(item=>!selected?.includes(item))
-  }
+  } 
+   const onScroll = (event) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.target;
+    if (scrollTop + clientHeight >= scrollHeight && handleScroll) {
+      handleScroll();
+    }
+  };
   return (
     <>
     {showSelected &&
@@ -78,6 +85,8 @@ export const UserList = ({
         <>
         
           <DataTable 
+          onScrollCapture={onScroll}
+          // onScrollCapture={handleScroll}
             value={showSelected ?getUnselectedUser() : userlist}
             size="small"
             stripedRows
@@ -135,4 +144,5 @@ UserList.propTypes = {
   sortable: proptype.bool,
   selectionMode: proptype.bool,
   showSelected: proptype.bool,
+  handleScroll: proptype.func,
 };

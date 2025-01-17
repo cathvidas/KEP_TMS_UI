@@ -35,7 +35,7 @@ const SearchBar = ({handleOnInput, options}) => {
               aria-label="Username"
               aria-describedby="basic-addon1"
               value={filter.value}
-              onInput={(e) =>setFilter({...filter, value: e.target.value})}
+              onChange={(e) =>setFilter({...filter, value: e.target.value})}
             />
             {options && 
             <div className="position-absolute top-50 end-0 translate-middle-y border border-0 text-muted p-2">

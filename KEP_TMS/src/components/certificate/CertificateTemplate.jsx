@@ -1,5 +1,5 @@
 import { Button } from "primereact/button";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Row } from "react-bootstrap";
 import TextEditor from "../forms/common/TextEditor";
 import { FormFieldItem } from "../trainingRequestFormComponents/FormElements";
@@ -8,6 +8,7 @@ import proptype from "prop-types";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import logo from "../../img/Knowles_Gray_RGB.png";
 import CertificateContent from "./CertificateContent";
+import userHook from "../../hooks/userHook";
 const CertificateTemplate = ({ trainings, signatoryList, isFacilitator }) => {
   const certRef = useRef();
   const certHeaderTempRef = useRef();
@@ -17,9 +18,28 @@ const CertificateTemplate = ({ trainings, signatoryList, isFacilitator }) => {
   const [certHeader, setCertHeader] = useState("");
   const [signatory, setSignatory] = useState();
   const [customSignatory, setCustomSignatory] = useState({});
-  const selectedSignatory = signatoryList?.find(
-    (item) => item?.employeeBadge === signatory?.value
+  const [mapppedUsers, setMappedUsers] = useState([]);
+  const [paginatorConfig, setPaginatorConfig] = useState({
+    first: 0,
+    rows: 10,
+    page: 1,
+    value: null,
+  });
+  const users = userHook.useAllUsers(
+    paginatorConfig.page,
+    paginatorConfig.rows,
+    paginatorConfig.value
   );
+  useEffect(() => {
+    const mappedData = users?.data?.results?.map(
+      ({ employeeBadge, fullname }) => ({
+        label: fullname,
+        value: employeeBadge,
+      })
+    );
+    setMappedUsers(mappedData);
+  }, [users?.data?.results]);
+
   useState(() => {
     const assigned =
       signatoryList?.find((item) => item?.employeeTypeName === "Director") ??
@@ -36,24 +56,20 @@ const CertificateTemplate = ({ trainings, signatoryList, isFacilitator }) => {
     const header = certHeaderTempRef.current;
     const headerContent = header?.querySelector(".header-content");
     headerContent.innerHTML = certHeader;
-    headerContent.style.lineHeight = "normal"
-    headerContent.style.fontSize = "12px"
-    div.innerHTML =
-      header?.innerHTML + certData  ;
-      if(signatory?.value) {
-        div.innerHTML += certSignatory.current?.innerHTML;
-      }
+    headerContent.style.lineHeight = "normal";
+    headerContent.style.fontSize = "12px";
+    div.innerHTML = header?.innerHTML + certData;
+    if (signatory?.value) {
+      div.innerHTML += certSignatory.current?.innerHTML;
+    }
     handleGeneratePdf(div);
   };
-  const getSignatoryList = () => {
-    const list = [];
-    signatoryList?.map((item) => {
-      list.push({ value: item?.employeeBadge, label: item?.fullname });
-    });
-    list.push({ value: "custom-signatory", label: "Other" });
-    list.push({ value: "", label: "None" });
-    return list;
-  };
+  useEffect(() => {
+    const detail = users?.data?.results?.find(
+      (item) => item?.employeeBadge === signatory.value
+    );
+    setCustomSignatory(detail);
+  }, [signatory, users?.data?.results]);
   return (
     <>
       <div ref={certRef} className="d-none showExport">
@@ -82,104 +98,85 @@ const CertificateTemplate = ({ trainings, signatoryList, isFacilitator }) => {
       </div>
       <hr />
       <div className="px-3">
-      <div ref={certHeaderTempRef}>
-        <div className="d-flex px-2 mb-4 justify-content-between">
-          <div>
-            <img src={logo} alt="" />
-          </div>
-          <div className="d-none header-content showExport"></div>
-          <div className="hideExport">
-            <TextEditor
-              defaultValue={certHeaderRef.current?.innerHTML}
-              onChange={(e) => setCertHeader(e)}
-            />
+        <div ref={certHeaderTempRef}>
+          <div className="d-flex px-2 mb-4 justify-content-between">
+            <div>
+              <img src={logo} alt="" />
+            </div>
+            <div className="d-none header-content showExport"></div>
+            <div className="hideExport">
+              <TextEditor
+                defaultValue={certHeaderRef.current?.innerHTML}
+                onChange={(e) => setCertHeader(e)}
+              />
+            </div>
           </div>
         </div>
+        <TextEditor
+          defaultValue={certRef.current?.innerHTML}
+          onChange={(e) => setCertData(e)}
+          showToolbar
+        />
+        <br />
+        {signatory?.value && (
+          <div ref={certSignatory} className="px-2">
+            <p>
+              <strong>
+                {customSignatory &&
+                  customSignatory?.firstname?.toUpperCase() +
+                    " " +
+                    customSignatory?.lastname?.toUpperCase()}
+              </strong>
+            </p>
+            <p>{customSignatory ? customSignatory?.position : ""}</p>
+          </div>
+        )}
       </div>
-      <TextEditor
-        defaultValue={certRef.current?.innerHTML}
-        onChange={(e) => setCertData(e)}
-        showToolbar
-      />
-      <br />
-      {signatory?.value && (
-        <div ref={certSignatory} className="px-2">
-          <p>
-            <strong>
-              {signatory?.value === "custom-signatory"
-                ? customSignatory?.name?.toUpperCase()
-                : selectedSignatory?.firstname?.toUpperCase() +
-                  " " +
-                  selectedSignatory?.lastname?.toUpperCase()}
-            </strong>
-          </p>
-          <p>
-            {signatory?.value === "custom-signatory"
-              ? customSignatory?.title
-              : selectedSignatory?.position}
-          </p>
-        </div>
-      )}</div>
       <hr />
       <Row className="">
-        
         <FormFieldItem
           label={"Signatory"}
           col={"col-md-4"}
           FieldComponent={
-            <Select
-              options={getSignatoryList()}
-              value={signatory}
-              onChange={(e) => setSignatory(e)}
-               menuPlacement="top"
-            />
+            <>
+              <Select
+                onMenuScrollToBottom={() =>
+                  setPaginatorConfig((prev) => ({
+                    ...prev,
+                    rows: prev.rows + 10,
+                  }))
+                }
+                onInputChange={(e) =>
+                  setPaginatorConfig((prev) => ({ ...prev, value: e }))
+                }
+                isLoading={users?.loading}
+                options={mapppedUsers}
+                // options={getSignatoryList()}
+                value={signatory}
+                onChange={(e) => setSignatory(e)}
+                menuPlacement="top"
+              />
+              {signatory?.value && (
+                <Button
+                  size="small"
+                  className="mt-2 rounded "
+                  severity="secondary"
+                  onClick={() => setSignatory({})}
+                  label="Remove"
+                />
+              )}{" "}
+            </>
           }
         />
-        {signatory?.value === "custom-signatory" && (
-          <>
-            <FormFieldItem
-              label={"Name"}
-              col={"col-md-4"}
-              FieldComponent={
-                <input
-                  value={customSignatory?.name}
-                  className="form-control"
-                  onChange={(e) =>
-                    setCustomSignatory((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                />
-              }
-            />
-            <FormFieldItem
-              label={"Title"}
-              col={"col-md-4"}
-              FieldComponent={
-                <input
-                  value={customSignatory?.title}
-                  className="form-control"
-                  onChange={(e) =>
-                    setCustomSignatory((prev) => ({
-                      ...prev,
-                      title: e.target.value,
-                    }))
-                  }
-                />
-              }
-            />
-          </>
-        )}
-
       </Row>
       <div className="text-end">
-          <Button
-            type="button"
-            label="Export Certificate"
-            icon="pi pi-download"
-            onClick={generateCertificate}
-          /></div>
+        <Button
+          type="button"
+          label="Export Certificate"
+          icon="pi pi-download"
+          onClick={generateCertificate}
+        />
+      </div>
     </>
   );
 };
