@@ -41,7 +41,7 @@ const commonHook = {
           const reports =
             await trainingReportService.getApproverAssignedReports(id);
 
-          const forApprovelEffectiveness = effectiveness?.filter(
+          const forApprovalEffectiveness = effectiveness?.filter(
             (item) => item.routingActivity?.statusId !== statusCode.TOUPDATE
           );
           // Filter evaluation (6 months from now)
@@ -56,12 +56,12 @@ const commonHook = {
 
           setData({
             requests: requests,
-            effectiveness: forApprovelEffectiveness,
+            effectiveness: forApprovalEffectiveness,
             reports: reports,
             forEvaluation: forEvaluation,
             overallCount:
               requests?.length +
-              forApprovelEffectiveness?.length +
+              forApprovalEffectiveness?.length +
               reports?.length +
               forEvaluation?.length,
           });

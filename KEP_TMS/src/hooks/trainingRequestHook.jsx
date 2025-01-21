@@ -89,35 +89,8 @@ const trainingRequestHook = {
               ? trainingRequestService.getTrainingRequestsByRequestor(id)
               : trainingRequestService.getAllTrainingRequests(),
           async (e) => {
-            const updatedRequests = await Promise.all(
-              e?.map(async (request) => {
-                // const facilitators = await userMapping.mapUserIdList(
-                //   request.trainingFacilitators,
-                //   "facilitatorBadge"
-                // );
-                // const approver =
-                //   await commonService.getCurrentRouting(
-                //     request.id,
-                //     ActivityType.REQUEST
-                //   );
-                // const user = await userService.getUserById(approver.assignedTo);
-                // const routing = {
-                //   approverUsername: user.username,
-                //   approverFullName: user.lastname + ", " + user.firstname,
-                //   statusId: approver.statusId,
-                //   approverId: user.employeeBadge,
-                //   approverPosition: user.position,
-                // };
-
-                return {
-                  ...request,
-                  // trainingFacilitators: facilitators,
-                  // routing, // Replace with detailed facilitator information
-                };
-              })
-            );
-            setData(updatedRequests);
-            setMappedData(mappedTrainingRequestByStatus(updatedRequests))
+            setData(e);
+            setMappedData(mappedTrainingRequestByStatus(e))
            setLoading(false)
           },
           (e) => setError(e),
@@ -246,21 +219,21 @@ const trainingRequestHook = {
     }, [datalist]);
     return { data, error, loading };
   },
-  usePagedTrainingRequest: (pageNumber, pageSize, searchValue) => {
-    const [data, setData] = useState([]);
+  usePagedTrainingRequest: (pageNumber, pageSize, searchValue, secondSearchValue, thirdSearchValue, fourthSearchValue) => {
+    const [data, setData] = useState();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequests = async () => {
           handleResponseAsync(
-            () => trainingRequestService.getPagedTrainingRequest(pageNumber, pageSize, searchValue),
-            (e) => setData(e?.results),
+            () => trainingRequestService.getPagedTrainingRequest(pageNumber, pageSize, searchValue, secondSearchValue,thirdSearchValue, fourthSearchValue),
+            (e) => setData(e),
             (e) => setError(e),
             () => setLoading(false)
           );
       };
       getRequests();
-    }, [pageNumber, pageSize, searchValue]);
+    }, [pageNumber, pageSize, searchValue, secondSearchValue, thirdSearchValue, fourthSearchValue]);
     return { data, error, loading };
   },
   useTrainingRequestByTraineeId: (id, attended) => {
@@ -296,6 +269,27 @@ const trainingRequestHook = {
           (e) => 
             {setData(e?.filter(item=>item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED));
           },
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      fetchData();
+    }, [id]);
+    return {
+      data,
+      error,
+      loading,
+    };
+  },
+  useTrainingRequestSummary: (id) => {
+    const [data, setData] = useState({});
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+        handleResponseAsync(
+          () => trainingRequestService.getTrainingRequestSummary(id),
+          (e) => setData(e),
           (e) => setError(e),
           () => setLoading(false)
         );

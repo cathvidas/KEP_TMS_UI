@@ -1,7 +1,6 @@
 import { approveTrainingFormApi, disapproveActivityApi } from "../api/commonApi";
 import { statusCode } from "../api/constants";
-import { getPagedEffectivenessApi } from "../api/effectivenessApi";
-import {createTrainingRequestApi, getAllTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestByFacilitatorIdApi, getTrainingRequestByTraineeIdApi, getTrainingRequestsByRequestorApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
+import {createTrainingRequestApi, getAllTrainingRequestsApi, getPagedTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestByFacilitatorIdApi, getTrainingRequestByTraineeIdApi, getTrainingRequestsByRequestorApi, GetTrainingRequestSummaryApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
 
 const trainingRequestService = {
   approveTrainingRequest: async (data) => {
@@ -50,9 +49,16 @@ const trainingRequestService = {
     const response = id && await getTrainingRequestByFacilitatorIdApi(id);
     return response?.status === 1 ? response?.data : [];
   },
-  getPagedTrainingRequest: async (pageNumber, pageSize, searchValue) => {
-    const response =  await getPagedEffectivenessApi(pageNumber, pageSize, searchValue);
+  getPagedTrainingRequest: async (pageNumber, pageSize, searchValue, secondSearchValue, thirdSerachValue, fourthSearchValue) => {
+    const response =  await getPagedTrainingRequestsApi(pageNumber, pageSize, searchValue, secondSearchValue, thirdSerachValue, fourthSearchValue);
     return response;
+  },
+  getTrainingRequestSummary: async (id) => {
+    const response =  await GetTrainingRequestSummaryApi(id);
+    if(response.status !== 1){
+      throw new Error(response.message);
+    }
+    return response?.data;
   },
   getTrainingRequestByParticipant: async (id, role) => {
     const response = id && await getAllTrainingRequestsApi(id);

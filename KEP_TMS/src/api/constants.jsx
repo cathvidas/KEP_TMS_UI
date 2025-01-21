@@ -65,6 +65,12 @@ export const attachmentType = {
 export const OtherConstant = {
   EFFECTIVENESS_MINHOUR : 16
 }
+export const SearchValueConstant = {
+  FACILITATOR : 'Facilitator',
+  REQUESTER : 'Requester',
+  PARTICIPANT : 'Participant',
+  REQ_STATUS: "Status"
+}
 
 export const hasRequestAccess = SessionGetRole() === UserTypeValue.ADMIN ||
 SessionGetRole() === UserTypeValue.REQUESTOR ||

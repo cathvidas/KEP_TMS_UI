@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { OtherConstant, statusCode } from "../api/constants";
+import { OtherConstant, SearchValueConstant, statusCode } from "../api/constants";
 import effectivenessService from "../services/effectivenessService";
 import trainingReportService from "../services/trainingReportService";
 import examService from "../services/examService";
@@ -29,9 +29,16 @@ const activityLogHook = {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const assignedRequest = await trainingRequestService.getTrainingRequestByParticipant(id);
+          let requestList = [];
+          let page = 1;
+          const assignedRequest = await trainingRequestService.getPagedTrainingRequest(1, 10, SearchValueConstant.PARTICIPANT, id);
+          while(requestList.length < assignedRequest.totalRecords) {
+            const response = await trainingRequestService.getPagedTrainingRequest(page, 10, SearchValueConstant.PARTICIPANT, id);
+            requestList = [...requestList, ...response.results];
+            page++;
+          }
           const pendingList = await Promise.all(
-            assignedRequest?.map(async (item) => {
+            requestList?.map(async (item) => {
               const user = item?.trainingParticipants?.find((i) => i.employeeBadge === id);
               if (!user) return [];
               const tasks = [];

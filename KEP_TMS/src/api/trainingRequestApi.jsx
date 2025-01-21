@@ -24,6 +24,18 @@ export const getTrainingRequestByTraineeIdApi = async (id) =>{
 export const getTrainingRequestByFacilitatorIdApi = async (id) =>{
     return await fetchFromApi(`TrainingRequest/GetByFacilitator?facilitatorBadge=${id}`);
 }
-export const getPagedTrainingRequestApi = async (pageNumber, pageSize, searchValue) =>{
-    return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);
+export const GetTrainingRequestSummaryApi = async (id) =>{
+    return await fetchFromApi(`TrainingRequest/GetTrainingRequestSummary?employeeBadge=${id}`);
+}
+export const getPagedTrainingRequestsApi = async (pageNumber, pageSize, searchValue, SecondSearchValue, thirdSearchValue, fourthSearchValue) =>{
+    if(SecondSearchValue && searchValue && thirdSearchValue, fourthSearchValue){
+        return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}&thirdSearchValue=${thirdSearchValue}&FourthSearchValue=${fourthSearchValue}`);
+    }else if(SecondSearchValue && searchValue && thirdSearchValue){
+        return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}&thirdSearchValue=${thirdSearchValue}`);
+    }else if(SecondSearchValue && searchValue){
+        return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}`);
+    }else if(searchValue){
+      return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);
+    }
+    return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}`);
 }
