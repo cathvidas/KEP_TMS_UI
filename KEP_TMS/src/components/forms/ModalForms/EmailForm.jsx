@@ -64,7 +64,6 @@ const validateEmailContent = () => {
   setErrors(errors);
   return isValid;
 }
-console.log(recipient)
   return (
     <>
       {" "}

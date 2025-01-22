@@ -10,7 +10,7 @@ import { APP_DOMAIN, hasRequestAccess, UserTypeValue } from "../../api/constants
 import commonHook from "../../hooks/commonHook";
 import { Badge } from "primereact/badge";
 
-const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
+const Sidebar = ({ activeNavigation, expanded, show, hide }) => {
   const navigate = useNavigate();
   const checkIfActive = (path) => {
     return path && path?.toUpperCase() === activeNavigation?.toUpperCase();
@@ -70,10 +70,10 @@ const approvalCount = commonHook.useAllAssignedForApproval(SessionGetEmployeeId(
     );
   };
   NavItem.propTypes = {
-    item: proptype.string.isRequired,
+    item: proptype.string,
     icon: proptype.string,
     badgeValue: proptype.number,
-    title: proptype.string.isRequired,
+    title: proptype.string,
     iconComponent: proptype.object,
     onClick: proptype.func,
     hideLabel: proptype.bool,
@@ -173,9 +173,9 @@ const approvalCount = commonHook.useAllAssignedForApproval(SessionGetEmployeeId(
                   icon="pi pi-list"
                 />
               <NavItem item="Setting" title="Setting" icon={"pi pi-cog"} />
-              {/* <NavItem item="Files" title="Files" icon={"pi pi-file"} /> */}
               </>
             )}
+              <NavItem item="Files" title="Files" icon={"pi pi-file"} />
           </ul>
           <ul className={` nav nav-pills d-flex flex-column nav-flush`}>
             <NavItem
@@ -198,10 +198,10 @@ const approvalCount = commonHook.useAllAssignedForApproval(SessionGetEmployeeId(
   );
 };
 
-Sidebars.propTypes = {
+Sidebar.propTypes = {
   activeNavigation: proptype.string,
   expanded: proptype.bool,
   show: proptype.bool,
   hide: proptype.func,
 };
-export default Sidebars;
+export default Sidebar;

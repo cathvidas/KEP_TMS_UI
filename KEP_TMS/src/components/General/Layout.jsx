@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import RequestModal from "../Modal/RequestType";
-import Sidebars from "./Sidebar";
 import proptype from "prop-types";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Login from "../../pages/Login";
+import Sidebar from "./Sidebar";
 
 const Layout = ({
   BodyComponent,
@@ -61,7 +61,7 @@ const Layout = ({
       {showmenu? (
         <>
           <div className="d-flex">
-            <Sidebars activeNavigation={navReference} hide={()=>setShowSidebar(false)} show={showSidebar} expanded={expanded}/>
+            <Sidebar activeNavigation={navReference} hide={()=>setShowSidebar(false)} show={showSidebar} expanded={expanded}/>
             <div className=" flex-fill d-flex flex-column d-block expand-transition overflow-hidden w-100 vh-100">
               <div className=" position-sticky top-0 w-100">
                 {(!header?.hide || (header?.hide && expanded) )&&

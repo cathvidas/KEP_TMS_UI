@@ -37,7 +37,6 @@ const AddUserForm = ({showForm, closeForm, userType, userRoles, optionList, onFi
       )?.[0];
       const roleId = userRoles?.filter((role) => role?.label === userType)?.[0]
         ?.value;
-        console.log(userData, roleId, userRoles, userType);
       if (isValid && userData && roleId) {
         const newData = { ...mapUserUpdateDetail(userData, optionList), roleId: roleId, updatedBy: SessionGetEmployeeId() };
         confirmAction({
