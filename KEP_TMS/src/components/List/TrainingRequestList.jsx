@@ -20,6 +20,7 @@ import { Paginator } from "primereact/paginator";
 import getStatusById from "../../utils/status/getStatusById";
 import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 import ErrorTemplate from "../General/ErrorTemplate";
+import ExportDataForm from "../forms/ModalForms/ExportDataForm";
 const TrainingRequestList = ({
   // data,
   headingTitle,
@@ -132,7 +133,7 @@ const TrainingRequestList = ({
             className="rounded-pill"
           />
         </IconField>
-        {isAdmin && <ExportBtn data={data?.results} />}
+        {isAdmin && <ExportDataForm/>}
       </div>
     );
   };

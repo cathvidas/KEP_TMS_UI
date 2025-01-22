@@ -91,7 +91,8 @@ const ExportBtn=({ data })=> {
   return (
     <Button
       icon="pi pi-download"
-      text
+      label="Export"
+      size="small"
       className="rounded"
       onClick={handleDownload}
     />
