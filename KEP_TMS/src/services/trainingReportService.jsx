@@ -33,7 +33,7 @@ const trainingReportService = {
   getTrainingReportById: async (id) => {
     const response = await getTrainingReportByIdApi(id);
     if(response?.status === 1){
-      const approvers = await commonService.getActivityApprovers(response?.data?.createdBy, ActivityType.REPORT)
+      const approvers = await commonService.getActivityApprovers(response?.data?.id, ActivityType.REPORT)
       const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.REPORT)
       const currentRouting = await routingService.getCurrentApprover(approvers, routings);
       if(!currentRouting?.assignedDetail){

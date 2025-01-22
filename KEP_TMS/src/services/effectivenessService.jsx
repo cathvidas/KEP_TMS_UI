@@ -39,7 +39,7 @@ const effectivenessService = {
     const response = id && await getEffectivenessByIdApi(id);
     if (response?.status === 1) {
       const approvers = await commonService.getActivityApprovers(
-        response?.data?.createdBy,
+        response?.data?.id,
         ActivityType.EFFECTIVENESS
       );
       const routings = await commonService.getRoutingActivityWithAuditTrail(

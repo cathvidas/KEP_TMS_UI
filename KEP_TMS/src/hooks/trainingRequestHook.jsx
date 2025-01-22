@@ -27,7 +27,7 @@ const trainingRequestHook = {
               response.trainingParticipants,
               "employeeBadge"
             );
-            const approvers = await commonService.getActivityApprovers(response?.requesterBadge, ActivityType.REQUEST, response?.totalTrainingFee);
+            const approvers = await commonService.getActivityApprovers(response?.id, ActivityType.REQUEST);
             const requestor = await userService.getUserById(
               response.requesterBadge
             );
