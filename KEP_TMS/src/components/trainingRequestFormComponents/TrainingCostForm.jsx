@@ -105,7 +105,6 @@ const TrainingCostForm = ({
     if (formData?.trainingType?.id === TrainingType.EXTERNAL) {
       setTrainers(formData.trainingFacilitators);
     }
-    // console.log(formData)
   }, [formData]);
   useEffect(() => {
     if (trainers) {

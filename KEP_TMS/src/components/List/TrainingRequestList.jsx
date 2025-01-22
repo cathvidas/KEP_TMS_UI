@@ -72,7 +72,6 @@ const TrainingRequestList = ({
   // };
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
-    console.log(value);
     setPaginatorConfig((prev) => ({
       ...prev,
       value: value,
