@@ -27,6 +27,7 @@ export const statusCode = {
   FAILED: 9,
   TOUPDATE: 10,
   DRAFTED: 12,
+  PENDING: 13
 };
 
 export const TrainingType = {
@@ -60,7 +61,8 @@ export const UserTypeValue = {
 }
 export const attachmentType = {
   MODULE: 1,
-  CERTIFICATE: 2
+  CERTIFICATE: 2,
+  VIDEO: 3
 }
 export const OtherConstant = {
   EFFECTIVENESS_MINHOUR : 16

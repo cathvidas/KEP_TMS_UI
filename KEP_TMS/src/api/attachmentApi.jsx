@@ -17,3 +17,6 @@ export const deleteAttachmentApi = async (id) =>{
 export const getAttachmentByReferenceApi = async (referenceId, attachmentType) => {
   return await fetchFromApi(`/Attachment/GetAttachmentByReferenceId?referenceId=${referenceId}&attachmentType=${attachmentType}`);
 }
+export const AddAttachmentsAccessApi = async (data) => {
+  return await fetchFromApi(`/Attachment/AddAttachmentsAccess`, "POST", data);
+}

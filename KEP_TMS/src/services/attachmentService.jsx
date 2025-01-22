@@ -1,4 +1,4 @@
-import { addAttachmentsApi, deleteAttachmentApi, getAttachmentByReferenceApi, getModuleAttachmentByIdApi } from "../api/attachmentApi";
+import { AddAttachmentsAccessApi, addAttachmentsApi, deleteAttachmentApi, getAttachmentByReferenceApi, getModuleAttachmentByIdApi } from "../api/attachmentApi";
 import { attachmentType } from "../api/constants";
 import trainingRequestService from "./trainingRequestService";
 
@@ -49,6 +49,15 @@ const attachmentService = {
       })
     );
     return {oldTrainings, newTrainings: updated};
+  },
+  addAttachmentsAccess: async (data
+  ) => {
+    const response = await AddAttachmentsAccessApi(data
+    );
+    if (response.status !== 1) {
+      throw new Error(response.message);
+    }
+    return response?.data;
   },
 };
 export default attachmentService;
