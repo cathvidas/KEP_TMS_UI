@@ -14,6 +14,7 @@ import MenuContainer from "../components/menus/MenuContainer";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import { Button } from "primereact/button";
 import trainingRequestHook from "../hooks/trainingRequestHook";
+import { confirmAction } from "../services/sweetalert";
 const RequestList = () => {
   const { type } = useParams();
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const RequestList = () => {
           icon: "pi pi-list",
           command: () => navigate(`/KEP_TMS/RequestList`),
           template: MenuItemTemplate,
-          count: data?.active + data?.approved + data?.cancelled + data?.closed + data?.disapproved + data?.drafted + data?.forApproval + data?.submitted ,
+          count: data?.active + data?.approved + data?.cancelled + data?.closed + data?.disapproved + data?.forApproval + data?.submitted + (isAdmin ? 0 : data?.drafted),
           active: currentContent === 8 ? true : false,
         },
         {

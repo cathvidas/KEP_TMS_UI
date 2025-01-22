@@ -35,7 +35,6 @@ import ActivityStatus from "../../components/General/ActivityStatus";
 import TrainingFacilitatorList from "../../components/List/TrainingFacilitatorList";
 const OverviewSection = ({
   data,
-  showParticipants = false,
   showFacilitators = false,
   showApprovers = false,
   isAdmin,

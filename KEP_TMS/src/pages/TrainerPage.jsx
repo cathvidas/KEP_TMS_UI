@@ -11,7 +11,6 @@ const TrainerPage = () => {
     trainingRequestHook.usePagedTrainingRequest(1, 10, SearchValueConstant.FACILITATOR,
       SessionGetEmployeeId()
     );
-    console.log(data)
 
   const Content = () => (
     <div className="p-3">
