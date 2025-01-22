@@ -28,7 +28,6 @@ const Trainings = () => {
   const {data} = commonHook.useAllAssignedForApproval(
     SessionGetEmployeeId(), trigger
   );
-  console.log(data)
   const refreshData = () => {
     setTrigger(prev=>prev + 1);
   }
@@ -71,7 +70,7 @@ const Trainings = () => {
           command: () => navigate("/KEP_TMS/Trainings/EffectivenessEvaluation"),
           active: currentContent === 2,
           template: MenuItemTemplate,
-          // badge: data?.forEvaluation?.length > 0 ?{value: data?.forEvaluation?.length}:false
+          badge: data?.forEvaluation?.length > 0 ?{value: data?.forEvaluation?.length}:false
         },
       ],
     },

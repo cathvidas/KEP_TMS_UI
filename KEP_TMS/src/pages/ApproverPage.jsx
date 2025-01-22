@@ -8,7 +8,6 @@ import ForApprovaleffectiveness from "./ApproverPageSection/ForApprovalEffective
 import commonHook from "../hooks/commonHook";
 import { SessionGetEmployeeId } from "../services/sessions";
 import ForApprovalReport from "./ApproverPageSection/ForApprovalReport";
-import ForEvaluationEffectiveness from "./ApproverPageSection/ForEvaluationEffectiveness";
 
 const ApproverPage = () => {
   const [trigger, setTrigger] = useState(0);
@@ -25,7 +24,6 @@ const ApproverPage = () => {
     <ForApprovalRequest key={0} />,
     <ForApprovaleffectiveness key={1} data={data?.effectiveness} refreshData={refreshData}/>,
     <ForApprovalReport key={2} data={data?.reports} refreshData={refreshData}/>,
-    <ForEvaluationEffectiveness key={3}  data={data?.forEvaluation} refreshData={refreshData}/>,
   ];
   const items = [
     {
@@ -56,20 +54,6 @@ const ApproverPage = () => {
         },
       ],
     },
-    {
-      label: "For Evaluation",
-      items: [
-        {
-          label: "Trainee Effectiveness",
-        //   icon: "pi pi-arrow-down-left-and-arrow-up-right-to-center",
-          command: () => navigate("/KEP_TMS/List/EffectivenessEvaluation"),
-          active: currentContent === 3 ? true : false,
-          template: MenuItemTemplate,
-          badge: data?.forEvaluation?.length > 0 ?{value: data?.forEvaluation?.length}:false
-       
-        },
-      ],
-    },
   ];
   useEffect(() => {
     if (type === "ForApproval") {
@@ -88,8 +72,6 @@ const ApproverPage = () => {
       } else if (page === "Reports") {
         setCurrentContent(2);
       }
-    }else if (type === "EffectivenessEvaluation"){
-      setCurrentContent(3);
     }
   }, [page, type]);
   const Content = () => (
