@@ -20,3 +20,11 @@ export const getAttachmentByReferenceApi = async (referenceId, attachmentType) =
 export const AddAttachmentsAccessApi = async (data) => {
   return await fetchFromApi(`/Attachment/AddAttachmentsAccess`, "POST", data);
 }
+export const GetAttachmentsApi = async (pageNumber, pageSize, searchValue, SecondSearchValue) =>{
+  if(SecondSearchValue && searchValue){
+      return await fetchFromApi(`Attachment/GetAttachment?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}`);
+  }else if(searchValue){
+    return await fetchFromApi(`Attachment/GetAttachment?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);
+  }
+  return await fetchFromApi(`Attachment/GetAttachment?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+}
