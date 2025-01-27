@@ -56,7 +56,7 @@ const NewUserForm = ({
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  const handleSelectOnChange = (name, value) => {
+  const   handleSelectOnChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
   useEffect(() => {

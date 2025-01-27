@@ -49,8 +49,8 @@ const SearchBar = ({handleOnInput, options}) => {
   
                 <Dropdown.Menu align="end"  className="overflow-auto" style={{maxHeight: "300px"}}>
                   {options.map((option, index) => (
-                    <span key={index} onClick={()=>setFilter({...filter, department: option.name})}>
-                    <Dropdown.Item className={option.name == filter.department ? "active" : ""} >{option.name}</Dropdown.Item></span>
+                    <span key={index} onClick={()=>setFilter({...filter, department: option.deptName})}>
+                    <Dropdown.Item className={option.deptName == filter.department ? "active" : ""} >{option.deptName}</Dropdown.Item></span>
                   ))}
                 </Dropdown.Menu>
               </Dropdown>

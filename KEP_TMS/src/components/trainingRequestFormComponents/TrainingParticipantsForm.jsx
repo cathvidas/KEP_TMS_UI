@@ -78,7 +78,6 @@ const TrainingParticipantsForm = ({
     const fetchDatas = async () => {
       const user = users?.data?.results;
       const activeUsers = user.filter((user) => user.statusName !== "Inactive");
-
       const availableUsers = activeUsers
         .filter(
           (x) =>
@@ -103,12 +102,12 @@ const TrainingParticipantsForm = ({
   }, [data, users?.data?.results, participants, paginatorConfig]);
   useEffect(() => {
     var filtered = list.users;
-    if (filter?.name != null) {
+    if (filter?.name != null && filter?.name != "") {
       filtered = list.users.filter((user) =>
         user?.name?.toLowerCase().includes(filter?.name?.toLowerCase())
       );
     }
-    if (filter?.department != null) {
+    if (filter?.department != null && filter?.department != "") {
       filtered = list.users.filter((user) =>
         user?.departmentName
           ?.toLowerCase()
@@ -117,7 +116,6 @@ const TrainingParticipantsForm = ({
     }
     setFilteredList((prev) => ({ ...prev, users: filtered }));
   }, [filter, list.users]);
-
   const handleParticipants = (data) => {
     if (participants.trainees !== data && currentSelected === "trainees") {
       setParticipants((prev) => ({ ...prev, trainees: data }));
