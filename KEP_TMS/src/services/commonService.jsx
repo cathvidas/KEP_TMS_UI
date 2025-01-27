@@ -1,4 +1,5 @@
 import { disapproveActivityApi, getActivityApproversApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getCurrentRoutingActivityApi, getFaciliatorRatingApi, getRoutingActivityWithAuditTrailApi, rerouteApproverApi } from "../api/commonApi";
+import routingService from "./common/routingService";
 import userMapping from "./DataMapping/userMapping";
 import userService from "./userService";
 
@@ -34,13 +35,14 @@ const commonService = {
   },
   getCurrentRouting: async (transactId, activityIn) => {
     try {
-      const response = await getCurrentRoutingActivityApi(
+      const response = await getRoutingActivityWithAuditTrailApi(
         transactId,
         activityIn
       );
-      if(response){
-        const userData = await userService.getUserById(response?.assignedTo)
-        return {...response, assignedDetail: userData};
+      const current = routingService.getCurrentApprover(response);
+      if(current){
+        const userData = await userService.getUserById(current?.assignedTo)
+        return {...current, assignedDetail: userData};
       }
       return response;
     } catch {

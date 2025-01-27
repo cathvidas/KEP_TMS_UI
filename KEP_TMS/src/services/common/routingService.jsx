@@ -4,23 +4,18 @@ const routingService = {
   sortRoutingBySequence: (data, descending) => {
     if (data?.length > 0) {
       if (descending) {
-        return data?.sort((a, b) => b.id - a.id);
+        return data?.sort((a, b) => b.sequence - a.sequence);
       } else {
-        return data?.sort((a, b) => a.id - b.id);
+        return data?.sort((a, b) => a.sequence - b.sequence);
       }
     }
   },
-  getCurrentApprover: (approvers, routings) => {
+  getCurrentApprover: (routings) => {
     let currentApprover = null;
-    const sortedRouting = routingService.sortRoutingBySequence(routings, true);
+    const sortedRouting = routingService.sortRoutingBySequence(routings);
     let currentRouting = sortedRouting?.find(
       (routing) => routing.statusId !== statusCode.TOUPDATE
     );
-    if (approvers && approvers.length > 0 && currentRouting) {
-      currentApprover = approvers.find(
-        (approver) => approver.employeeBadge === currentRouting.assignedTo
-      );
-    }
     return { ...currentRouting, assignedDetail: currentApprover };
   },
   getApproverStatus: (routings, user) => {
