@@ -15,7 +15,6 @@ const UserPage = () => {
   const [showForm, setShowForm] = useState(false);
   const { page, id } = useParams();
   const navigate = useNavigate();
-  // const { data, loading } = userHook.useAllUsersAndEmployee(trigger);
   const [options, setOptions] = useState({ options: [], loading: true });
   const roles = commonHook.useAllRoles();
   const departments = commonHook.useAllDepartments();
@@ -30,7 +29,6 @@ const UserPage = () => {
     if (
       !roles?.loading &&
       !departments?.loading &&
-      !departments?.loading &&
       !positions?.loading &&
       !empTypes?.loading
     ) {
@@ -39,11 +37,11 @@ const UserPage = () => {
         value: role.id,
       }));
       const mappedDepartments = departments?.data?.map((dept) => ({
-        label: dept.name,
-        value: dept.id,
+        label: dept.deptName,
+        value: dept.deptId,
       }));
       const mappedPositions = positions?.data
-        ?.filter((p) => p.isActive === true)
+        ?.filter((p) => p.isActive === 1)
         ?.map((p) => ({ label: p.positionDesc, value: p.positionId }));
       const mappedEmpTypes = empTypes?.data?.map((emptype) => ({
         label: emptype.name,

@@ -79,34 +79,43 @@ const userHook = {
         loading,
       };
     },
-    useAllUsersAndEmployee : (trigger)=>{
+    useFacilitators:(pageNumber = 1, pageSize = 100, searchValue, trigger) => {
       const [data, setData] = useState([]);
-      const [admins, setAdmins] = useState([]);
-      const [facilitators, setFacilitators] = useState([]);
       const [error, setError] = useState(null);
       const [loading, setLoading] = useState(true);
-      useEffect(()=>{
-        const fetchRegisteredUsers = async ()=>{
-          handleResponseAsync(
-            () => userService.getAllUsers(),
-            (e) => {
-              setData(e);
-              e?.map((user) => {
-                if (user?.roleName === UserTypeValue.ADMIN) {
-                  setAdmins((admins) => [...admins, user]);
-                }
-                if (user?.roleName === UserTypeValue.FACILITATOR) {
-                  setFacilitators((facilitators) => [...facilitators, user]);
-                }
-              });
-            },
-            (e)=>setError(e),
-            ()=>setLoading(false)
-          );
-        }
-        fetchRegisteredUsers();
-      }, [trigger])
-      return {data, facilitators, admins, error, loading}
-    }
+      useEffect(() => {
+        const getRequest = async () => {
+          try {
+            const admins = await userService.getUsersByRole(
+              pageNumber,
+              pageSize,
+              UserTypeValue.ADMIN,
+              searchValue
+            );
+            const facilitators = await userService.getUsersByRole(
+              pageNumber,
+              pageSize,
+              UserTypeValue.FACILITATOR,
+              searchValue
+            );
+            console.log(admins, facilitators, [
+              ...admins.results,
+              ...facilitators.results,
+            ]);
+            setData([...admins.results, ...facilitators.results]);
+          } catch (err) {
+            setError(err);
+          }finally {
+            setLoading(false);
+          }
+        };
+        getRequest();
+      }, [pageNumber, pageSize, searchValue,trigger]);
+      return {
+        data,
+        error,
+        loading,
+      };
+    },
 }
 export default userHook;
