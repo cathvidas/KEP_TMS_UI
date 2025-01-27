@@ -37,7 +37,7 @@ const trainingRequestHook = {
                 response.id,
                 ActivityType.REQUEST
               );
-              const currentRouting = await routingService.getCurrentApprover(approvers, routings);
+              const currentRouting = await routingService.getCurrentApprover(routings);
               if(!currentRouting?.assignedDetail){
                 currentRouting.assignedDetail = await userService.getUserById(currentRouting?.assignedTo);
               }
@@ -228,7 +228,7 @@ const trainingRequestHook = {
           handleResponseAsync(
             () => trainingRequestService.getPagedTrainingRequest(pageNumber, pageSize, searchValue, secondSearchValue,thirdSearchValue, fourthSearchValue),
             (e) => setData(e),
-            (e) => setError(e),
+            (e) => setError(e?.message ?? e),
             () => setLoading(false)
           );
       };

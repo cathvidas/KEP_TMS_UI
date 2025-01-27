@@ -458,26 +458,6 @@ export const TrainingRequestForm = () => {
           </Form>
         </Card.Body>
       </Card>
-      {/* <Modal show>
-      <Modal.Header>
-        <Modal.Title>Unsaved Form</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        You have unsaved changes. Are you sure you want to leave?
-      </Modal.Body>
-      <Modal.Footer>
-        <Button
-          label="Yes"
-          icon="pi pi-check"
-          onClick={handleFormSubmission}
-        />
-        <Button
-          label="No"
-          icon="pi pi-times"
-          onClick={() => setShowConfirmModal(false)}
-        />
-      </Modal.Footer>
-    </Modal> */}
     </>
   );
 };

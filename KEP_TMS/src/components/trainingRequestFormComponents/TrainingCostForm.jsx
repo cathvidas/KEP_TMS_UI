@@ -6,9 +6,10 @@ import proptype from "prop-types";
 import { useEffect, useState } from "react";
 import { SectionHeading } from "../General/Section";
 import Select from "react-select";
-import { TrainingType } from "../../api/constants";
+import { statusCode, TrainingType } from "../../api/constants";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
 import providerHook from "../../hooks/providerHook";
+import providerService from "../../services/providerService";
 
 const TrainingCostForm = ({
   formData,
@@ -67,7 +68,7 @@ const TrainingCostForm = ({
     }
   }, [externalFacilitator?.data]);
   useEffect(() => {
-  setProviders(providersData?.data?.results?.filter(item=> item?.status?.name === "Active")?.map(({ id, name }) => ({
+  setProviders(providersData?.data?.results?.filter(item=> item?.statusId ===statusCode.ACTIVE)?.map(({ id, name }) => ({
     label: name,
     value: id,
   })))

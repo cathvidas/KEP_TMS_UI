@@ -14,7 +14,6 @@ import MenuContainer from "../components/menus/MenuContainer";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import { Button } from "primereact/button";
 import trainingRequestHook from "../hooks/trainingRequestHook";
-import { confirmAction } from "../services/sweetalert";
 const RequestList = () => {
   const { type } = useParams();
   const navigate = useNavigate();

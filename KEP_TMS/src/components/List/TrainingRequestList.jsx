@@ -8,7 +8,6 @@ import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 import proptype from "prop-types";
-import ExportBtn from "../General/ExportBtn";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import TraineeStatusTemplate from "../TrainingPageComponents/TraineeStatusColumn";
@@ -152,7 +151,7 @@ const TrainingRequestList = ({
         <>
           <DataTable
             ref={tableRef}
-            value={mapTRequestToTableData(data?.results)}
+            value={mapTRequestToTableData(data?.results ?? [])}
             stripedRows
             size="small"
             tableStyle={{ minWidth: "50rem" }}
