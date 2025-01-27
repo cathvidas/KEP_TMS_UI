@@ -1,91 +1,96 @@
 import { Button } from "primereact/button";
 import CommonTable from "../components/General/CommonTable";
 import Layout from "../components/General/Layout";
-import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import { ButtonGroup } from "primereact/buttongroup";
-import fetchFromApi from "../api/apiUtil";
 import { useState } from "react";
 import VideoUploadForm from "../components/forms/ModalForms/VideoUploadForm";
 import VideoAccess from "../components/List/VideoAccess";
 import { SessionGetRole } from "../services/sessions";
-import { UserTypeValue } from "../api/constants";
+import {
+  API_BASE_URL,
+  SearchValueConstant,
+  UserTypeValue,
+} from "../api/constants";
+import attachmentHook from "../hooks/attachmentHook";
+import { Paginator } from "primereact/paginator";
+import { formatDateTime } from "../utils/datetime/Formatting";
+import { actionSuccessful, confirmAction } from "../services/sweetalert";
+import handleResponseAsync from "../services/handleResponseAsync";
+import attachmentService from "../services/attachmentService";
+import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
+import ErrorTemplate from "../components/General/ErrorTemplate";
 
 const DocumentsPage = () => {
   const [showModal, setShowModal] = useState(false);
+  const [trigger, setTrigger] = useState(0);
   const [selectedItem, setSelectedItem] = useState(null);
-  const isAdmin = SessionGetRole() === UserTypeValue.ADMIN
-  const items = [
-    {
-      items: [
-        {
-          label: "Category",
-          template: MenuItemTemplate,
-        },
-        {
-          label: "Programs",
-          // icon: "pi pi-file-check",
-          template: MenuItemTemplate,
-          // active: currentContent === 1 ? true : false,
-          // command: () => navigate("/KEP_TMS/MasterList/Programs"),
-        },
-        {
-          label: "Providers",
-          template: MenuItemTemplate,
-        },
-        {
-          label: "External Trainers",
-          template: MenuItemTemplate,
-        },
-        // {
-        //   label: "Training Type",
-        //   template: MenuItemTemplate,
-        //   icon: "pi pi-check-square",
-        // },
-      ],
-    },
-  ];
-  const sampleItems = [
+  const isAdmin = SessionGetRole() === UserTypeValue.ADMIN;
+  const [paginatorConfig, setPaginatorConfig] = useState({
+    first: 0,
+    rows: 10,
+    page: 1,
+    value: null,
+  });
+  const { data, error, loading } = attachmentHook.useAllVideoAttachments(
+    paginatorConfig.page,
+    paginatorConfig.rows,
+    SearchValueConstant.VIDEOS,
+    paginatorConfig.value,
+    trigger
+  );
+  const columnItems = [
     {
       field: "",
       header: "No",
       body: (_, { rowIndex }) => <>{rowIndex + 1}</>,
     },
     {
-      field: "Name",
+      field: "fileName",
       header: "File Name",
-    },  isAdmin ? 
-    {
-      field: "Name",
-      header: "Category",
-    }:"",
+    },
+    isAdmin
+      ? {
+          field: "category",
+          header: "Category",
+        }
+      : "",
     {
       field: "Access",
       header: isAdmin ? "Access" : "Training Program",
       body: (rowData) => (
         <>
-        {isAdmin ? 
-        <span className="p-badge p-badge-info cursor-pointer" onClick={()=>setSelectedItem(rowData)}>{rowData?.Access}</span> : <>
-        <lu><span>Sample Training Request; </span><span>Sample Training Request; </span><span>Sample Training Request</span></lu>
-        </>}</>
+          {isAdmin ? (
+            <span
+              className="p-badge p-badge-info cursor-pointer"
+              onClick={() => setSelectedItem(rowData)}
+            >
+              {rowData?.Access}
+            </span>
+          ) : (
+            <>
+              <lu>
+                <span>Sample Training Request; </span>
+                <span>Sample Training Request; </span>
+                <span>Sample Training Request</span>
+              </lu>
+            </>
+          )}
+        </>
       ),
     },
-    isAdmin ? 
-    {
-      field: "Owner",
-      header: "Owner",
-    }: "",isAdmin ? 
-    {
-      field: "Type",
-      header: "Type",
-    }:"",isAdmin ? 
-    {
-      field: "Size",
-      header: "Size",
-    }:"",isAdmin ? 
-    {
-      field: "Date",
-      header: "Date Modified",
-    }:"",
+    isAdmin
+      ? {
+          field: "fileType",
+          header: "Type",
+        }
+      : "",
+    isAdmin
+      ? {
+          field: "updateDate",
+          header: "Date Modified",
+          body: (rowData) => <>{formatDateTime(rowData.updateDate)}</>,
+        }
+      : "",
     {
       field: "ExternalTrainer",
       header: "Action",
@@ -98,57 +103,50 @@ const DocumentsPage = () => {
             icon="pi pi-eye"
             className="p-button-rounded"
             size="small"
-            onClick={() => window.open(rowData?.url, '_blank')}
+            onClick={() => window.open(API_BASE_URL + rowData?.url, "_blank")}
           />
-          {isAdmin &&
-          <Button
-            type="button"
-            text
-            icon="pi pi-trash"
-            severity="danger"
-            size="small"
-            className="p-button-rounded"
-          />}
+          {isAdmin && (
+            <Button
+              type="button"
+              text
+              icon="pi pi-trash"
+              severity="danger"
+              size="small"
+              className="p-button-rounded"
+              onClick={() => deleteFile(rowData?.id)}
+            />
+          )}
         </ButtonGroup>
       ),
     },
   ];
-const sampleData = [{
-  Name: "Training Management System Guidlines and Features",
-  Type: "MP4",
-  Size: "363 MB",
-  Date: "10/25/2026",
-  Owner: "John Doe",
-  Access: 12 + " Training Request",
-},
-{
-  Name: "Training Management System User Manual",
-  Type: "WEBM",
-  Size: "363 MB",
-  Date: "10/25/2026",
-  Owner: "John Doe",
-  Access: 36+ " Training Request"
-},
-
-{
-  Name: "Onboarding Training Guide",
-  header: "Name",
-  Type: "MOV",
-  Owner: "John Doe",
-  Date: "10/25/2026",
-  Size: "1.3 GB",
-  Access: 3+ " Training Request"
-},
-]
-const [file, setFile] = useState(null)
-const uploadFile = async () => {
-  //TODO: Implement file upload functionality
-  const formData = new FormData();
-  formData.append("file", file);
- const res = await fetchFromApi("/Attachment/UploadLargeFile","POST", formData, {'Content-Type': 'multipart/form-data'});
- console.log(res);
-}
-const header = <><Button label="Upload Video" icon="pi pi-upload" text onClick={() => setShowModal(true)} /></>
+  const deleteFile = (id) => {
+    confirmAction({
+      showLoaderOnConfirm: true,
+      title: "Delete File?",
+      text: "Are you sure you want to delete this file?",
+      confirmButtonText: "Delete",
+      confirmButtonColor: "#d33",
+      onConfirm: () =>
+        handleResponseAsync(
+          () => attachmentService.deleteAttachment(id),
+          (e) => {
+            actionSuccessful("Success", e?.message);
+            setTrigger((prev) => prev + 1);
+          }
+        ),
+    });
+  };
+  const header = (
+    <>
+      <Button
+        label="Upload Video"
+        icon="pi pi-upload"
+        text
+        onClick={() => setShowModal(true)}
+      />
+    </>
+  );
   const Content = () => {
     return (
       <>
@@ -158,17 +156,50 @@ const header = <><Button label="Upload Video" icon="pi pi-upload" text onClick={
             className="flex-fill overflow-auto p-3"
             style={{ minHeight: "100vh" }}
           >
-            {selectedItem ? <VideoAccess data={selectedItem} handleClose={()=>setSelectedItem(null)}/> : <>
-            <CommonTable
-              headerComponent={header}
-              tableName="Videos"
-              columnItems={sampleItems}
-              dataTable={sampleData}
-            />
-            <VideoUploadForm
-              handleShow={showModal}
-              handleClose={() => setShowModal(false)}
-            /></>}
+            {selectedItem ? (
+              <VideoAccess
+                data={selectedItem}
+                handleClose={() => setSelectedItem(null)}
+              />
+            ) : (
+              <>
+                {loading ? (
+                  <SkeletonDataTable />
+                ) : error ? (
+                  <ErrorTemplate message={error} />
+                ) : (
+                  <>
+                    <CommonTable
+                      headerComponent={header}
+                      tableName="Videos"
+                      columnItems={columnItems}
+                      dataTable={data?.results}
+                      hidePaginator
+                    />
+                    <Paginator
+                      first={paginatorConfig?.first ?? 1}
+                      pageLinkSize={5}
+                      rows={paginatorConfig.rows}
+                      totalRecords={data?.totalRecords}
+                      rowsPerPageOptions={[10, 20, 30, 50, 100]}
+                      onPageChange={(e) =>
+                        setPaginatorConfig((prev) => ({
+                          ...prev,
+                          first: e.first,
+                          rows: e.rows,
+                          page: e.page + 1,
+                        }))
+                      }
+                    />
+                  </>
+                )}
+                <VideoUploadForm
+                  handleShow={showModal}
+                  handleClose={() => setShowModal(false)}
+                  onSuccess={() => setTrigger((prev) => prev + 1)}
+                />
+              </>
+            )}
           </div>
         </div>
       </>

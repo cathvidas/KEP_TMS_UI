@@ -6,7 +6,7 @@ import { useState } from "react";
 import VideoAccessForm from "../forms/ModalForms/VideoAccessForm";
 
 const VideoAccess = ({ data, handleClose }) => {
-     const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const sampleItems = [
     {
       field: "",
@@ -76,8 +76,8 @@ const VideoAccess = ({ data, handleClose }) => {
   ];
   return (
     <>
-      <div className="flex">
-        <h5 className="theme-color fw-bold">{data?.Name}</h5>
+      <div className="flex border-bottom pb-2">
+        <h5 className="theme-color fw-bold mb-0 px-2">{data?.fileName}</h5>
         <Button
           className="ms-auto"
           icon="pi pi-arrow-left"
@@ -88,12 +88,23 @@ const VideoAccess = ({ data, handleClose }) => {
         />
       </div>
       <CommonTable
-      headerComponent={<Button label="Add New" icon="pi pi-plus" text onClick={() => setShowForm(true)} />}
+        headerComponent={
+          <Button
+            label="Add New"
+            icon="pi pi-plus"
+            text
+            onClick={() => setShowForm(true)}
+          />
+        }
         tableName="Video Access"
         columnItems={sampleItems}
         dataTable={sampleData}
       />
-      <VideoAccessForm showForm={showForm} closeForm={()=>setShowForm(false)}/>
+      <VideoAccessForm
+        showForm={showForm}
+        closeForm={() => setShowForm(false)}
+        data={data}
+      />
     </>
   );
 };

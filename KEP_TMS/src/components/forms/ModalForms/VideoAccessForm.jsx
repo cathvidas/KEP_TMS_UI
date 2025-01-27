@@ -48,15 +48,16 @@ const VideoAccessForm = ({
   }, [trainingRequests?.data?.results, userType, dataList]);
 
   const handleSubmit = () => {
-      const newData = {
-        RequestId: selectedItem?.value,
-        AttachementIds: [data?.id],
-        CreatedBy: SessionGetEmployeeId(),
-      };
+    console.log(selectedItem.value, data);
+    const formData = new FormData();
+    formData.append("RequestId", selectedItem?.value);
+    formData.append("AttachementIds", data?.id);
+    formData.append("CreatedBy", SessionGetEmployeeId());
+   
       confirmAction({
         onConfirm: () => {
           handleResponseAsync(
-            () => attachmentService.addAttachmentsAccess(newData),
+            () => attachmentService.addAttachmentsAccess(formData),
             (e) => actionSuccessful("Success!", e.message),
             (e) => actionFailed("Error!", e.message),
             onFinish

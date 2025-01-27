@@ -10,7 +10,7 @@ import handleResponseAsync from "../../../services/handleResponseAsync";
 import attachmentService from "../../../services/attachmentService";
 import categoryHook from "../../../hooks/categoryHook";
 
-const VideoUploadForm = ({ handleClose, handleShow, selectedData }) => {
+const VideoUploadForm = ({ handleClose, handleShow, selectedData, onSuccess }) => {
   const [errors, setErrors] = useState({});
   const [category, setCategory] = useState({});
   const [validated, setValidated] = useState({});
@@ -18,6 +18,14 @@ const VideoUploadForm = ({ handleClose, handleShow, selectedData }) => {
     { label: "Active", value: true },
     { label: "Inactive", value: false },
   ]);
+  const validFileTypes = [
+    "video/*",
+    "video/mp4",
+    "video/mov",
+    "video/avi",
+    "video/vmw",
+    "video/webm",
+  ];
   const categories = categoryHook.useAllCategories(true);
   const fileUploadRef = useRef(null);
   const handleSubmit = () => {
@@ -37,6 +45,7 @@ const VideoUploadForm = ({ handleClose, handleShow, selectedData }) => {
           attachmentService.addAttachments(formData),
           (e) => {
             actionSuccessful("Success", e?.message);
+            onSuccess();
             handleClose();
           },
           (e) => {
@@ -46,6 +55,19 @@ const VideoUploadForm = ({ handleClose, handleShow, selectedData }) => {
       },
     })
   };
+  
+  const handleFileSelect = (e)=>{
+    const files = e.files;
+    files.forEach((file) => {
+      const fileType = file["type"];
+      if(!validFileTypes.includes(fileType)){
+        actionFailed("Error", "Invalid file type. Please select a video file.");
+        const currentFiles = fileUploadRef.current?.getFiles()
+        fileUploadRef.current?.setFiles(currentFiles)
+        return;
+      }
+    })
+  }
   return (
     <>
       <Modal show={handleShow} onHide={handleClose} size={"md"}>
@@ -83,7 +105,7 @@ const VideoUploadForm = ({ handleClose, handleShow, selectedData }) => {
               </Col>
             <Col className="col-12">
             <Form.Label className="required">Attachments</Form.Label>
-            <FileUpload ref={fileUploadRef} accept="video/*" cancelLabel="Clear" customUpload onUpload={(e)=>alert(123)} uploadHandler={handleSubmit} multiple emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>}    />
+            <FileUpload ref={fileUploadRef} accept="video/*" cancelLabel="Clear" customUpload onSelect={handleFileSelect} uploadHandler={handleSubmit} multiple emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>}    />
             </Col>
           </Row>
         </Modal.Body>
@@ -97,6 +119,7 @@ const VideoUploadForm = ({ handleClose, handleShow, selectedData }) => {
 VideoUploadForm.propTypes = {
   selectedData: proptype.object,
   handleClose: proptype.func,
+  onSuccess: proptype.func,
   handleShow: proptype.bool,
 }
 export default VideoUploadForm;
