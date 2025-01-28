@@ -9,12 +9,10 @@ import { statusCode, UserTypeValue } from "../../api/constants";
 import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import mappingHook from "../../hooks/mappingHook";
-import commonHook from "../../hooks/commonHook";
 import ApproverRouteForm from "../forms/ModalForms/ApproverRouteForm";
 const ApproverList = ({data, activityType, hasEmailForm, optionColumn}) => {
-  const approvers = commonHook.useAllActivityApprovers(data?.id, activityType)
   const [routeForm, setRouteForm] = useState(false);
-  const mappedApprovers = mappingHook.useMappedActivityRoute(approvers?.data, data?.routings)
+  const mappedApprovers = mappingHook.useMappedActivityRoute(data?.approvers, data?.routings)
   const [visible, setVisible] = useState(false);  
   const [emailRecipient, setEmailRecipient] = useState({});  
   const [selectedApprover, setSelectedApprover] = useState(null);  

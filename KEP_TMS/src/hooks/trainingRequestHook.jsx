@@ -4,17 +4,18 @@ import userMapping from "../services/DataMapping/userMapping";
 import userService from "../services/userService";
 import handleResponseAsync from "../services/handleResponseAsync";
 import { ActivityType, statusCode } from "../api/constants";
-import mapUserTrainings, { mappedTrainingRequestByStatus } from "../services/DataMapping/mapUserTrainings";
+import mapUserTrainings, {
+  mappedTrainingRequestByStatus,
+} from "../services/DataMapping/mapUserTrainings";
 import trainingReportService from "../services/trainingReportService";
 import evaluationService from "../services/evaluationService";
 import effectivenessService from "../services/effectivenessService";
 import commonService from "../services/commonService";
 import routingService from "../services/common/routingService";
-import externalFacilitatorService from "../services/externalFacilitatorService";
 import trainingDetailsService from "../services/common/trainingDetailsService";
 
 const trainingRequestHook = {
-  useTrainingRequest: (id,trigger) => {
+  useTrainingRequest: (id, trigger) => {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -27,44 +28,42 @@ const trainingRequestHook = {
               response.trainingParticipants,
               "employeeBadge"
             );
-            const approvers = await commonService.getActivityApprovers(response?.id, ActivityType.REQUEST);
+            const approvers = await commonService.getActivityApprovers(
+              response?.id,
+              ActivityType.REQUEST
+            );
             const requestor = await userService.getUserById(
               response.requesterBadge
             );
-            const auditTrail = await commonService.getAuditTrail(id, ActivityType.REQUEST);
+            const auditTrail = await commonService.getAuditTrail(
+              id,
+              ActivityType.REQUEST
+            );
             const routings =
               await commonService.getRoutingActivityWithAuditTrail(
                 response.id,
                 ActivityType.REQUEST
               );
-              const currentRouting = await routingService.getCurrentApprover(routings);
-              if(!currentRouting?.assignedDetail){
-                currentRouting.assignedDetail = await userService.getUserById(currentRouting?.assignedTo);
-              }
-           const faciList =await Promise.all(
-             response?.trainingFacilitators?.map(async (faci) => {
-               const detail = faci?.isExternal
-                 ? await externalFacilitatorService.getExternaFacilitatorById(
-                     faci?.externalFacilitatorId
-                   )
-                 : await userService.getUserById(faci?.facilitatorBadge);
-                 
-               return { ...faci, faciDetail: detail };
-             })
-           );
-              setData({
+            const currentRouting = await routingService.getCurrentApprover(
+              routings
+            );
+            if (!currentRouting?.assignedDetail) {
+              currentRouting.assignedDetail = await userService.getUserById(
+                currentRouting?.assignedTo
+              );
+            }
+            setData({
               ...response,
               trainingParticipants: participants,
-              trainingFacilitators: faciList,
               requestor: requestor,
               routings,
               approvers,
-              currentRouting: {...currentRouting},
-              auditTrail
+              currentRouting: { ...currentRouting },
+              auditTrail,
             });
-            setLoading(false)
+            setLoading(false);
           },
-          (e) => setError(e),
+          (e) => setError(e)
         );
       };
       getRequest();
@@ -90,10 +89,10 @@ const trainingRequestHook = {
               : trainingRequestService.getAllTrainingRequests(),
           async (e) => {
             setData(e);
-            setMappedData(mappedTrainingRequestByStatus(e))
-           setLoading(false)
+            setMappedData(mappedTrainingRequestByStatus(e));
+            setLoading(false);
           },
-          (e) => setError(e),
+          (e) => setError(e)
         );
       };
       fetchData();
@@ -122,11 +121,10 @@ const trainingRequestHook = {
                   request.trainingFacilitators,
                   "facilitatorBadge"
                 );
-                const approver =
-                  await commonService.getCurrentRouting(
-                    request.id,
-                    ActivityType.REQUEST
-                  );
+                const approver = await commonService.getCurrentRouting(
+                  request.id,
+                  ActivityType.REQUEST
+                );
                 const user = await userService.getUserById(approver.assignedTo);
                 const routing = {
                   approverUsername: user.username,
@@ -143,7 +141,7 @@ const trainingRequestHook = {
               })
             );
             setData(updatedRequests);
-            setMappedData(mappedTrainingRequestByStatus(updatedRequests))
+            setMappedData(mappedTrainingRequestByStatus(updatedRequests));
           },
           (e) => setError(e),
           () => setLoading(false)
@@ -219,21 +217,43 @@ const trainingRequestHook = {
     }, [datalist]);
     return { data, error, loading };
   },
-  usePagedTrainingRequest: (pageNumber, pageSize, searchValue, secondSearchValue, thirdSearchValue, fourthSearchValue) => {
+  usePagedTrainingRequest: (
+    pageNumber,
+    pageSize,
+    searchValue,
+    secondSearchValue,
+    thirdSearchValue,
+    fourthSearchValue
+  ) => {
     const [data, setData] = useState();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequests = async () => {
-          handleResponseAsync(
-            () => trainingRequestService.getPagedTrainingRequest(pageNumber, pageSize, searchValue, secondSearchValue,thirdSearchValue, fourthSearchValue),
-            (e) => setData(e),
-            (e) => setError(e?.message ?? e),
-            () => setLoading(false)
-          );
+        handleResponseAsync(
+          () =>
+            trainingRequestService.getPagedTrainingRequest(
+              pageNumber,
+              pageSize,
+              searchValue,
+              secondSearchValue,
+              thirdSearchValue,
+              fourthSearchValue
+            ),
+          (e) => setData(e),
+          (e) => setError(e?.message ?? e),
+          () => setLoading(false)
+        );
       };
       getRequests();
-    }, [pageNumber, pageSize, searchValue, secondSearchValue, thirdSearchValue, fourthSearchValue]);
+    }, [
+      pageNumber,
+      pageSize,
+      searchValue,
+      secondSearchValue,
+      thirdSearchValue,
+      fourthSearchValue,
+    ]);
     return { data, error, loading };
   },
   useTrainingRequestByTraineeId: (id, attended) => {
@@ -244,7 +264,17 @@ const trainingRequestHook = {
       const fetchData = async () => {
         handleResponseAsync(
           () => trainingRequestService.getTrainingRequestByTraineeId(id),
-          (e) => {setData(e?.filter(item=> (attended ? trainingDetailsService.checkIfTrainingEndsAlready(item) : true) && (item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED) ));
+          (e) => {
+            setData(
+              e?.filter(
+                (item) =>
+                  (attended
+                    ? trainingDetailsService.checkIfTrainingEndsAlready(item)
+                    : true) &&
+                  (item?.status?.id === statusCode.APPROVED ||
+                    item?.status?.id === statusCode.CLOSED)
+              )
+            );
           },
           (e) => setError(e),
           () => setLoading(false)
@@ -266,8 +296,14 @@ const trainingRequestHook = {
       const fetchData = async () => {
         handleResponseAsync(
           () => trainingRequestService.getTrainingRequestByFacilitatorId(id),
-          (e) => 
-            {setData(e?.filter(item=>item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED));
+          (e) => {
+            setData(
+              e?.filter(
+                (item) =>
+                  item?.status?.id === statusCode.APPROVED ||
+                  item?.status?.id === statusCode.CLOSED
+              )
+            );
           },
           (e) => setError(e),
           () => setLoading(false)
@@ -302,7 +338,6 @@ const trainingRequestHook = {
       loading,
     };
   },
-   
 };
 
 export default trainingRequestHook;
