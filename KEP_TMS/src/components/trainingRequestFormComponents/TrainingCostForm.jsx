@@ -9,7 +9,6 @@ import Select from "react-select";
 import { statusCode, TrainingType } from "../../api/constants";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
 import providerHook from "../../hooks/providerHook";
-import providerService from "../../services/providerService";
 
 const TrainingCostForm = ({
   formData,

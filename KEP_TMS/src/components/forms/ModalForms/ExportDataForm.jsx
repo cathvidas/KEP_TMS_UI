@@ -1,7 +1,6 @@
 import { Col, Form, Modal, Row } from "react-bootstrap"
 import Select from "react-select";
 import proptype from "prop-types"
-import { FormFieldItem } from "../../trainingRequestFormComponents/FormElements";
 import ExportBtn from "../../General/ExportBtn";
 import { useState } from "react";
 import { Button } from "primereact/button";

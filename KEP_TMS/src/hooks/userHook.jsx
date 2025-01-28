@@ -98,10 +98,6 @@ const userHook = {
               UserTypeValue.FACILITATOR,
               searchValue
             );
-            console.log(admins, facilitators, [
-              ...admins.results,
-              ...facilitators.results,
-            ]);
             setData([...admins.results, ...facilitators.results]);
           } catch (err) {
             setError(err);
