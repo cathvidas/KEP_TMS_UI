@@ -16,32 +16,8 @@ import { formatDateTime } from "../../utils/datetime/Formatting";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import FacilitatorRatingExportTemplate from "../General/FacilitatorRatingExportTemplate";
 import commonHook from "../../hooks/commonHook";
-import externalFacilitatorService from "../../services/externalFacilitatorService";
-import userService from "../../services/userService";
 import { TrainingType } from "../../api/constants";
 import userHook from "../../hooks/userHook";
-const FacilitatorDetail = ({data}) => {
-  const [faciName, setFaciName] = useState(null);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if(data?.isExternal){
-          const response = await externalFacilitatorService.getExternaFacilitatorById(data?.externalFacilitatorId);
-          setFaciName(response?.name);
-        }
-        else{
-          const response = await userService.getUserById(data?.facilitatorBadge);
-          setFaciName(response?.fullname);
-        }
-      } catch (error) {
-        console.console(error);
-      }
-      
-    }
-    fetchData();
-  })
-  return faciName;
-}
 const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
   const [annotation, setAnnotation] = useState(evaluationConstant.annotation);
   const [contentMethodology, setContentMethodology] = useState(evaluationConstant.contentMethodology);
@@ -163,7 +139,6 @@ newLogs.push({
   label: `Created by ${userData?.fullname ?? defaultValue?.auditTrail?.createdBy}`,
   date: formatDateTime(defaultValue?.createdDate),
 });
-console.log(data)
 const reportTemplateRef = useRef();
   return (
     <Card.Body>
