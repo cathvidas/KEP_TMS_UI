@@ -76,7 +76,3 @@ export const SearchValueConstant = {
   ATTACHMENT: "Attachment",
   REQUEST: "Request",
 }
-
-export const hasRequestAccess = SessionGetRole() === UserTypeValue.ADMIN ||
-SessionGetRole() === UserTypeValue.REQUESTOR ||
-SessionGetRole() === UserTypeValue.FACILITATOR;

@@ -6,7 +6,7 @@ import icon2 from "/src/img/logo-nobg.png";
 import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import { Button } from "primereact/button";
 import { confirmAction } from "../../services/sweetalert";
-import { APP_DOMAIN, hasRequestAccess, UserTypeValue } from "../../api/constants";
+import { APP_DOMAIN, UserTypeValue } from "../../api/constants";
 import commonHook from "../../hooks/commonHook";
 import { Badge } from "primereact/badge";
 
@@ -18,6 +18,9 @@ const Sidebar = ({ activeNavigation, expanded, show, hide }) => {
   const firstname = sessionStorage.getItem("firstname");
   const lastname = sessionStorage.getItem("lastname");
   const fullname = sessionStorage.getItem("fullname");
+  const hasRequestAccess = SessionGetRole() === UserTypeValue.ADMIN ||
+  SessionGetRole() === UserTypeValue.REQUESTOR ||
+  SessionGetRole() === UserTypeValue.FACILITATOR
 const approvalCount = commonHook.useAllAssignedForApproval(SessionGetEmployeeId())?.data?.overallCount;
   const NavItem = ({
     item,
@@ -173,9 +176,9 @@ const approvalCount = commonHook.useAllAssignedForApproval(SessionGetEmployeeId(
                   icon="pi pi-list"
                 />
               <NavItem item="Setting" title="Setting" icon={"pi pi-cog"} />
+              <NavItem item="Videos" title="Videos" icon={"pi pi-video"} />
               </>
             )}
-              <NavItem item="Videos" title="Videos" icon={"pi pi-video"} />
           </ul>
           <ul className={` nav nav-pills d-flex flex-column nav-flush`}>
             <NavItem

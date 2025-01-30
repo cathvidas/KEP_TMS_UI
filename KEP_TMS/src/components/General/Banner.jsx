@@ -3,7 +3,8 @@ import bannerimg from "../../img/banner.png";
 import proptypes from "prop-types";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
-import { hasRequestAccess } from "../../api/constants";
+import { UserTypeValue } from "../../api/constants";
+import { SessionGetRole } from "../../services/sessions";
 
 const Banner = ({ setShowModal }) => {
   const fullname = sessionStorage.getItem("fullname");
@@ -28,7 +29,9 @@ const Banner = ({ setShowModal }) => {
             <h3 className="fw-bold" style={{ color: "rgb(0,75,80)" }}>
               Good Day! {displayName()}
             </h3>
-            {hasRequestAccess ?<>
+            {(SessionGetRole() === UserTypeValue.ADMIN ||
+              SessionGetRole() === UserTypeValue.REQUESTOR ||
+              SessionGetRole() === UserTypeValue.FACILITATOR) ?<>
             <p className="my-3">
               Click &apos;Request Training&apos; to request new training or
               &apos;View All Requests&apos; to track your training request

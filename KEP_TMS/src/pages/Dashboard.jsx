@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import commonHook from "../hooks/commonHook";
 import SkeletonCards from "../components/Skeleton/SkeletonCards";
-import { APP_DOMAIN, hasRequestAccess, SearchValueConstant, UserTypeValue } from "../api/constants";
+import { APP_DOMAIN, SearchValueConstant, UserTypeValue } from "../api/constants";
 import { TabPanel, TabView } from "primereact/tabview";
 import activityLogHook from "../hooks/activityLogHook";
 const Dashboard = () => {
@@ -26,7 +26,6 @@ const Dashboard = () => {
     SessionGetEmployeeId(),
     "trainer"
   );
-  
   const trainingRequests = trainingRequestHook.useTrainingRequestSummary(SessionGetEmployeeId())?.data;
   const values = [
     {
@@ -121,6 +120,9 @@ const Dashboard = () => {
       loading: pendings?.loading,
     },
   ];
+  const hasRequestAccess = SessionGetRole() === UserTypeValue.ADMIN ||
+  SessionGetRole() === UserTypeValue.REQUESTOR ||
+  SessionGetRole() === UserTypeValue.FACILITATOR
   const Content = () => {
     return (
       <div className="p-3">
@@ -274,7 +276,6 @@ const Dashboard = () => {
       </div>
     );
   };
-
   return (
     <Layout
       navReference="Dashboard"
