@@ -61,10 +61,10 @@ const DocumentsPage = () => {
         <>
           {isAdmin ? (
             <span
-              className="p-badge p-badge-info cursor-pointer"
+              className={`${rowData?.referenceCount > 0 ? "p-badge": ""} p-badge-info cursor-pointer`}
               onClick={() => setSelectedItem(rowData)}
             >
-              {rowData?.referenceCount}
+              {rowData?.referenceCount > 0 ? rowData?.referenceCount : "N/A"}
             </span>
           ) : (
             <>
@@ -164,7 +164,6 @@ const DocumentsPage = () => {
     return (
       <>
         <div className="d-flex ">
-          {/* <MenuContainer fullHeight label="Documents" itemList={items} /> */}
           <div
             className="flex-fill overflow-auto p-3"
             style={{ minHeight: "100vh" }}

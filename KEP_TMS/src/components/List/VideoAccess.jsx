@@ -31,7 +31,6 @@ const VideoAccess = ({ data, handleClose, refreshData }) => {
     paginatorConfig.value,
     trigger
   );
-  console.log(data, videoAccess);
   const sampleItems = [
     {
       field: "requestId",
@@ -63,6 +62,7 @@ const VideoAccess = ({ data, handleClose, refreshData }) => {
             icon="pi pi-trash"
             severity="danger"
             size="small"
+            title="Remove Access"
             className="p-button-rounded"
             onClick={() => deleteAccess(rowData.id)}
           />
@@ -155,5 +155,6 @@ const VideoAccess = ({ data, handleClose, refreshData }) => {
 VideoAccess.propTypes = {
   data: proptype.object,
   handleClose: proptype.func,
+  refreshData: proptype.func,
 };
 export default VideoAccess;
