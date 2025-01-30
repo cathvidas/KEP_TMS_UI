@@ -175,7 +175,7 @@ const approvalCount = commonHook.useAllAssignedForApproval(SessionGetEmployeeId(
               <NavItem item="Setting" title="Setting" icon={"pi pi-cog"} />
               </>
             )}
-              <NavItem item="Files" title="Files" icon={"pi pi-file"} />
+              <NavItem item="Videos" title="Videos" icon={"pi pi-video"} />
           </ul>
           <ul className={` nav nav-pills d-flex flex-column nav-flush`}>
             <NavItem

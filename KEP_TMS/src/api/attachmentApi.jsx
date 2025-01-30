@@ -1,5 +1,6 @@
 import fetchFromApi from "./apiUtil";
-
+import { API_BASE_URL } from "./constants";
+export const VideoFileUrl = API_BASE_URL + "/Attachment/GetVideoFile?attachmentId=";
 export const getModuleAttachmentByIdApi = async (id) => {
   return await fetchFromApi(`/Attachment/GetModuleFile?attachmentId=${id}`);
 };
@@ -27,4 +28,20 @@ export const GetAttachmentsApi = async (pageNumber, pageSize, searchValue, Secon
     return await fetchFromApi(`Attachment/GetAttachment?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);
   }
   return await fetchFromApi(`Attachment/GetAttachment?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+}
+export const GetAttachmentAccessApi = async (pageNumber, pageSize, searchValue, SecondSearchValue,thirdSearchValue) =>{
+  if(SecondSearchValue && searchValue && thirdSearchValue){
+    return await fetchFromApi(`Attachment/GetAttachmentAccess?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}&thirdSearchValue=${thirdSearchValue}`);
+}else if(SecondSearchValue && searchValue){
+      return await fetchFromApi(`Attachment/GetAttachmentAccess?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}`);
+  }else if(searchValue){
+    return await fetchFromApi(`Attachment/GetAttachmentAccess?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);
+  }
+  return await fetchFromApi(`Attachment/GetAttachmentAccess?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+}
+export const DeleteAttachmentAccessApi = async (id) =>{
+    return await fetchFromApi(`/Attachment/DeleteAttachmentAccess?Id=${id}`, "DELETE");
+}
+export const GetVideoFileApi = async (id) =>{
+  return await fetchFromApi(`/Attachment/GetVideoFile?attachmentId=${id}`);
 }

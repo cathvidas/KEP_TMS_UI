@@ -1,4 +1,4 @@
-import { AddAttachmentsAccessApi, addAttachmentsApi, deleteAttachmentApi, getAttachmentByReferenceApi, GetAttachmentsApi, getModuleAttachmentByIdApi } from "../api/attachmentApi";
+import { AddAttachmentsAccessApi, addAttachmentsApi, DeleteAttachmentAccessApi, deleteAttachmentApi, GetAttachmentAccessApi, getAttachmentByReferenceApi, GetAttachmentsApi, getModuleAttachmentByIdApi } from "../api/attachmentApi";
 import { attachmentType } from "../api/constants";
 import trainingRequestService from "./trainingRequestService";
 
@@ -50,19 +50,32 @@ const attachmentService = {
     );
     return {oldTrainings, newTrainings: updated};
   },
-  addAttachmentsAccess: async (data
+  addAttachmentsAccess: async (id, data, creator
   ) => {
-    const response = await AddAttachmentsAccessApi(data
+    const response = await AddAttachmentsAccessApi(id, data, creator
     );
     if (response.status !== 1) {
       throw new Error(response.message);
     }
-    return response?.data;
+    return response;
   },
   getAttachments: async (pageNumber, pageSize, searchValue, SecondSearchValue
   ) => {
     const response = await GetAttachmentsApi(pageNumber, pageSize, searchValue, SecondSearchValue
     );
+    return response;
+  },
+  getAttachmentAccess: async (pageNumber, pageSize, searchValue, SecondSearchValue, thirdSearchValue
+  ) => {
+    const response = await GetAttachmentAccessApi(pageNumber, pageSize, searchValue, SecondSearchValue, thirdSearchValue
+    );
+    return response;
+  },
+  deleteAttachmentAccess: async (id) => {
+    const response = await DeleteAttachmentAccessApi(id);
+    if (response.status !== 1) {
+      throw new Error(response);
+    }
     return response;
   },
 };

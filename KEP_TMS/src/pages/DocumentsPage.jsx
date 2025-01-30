@@ -64,7 +64,7 @@ const DocumentsPage = () => {
               className="p-badge p-badge-info cursor-pointer"
               onClick={() => setSelectedItem(rowData)}
             >
-              {rowData?.Access}
+              {rowData?.referenceCount}
             </span>
           ) : (
             <>
@@ -100,21 +100,34 @@ const DocumentsPage = () => {
             type="button"
             text
             severity="success"
-            icon="pi pi-eye"
+            icon="pi pi-play-circle"
             className="p-button-rounded"
+            title="Play Video"
             size="small"
             onClick={() => window.open(API_BASE_URL + rowData?.url, "_blank")}
           />
           {isAdmin && (
-            <Button
-              type="button"
-              text
-              icon="pi pi-trash"
-              severity="danger"
-              size="small"
-              className="p-button-rounded"
-              onClick={() => deleteFile(rowData?.id)}
-            />
+            <>
+              <Button
+                type="button"
+                text
+                icon="pi pi-list"
+                className="p-button-rounded"
+                size="small"
+                title="View Access Management"
+                onClick={() => setSelectedItem(rowData)}
+              />
+              <Button
+                type="button"
+                text
+                icon="pi pi-trash"
+                severity="danger"
+                size="small"
+                title="Delete Video"
+                className="p-button-rounded"
+                onClick={() => deleteFile(rowData?.id)}
+              />
+            </>
           )}
         </ButtonGroup>
       ),
@@ -123,7 +136,7 @@ const DocumentsPage = () => {
   const deleteFile = (id) => {
     confirmAction({
       showLoaderOnConfirm: true,
-      title: "Delete File?",
+      title: "Delete Video?",
       text: "Are you sure you want to delete this file?",
       confirmButtonText: "Delete",
       confirmButtonColor: "#d33",
@@ -160,6 +173,7 @@ const DocumentsPage = () => {
               <VideoAccess
                 data={selectedItem}
                 handleClose={() => setSelectedItem(null)}
+                refreshData={()=> setTrigger((prev) => prev + 1)}
               />
             ) : (
               <>
@@ -207,7 +221,7 @@ const DocumentsPage = () => {
   };
   return (
     <Layout
-      navReference="Files"
+      navReference="Videos"
       header={{
         title: "Dashboard",
         hide: true,

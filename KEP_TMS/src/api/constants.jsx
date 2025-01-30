@@ -71,7 +71,10 @@ export const SearchValueConstant = {
   FACILITATOR : 'Facilitator',
   REQUESTER : 'Requester',
   PARTICIPANT : 'Participant',
-  REQ_STATUS: "Status"
+  REQ_STATUS: "Status",
+  VIDEOS: "Videos",
+  ATTACHMENT: "Attachment",
+  REQUEST: "Request",
 }
 
 export const hasRequestAccess = SessionGetRole() === UserTypeValue.ADMIN ||
