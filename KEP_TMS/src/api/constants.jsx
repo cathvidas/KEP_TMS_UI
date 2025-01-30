@@ -1,20 +1,15 @@
-import { SessionGetRole } from "../services/sessions";
-
 const localhost = {
     API_BASE_URL: "http://localhost:5030/api",
     APPLICATION_BASE_URL: "http://localhost:5173/KEP_TMS/"
 }
-
 const testEnvi = {
     API_BASE_URL: "http://kep-testenvw16:2024/api",
     APPLICATION_BASE_URL: "http://kep-testenvw16:2024/KEP_TMS/"
 }
-
 const currentServer = localhost;
 export const API_BASE_URL = currentServer.API_BASE_URL
 export const APPLICATION_BASE_URL = currentServer.APPLICATION_BASE_URL
 export const APP_DOMAIN = "/KEP_TMS"
-
 export const statusCode = {
   INACTIVE: 1,
   ACTIVE: 2,
@@ -29,7 +24,6 @@ export const statusCode = {
   DRAFTED: 12,
   PENDING: 13
 };
-
 export const TrainingType = {
   INTERNAL: 1,
   EXTERNAL: 2,
@@ -75,4 +69,5 @@ export const SearchValueConstant = {
   VIDEOS: "Videos",
   ATTACHMENT: "Attachment",
   REQUEST: "Request",
+  DATERANGE: "daterange",
 }

@@ -2,23 +2,53 @@ import { Col, Form, Modal, Row } from "react-bootstrap"
 import Select from "react-select";
 import proptype from "prop-types"
 import ExportBtn from "../../General/ExportBtn";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
-import { statusCode } from "../../../api/constants";
+import { SearchValueConstant, statusCode } from "../../../api/constants";
+import trainingRequestService from "../../../services/trainingRequestService";
+import handleResponseAsync from "../../../services/handleResponseAsync";
+import { formatDateOnly } from "../../../utils/datetime/Formatting";
+import getStatusById from "../../../utils/status/getStatusById";
+import ErrorTemplate from "../../General/ErrorTemplate";
 
 const ExportDataForm = ()=>{
-    const [options, setOptions] = useState({startDate: "", endDate: "", status: ""})
+    const [options, setOptions] = useState({startDate: "", endDate: "", status: {}})
     const [showForm, setShowForm] = useState(false)
     const statusOption = [
-      { value: statusCode.APPROVED, label: "Approved" },
-      { value: statusCode.FORAPPROVAL, label: "For Approval" },
-      { value: statusCode.DISAPPROVED, label: "Disapproved" },
-      { value: statusCode.SUBMITTED, label: "Submitted" },
-      { value: statusCode.CLOSED, label: "Closed" },
-      { value: statusCode.INACTIVE, label: "Cancelled" },
+      { value: getStatusById(statusCode.APPROVED), label: "Approved" },
+      { value: getStatusById(statusCode.FORAPPROVAL), label: "For Approval" },
+      { value: getStatusById(statusCode.DISAPPROVED), label: "Disapproved" },
+      { value: getStatusById(statusCode.SUBMITTED), label: "Submitted" },
+      { value: getStatusById(statusCode.CLOSED), label: "Closed" },
+      { value: getStatusById(statusCode.INACTIVE), label: "Cancelled" },
       { value: null, label: "All" },
     ];
-    const {data, loading} = "";
+    // const {data, loading} = trainingRequestHook.usePagedTrainingRequest(1, 1000, SearchValueConstant.DATERANGE, options.startDate + " - "+options.endDate, options.status);
+   
+    const [data, setData] = useState();
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequests = async () => {
+        setLoading(true);
+        handleResponseAsync(
+          () =>
+            trainingRequestService.getPagedTrainingRequest(
+              1,
+              1000,
+              SearchValueConstant.DATERANGE, 
+              formatDateOnly(options.startDate) + " - "+formatDateOnly(options.endDate), 
+              options.status?.label
+            ),
+          (e) => setData(e),
+          (e) => setError(e?.message ?? e),
+          () => setLoading(false)
+        );
+      };
+      getRequests();
+    }, [
+      options
+    ]);
     return (
       <>
         <Button
@@ -32,42 +62,33 @@ const ExportDataForm = ()=>{
             <Modal.Title className={`h5 theme-color`}>Export Data</Modal.Title>
           </Modal.Header>
           <Form
-            // className={validated && "was-validated"}
             noValidate
           >
             <Modal.Body className="py-0">
+              <ErrorTemplate message={error} center />
               <Row className="">
                 <Col className="col-6">
                   <Form.Label className="fw-bold">Start Date</Form.Label>
-                  <Form.Control type="date" />
+                  <Form.Control value={options?.startDate} type="date" onChange={(e)=>setOptions(prev => ({...prev, startDate: e?.target?.value}))} />
                 </Col>
                 <Col className="col-6">
-                  <Form.Label className="fw-bold">End Date</Form.Label>
-                  <Form.Control type="date" />
+                  <Form.Label className="fw-bold" >End Date</Form.Label>
+                  <Form.Control type="date" value={options?.endDate}  onChange={(e)=>setOptions(prev => ({...prev, endDate: e?.target?.value}))}  />
                 </Col>
                 <Col className="col-12 mt-2">
                   <Form.Label className="fw-bold">Request Status</Form.Label> 
                   <Select
-                    // isMulti
-                    // onMenuScrollToBottom={() =>
-                    //   setPaginatorConfig((prev) => ({
-                    //     ...prev,
-                    //     rows: prev.rows + 10,
-                    //   }))
-                    // }
-                    // onInputChange={(e) =>
-                    //   setPaginatorConfig((prev) => ({ ...prev, value: e }))
-                    // }
-                    // isLoading={trainingRequests?.loading}
                     options={statusOption}
-                    // value={selectedItem}
-                    // onChange={setSelectedItem}
+                    value={options?.status}
+                    onChange={(e) => setOptions(prev =>({ ...prev, status: e }))}
                   />
                 </Col>
               </Row>
             </Modal.Body>
             <Modal.Footer className="border-0">
-              <ExportBtn data={data?.results} />
+              {loading ? 
+              <Button icon="pi pi-download" label="Export" className="rounded" size="small" disabled/>:
+              <ExportBtn data={data?.results} />}
             </Modal.Footer>
           </Form>
         </Modal>
