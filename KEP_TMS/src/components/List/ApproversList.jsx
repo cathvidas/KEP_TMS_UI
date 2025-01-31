@@ -37,7 +37,7 @@ const ApproverList = ({data, activityType, hasEmailForm, optionColumn}) => {
         icon="pi pi-directions"
         title="Route Approvers"
         text
-        disabled={rowData?.status?.statusId === statusCode.APPROVED || SessionGetRole() !== UserTypeValue.ADMIN}
+        disabled={rowData?.status?.statusId === statusCode.APPROVED || rowData?.status?.statusId === statusCode.ROUTED ||rowData?.status?.statusId === statusCode.PENDING || SessionGetRole() !== UserTypeValue.ADMIN}
         onClick={() => {setRouteForm(true);
           setSelectedApprover(rowData?.detail);
         }}
@@ -45,6 +45,7 @@ const ApproverList = ({data, activityType, hasEmailForm, optionColumn}) => {
       </>}
     </div>
   );
+  console.log(mappedApprovers)
   const statusTemplate = (rowData) => rowData?.status?.statusId === statusCode.DISAPPROVED ? <span>Reviewed</span> : <span>{getStatusById(rowData?.status?.statusId)}</span>
   return (
     <>

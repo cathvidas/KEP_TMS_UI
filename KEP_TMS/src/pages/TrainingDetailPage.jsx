@@ -178,7 +178,7 @@ const TrainingDetailPage = () => {
           icon: "pi pi-video",
           command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Videos`),
           template: MenuItemTemplate,
-          active: currentContent === 1 ? true : false,
+          active: currentContent === 10 ? true : false,
           disable: !(isAdmin || isFacilitator || isTrainee),
         },
         {

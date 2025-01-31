@@ -19,7 +19,9 @@ const getStatusById = (id) => {
       : id === statusCode.FORAPPROVAL
       ? "ForApproval"
       :  id === statusCode.DRAFTED
-      ? "Drafted":
+      ? "Drafted"
+      :  id === statusCode.ROUTED
+      ? "Routed":
       "Pending";
   return status;
 };

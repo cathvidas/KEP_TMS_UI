@@ -32,11 +32,12 @@ const activityLogHook = {
           let requestList = [];
           let page = 1;
           const assignedRequest = await trainingRequestService.getPagedTrainingRequest(1, 10, SearchValueConstant.PARTICIPANT, id);
-          while(requestList.length < assignedRequest.totalRecords) {
+          
+          while(requestList.length < assignedRequest.totalRecords && assignedRequest.totalRecords > 0) {
             const response = await trainingRequestService.getPagedTrainingRequest(page, 10, SearchValueConstant.PARTICIPANT, id);
             requestList = [...requestList, ...response.results];
             page++;
-          }
+          }console.log(assignedRequest, requestList.length, requestList)
           const pendingList = await Promise.all(
             requestList?.map(async (item) => {
               const user = item?.trainingParticipants?.find((i) => i.employeeBadge === id);

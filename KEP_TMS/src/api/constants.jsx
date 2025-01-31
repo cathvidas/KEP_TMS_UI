@@ -21,6 +21,7 @@ export const statusCode = {
   PUBLISHED: 8,
   FAILED: 9,
   TOUPDATE: 10,
+  ROUTED: 11,
   DRAFTED: 12,
   PENDING: 13
 };

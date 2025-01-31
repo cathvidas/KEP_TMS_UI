@@ -103,7 +103,7 @@ const TraineeReportView = ({ data, refreshData, isTrainee, activityType }) => {
                       )
                     )
                   ) : (
-                    <div className="d-flex justify-content-center align-items-center h-100 h1 opacity-50 text-muted">
+                    <div className="d-flex justify-content-center align-items-center mb-0 h-100 h1 opacity-50 text-muted" style={{padding: "40vh 0"}}>
                       No Details Available
                     </div>
                   ))}

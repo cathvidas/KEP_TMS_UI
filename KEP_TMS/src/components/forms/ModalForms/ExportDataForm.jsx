@@ -12,7 +12,7 @@ import getStatusById from "../../../utils/status/getStatusById";
 import ErrorTemplate from "../../General/ErrorTemplate";
 
 const ExportDataForm = ()=>{
-    const [options, setOptions] = useState({startDate: "", endDate: "", status: {}})
+    const [options, setOptions] = useState({startDate: "", endDate: "", status: { value: null, label: "All" }})
     const [showForm, setShowForm] = useState(false)
     const statusOption = [
       { value: getStatusById(statusCode.APPROVED), label: "Approved" },
@@ -23,8 +23,6 @@ const ExportDataForm = ()=>{
       { value: getStatusById(statusCode.INACTIVE), label: "Cancelled" },
       { value: null, label: "All" },
     ];
-    // const {data, loading} = trainingRequestHook.usePagedTrainingRequest(1, 1000, SearchValueConstant.DATERANGE, options.startDate + " - "+options.endDate, options.status);
-   
     const [data, setData] = useState();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -88,7 +86,7 @@ const ExportDataForm = ()=>{
             <Modal.Footer className="border-0">
               {loading ? 
               <Button icon="pi pi-download" label="Export" className="rounded" size="small" disabled/>:
-              <ExportBtn data={data?.results} />}
+              <ExportBtn data={data?.results} closeModal={()=>setShowForm(false)}/>}
             </Modal.Footer>
           </Form>
         </Modal>
