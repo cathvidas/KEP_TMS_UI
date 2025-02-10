@@ -18,8 +18,8 @@ export const deleteAttachmentApi = async (id) =>{
 export const getAttachmentByReferenceApi = async (referenceId, attachmentType) => {
   return await fetchFromApi(`/Attachment/GetAttachmentByReferenceId?referenceId=${referenceId}&attachmentType=${attachmentType}`);
 }
-export const AddAttachmentsAccessApi = async (data) => {
-  return await fetchFromApi(`/Attachment/AddAttachmentsAccess`, "POST", data);
+export const AddAttachmentsAccessApi = async (id, data, creator) => {
+  return await fetchFromApi(`/Attachment/AddAttachmentsAccess?requestId=${id}&createdBy=${creator}`, "POST", data, {'Content-Type': 'multipart/form-data'});
 }
 export const GetAttachmentsApi = async (pageNumber, pageSize, searchValue, SecondSearchValue) =>{
   if(SecondSearchValue && searchValue){

@@ -36,7 +36,7 @@ const ExportDataForm = ()=>{
               1000,
               SearchValueConstant.DATERANGE, 
               formatDateOnly(options.startDate) + " - "+formatDateOnly(options.endDate), 
-              options.status?.label
+              options.status?.value
             ),
           (e) => setData(e),
           (e) => setError(e?.message ?? e),
@@ -66,11 +66,11 @@ const ExportDataForm = ()=>{
               <ErrorTemplate message={error} center />
               <Row className="">
                 <Col className="col-6">
-                  <Form.Label className="fw-bold">Start Date</Form.Label>
+                  <Form.Label className="fw-bold">From</Form.Label>
                   <Form.Control value={options?.startDate} type="date" onChange={(e)=>setOptions(prev => ({...prev, startDate: e?.target?.value}))} />
                 </Col>
                 <Col className="col-6">
-                  <Form.Label className="fw-bold" >End Date</Form.Label>
+                  <Form.Label className="fw-bold" >To</Form.Label>
                   <Form.Control type="date" value={options?.endDate}  onChange={(e)=>setOptions(prev => ({...prev, endDate: e?.target?.value}))}  />
                 </Col>
                 <Col className="col-12 mt-2">

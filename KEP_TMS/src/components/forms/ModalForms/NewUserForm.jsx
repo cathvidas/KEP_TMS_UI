@@ -88,15 +88,15 @@ const NewUserForm = ({
               isUpdate
                 ? userService.updateUser(newFormData)
                 : userService.createUser(newFormData),
-            () =>
+            () =>{
               actionSuccessful(
                 "Success!",
                 isUpdate
                   ? "User updated successfully"
                   : "User created successfully"
-              ),
+              );
+              onFinish()},
             null,
-            onFinish
           ),
       });
     }
@@ -155,6 +155,7 @@ const NewUserForm = ({
                   />
                 }
               />
+              {/* {isUpdate && <>
               <FormFieldItem
                 required
                 error={error?.username}
@@ -169,7 +170,7 @@ const NewUserForm = ({
                     disabled={isUpdate && !isAdmin}
                   />
                 }
-              />
+              /></>} */}
               <FormFieldItem
                 required
                 error={error?.email}
@@ -257,7 +258,7 @@ const NewUserForm = ({
                   />
                 }
               />
-              <FormFieldItem
+              {/* <FormFieldItem
                 required
                 error={error?.employeeTypeId}
                 label="Employee Type"
@@ -278,7 +279,7 @@ const NewUserForm = ({
                     isDisabled={isUpdate && !isAdmin}
                   />
                 }
-              />
+              /> */}
               <FormFieldItem
                 required
                 error={error?.roleId}

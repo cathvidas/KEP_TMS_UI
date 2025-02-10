@@ -48,8 +48,8 @@ const ExportBtn = ({ data, closeModal }) => {
         StartDate: dataItem?.trainingStartDate,
         EndDate: dataItem?.trainingEndDate,
         TotalTrainingFee: dataItem?.totalTrainingFee,
-        TrainingHours: dataItem?.durationInHours,
         TotalTrainingParticipants: dataItem?.totalParticipants,
+        TrainingHours: dataItem?.durationInHours,
         TrainingFacilitators: await fetchFaci(dataItem?.trainingFacilitators),
       }))
     );

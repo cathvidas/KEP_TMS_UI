@@ -148,6 +148,11 @@ const VideoAccess = ({ data, handleClose, refreshData }) => {
         showForm={showForm}
         closeForm={() => setShowForm(false)}
         data={data}
+        onFinish={()=>{
+          setTrigger(prev => prev + 1);
+          setShowForm(false);
+          refreshData()
+        }}
       />
     </>
   );
