@@ -61,7 +61,7 @@ const getToastDetail = (
         effStatus === getStatusById(statusCode.FORAPPROVAL)
           ? `Waiting for approval by ${userReports?.effectivenessDetail?.currentRouting?.assignedDetail?.fullname}`
           : effStatus === getStatusById(statusCode.DISAPPROVED)
-          ? "Your training effectiveness form was not approved. Navigate to report section to view more details."
+          ? "Your training effectiveness form was not approved. Navigate to forms section to view more details."
           : "Please wait for further details.";
       statusData.severity =
         effStatus === getStatusById(statusCode.DISAPPROVED)

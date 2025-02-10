@@ -54,7 +54,7 @@ const TrainingDetailPage = () => {
       ((data?.status?.id === statusCode.APPROVED ||
         data?.status?.id === statusCode.CLOSED) &&
         (isFacilitator || isTrainee)) ||
-      isAdmin
+      isAdmin || (data?.status?.id === statusCode.SUBMITTED && isTrainee)
     ) {
       setShowMenu(true);
     }

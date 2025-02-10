@@ -141,7 +141,7 @@ const EffectivenessForm = ({
       getFormData,
       performanceCharacteristics,
       projectPerformanceEvaluation,
-      !actualPerfRating.isRated,
+      !actualPerfRating.toBeRated,
     );
     setErrors(formErrors);
     if (isValid) {
