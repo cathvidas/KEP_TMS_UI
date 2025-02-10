@@ -230,6 +230,7 @@ const TrainingParticipantsForm = ({
       </div>
     </>
   );
+
   return (
     <>
       <SectionHeading
@@ -270,7 +271,7 @@ const TrainingParticipantsForm = ({
         <>
           <div className="mt-4"></div>
           <SectionHeading
-            title="Training faciltator"
+            title="Training facilitator/s"
             icon={<FontAwesomeIcon icon={faUsers} />}
           />
           {error?.facilitators && (

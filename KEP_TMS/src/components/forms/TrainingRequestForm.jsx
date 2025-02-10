@@ -33,6 +33,7 @@ import validateTrainingSchedules from "../../services/inputValidation/validateTr
 import handleResponseAsync from "../../services/handleResponseAsync";
 import { SectionHeading } from "../General/Section";
 import categoryHook from "../../hooks/categoryHook";
+import userService from "../../services/userService";
 export const TrainingRequestForm = () => {
   const trainingType = useParams().type;
   const requestId = useParams().id;
@@ -302,6 +303,17 @@ export const TrainingRequestForm = () => {
       </div>
     );
   };
+  useEffect(() =>{
+    formData?.trainingFacilitators?.forEach((facilitator) => {
+      if(facilitator?.facilitatorBadge && ! facilitator?.faciDetail){
+        const getFacilitatorDetails = async () => {
+        const faciDetail = await userService.getUserById(facilitator?.facilitatorBadge);
+        facilitator.faciDetail = faciDetail;
+        }
+        getFacilitatorDetails()
+      }
+    })
+  }, [formData?.trainingFacilitators])
   return (
     <>
       <Card>

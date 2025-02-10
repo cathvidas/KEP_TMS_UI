@@ -55,6 +55,6 @@ export const actionFailed = (title, text) => {
         title,
         text,
         icon: "error",
-        timer: 5000
+        // timer: 5000
     });
 }

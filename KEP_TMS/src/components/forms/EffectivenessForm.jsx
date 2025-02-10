@@ -615,7 +615,7 @@ const EffectivenessForm = ({
                           ) : (
                             <></>
                           )}
-                          {!actualPerfRating.isRated &&
+                          {(!actualPerfRating.isRated  && !actualPerfRating.toBeRated) &&
                             isSubmitted && data?.trainingParticipants?.some(
                               (x) => x.employeeBadge === SessionGetEmployeeId()) &&
                             projectPerformanceEvaluation[index]
@@ -733,7 +733,7 @@ const EffectivenessForm = ({
               ) && (
                 <>
                   {(formData?.statusName ==
-                    getStatusById(statusCode.DISAPPROVED) ||!actualPerfRating.isRated && isSubmitted ) && (
+                    getStatusById(statusCode.DISAPPROVED) ||(!actualPerfRating.isRated && !actualPerfRating.toBeRated) && isSubmitted ) && (
                     <Button
                       type="button"
                       icon={!(isUpdate || actualPerfRating.isRating) && "pi pi-pencil"}

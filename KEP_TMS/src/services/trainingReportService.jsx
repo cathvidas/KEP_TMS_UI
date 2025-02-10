@@ -35,7 +35,7 @@ const trainingReportService = {
     if(response?.status === 1){
       const approvers = await commonService.getActivityApprovers(response?.data?.id, ActivityType.REPORT)
       const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.REPORT)
-      const currentRouting = await routingService.getCurrentApprover(approvers, routings);
+      const currentRouting = await routingService.getCurrentApprover(routings);
       if(!currentRouting?.assignedDetail){
         currentRouting.assignedDetail= await userService.getUserById(currentRouting?.assignedTo);
       }

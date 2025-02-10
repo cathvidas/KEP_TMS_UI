@@ -47,10 +47,9 @@ const effectivenessService = {
         ActivityType.EFFECTIVENESS
       );
       const currentRouting = await routingService.getCurrentApprover(
-        approvers,
         routings
       );
-      if (!currentRouting?.assignedDetail) {
+      if (!currentRouting?.assignedDetail?.employeeBadge) {
         currentRouting.assignedDetail = await userService.getUserById(
           currentRouting?.assignedTo
         );

@@ -45,7 +45,6 @@ const ApproverList = ({data, activityType, hasEmailForm, optionColumn}) => {
       </>}
     </div>
   );
-  console.log(mappedApprovers)
   const statusTemplate = (rowData) => rowData?.status?.statusId === statusCode.DISAPPROVED ? <span>Reviewed</span> : <span>{getStatusById(rowData?.status?.statusId)}</span>
   return (
     <>
