@@ -48,6 +48,7 @@ const validateTrainingEffectiveness = (
   });
   if (characteristicsCount === 0 && validCharacteristic) {
     formErrors.performanceCharacteristics = `Add at least one performance characteristic`;
+    validCharacteristic = false;
   }
   let evaluationCount = 0;
 
