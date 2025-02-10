@@ -31,6 +31,7 @@ import ActivityStatus from "../General/ActivityStatus";
 import commonHook from "../../hooks/commonHook";
 import { checkIfActualPerformanceRated, checkIfEvaluatedActualPerformanceRated } from "../../hooks/activityLogHook";
 import trainingDetailsService from "../../services/common/trainingDetailsService";
+import userHook from "../../hooks/userHook";
 const EffectivenessForm = ({
   data,
   evaluate,
@@ -235,6 +236,7 @@ const EffectivenessForm = ({
   const reportTemplateRef = useRef();
   const performanceRatingDate =
     mappingHook.useEffectivenessPerformanceRatingDate(formData, auditTrail);
+   const evaluator = userHook.useUserById(formData?.evaluatorBadge)?.data
   return (
     <>
       <Card.Body>
@@ -421,7 +423,7 @@ const EffectivenessForm = ({
                     Evaluator:
                   </label>
                   <span className="flex-grow-1 border-0 border-bottom">
-                    {userData?.superiorName} - {userData?.superiorBadge}
+                    {isSubmitted ? evaluator?.fullname : userData?.superiorName ?? "N/A"}
                   </span>
                 </Col>
               </Row>
