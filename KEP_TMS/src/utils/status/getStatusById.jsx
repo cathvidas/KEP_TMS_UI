@@ -21,7 +21,9 @@ const getStatusById = (id) => {
       :  id === statusCode.DRAFTED
       ? "Drafted"
       :  id === statusCode.ROUTED
-      ? "Routed":
+      ? "Routed"
+      : id === statusCode.PENDING
+      ? "Pending":
       "Pending";
   return status;
 };
