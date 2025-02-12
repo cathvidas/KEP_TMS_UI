@@ -822,6 +822,7 @@ const EffectivenessForm = ({
                 SessionGetRole() === UserTypeValue.SUPER_ADMIN
               }
               emailFormTemplate={reportTemplateRef}
+              reloadData={onFinish}
             />
             <hr />
             <ActivityList data={activityLogs} label={"Activities"} />

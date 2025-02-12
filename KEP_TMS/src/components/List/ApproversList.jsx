@@ -10,7 +10,7 @@ import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import mappingHook from "../../hooks/mappingHook";
 import ApproverRouteForm from "../forms/ModalForms/ApproverRouteForm";
-const ApproverList = ({data, activityType, hasEmailForm, optionColumn}) => {
+const ApproverList = ({data, activityType, hasEmailForm, optionColumn, reloadData}) => {
   const [routeForm, setRouteForm] = useState(false);
   const mappedApprovers = mappingHook.useMappedActivityRoute(data?.approvers, data?.routings)
   const [visible, setVisible] = useState(false);  
@@ -82,7 +82,7 @@ const ApproverList = ({data, activityType, hasEmailForm, optionColumn}) => {
       {hasEmailForm &&
       <EmailForm handleShow={visible} handleClose={() => setVisible(false)} recipient={emailRecipient} 
       />}
-      {routeForm && <ApproverRouteForm activityId={data?.id} closeForm={()=>setRouteForm(false)} showForm={routeForm} activityType={activityType} currentApprover={selectedApprover}/>}
+      {routeForm && <ApproverRouteForm onFinish={reloadData} activityId={data?.id} closeForm={()=>setRouteForm(false)} showForm={routeForm} activityType={activityType} currentApprover={selectedApprover}/>}
     </>
   );
 };
@@ -95,5 +95,6 @@ ApproverList.propTypes = {
   hasEmailForm: proptype.bool,
   optionColumn: proptype.any,
   emailFormTemplate: proptype.any,
+  reloadData: proptype.func,
 };
 export default ApproverList;

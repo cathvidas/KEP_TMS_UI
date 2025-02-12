@@ -18,7 +18,6 @@ import {
   formatDateOnly,
   formatDateTime,
 } from "../../utils/datetime/Formatting";
-import getStatusById from "../../utils/status/getStatusById";
 import { ActivityType, statusCode } from "../../api/constants";
 import getStatusCode from "../../utils/status/getStatusCode";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
@@ -314,6 +313,7 @@ const populateData = () => {
             activityTitle="Training Report"
             activityType={ActivityType.REPORT}
             hasEmailForm={isAdmin}
+            reloadData={onFinish}
           />
           <hr />
           <ActivityList data={logs} label={"Activities"} />
