@@ -54,7 +54,7 @@ const mappingHook = {
             activityLogs.length > index + 1 &&
             log.assignedTo === author?.employeeBadge
           ) {
-            activity.remark = "N/A";
+            activity.remark =log?.remarks ?? "N/A";
             activity.name = author?.fullname;
             activity.process = "Updated";
             activity.status = "Updated";
