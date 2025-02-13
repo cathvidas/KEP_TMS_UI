@@ -88,7 +88,7 @@ const DocumentsPage = () => {
       ? {
           field: "updateDate",
           header: "Date Modified",
-          body: (rowData) => <>{formatDateTime(rowData.updateDate)}</>,
+          body: (rowData) => <>{formatDateTime(rowData.updateDate ?? rowData.createDate)}</>,
         }
       : "",
     {
