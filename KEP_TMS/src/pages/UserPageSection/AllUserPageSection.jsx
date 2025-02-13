@@ -251,7 +251,9 @@ const AllUserPageSection = ({
         defaultData={mapUserUpdateDetail(defaultValue, options?.options)}
         headerTitle={"Update User Details"}
         isUpdate
-        onFinish={reloadData}
+        onFinish={()=>{setShowUpdateForm(false);
+          setTrigger(prev=> prev+1)
+        }}
       />
     </>
   );
