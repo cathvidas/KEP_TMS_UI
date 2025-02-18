@@ -29,6 +29,7 @@ import PendingView from "./MonitoringPageSection/PendingsView";
 import trainingDetailsService from "../services/common/trainingDetailsService";
 import mappingHook from "../hooks/mappingHook";
 import TrainingVideosList from "../components/List/TrainingVideosList";
+import commonHook from "../hooks/commonHook";
 
 const TrainingDetailPage = () => {
   const [trigger, setTrigger] = useState(0);
@@ -39,8 +40,13 @@ const TrainingDetailPage = () => {
     parseInt(id),
     trigger
   );
+  const [trigCount, setTrigCount] = useState(0);
+ const approvalCount = commonHook.useAllAssignedForApproval(
+  SessionGetEmployeeId(), trigCount
+)?.data?.overallCount;
   const refreshData = () => {
     setTrigger((prev) => prev + 1);
+      sessionStorage.setItem("forApprovalCount", approvalCount);
   };
   const isFacilitator = data?.trainingFacilitators?.some(
     (item) => item?.facilitatorBadge === SessionGetEmployeeId()
@@ -76,7 +82,9 @@ const TrainingDetailPage = () => {
     <OverviewSection
       key={0}
       data={data}
-      reloadData={refreshData}
+      reloadData={()=>{
+        setTrigCount((prev) => prev + 1);
+        refreshData();}}
       showParticipants={isFacilitator || isAdmin || isApprover || isRequestor}
       showFacilitators
       showApprovers={isAdmin || isRequestor || isApprover}

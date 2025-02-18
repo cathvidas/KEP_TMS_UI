@@ -13,12 +13,46 @@ import logo from "../img/logo-hd.png";
 import { useState } from "react";
 import validateLogin from "../utils/LoginValidation";
 import handleUserLogin from "../services/loginServices";
-import { APP_DOMAIN } from "../api/constants";
+import { APP_DOMAIN, statusCode } from "../api/constants";
 import { Button } from "primereact/button";
+import { SessionGetEmployeeId } from "../services/sessions";
+import trainingRequestService from "../services/trainingRequestService";
+import effectivenessService from "../services/effectivenessService";
+import trainingReportService from "../services/trainingReportService";
 
+
+const fetchData = async (id) => {
+  try {
+    const requests =
+      await trainingRequestService.getTrainingRequestByApprover(id);
+    const effectiveness =
+      await effectivenessService.getApproverAssignedEffectiveness(id);
+    const reports =
+      await trainingReportService.getApproverAssignedReports(id);
+
+    const forApprovalEffectiveness = effectiveness?.filter(
+      (item) => item.routingActivity?.statusId !== statusCode.TOUPDATE
+    );
+    // Filter evaluation (6 months from now)
+    const forEvaluation = effectiveness?.filter(
+      (item) =>
+        item.routingActivity?.statusId === statusCode.TOUPDATE &&
+        new Date(
+          item?.trainingEffectiveness?.trainingRequest?.trainingEndDate
+        ) <= new Date(new Date().setMonth(new Date().getMonth() - 6)) &&
+        item.routingActivity?.assignedTo === id
+    );
+
+   return requests?.length +
+        forApprovalEffectiveness?.length +
+        reports?.length +
+        forEvaluation?.length;
+  } catch {
+    return 0;
+  } 
+};
 const Login = () => {
   const navigate = useNavigate();
-
   const [badge, setBadge] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,6 +70,8 @@ const Login = () => {
       var res = await handleUserLogin(data);
       setLoading(false);
       if(res){
+        const approvalCount = await fetchData(SessionGetEmployeeId());
+        sessionStorage.setItem("forApprovalCount", approvalCount);
         if(location.pathname === APP_DOMAIN){
           navigate("/KEP_TMS/Dashboard");
         }

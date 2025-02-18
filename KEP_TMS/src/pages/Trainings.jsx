@@ -12,6 +12,7 @@ import activityLogHook from "../hooks/activityLogHook";
 import PendingTaskList from "../components/List/PendingTaskList";
 import ForEvaluationEffectiveness from "./ApproverPageSection/ForEvaluationEffectiveness";
 import commonHook from "../hooks/commonHook";
+import effectivenessHook from "../hooks/effectivenessHook";
 
 const Trainings = () => {
   const { page } = useParams();
@@ -25,7 +26,7 @@ const Trainings = () => {
     SessionGetEmployeeId(),
     "trainer"
   );
-  const {data} = commonHook.useAllAssignedForApproval(
+  const {data} = effectivenessHook.useEvaluatorAssignedEffectiveness(
     SessionGetEmployeeId(), trigger
   );
   const refreshData = () => {
@@ -70,7 +71,7 @@ const Trainings = () => {
           command: () => navigate("/KEP_TMS/Trainings/EffectivenessEvaluation"),
           active: currentContent === 2,
           template: MenuItemTemplate,
-          badge: data?.forEvaluation?.length > 0 ?{value: data?.forEvaluation?.length}:false
+          badge: data?.length > 0 ?{value: data?.length}:false
         },
       ],
     },
@@ -95,7 +96,7 @@ const Trainings = () => {
               <PendingTaskList data={pendings?.data} />
             ))}
             {currentContent === 2 &&
-                <ForEvaluationEffectiveness key={3}  data={data?.forEvaluation} refreshData={refreshData}/>
+                <ForEvaluationEffectiveness key={3}  data={data} refreshData={refreshData}/>
             }
         </div>
       </div>

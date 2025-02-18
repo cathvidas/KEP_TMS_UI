@@ -15,6 +15,9 @@ export const getPagedEffectivenessApi = async (pageNumber, pageSize, searchValue
 export const getApproverAssignedEffectivenessApi = async (id)=>{
     return await fetchFromApi(`Services/GetAssignedEffectiveness?assignedTo=${id}`);
 }
+export const getTrainingEffectivenessToEvaluateApi = async (id)=>{
+    return await fetchFromApi(`TrainingEffectiveness/GetTrainingEffectivenessToEvaluate?badge=${id}`);
+}
 export const updateEffectivenessApi = async (data)=>{
     return await fetchFromApi(`TrainingEffectiveness/updateTrainingEffectiveness`, "PUT", data);
 }

@@ -9,13 +9,13 @@ const handleUserLogin = async (data) => {
     if (res.isSuccess === true) {
       const data = res.data;
       SessionSetReference(data);
-      return true
-    } else{  
-        Toast.fire({
-          icon: "error",
-          title: "Incorrect user Id or password. Please try again.",
-        });
-      }
+      return true;
+    } else {
+      Toast.fire({
+        icon: "error",
+        title: "Incorrect user Id or password. Please try again.",
+      });
+    }
 
   } catch (err) {
     if (err.code === "ERR_NETWORK") {

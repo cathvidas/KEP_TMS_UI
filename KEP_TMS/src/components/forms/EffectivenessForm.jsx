@@ -212,8 +212,11 @@ const EffectivenessForm = ({
     }
   };
   useEffect(() => {
-    if(trainingDetailsService.checkIfTrainingEndsAlready(data)){
-    setActualPerfRating(prev => ({...prev, isRated: checkIfActualPerformanceRated(formData), toBeRated: false}))}else{
+    if(trainingDetailsService.checkIfTrainingEndsAlready(data) && (
+      new Date(data?.trainingEndDate) <=
+      new Date(new Date().setMonth(new Date().getMonth() - 6)))){
+    setActualPerfRating(prev => ({...prev, isRated: checkIfActualPerformanceRated(formData), toBeRated: false}))
+  }else{
       setActualPerfRating(prev => ({...prev, isRated: false, toBeRated: true}))
     }
     if (SessionGetEmployeeId() === formData?.evaluatorBadge && evaluate) {
@@ -446,21 +449,21 @@ const EffectivenessForm = ({
                       style={{ verticalAlign: "middle" }}
                     >
                       <b> Performance Before Training </b> &#x28;to be filled up
-                      before the training&#x29;
+                      before the training by the employee&#x29;
                     </td>
                     <td
                       className="theme-bg-light text-muted text-center"
                       style={{ verticalAlign: "middle" }}
                     >
                       <b> Projected Performance </b> &#x28;to be filled up
-                      before the training&#x29;
+                      before the training by the employee&#x29;
                     </td>
                     <td
                       className="theme-bg-light text-muted text-center"
                       style={{ verticalAlign: "middle" }}
                     >
-                      <b> Actual Performance </b> &#x28;to be filled up after
-                      the training&#x29;
+                      <b> Actual Performance </b> &#x28;to be filled up 6 months after
+                      the training by the employee&#x29;
                     </td>
                     <td
                       className="theme-bg-light text-muted text-center"
@@ -468,9 +471,9 @@ const EffectivenessForm = ({
                     >
                       <b>
                         {" "}
-                        Actual Performance evaluated by the immediate manager &
-                        date
-                      </b>
+                        Actual Performance evaluated by the immediate manager </b> &#x28;to be filled up by the manager 6 months after
+                        the employee&apos;s training&#x29;
+                     
                     </td>
                   </tr>
                 </thead>
@@ -733,7 +736,7 @@ const EffectivenessForm = ({
               ) && (
                 <>
                   {(formData?.statusName ==
-                    getStatusById(statusCode.DISAPPROVED) ||(!actualPerfRating.isRated && !actualPerfRating.toBeRated) && isSubmitted ) && (
+                    getStatusById(statusCode.DISAPPROVED) ||(!actualPerfRating.isRated && !actualPerfRating.toBeRated) && isSubmitted ) && userData?.employeeBadge === SessionGetEmployeeId() && (
                     <Button
                       type="button"
                       icon={!(isUpdate || actualPerfRating.isRating) && "pi pi-pencil"}

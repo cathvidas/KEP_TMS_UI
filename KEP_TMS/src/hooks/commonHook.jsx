@@ -40,30 +40,17 @@ const commonHook = {
             await effectivenessService.getApproverAssignedEffectiveness(id);
           const reports =
             await trainingReportService.getApproverAssignedReports(id);
-
           const forApprovalEffectiveness = effectiveness?.filter(
             (item) => item.routingActivity?.statusId !== statusCode.TOUPDATE
           );
-          // Filter evaluation (6 months from now)
-          const forEvaluation = effectiveness?.filter(
-            (item) =>
-              item.routingActivity?.statusId === statusCode.TOUPDATE &&
-              new Date(
-                item?.trainingEffectiveness?.trainingRequest?.trainingEndDate
-              ) <= new Date(new Date().setMonth(new Date().getMonth() - 6)) &&
-              item.routingActivity?.assignedTo === id
-          );
-
           setData({
             requests: requests,
             effectiveness: forApprovalEffectiveness,
             reports: reports,
-            forEvaluation: forEvaluation,
             overallCount:
               requests?.length +
               forApprovalEffectiveness?.length +
-              reports?.length +
-              forEvaluation?.length,
+              reports?.length
           });
         } catch (error) {
           setError(error.message);

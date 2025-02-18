@@ -63,7 +63,7 @@ const effectivenessHook = {
     }, [approverId, trigger]);
     return { data, error, loading };
   },
-  useEvaluatorAssignedEffectiveness: (id) => {
+  useEvaluatorAssignedEffectiveness: (id, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -78,7 +78,7 @@ const effectivenessHook = {
         );
       };
       getRequests();
-    }, [id]);
+    }, [id, trigger]);
     return { data, error, loading };
   },
   useAllParticipantsEffectiveness: (datalist) => {
@@ -105,23 +105,21 @@ const effectivenessHook = {
     }, [datalist]);
     return { data, error, loading };
   },
-  useAllAssignedEffectivenessEvalutaion :()=>{
+  useAllAssignedEffectivenessEvalutaion :(id)=>{
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequests = async () => {
         handleResponseAsync(
-          () => effectivenessService.getAllEffectiveness(),
-          (e) => {
-
-            setData(e)},
+          () => effectivenessService.getEvaluatorAssignedEffectiveness(id),
+          (e) => setData(e),
           (e) => setError(e),
           () => setLoading(false)
         );
       };
       getRequests();
-    }, []);
+    }, [id]);
     return { data, error, loading };
   },
   usePagedEffectiveness: (pageNumber, pageSize, searhValue) => {

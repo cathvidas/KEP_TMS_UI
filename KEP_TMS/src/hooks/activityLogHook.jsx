@@ -96,7 +96,8 @@ const handleEffectivenessReport = async (user, item) => {
         user?.effectivenessId
       );
       if (effDetail) {
-        const isAfter = trainingDetailsService.checkIfTrainingEndsAlready(item);
+        const isAfter = trainingDetailsService.checkIfTrainingEndsAlready(item) && new Date(item?.trainingEndDate) <=
+        new Date(new Date().setMonth(new Date().getMonth() - 6));
 
         if (
           effDetail?.statusName === getStatusById(statusCode.APPROVED) ||
@@ -162,7 +163,7 @@ export const checkIfActualPerformanceRated = (item) => {
     return false;
   }
   item?.projectPerformanceEvaluation?.map((x) =>{
-    if(x?.actualPerformance === 0 && x?.content){
+    if(!(x?.actualPerformance > 1) && x?.content){
       isRated = false;
     }
   })

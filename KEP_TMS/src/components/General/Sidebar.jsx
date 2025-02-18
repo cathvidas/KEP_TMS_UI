@@ -21,7 +21,7 @@ const Sidebar = ({ activeNavigation, expanded, show, hide }) => {
   const hasRequestAccess = SessionGetRole() === UserTypeValue.ADMIN ||
   SessionGetRole() === UserTypeValue.REQUESTOR ||
   SessionGetRole() === UserTypeValue.FACILITATOR
-const approvalCount = commonHook.useAllAssignedForApproval(SessionGetEmployeeId())?.data?.overallCount;
+const approvalCount = sessionStorage.getItem("forApprovalCount");
   const NavItem = ({
     item,
     icon,
