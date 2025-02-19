@@ -11,25 +11,19 @@ import ForApprovalReport from "./ApproverPageSection/ForApprovalReport";
 
 const ApproverPage = () => {
   const [trigger, setTrigger] = useState(0);
-  const [trigCount, setTrigCount] = useState(0);
   const { type, page } = useParams();
   const navigate = useNavigate();
   const [currentContent, setCurrentContent] = useState(0);
   const {data} = commonHook.useAllAssignedForApproval(
     SessionGetEmployeeId(), trigger
   );
-  
- const approvalCount = commonHook.useAllAssignedForApproval(
-  SessionGetEmployeeId(), trigCount
-)?.data?.overallCount;
   const refreshData = () => {
     setTrigger((prev) => prev + 1);
-      sessionStorage.setItem("forApprovalCount", approvalCount);
   };
   const pageContent = [
     <ForApprovalRequest key={0} />,
-    <ForApprovaleffectiveness key={1} data={data?.effectiveness} refreshData={()=>{setTrigCount((prev) => prev + 1);refreshData();}}/>,
-    <ForApprovalReport key={2} data={data?.reports} refreshData={()=>{setTrigCount((prev) => prev + 1);refreshData();}}/>,
+    <ForApprovaleffectiveness key={1} data={data?.effectiveness} refreshData={refreshData}/>,
+    <ForApprovalReport key={2} data={data?.reports} refreshData={refreshData}/>,
   ];
   const items = [
     {
@@ -80,14 +74,9 @@ const ApproverPage = () => {
       }
     }
   }, [page, type]);
-  useEffect(() => {
-    if (data?.overallCount != sessionStorage.getItem("forApprovalCount") && trigger > 0) {
-      sessionStorage.setItem("forApprovalCount", data?.overallCount);
-    }
-  }, [data.overallCount, trigger]);
   const Content = () => (
     <div className={`d-flex g-0`}>
-      <MenuContainer itemList={items}/>
+      <MenuContainer fullHeight itemList={items}/>
       <div
         className={`p-3 pb-5 flex-grow-1`}
         style={{ minHeight: "calc(100vh - 50px)" }}

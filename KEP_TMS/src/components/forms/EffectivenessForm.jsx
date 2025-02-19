@@ -222,7 +222,7 @@ const EffectivenessForm = ({
     if (SessionGetEmployeeId() === formData?.evaluatorBadge && evaluate) {
       setEvaluatedActualPerfRating((prev) => ({
         ...prev,
-        isRating: !checkIfEvaluatedActualPerformanceRated(formData),
+        isRating: checkIfEvaluatedActualPerformanceRated(formData),
         toBeRated: false,
       }));
     } else {

@@ -20,8 +20,8 @@ const Sidebar = ({ activeNavigation, expanded, show, hide }) => {
   const fullname = sessionStorage.getItem("fullname");
   const hasRequestAccess = SessionGetRole() === UserTypeValue.ADMIN ||
   SessionGetRole() === UserTypeValue.REQUESTOR ||
-  SessionGetRole() === UserTypeValue.FACILITATOR
-const approvalCount = sessionStorage.getItem("forApprovalCount");
+  SessionGetRole() === UserTypeValue.FACILITATOR 
+  const approvalCount = commonHook.useAllAssignedForApproval(SessionGetEmployeeId())?.data?.overallCount;
   const NavItem = ({
     item,
     icon,
