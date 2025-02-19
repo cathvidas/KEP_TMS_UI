@@ -37,7 +37,6 @@ const ForEvaluationEffectiveness = ({data, refreshData}) => {
       </div>
     </>
   );
-  console.log(data)
   const items = [
     {
       field: "id",

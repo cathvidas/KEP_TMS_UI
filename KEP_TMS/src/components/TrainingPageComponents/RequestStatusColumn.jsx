@@ -7,7 +7,8 @@ const RequestStatusColumn = ({value})=>{
     return (
       <>
         <div>
-          {value?.status?.id == statusCode.DRAFTED ?<span className='text-danger fst-italic'>Draft</span>: <>
+          {value?.status?.id == statusCode.DRAFTED ?<span className='text-danger fst-italic'>Draft</span>:
+          value?.status?.id == statusCode.INACTIVE ?<span className='text-danger fst-italic'>Cancelled</span>: <>
           <span>
             {" "}
             {value.status?.id == statusCode.FORAPPROVAL

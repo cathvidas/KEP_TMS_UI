@@ -84,7 +84,7 @@ const RequestList = () => {
         {
           label: "Cancelled",
           icon: "pi pi-times-circle",
-          command: () => navigate(`/KEP_TMS/RequestList/Inactive`),
+          command: () => navigate(`/KEP_TMS/RequestList/Cancelled`),
           template: MenuItemTemplate,
           count: data?.cancelled ,
           active: currentContent === 6 ? true : false,
@@ -108,27 +108,23 @@ const RequestList = () => {
       setFilter({
         value: statusCode.SUBMITTED,
         label: "Pending",
-        // data: mappedData?.submitted,
       });
     } else if (currentPage === "FORAPPROVAL") {
       setCurrentContent(1);
       setFilter({
         value: statusCode.FORAPPROVAL,
         label: "For Approval",
-        // data: mappedData?.forApproval,
       });
     } else if (currentPage === "APPROVED") {
       setFilter({
         value: statusCode.APPROVED,
         label: "Approved",
-        // data: mappedData?.approved,
       });
       setCurrentContent(2);
     } else if (currentPage === "RETURNED") {
       setFilter({
         value: statusCode.DISAPPROVED,
         label: "Disapproved",
-        // data: mappedData?.returned,
       });
       setCurrentContent(3);
     } else if (currentPage === "PUBLISED") {
@@ -136,39 +132,30 @@ const RequestList = () => {
       setFilter({
         value: statusCode.PUBLISHED,
         label: "Published",
-        // data: mappedData?.published,
       });
     } else if (currentPage === "CLOSED") {
       setFilter({
         value: statusCode.CLOSED,
         label: "Closed",
-        // data: mappedData?.closed,
       });
       setCurrentContent(5);
-    } else if (currentPage === "INACTIVE") {
-      // setFilter({ value: null, label: "Inactive", data: mappedData?.inactive });
+    } else if (currentPage === "CANCELLED") {
+      setFilter({ value: statusCode.INACTIVE, label: "Cancelled"});
       setCurrentContent(6);
-    } else if (currentPage === "OUTDATED") {
-      // setFilter({ value: null, label: "Outdated", data: mappedData?.outdated });
-      setCurrentContent(7);
     } else if (currentPage === "DRAFT") {
       setCurrentContent(7);
       setFilter({
         value: statusCode.DRAFTED,
         label: "Draft",
-        // data: mappedData?.draft,
       });
     } else {
       setCurrentContent(8);
       setFilter({
         value: null,
         label: "All Training",
-        // data: data,
       });
     }
-  }, [type,
-    //  mappedData, data
-    ]);
+  }, [type, ]);
   const Content = () => (
     <>
           <div className={`d-flex `}>
