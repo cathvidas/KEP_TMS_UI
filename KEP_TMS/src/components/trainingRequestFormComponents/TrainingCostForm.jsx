@@ -44,6 +44,7 @@ const TrainingCostForm = ({
         providerConfig.size,
         providerConfig.value
       );
+      const mappedFacilitator = externalFacilitatorHook.useListExternalFacilitators(data?.trainingFacilitators);
   useEffect(() => {
     if (externalFacilitator?.data?.results) {
       const newTrainerOptions = externalFacilitator.data.results.map(
@@ -52,7 +53,6 @@ const TrainingCostForm = ({
           label: item.name,
         })
       );
-
       // Prevent duplicates in the trainer options list
       setTrainerOptions((prev) => {
         const uniqueOptions = [
@@ -61,6 +61,7 @@ const TrainingCostForm = ({
             (newOption) =>
               !prev.some((option) => option.value === newOption.value)
           ),
+          // ...prevFaci
         ];
         return uniqueOptions;
       });
@@ -165,7 +166,7 @@ const TrainingCostForm = ({
               setPageConfig((prev) => ({ ...prev, size: prev.size + 10 }))
             }
             isMulti
-            value={data?.trainingFacilitators?.map(({ faciDetail }) => ({
+            value={mappedFacilitator?.data?.map(faciDetail  => ({
               label: faciDetail?.name,
               value: faciDetail?.id,
             }))}
