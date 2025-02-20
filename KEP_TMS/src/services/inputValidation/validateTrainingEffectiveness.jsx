@@ -3,6 +3,7 @@ const validateTrainingEffectiveness = (
   performanceCharacteristics,
   projectPerformanceEvaluation,
   isAfter,
+  isSixMonthsAfter,
   forEvaluation
 ) => {
   let formErrors = {};
@@ -58,7 +59,7 @@ const validateTrainingEffectiveness = (
       !trimmedContent &&
       validEvaluation &&
       (projectPerformanceEvaluation[i]?.performanceBeforeTraining !== 0 ||
-        projectPerformanceEvaluation[i]?.projectedPerformance !== 0 || (projectPerformanceEvaluation[i]?.actualPerformance !== 0 && isAfter))
+        projectPerformanceEvaluation[i]?.projectedPerformance !== 0 || (projectPerformanceEvaluation[i]?.actualPerformance !== 0 && isSixMonthsAfter))
     ) {
       formErrors.projectPerformanceEvaluation = `No Activity defined on row ${
         i + 1
@@ -103,7 +104,7 @@ const validateTrainingEffectiveness = (
       projectPerformanceEvaluation[i]?.actualPerformance <
         projectPerformanceEvaluation[i]?.projectedPerformance &&
       validEvaluation &&
-      isAfter
+      isSixMonthsAfter
     ) {
       formErrors.projectPerformanceEvaluation = `Actual performance in row ${
         i + 1

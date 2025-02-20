@@ -57,6 +57,7 @@ const EffectivenessForm = ({
       effectivenessConstant.projectPerformanceEvaluation,
       effectivenessConstant.projectPerformanceEvaluation
     ]);
+  const isTrainingEnd = trainingDetailsService.checkIfTrainingEndsAlready(data);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   useEffect(() => {
@@ -122,7 +123,6 @@ const EffectivenessForm = ({
     };
     setPerformanceCharacteristics(updatedCharacteristics);
   };
-
   const handlePerfEvaluationOnChange = (e, index, isNum) => {
     const { name, value } = e.target;
     const updatedEvaluation = [...projectPerformanceEvaluation];
@@ -141,6 +141,7 @@ const EffectivenessForm = ({
       getFormData,
       performanceCharacteristics,
       projectPerformanceEvaluation,
+      isTrainingEnd,
       !actualPerfRating.toBeRated,
     );
     setErrors(formErrors);
@@ -183,6 +184,7 @@ const EffectivenessForm = ({
       performanceCharacteristics,
       projectPerformanceEvaluation,
       false,
+      false,
       evaluate
     );
     setErrors(formErrors);
@@ -212,12 +214,22 @@ const EffectivenessForm = ({
     }
   };
   useEffect(() => {
-    if(trainingDetailsService.checkIfTrainingEndsAlready(data) && (
+    if (
+      isTrainingEnd &&
       new Date(data?.trainingEndDate) <=
-      new Date(new Date().setMonth(new Date().getMonth() - 6)))){
-    setActualPerfRating(prev => ({...prev, isRated: checkIfActualPerformanceRated(formData), toBeRated: false}))
-  }else{
-      setActualPerfRating(prev => ({...prev, isRated: false, toBeRated: true}))
+        new Date(new Date().setMonth(new Date().getMonth() - 6))
+    ) {
+      setActualPerfRating((prev) => ({
+        ...prev,
+        isRated: checkIfActualPerformanceRated(formData),
+        toBeRated: false,
+      }));
+    } else {
+      setActualPerfRating((prev) => ({
+        ...prev,
+        isRated: false,
+        toBeRated: true,
+      }));
     }
     if (SessionGetEmployeeId() === formData?.evaluatorBadge && evaluate) {
       setEvaluatedActualPerfRating((prev) => ({
@@ -229,12 +241,13 @@ const EffectivenessForm = ({
       setEvaluatedActualPerfRating((prev) => ({
         ...prev,
         isRating: false,
-        toBeRated:!(
+        toBeRated: !(
           new Date(data?.trainingEndDate) <=
-          new Date(new Date().setMonth(new Date().getMonth() - 6))),
+          new Date(new Date().setMonth(new Date().getMonth() - 6))
+        ),
       }));
     }
-  }, [data, formData]);
+  }, [data, formData, evaluate]);
   const activityLogs = mappingHook.useMappedActivityLogs(formData, userData);
   const reportTemplateRef = useRef();
   const performanceRatingDate =
@@ -683,16 +696,18 @@ const EffectivenessForm = ({
             <Form.Group>
               <b>III. Comments / Remarks</b>
               <i> &#x28;to be filled up after the training&#x29; :</i>
+              <ErrorTemplate message={(!isUpdate && isSubmitted && isTrainingEnd && !formData?.annotation) ? "Please fill up this field" : ""} />
               <textarea
                 className="form-control"
                 rows={3}
                 value={annotation}
                 placeholder="Comments/Remarks"
-                disabled={actualPerfRating.toBeRated}
+                disabled={ !(
+                 (isTrainingEnd || formData?.annotation)
+                )}
                 readOnly={
                   !(
-                    actualPerfRating.isRating ||
-                    (!isSubmitted && !actualPerfRating.toBeRated)
+                    ((isSubmitted && isUpdate) || !isSubmitted) && isTrainingEnd
                   )
                 }
                 onChange={(e) => setAnnotation(e.target.value)}
@@ -736,7 +751,7 @@ const EffectivenessForm = ({
               ) && (
                 <>
                   {(formData?.statusName ==
-                    getStatusById(statusCode.DISAPPROVED) ||(!actualPerfRating.isRated && !actualPerfRating.toBeRated) && isSubmitted ) && userData?.employeeBadge === SessionGetEmployeeId() && (
+                    getStatusById(statusCode.DISAPPROVED) ||(!actualPerfRating.isRated && !actualPerfRating.toBeRated) || (!isUpdate && isSubmitted && isTrainingEnd && !formData?.annotation) && isSubmitted ) && formData?.createdBy === SessionGetEmployeeId() && (
                     <Button
                       type="button"
                       icon={!(isUpdate || actualPerfRating.isRating) && "pi pi-pencil"}
@@ -746,7 +761,7 @@ const EffectivenessForm = ({
                       text={isUpdate || actualPerfRating.isRating}
                       onClick={() => {
                         if(formData?.statusName ==
-                          getStatusById(statusCode.DISAPPROVED)){
+                          getStatusById(statusCode.DISAPPROVED)|| (isTrainingEnd && isSubmitted)){
                         setIsUpdate(!isUpdate);}
                         if(!actualPerfRating.isRated && isSubmitted){
                           setActualPerfRating((prev) => ({

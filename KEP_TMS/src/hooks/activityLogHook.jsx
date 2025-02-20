@@ -96,19 +96,31 @@ const handleEffectivenessReport = async (user, item) => {
         user?.effectivenessId
       );
       if (effDetail) {
-        const isAfter = trainingDetailsService.checkIfTrainingEndsAlready(item) && new Date(item?.trainingEndDate) <=
+        if (effDetail?.statusName === getStatusById(statusCode.CLOSED)) return null;
+        const isAfter = trainingDetailsService.checkIfTrainingEndsAlready(item) 
+        const sixMonthsAfter = new Date(item?.trainingEndDate) <=
         new Date(new Date().setMonth(new Date().getMonth() - 6));
-
-        if (
+        if(isAfter && !effDetail?.annotation){
+          return {
+            type: "Effectiveness Report",
+            title:"Remarks/Comments Input",
+            status: "To update",
+            detail: "No remarks/comments available",
+            link: `TrainingDetail/${item.id}/Form/Effectiveness`,
+            date:
+              effDetail?.currentRouting?.createdDate ||
+              item?.trainingStartDate,
+          };
+        }
+         if (
           effDetail?.statusName === getStatusById(statusCode.APPROVED) ||
           effDetail?.statusName === getStatusById(statusCode.FORAPPROVAL)
-        ) {
-          if (isAfter && !checkIfActualPerformanceRated(effDetail)) {
+        ) {  if (isAfter && sixMonthsAfter && !checkIfActualPerformanceRated(effDetail)) {
             return {
               type: "Effectiveness Report",
               title:"Actual Performance Rating",
-              status: "Awaiting",
-              detail: "You have a pending effectiveness report to be updated.",
+              status: "To Update",
+              detail: "Rating for Actual Performance.",
               link: `TrainingDetail/${item.id}/Form/Effectiveness`,
               date:
                 effDetail?.currentRouting?.createdDate ||
@@ -169,6 +181,8 @@ export const checkIfActualPerformanceRated = (item) => {
   })
   return isRated;
 }
+
+
 export const checkIfEvaluatedActualPerformanceRated = (item) => {
   let isRated = true;
   if(!item){
