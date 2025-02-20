@@ -11,7 +11,6 @@ import { APP_DOMAIN } from "../api/constants";
 import activityLogHook from "../hooks/activityLogHook";
 import PendingTaskList from "../components/List/PendingTaskList";
 import ForEvaluationEffectiveness from "./ApproverPageSection/ForEvaluationEffectiveness";
-import commonHook from "../hooks/commonHook";
 import effectivenessHook from "../hooks/effectivenessHook";
 
 const Trainings = () => {

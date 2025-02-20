@@ -61,7 +61,7 @@ const DocumentsPage = () => {
         <>
           {isAdmin ? (
             <span
-              className={`${rowData?.referenceCount > 0 ? "p-badge": ""} p-badge-info cursor-pointer`}
+              className={`p-badge-info cursor-pointer`}
               onClick={() => setSelectedItem(rowData)}
             >
               {rowData?.referenceCount > 0 ? rowData?.referenceCount : "N/A"}

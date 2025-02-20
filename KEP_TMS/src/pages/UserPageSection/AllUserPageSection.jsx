@@ -135,7 +135,8 @@ const AllUserPageSection = ({
     { field: "position", header: "Position" },
     { field: "departmentName", header: "Department" },
     { field: "roleName", header: "Role" },
-    { field: "createdBy", header: "Created By" },
+    { field: "createdBy", header: "Created By",
+      body: (rowdata) => rowdata?.createdBy ?? "N/A", },
     {
       field: "createdDate",
       header: "Date Created",

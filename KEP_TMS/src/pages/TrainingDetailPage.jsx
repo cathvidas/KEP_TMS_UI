@@ -416,15 +416,6 @@ const TrainingDetailPage = () => {
       {isTrainee || isFacilitator || isAdmin || isRequestor || isApprover ? (
         <Layout
           BodyComponent={bodyContent}
-          navReference={
-            isRequestor
-              ? "RequestList"
-              : isFacilitator
-              ? "FacilitatedTrainings"
-              : isTrainee
-              ? "Trainings"
-              : "RequestList"
-          }
           header={{
             title: data?.trainingProgram?.name,
             hide: !showMenu,

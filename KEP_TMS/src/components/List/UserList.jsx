@@ -96,7 +96,7 @@ export const UserList = ({
             onSelectionChange={(e) => addSelectedUser(e.value)}
             filters={filterTemp}
             scrollable showGridlines 
-            scrollHeight={scrollHeight ?? "60vh"} 
+            scrollHeight={scrollHeight ?? ""} 
           >
             {trailingElement?.input === true && (
               <Column

@@ -195,6 +195,7 @@ const TrainingParticipantsForm = ({
       <SearchBar handleOnInput={setFilter} options={departments} />
       <div className="overflow-auto max-vh-100 mt-2">
         <UserList
+        scrollHeight={"60vh"}
           leadingElement={true}
           userlist={
             currentSelected === "facilitators"
@@ -258,7 +259,7 @@ const TrainingParticipantsForm = ({
             col="3"
             property={"name"}
             action={(e) => removeParticipant(e)}
-            scrollHeight={"400px"}
+            // scrollHeight={"400px"}
           />
         </>
       ) : (
