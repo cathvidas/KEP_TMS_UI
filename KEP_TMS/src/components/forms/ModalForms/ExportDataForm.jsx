@@ -4,14 +4,14 @@ import proptype from "prop-types"
 import ExportBtn from "../../General/ExportBtn";
 import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
-import { SearchValueConstant, statusCode } from "../../../api/constants";
+import { SearchValueConstant, statusCode, TrainingType } from "../../../api/constants";
 import trainingRequestService from "../../../services/trainingRequestService";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import { formatDateOnly } from "../../../utils/datetime/Formatting";
 import getStatusById from "../../../utils/status/getStatusById";
 import ErrorTemplate from "../../General/ErrorTemplate";
 
-const ExportDataForm = ()=>{
+const ExportDataForm = ({trainingType})=>{
     const [options, setOptions] = useState({startDate: "", endDate: "", status: { value: null, label: "All" }})
     const [showForm, setShowForm] = useState(false)
     const statusOption = [
@@ -21,7 +21,7 @@ const ExportDataForm = ()=>{
       { value: getStatusById(statusCode.SUBMITTED), label: "Submitted" },
       { value: getStatusById(statusCode.CLOSED), label: "Closed" },
       { value: getStatusById(statusCode.INACTIVE), label: "Cancelled" },
-      { value: null, label: "All" },
+      { value: "", label: "All" },
     ];
     const [data, setData] = useState();
     const [error, setError] = useState(null);
@@ -36,16 +36,17 @@ const ExportDataForm = ()=>{
               1000,
               SearchValueConstant.DATERANGE, 
               formatDateOnly(options.startDate) + " - "+formatDateOnly(options.endDate), 
-              options.status?.value
+              options.status?.value, trainingType == TrainingType.INTERNAL ? "Internal" : "External"
             ),
-          (e) => setData(e),
+          (e) => {setData(e);setLoading(false)},
           (e) => setError(e?.message ?? e),
-          () => setLoading(false)
+          // () => setLoading(false)
         );
       };
       getRequests();
     }, [
-      options
+      options,
+      trainingType
     ]);
     return (
       <>
@@ -94,7 +95,6 @@ const ExportDataForm = ()=>{
     );
 }
 ExportDataForm.propTypes = {
-    handleShow: proptype.bool,
-    handleClose: proptype.func,
+  trainingType: proptype.number,
 }
 export default ExportDataForm;

@@ -33,6 +33,7 @@ const TrainingListSection = ({ trainingType }) => {
             }
             data={filteredData}
             isAdmin
+            trainingType={trainingType}
           />
         </>
       )}

@@ -21,7 +21,6 @@ import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 import ErrorTemplate from "../General/ErrorTemplate";
 import ExportDataForm from "../forms/ModalForms/ExportDataForm";
 const TrainingRequestList = ({
-  // data,
   headingTitle,
   allowEdit = true,
   isAdmin,
@@ -29,6 +28,7 @@ const TrainingRequestList = ({
   isTrainee,
   isFacilitator,
   requestStatus,
+  trainingType
 }) => {
   const [paginatorConfig, setPaginatorConfig] = useState({
     first: 0,
@@ -132,7 +132,7 @@ const TrainingRequestList = ({
             className="rounded-pill"
           />
         </IconField>
-        {isAdmin && <ExportDataForm/>}
+        {isAdmin && <ExportDataForm trainingType={trainingType}/>}
       </div>
     );
   };
@@ -266,5 +266,6 @@ TrainingRequestList.propTypes = {
   isFacilitator: proptype.bool,
   isTrainee: proptype.bool,
   requestStatus: proptype.any,
+  trainingType: proptype.any,
 };
 export default TrainingRequestList;
