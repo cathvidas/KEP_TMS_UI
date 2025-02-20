@@ -119,7 +119,7 @@ const EffectivenessForm = ({
     const updatedCharacteristics = [...performanceCharacteristics];
     updatedCharacteristics[index] = {
       ...updatedCharacteristics[index],
-      [name]: isNum ? value ?? 0 : value,
+      [name]: value,
     };
     setPerformanceCharacteristics(updatedCharacteristics);
   };
@@ -128,7 +128,7 @@ const EffectivenessForm = ({
     const updatedEvaluation = [...projectPerformanceEvaluation];
     updatedEvaluation[index] = {
       ...updatedEvaluation[index],
-      [name]: isNum ? value ?? 0 : value,
+      [name]: value,
     };
     setProjectPerformanceEvaluation(updatedEvaluation);
   };

@@ -24,14 +24,14 @@ const validateTrainingEffectiveness = (
     if (
       !trimmedContent &&
       validCharacteristic &&
-      performanceCharacteristics[i]?.rating !== 0
+      performanceCharacteristics[i]?.rating != null
     ) {
       formErrors.performanceCharacteristics = `No performance characteristics defined on row ${
         i + 1
       }`;
       validCharacteristic = false;
     } else if (
-      performanceCharacteristics[i]?.rating === 0 &&
+      performanceCharacteristics[i]?.rating === null &&
       validCharacteristic &&
       trimmedContent
     ) {
@@ -42,7 +42,7 @@ const validateTrainingEffectiveness = (
     } else if (
       validCharacteristic &&
       trimmedContent &&
-      performanceCharacteristics[i]?.rating !== 0
+      performanceCharacteristics[i]?.rating !== null
     ) {
       characteristicsCount += 1;
     }
@@ -58,16 +58,16 @@ const validateTrainingEffectiveness = (
     if (
       !trimmedContent &&
       validEvaluation &&
-      (projectPerformanceEvaluation[i]?.performanceBeforeTraining !== 0 ||
-        projectPerformanceEvaluation[i]?.projectedPerformance !== 0 || (projectPerformanceEvaluation[i]?.actualPerformance !== 0 && isSixMonthsAfter))
+      (projectPerformanceEvaluation[i]?.performanceBeforeTraining !== null ||
+        projectPerformanceEvaluation[i]?.projectedPerformance !== null || (projectPerformanceEvaluation[i]?.actualPerformance !== null && isSixMonthsAfter))
     ) {
       formErrors.projectPerformanceEvaluation = `No Activity defined on row ${
         i + 1
       } `;
       validEvaluation = false;
     } else if (
-      projectPerformanceEvaluation[i]?.projectedPerformance === 0 &&
-      (projectPerformanceEvaluation[i]?.performanceBeforeTraining !== 0 ||
+      projectPerformanceEvaluation[i]?.projectedPerformance === null &&
+      (projectPerformanceEvaluation[i]?.performanceBeforeTraining !== null ||
         trimmedContent) &&
       validEvaluation
     ) {
@@ -88,7 +88,7 @@ const validateTrainingEffectiveness = (
     } else if (
       validEvaluation &&
       trimmedContent &&
-      projectPerformanceEvaluation[i]?.projectedPerformance !== 0
+      projectPerformanceEvaluation[i]?.projectedPerformance !== null
     ) {
       evaluationCount += 1;
     }
@@ -113,7 +113,7 @@ const validateTrainingEffectiveness = (
     }
     if (
       trimmedContent &&
-      projectPerformanceEvaluation[i]?.evaluatedActualPerformance === 0 &&
+      projectPerformanceEvaluation[i]?.evaluatedActualPerformance === null &&
       validEvaluation &&
       forEvaluation
     ) {
