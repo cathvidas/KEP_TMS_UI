@@ -3,9 +3,6 @@ import fetchFromApi from "./apiUtil"
 export const createTrainingReportApi = async (data) =>{
     return await fetchFromApi("/TrainingReport/CreateTrainingReport", "POST", data)
 }
-export const getAllTrainingReportsApi = async () =>{
-    return await fetchFromApi("/TrainingReport/GetAllTrainingReports")
-}
 export const getTrainingReportByIdApi = async (id) =>{
     return await fetchFromApi(`/TrainingReport/GetTrainingReportById?id=${id}`)
 }

@@ -24,23 +24,6 @@ const trainingReportHook = {
       loading,
     };
   },
-  useAllTrainingReports: () => {
-    const [data, setData] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      const getRequests = async () => {
-        handleResponseAsync(
-          () =>trainingReportService.getAllTrainingReports(),
-          (e) => setData(e),
-          (e) => setError(e),
-          () => setLoading(false)
-        );
-      };
-      getRequests();
-    });
-    return { data, error, loading };
-  },
   useApproverAssignedReports: (approverId, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);

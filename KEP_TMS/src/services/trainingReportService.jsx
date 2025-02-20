@@ -2,7 +2,6 @@ import { approveTrainingFormApi } from "../api/commonApi";
 import { ActivityType } from "../api/constants";
 import {
   createTrainingReportApi,
-  getAllTrainingReportsApi,
   getApproverAssignedReportsApi,
   getTrainingReportByIdApi,
   updateTrainingReportApi,
@@ -25,10 +24,6 @@ const trainingReportService = {
       throw new Error(response.message);
     }
     return response?.data;
-  },
-  getAllTrainingReports: async () => {
-    const response = await getAllTrainingReportsApi();
-    return response?.status === 1? response?.data: [];
   },
   getTrainingReportById: async (id) => {
     const response = await getTrainingReportByIdApi(id);
