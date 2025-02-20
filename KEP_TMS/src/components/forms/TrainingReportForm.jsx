@@ -259,8 +259,7 @@ const populateData = () => {
               />
             </>
           )}
-        {(formData?.statusId == statusCode.DISAPPROVED && data?.trainingParticipants?.some(
-          (x) => x.employeeBadge === SessionGetEmployeeId())) && (
+        {(formData?.statusId == statusCode.DISAPPROVED && defaultValue?.createdBy === SessionGetEmployeeId()) && (
           <Button
             type="button"
             icon={!isUpdate && "pi pi-pencil"}
