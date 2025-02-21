@@ -27,7 +27,7 @@ const Login = () => {
     e.preventDefault();
     if (validateLogin(badge, password)) {
       var data = {
-        employeeId: e.target.badge.value,
+        employeeId: e.target.badge.value?.trim(),
         password: e.target.password.value,
       }
       setLoading(true);
