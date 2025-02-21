@@ -266,7 +266,7 @@ const CertificateForm = ({
                 ></textarea>
               }
             />
-            {update && (
+            {(update && oldFiles?.length > 0) && (
               <FormFieldItem
                 label={"Old Files"}
                 FieldComponent={

@@ -19,6 +19,7 @@ const TraineeCertificateView = ({ data, isAdmin }) => {
     isAdmin ? null : SessionGetEmployeeId(),
     trigger
   );
+  console.log(certificates)
   const userOptions = ()=>{
     return data?.trainingParticipants?.map((item) => {
       return {
@@ -48,6 +49,7 @@ const TraineeCertificateView = ({ data, isAdmin }) => {
             setShowModal(true);
             setSelectedData(null);
             setDataToUpdate(null);
+            setShowCertificateViewModal(false)
           }}
         />
       </div>
@@ -91,6 +93,8 @@ const TraineeCertificateView = ({ data, isAdmin }) => {
         </Row>
         {showCertificateViewModal &&<>
         <CertificateViewModal
+        onFinish={()=>{
+          setShowCertificateViewModal(false);setTrigger(prev=>prev+1)}}
         customHeader={<>
       <div className="flex justify-content-between">
         <h5 className="m-0">{getUserDetail(selectedData?.userId)}</h5>
@@ -108,8 +112,10 @@ const TraineeCertificateView = ({ data, isAdmin }) => {
           onUpdate={(e) => {
             setShowModal(true);
             setDataToUpdate(e);
-          }}
+          }
+        }
         /></>}
+
         </>
       ) : certificates.data.length > 0 ? (
         <CertificateViewModal
@@ -119,7 +125,9 @@ const TraineeCertificateView = ({ data, isAdmin }) => {
             setShowModal(true);
             setDataToUpdate(e);
           }}
-          onFinish={()=>setTrigger(prev=>prev + 1)}
+          onFinish={()=>{
+            alert(1)
+            setTrigger(prev=>prev + 1)}}
         />
       ) : (
         <div className="flex justify-content-center align-items-center py-5">

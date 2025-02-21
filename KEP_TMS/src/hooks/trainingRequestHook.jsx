@@ -3,7 +3,7 @@ import trainingRequestService from "../services/trainingRequestService";
 import userMapping from "../services/DataMapping/userMapping";
 import userService from "../services/userService";
 import handleResponseAsync from "../services/handleResponseAsync";
-import { ActivityType, statusCode } from "../api/constants";
+import { ActivityType, SearchValueConstant, statusCode } from "../api/constants";
 import mapUserTrainings, {
   mappedTrainingRequestByStatus,
 } from "../services/DataMapping/mapUserTrainings";
@@ -263,10 +263,10 @@ const trainingRequestHook = {
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
-          () => trainingRequestService.getTrainingRequestByTraineeId(id),
+          () => trainingRequestService.getPagedTrainingRequest(1, 1000, SearchValueConstant.PARTICIPANT, id),
           (e) => {
             setData(
-              e?.filter(
+              e?.results?.filter(
                 (item) =>
                   (attended
                     ? trainingDetailsService.checkIfTrainingEndsAlready(item)
@@ -295,7 +295,7 @@ const trainingRequestHook = {
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
-          () => trainingRequestService.getTrainingRequestByFacilitatorId(id),
+          () => trainingRequestService.getPagedTrainingRequest(1, 1000, SearchValueConstant.FACILITATOR, id),
           (e) => {
             setData(
               e?.filter(
