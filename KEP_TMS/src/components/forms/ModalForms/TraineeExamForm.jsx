@@ -34,7 +34,7 @@ const TraineeExamForm = ({ data, closeForm, handleRefresh }) => {
     randomizeExamQuestions();
   }, [data]);
   const randomizeExamQuestions = () => {
-    const items = data?.examQuestion?.map((item) => {
+    const items = data?.examQuestions?.map((item) => {
       return { ...item, answerOptions: randomizeList(item?.answerOptions) };
     });
     const limitQuestions = randomizeList(items).slice(0, data.questionLimit);

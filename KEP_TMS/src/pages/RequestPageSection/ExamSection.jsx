@@ -49,7 +49,7 @@ const ExamSection = ({ data }) => {
                 <Col>
                   <Card
                     title={item?.title}
-                    subTitle={`${item?.examQuestion?.length} Questions`}
+                    subTitle={`${item?.examQuestions?.length} Questions`}
                     footer={
                       <div className="text-center">
                         <Button

@@ -25,7 +25,7 @@ const ExamDetails = ({ handleClose, traineeExam, examDetail, isAdmin , refreshDa
   }, [traineeExam, examDetail]);
 
   const getExamItem = (questionId, answerId) => {
-    const question = examDetail?.examQuestion?.find(
+    const question = examDetail?.examQuestions?.find(
       (q) => q?.id === questionId
     );
     const answer = question?.answerOptions?.find((a) => a?.id === answerId);

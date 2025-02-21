@@ -43,10 +43,10 @@ const ExamForm = ({
     }
   }, [defaultData]);
   const handleSaveQuestion = (e) => {
-    setData((prev) => ({ ...prev, examQuestion: [...prev.examQuestion, e] }));
+    setData((prev) => ({ ...prev, examQuestion: [...prev.examQuestions, e] }));
   };
   const handleUpdateQuestion = (e) => {
-    const updatedData = data?.examQuestion?.map((item, index) => {
+    const updatedData = data?.examQuestions?.map((item, index) => {
       if (index === e.index) {
         return { ...item, ...e.data };
       }
@@ -58,7 +58,7 @@ const ExamForm = ({
   const removeExamQuestion = (index) => {
     setData((prev) => ({
       ...prev,
-      examQuestion: prev.examQuestion.filter((_, i) => i !== index),
+      examQuestion: prev.examQuestions.filter((_, i) => i !== index),
     }));
   };
 
@@ -94,7 +94,7 @@ const ExamForm = ({
     if (validate?.isValid) {
       const updatedData = {
         ...data,
-        examQuestions: data.examQuestion,
+        examQuestions: data.examQuestions,
         trainingRequestId: data?.trainingRequestId,
         updatedBy: SessionGetEmployeeId(),
       };
@@ -224,12 +224,12 @@ const ExamForm = ({
             error={errors?.examQuestion}
             FieldComponent={
               <>
-                {data?.examQuestion?.length > 0 ? (
+                {data?.examQuestions?.length > 0 ? (
                   <>
                     {!readOnly && (
                       <span className="flex  justify-content-between">
                         <span className="text-muted">
-                          {`${data?.examQuestion?.length} items`}{" "}
+                          {`${data?.examQuestions?.length} items`}{" "}
                         </span>
                         <Button
                           type="button"
@@ -245,7 +245,7 @@ const ExamForm = ({
                       </span>
                     )}
                     <Row className="row-cols-lg-2  py-3 g-2 row-cols-1">
-                      {data?.examQuestion?.map((x, index) => {
+                      {data?.examQuestions?.map((x, index) => {
                         return (
                           <Col key={`item-${index}`}>
                             <div className="overflow-hidden border rounded">
