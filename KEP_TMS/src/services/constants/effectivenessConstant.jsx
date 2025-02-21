@@ -7,10 +7,10 @@ const effectivenessConstant = {
     evaluatedActualPerformance: null,
   },
   performanceCharacteristics: {
-    id: null,
+    id: 0,
     content: "",
     rating: null,
-    effectivenessId: null,
+    effectivenessId: 0,
   },
 };
 export default effectivenessConstant;

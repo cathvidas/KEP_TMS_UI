@@ -80,27 +80,35 @@ const EffectivenessForm = ({
         })
       ) ?? [effectivenessConstant.performanceCharacteristics]
     );
+    let mappedProjectEval = 
+    effectivenessData?.projectPerformanceEvaluation?.map(
+      ({
+        actualPerformance,
+        content,
+        effectivenessId,
+        evaluatedActualPerformance,
+        id,
+        performanceBeforeTraining,
+        projectedPerformance,
+      }) => ({
+        actualPerformance,
+        content,
+        effectivenessId,
+        evaluatedActualPerformance,
+        id,
+        performanceBeforeTraining,
+        projectedPerformance,
+      })
+    ) ?? [effectivenessConstant.projectPerformanceEvaluation]
+    if(mappedProjectEval.length < 3){
+      while(mappedProjectEval.length < 3){
+        mappedProjectEval.push(effectivenessConstant.projectPerformanceEvaluation)
+      }
+    }
     setProjectPerformanceEvaluation(
-      effectivenessData?.projectPerformanceEvaluation?.map(
-        ({
-          actualPerformance,
-          content,
-          effectivenessId,
-          evaluatedActualPerformance,
-          id,
-          performanceBeforeTraining,
-          projectedPerformance,
-        }) => ({
-          actualPerformance,
-          content,
-          effectivenessId,
-          evaluatedActualPerformance,
-          id,
-          performanceBeforeTraining,
-          projectedPerformance,
-        })
-      ) ?? [effectivenessConstant.projectPerformanceEvaluation]
-    );}
+      mappedProjectEval
+    );
+  }
   const getFormData = {
     employeeBadge: SessionGetEmployeeId(),
     trainingProgramId: data?.trainingProgram?.id,
@@ -114,7 +122,7 @@ const EffectivenessForm = ({
     projectPerformanceEvaluation: projectPerformanceEvaluation,
     createdBy: SessionGetEmployeeId(),
   };
-  const handlePerfCharacterOnChange = (e, index, isNum) => {
+  const handlePerfCharacterOnChange = (e, index) => {
     const { name, value } = e.target;
     const updatedCharacteristics = [...performanceCharacteristics];
     updatedCharacteristics[index] = {
@@ -123,7 +131,7 @@ const EffectivenessForm = ({
     };
     setPerformanceCharacteristics(updatedCharacteristics);
   };
-  const handlePerfEvaluationOnChange = (e, index, isNum) => {
+  const handlePerfEvaluationOnChange = (e, index) => {
     const { name, value } = e.target;
     const updatedEvaluation = [...projectPerformanceEvaluation];
     updatedEvaluation[index] = {
@@ -136,6 +144,24 @@ const EffectivenessForm = ({
     var date = new Date(data?.trainingEndDate);
     return formatDateOnly(date.setMonth(date.getMonth() + 6));
   }, [data?.trainingEndDate]);
+  const mappedTrainingEffectiveness = (data) => {
+    const projPerf = data.projectPerformanceEvaluation.filter(item => item?.actualPerformance != null || 
+      item?.performanceBeforeTraining != null ||
+      item?.projectedPerformance != null ||
+      item?.evaluatedActualPerformance != null || item?.content
+    )?.map(item => {
+      return {
+        ...item, performanceBeforeTraining: item?.performanceBeforeTraining ?? 0,
+        projectedPerformance: item?.projectedPerformance ?? 0,
+      }
+    })
+    const perfChar = data?.performanceCharacteristics?.filter(item => item?.rating != null || item?.content)?.map(item => {
+      return {
+        ...item, rating: item?.rating ?? 0,
+      }
+    })
+    return {...data, projectPerformanceEvaluation: projPerf, performanceCharacteristics: perfChar}
+  }
   const handleSubmit = (isUpdate) => {
     const { formErrors, isValid } = validateTrainingEffectiveness(
       getFormData,
@@ -146,6 +172,7 @@ const EffectivenessForm = ({
     );
     setErrors(formErrors);
     if (isValid) {
+      const validatedData =  mappedTrainingEffectiveness(getFormData);
       confirmAction({
         showLoaderOnConfirm: true,
         title: isUpdate ? "Update Form" : "Confirm Submission",
@@ -159,7 +186,7 @@ const EffectivenessForm = ({
             () =>
               isUpdate
                 ? effectivenessService.updateTrainingEffectiveness({
-                    ...getFormData,
+                    ...validatedData,
                     updatedBy: SessionGetEmployeeId(),
                     id: formData.id,
                     statusId:
@@ -168,7 +195,7 @@ const EffectivenessForm = ({
                         ? statusCode.FORAPPROVAL
                         : getStatusCode(formData?.statusName),
                   })
-                : effectivenessService.createTrainingEffectiveness(getFormData),
+                : effectivenessService.createTrainingEffectiveness(validatedData),
             (e) => {
               actionSuccessful("Success!", e?.message);
               onFinish();
