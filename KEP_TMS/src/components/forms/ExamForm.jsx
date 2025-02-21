@@ -29,7 +29,7 @@ const ExamForm = ({
   closeForm,
   readOnly,
 }) => {
-  const [data, setData] = useState({ title: "", examQuestion: [] });
+  const [data, setData] = useState({ title: "", examQuestions: [] });
   const [isUpdate, setIsUpdate] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
@@ -43,7 +43,7 @@ const ExamForm = ({
     }
   }, [defaultData]);
   const handleSaveQuestion = (e) => {
-    setData((prev) => ({ ...prev, examQuestion: [...prev.examQuestions, e] }));
+    setData((prev) => ({ ...prev, examQuestions: [...prev.examQuestions, e] }));
   };
   const handleUpdateQuestion = (e) => {
     const updatedData = data?.examQuestions?.map((item, index) => {
@@ -52,13 +52,13 @@ const ExamForm = ({
       }
       return item;
     });
-    setData({ ...data, examQuestion: updatedData });
+    setData({ ...data, examQuestions: updatedData });
     setShowModal(false);
   };
   const removeExamQuestion = (index) => {
     setData((prev) => ({
       ...prev,
-      examQuestion: prev.examQuestions.filter((_, i) => i !== index),
+      examQuestions: prev.examQuestions.filter((_, i) => i !== index),
     }));
   };
 
