@@ -271,8 +271,8 @@ const trainingRequestHook = {
                   (attended
                     ? trainingDetailsService.checkIfTrainingEndsAlready(item)
                     : true) &&
-                  (item?.status?.id === statusCode.APPROVED ||
-                    item?.status?.id === statusCode.CLOSED)
+                  (item?.status?.id !== statusCode.DISAPPROVED ||
+                    item?.status?.id !== statusCode.INACTIVE)
               )
             );
           },
@@ -298,10 +298,10 @@ const trainingRequestHook = {
           () => trainingRequestService.getPagedTrainingRequest(1, 1000, SearchValueConstant.FACILITATOR, id),
           (e) => {
             setData(
-              e?.filter(
-                (item) =>
-                  item?.status?.id === statusCode.APPROVED ||
-                  item?.status?.id === statusCode.CLOSED
+              e?.results?.filter(
+                (item) => trainingDetailsService.checkIfTrainingEndsAlready(item) &&
+                  (item?.status?.id !== statusCode.INACTIVE ||
+                  item?.status?.id !== statusCode.DISAPPROVED)
               )
             );
           },

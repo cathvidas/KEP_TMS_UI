@@ -42,7 +42,8 @@ const AverageRateTemplate = ({ reqId, userId }) => {
         commonService.getFacilitatorRating(
           reqId,
           userId),
-          (e) => setData(e),
+          (e) => setData(e ? Math.round(e * 100) / 100 : e
+        ),
           (e) => setError(e),
           () => setLoading(false)
         )
