@@ -13,6 +13,7 @@ import { TrainingType, UserTypeValue } from "../api/constants";
 import { SessionGetRole } from "../services/sessions";
 import NotFoundPage from "./NotFoundPage";
 import ExternalFacilitatorListSection from "./MasterListSection/externalFacilitatorListSection";
+import CostApprovalMatrixSection from "./MasterListSection/CostApprovalMatrixSection";
 
 const MasterListPage = () => {
   const page = useParams();
@@ -25,29 +26,36 @@ const MasterListPage = () => {
           label: "Category",
           icon: "pi pi-filter",
           template: MenuItemTemplate,
-          active: currentContent === 0 ? true : false,
+          active: currentContent === 0,
           command: () => navigate("/KEP_TMS/MasterList/Categories"),
         },
         {
           label: "Programs",
           icon: "pi pi-file-check",
           template: MenuItemTemplate,
-          active: currentContent === 1 ? true : false,
+          active: currentContent === 1,
           command: () => navigate("/KEP_TMS/MasterList/Programs"),
         },
         {
           label: "Providers",
           template: MenuItemTemplate,
-          active: currentContent === 2 ? true : false,
+          active: currentContent === 2,
           command: () => navigate("/KEP_TMS/MasterList/Providers"),
           icon: "pi pi-building",
         },
         {
           label: "External Trainers",
           template: MenuItemTemplate,
-          active: currentContent === 3 ? true : false,
+          active: currentContent === 3,
           command: () => navigate("/KEP_TMS/MasterList/ExternalTrainers"),
           icon: "pi pi-users",
+        },
+        {
+          label: "Cost Approval Matrix",
+          template: MenuItemTemplate,
+          active: currentContent === 6 ,
+          command: () => navigate("/KEP_TMS/MasterList/CostCodes"),
+          icon: "pi pi-address-book",
         },
         // {
         //   label: "Training Type",
@@ -84,6 +92,7 @@ const MasterListPage = () => {
     <ExternalFacilitatorListSection key={3} />,
     <TrainingListSection key={4} trainingType={TrainingType.INTERNAL} />,
     <TrainingListSection key={5} trainingType={TrainingType.EXTERNAL} />,
+    <CostApprovalMatrixSection key={6}/>
   ];
   useEffect(() => {
     const pageName = page.category?.toUpperCase();
@@ -96,6 +105,8 @@ const MasterListPage = () => {
       setCurrentContent(2);
     } else if (pageName === "EXTERNALTRAINERS") {
       setCurrentContent(3);
+    }  else if (pageName === "COSTCODES") {
+      setCurrentContent(6);
     } else if (pageName === "TRAINING") {
       if (pageType === "INTERNAL") {
         setCurrentContent(4);
