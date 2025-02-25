@@ -73,7 +73,7 @@ const getToastDetail = (
       statusData.summary = "Waiting for participants Effectiveness";
       statusData.detail =
         isTrainee && isTrainee?.effectivenessId === null
-          ? "Navigate to Report section and fill out the effectiveness form"
+          ? "Navigate to forms section and fill out the effectiveness form"
           : // : isTrainee?.effectivenessId?.sta
             `${countData(data.trainingParticipants, "effectivenessId", 4)}/${
               data.totalParticipants
