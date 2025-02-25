@@ -12,7 +12,7 @@ const mappingHook = {
       const mappedApprovers = [];
       approvers?.map((app) => {
         const actItem = activity?.filter(
-          (act) => act?.assignedTo == app?.employeeBadge
+          (act) => act?.assignedTo == app?.employeeBadge && act?.statusId != statusCode.TOUPDATE
         );
         routingService.sortRoutingBySequence(actItem, true);
         mappedApprovers.push({
