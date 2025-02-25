@@ -117,7 +117,7 @@ const UploadModuleForm = ({
       details,
       selectedOption?.value,
       files,
-      false
+      true
     );
     if (validate.isValid) {
       confirmAction({

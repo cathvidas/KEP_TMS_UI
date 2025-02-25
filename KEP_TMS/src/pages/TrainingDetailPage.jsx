@@ -381,7 +381,7 @@ const TrainingDetailPage = () => {
           <MenuContainer
             itemList={items}
             action={
-              (data?.status?.id === statusCode.APPROVED || data?.status?.id === statusCode.SUBMITTED) && isAdmin ? (
+              (data?.status?.id === statusCode.APPROVED) && isAdmin ? (
                 <Button
                   type="button"
                   label={data?.status?.id === statusCode.APPROVED ? "Close Training" : "Route to Approvers"}

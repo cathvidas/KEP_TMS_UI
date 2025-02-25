@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import PDFViewer from "../../components/General/PDFViewer";
 import { CompareDateTimeWithToday } from "../../utils/datetime/dateComparison";
 import ModuleSection from "../RequestPageSection/ModuleSection";
+import { API_BASE_URL, APPLICATION_BASE_URL } from "../../api/constants";
 const ModuleView = ({ reqData, isEditor, isTrainee }) => {
   const [filteredModules, setFilteredModules] = useState([]);
   const { modules, error, loading } = moduleHook.useModulesByRequestId(reqData?.id);
@@ -62,7 +63,7 @@ const ModuleView = ({ reqData, isEditor, isTrainee }) => {
                             onClick={() => {
                               setSelected({
                                 ...file,
-                                url: `http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${file.id}`,
+                                url: `${API_BASE_URL + file?.url}`,
                               });
                               setShowPDF(true);
                             }}

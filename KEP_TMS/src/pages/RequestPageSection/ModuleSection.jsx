@@ -17,6 +17,7 @@ import attachmentService from "../../services/attachmentService";
 import ErrorTemplate from "../../components/General/ErrorTemplate";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import { CompareDateTimeWithToday } from "../../utils/datetime/dateComparison";
+import { API_BASE_URL } from "../../api/constants";
 
 const ModuleSection = ({ data }) => {
   const [showForm, setShowForm] = useState(false);
@@ -223,7 +224,7 @@ const ModuleSection = ({ data }) => {
                                 onClick={() => {
                                   setSelected({
                                     ...a,
-                                    url: `http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${a.id}`,
+                                    url: `${API_BASE_URL+ a?.url}`,
                                   });
                                   setShowPDF(true);
                                 }}
