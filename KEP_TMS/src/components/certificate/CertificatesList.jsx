@@ -35,7 +35,6 @@ const CertificatesList = ({ userId }) => {
     }
 }
   }, [certificates?.data, dataToUpdate, selectedData]);
-  console.log(certificates?.data?.length, certificates, userId,)
   return (
     <>
       {!showCerticateDetail ? (

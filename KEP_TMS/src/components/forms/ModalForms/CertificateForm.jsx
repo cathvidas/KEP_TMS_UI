@@ -39,7 +39,6 @@ const CertificateForm = ({
   });  
   const trainingDetail = trainingRequestHook.useTrainingRequest(defaultValue?.requestId)?.data;
   const attendedTrainings = trainingRequestHook.usePagedTrainingRequest(attendedTrainingsConfig.page, attendedTrainingsConfig.rows, SearchValueConstant.ATTENDED, userId, attendedTrainingsConfig.value);
-console.log(defaultValue, trainingDetail, formData)
   useEffect(() => {
     const mappedData = attendedTrainings?.data?.results?.map((training) => {
       return {

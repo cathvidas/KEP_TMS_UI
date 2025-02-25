@@ -19,7 +19,6 @@ const TraineeCertificateView = ({ data, isAdmin }) => {
     isAdmin ? null : SessionGetEmployeeId(),
     trigger
   );
-  console.log(certificates)
   const userOptions = ()=>{
     return data?.trainingParticipants?.map((item) => {
       return {
