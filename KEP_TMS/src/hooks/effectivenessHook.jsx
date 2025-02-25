@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import effectivenessService from "../services/effectivenessService";
 import handleResponseAsync from "../services/handleResponseAsync";
+import { checkIfActualPerformanceRated } from "./activityLogHook";
 
 const effectivenessHook = {
   useEffectivenessById: (id, trigger) => {
@@ -72,7 +73,9 @@ const effectivenessHook = {
         handleResponseAsync(
           () => 
             effectivenessService.getEvaluatorAssignedEffectiveness(id),
-          (e) => setData(e),
+          (e) => {
+            const filtered = e?.filter(item => checkIfActualPerformanceRated(item))
+            setData(filtered)},
           (e) => setError(e),
           () => setLoading(false)
         );

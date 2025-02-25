@@ -40,7 +40,7 @@ const ForEvaluationEffectiveness = ({data, refreshData}) => {
   const items = [
     {
       field: "id",
-      header: "No",
+      header: "Id",
       body: (rowData) => <>{rowData?.id}</>,
     },
     {

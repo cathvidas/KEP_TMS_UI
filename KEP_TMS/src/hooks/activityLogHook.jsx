@@ -189,7 +189,7 @@ export const checkIfEvaluatedActualPerformanceRated = (item) => {
     return false;
   }
   item?.projectPerformanceEvaluation?.map((x) =>{
-    if(x?.evaluatedActualPerformance === 0 && x?.content){
+    if(!(x?.evaluatedActualPerformance > 1) && x?.content){
       isRated = false;
     }
   })

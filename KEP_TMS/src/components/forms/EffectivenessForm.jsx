@@ -261,7 +261,7 @@ const EffectivenessForm = ({
     if (SessionGetEmployeeId() === formData?.evaluatorBadge && evaluate) {
       setEvaluatedActualPerfRating((prev) => ({
         ...prev,
-        isRating: checkIfEvaluatedActualPerformanceRated(formData),
+        isRating: !checkIfEvaluatedActualPerformanceRated(formData),
         toBeRated: false,
       }));
     } else {
@@ -659,10 +659,9 @@ const EffectivenessForm = ({
                             <></>
                           )}
                           {(!actualPerfRating.isRated  && !actualPerfRating.toBeRated) &&
-                            isSubmitted && data?.trainingParticipants?.some(
-                              (x) => x.employeeBadge === SessionGetEmployeeId()) &&
+                            isSubmitted && formData?.createdBy == SessionGetEmployeeId() &&
                             projectPerformanceEvaluation[index]
-                              ?.actualPerformance === 0 &&
+                              ?.actualPerformance === null &&
                             projectPerformanceEvaluation[index]?.content && (
                               <span className="text-danger">Please Rate</span>
                             )}
@@ -700,8 +699,8 @@ const EffectivenessForm = ({
                                        
                             {evaluatedActualPerfRating.isRating &&
                             isSubmitted &&
-                            projectPerformanceEvaluation[index]
-                              ?.evaluatedActualPerformance === 0 &&
+                            !(projectPerformanceEvaluation[index]
+                              ?.evaluatedActualPerformance > 1) &&
                             projectPerformanceEvaluation[index]?.content && (
                               <span className="text-danger">Please Rate</span>
                             )}

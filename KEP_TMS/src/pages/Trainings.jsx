@@ -59,18 +59,14 @@ const Trainings = () => {
           count: pendings?.data?.length,
           active: currentContent === 1,
         },
-      ],
-    },
-    {
-      label: "For Evaluation",
-      items: [
         {
-          label: "Trainee Effectiveness",
+          label: "For Evaluation",
           //   icon: "pi pi-arrow-down-left-and-arrow-up-right-to-center",
           command: () => navigate("/KEP_TMS/Trainings/EffectivenessEvaluation"),
           active: currentContent === 2,
           template: MenuItemTemplate,
-          badge: data?.length > 0 ?{value: data?.length}:false
+          badge: data?.length > 0 ?{value: data?.length}:false,
+          disable: !(data?.length > 0 )
         },
       ],
     },
