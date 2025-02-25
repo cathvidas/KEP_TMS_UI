@@ -349,22 +349,22 @@ const TrainingDetailPage = () => {
       statusId: status,
       updatedBy: SessionGetEmployeeId(),
     };
-    const isPublish = status === statusCode.PUBLISHED;
+    const toRoute = status === statusCode.FORAPPROVAL;
     confirmAction({
       showLoaderOnConfirm: true,
-      title: isPublish ? "Publish Training Request" : "Close Training Request",
+      title: toRoute ? "Route to Approvers" : "Close Training Request",
       text: `Are you sure you want to ${
-        isPublish ? "publish" : "close"
+        toRoute ? "change the status to 'For Approval' and route to approvers" : "close"
       } this training request?`,
-      confirmButtonText: isPublish ? "Publish" : "Close Training",
+      confirmButtonText: toRoute ? "Yes" : "Close Training",
       onConfirm: () => {
         handleResponseAsync(
           () => trainingRequestService.updateTrainingRequest(newData),
           () =>
             actionSuccessful(
-              ` ${isPublish ? "Published" : "Closed"} successfully`,
+              ` ${toRoute ? "Routed" : "Closed"} successfully`,
               `Successfully ${
-                isPublish ? "published" : "closed"
+                toRoute ? "routed" : "closed"
               }  training request`
             ),
           (error) =>
@@ -381,14 +381,14 @@ const TrainingDetailPage = () => {
           <MenuContainer
             itemList={items}
             action={
-              data?.status?.id === statusCode.PUBLISHED && isAdmin ? (
+              (data?.status?.id === statusCode.APPROVED || data?.status?.id === statusCode.SUBMITTED) && isAdmin ? (
                 <Button
                   type="button"
-                  label="Close Training"
+                  label={data?.status?.id === statusCode.APPROVED ? "Close Training" : "Route to Approvers"}
                   size="small"
-                  severity="success"
+                  severity={data?.status?.id === statusCode.APPROVED ? "success" : "help"}
                   className="rounded py-1"
-                  onClick={() => handlePublish(statusCode.CLOSED)}
+                  onClick={() => handlePublish(data?.status?.id === statusCode.APPROVED ? statusCode.CLOSED : statusCode.FORAPPROVAL)}
                 />
               ) : (
                 <></>
