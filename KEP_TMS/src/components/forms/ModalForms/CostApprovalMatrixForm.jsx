@@ -37,7 +37,7 @@ const CostApprovalMatrixForm = ({ handleShow, handleClose, selectedData, onFinis
   const approverDetail = userHook.useUserById(formData?.employeeBadge);
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(!formData?.approver){
+    if(!formData?.employeeBadge){
       setErrors(prev=>({...prev, approver: "No Approver selected" }));
       return;
     }

@@ -4,7 +4,7 @@ import trainingRequestService from "../services/trainingRequestService";
 import handleResponseAsync from "../services/handleResponseAsync";
 
 const certificateHook = {
-  useAllTraineeCertificates: (id, trainingList, trigger) => {
+  useAllTraineeCertificates: (id, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -12,10 +12,11 @@ const certificateHook = {
       const getRequestData = async () => {
         try {
           let newTrainingsCert = [];
+          let trainingList = [];
           const certificates = await certificateService.getCertificateByUserId(
             id
           );
-          certificates?.forEach(async (item) => {
+          for(const item of certificates || []){
             let detail = { certificate: [item] };
             const trainingDetail = trainingList.find(
               (training) => training.id === item.requestId
@@ -26,6 +27,7 @@ const certificateHook = {
               const res = await trainingRequestService.getTrainingRequest(
                 item.requestId
               );
+              trainingList.push(res);
               if (res) {
                 detail.training = res;
               } else {
@@ -40,7 +42,7 @@ const certificateHook = {
             } else {
               newTrainingsCert.push(detail);
             }
-          });
+          }
           setData(newTrainingsCert);
         } catch (e) {
           setError(e.message);
@@ -48,9 +50,8 @@ const certificateHook = {
           setLoading(false);
         }
       };
-
       getRequestData();
-    }, [id, trainingList, trigger]);
+    }, [id, trigger]);
     return { data, error, loading };
   },
   useTrainingCertificatesByRequestId: (requestId, userId, trigger) => {

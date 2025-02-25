@@ -34,7 +34,7 @@ const Login = () => {
       var res = await handleUserLogin(data);
       setLoading(false);
       if(res){
-        if(location.pathname === APP_DOMAIN){
+        if(location.pathname === APP_DOMAIN || location.pathname === APP_DOMAIN + "/"){
           navigate("/KEP_TMS/Dashboard");
         }
         else{

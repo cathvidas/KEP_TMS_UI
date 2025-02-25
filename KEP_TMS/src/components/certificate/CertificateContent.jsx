@@ -90,7 +90,7 @@ const CertificateContent = ({ trainings, isFacilitator }) => {
                       <p
                         style={{ verticalAlign: "middle", textAlign: "center" }}
                       >
-                        {training.durationInHours} hours
+                        {training.durationInHours} {training.durationInHours > 1 ? "hours" : "hour"}
                       </p>
                     </td>
                   </tr>

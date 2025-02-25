@@ -52,7 +52,6 @@ const TrainingRequestList = ({
         SessionGetEmployeeId(),
         requestStatus ? getStatusById(requestStatus) : paginatorConfig.value,
         requestStatus ? paginatorConfig.value : null
-        
       )
     : trainingRequestHook.usePagedTrainingRequest(
         paginatorConfig.page,

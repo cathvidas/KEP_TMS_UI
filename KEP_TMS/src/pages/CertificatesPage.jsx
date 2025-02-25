@@ -13,7 +13,6 @@ const CertificatesPage = () => {
         <div className="px-3">
           <CertificatesList
             userId={SessionGetEmployeeId()}
-            trainings={data}
           />
         </div>
       )}

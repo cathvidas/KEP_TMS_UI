@@ -723,7 +723,7 @@ const EffectivenessForm = ({
             <Form.Group>
               <b>III. Comments / Remarks</b>
               <i> &#x28;to be filled up after the training&#x29; :</i>
-              <ErrorTemplate message={(!isUpdate && isSubmitted && isTrainingEnd && !formData?.annotation) ? "Please fill up this field" : ""} />
+              <ErrorTemplate message={(!isUpdate && isSubmitted && isTrainingEnd && !formData?.annotation && formData?.createdBy == SessionGetEmployeeId()) ? "Please fill up this field" : ""} />
               <textarea
                 className="form-control"
                 rows={3}
