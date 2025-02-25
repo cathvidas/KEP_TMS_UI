@@ -113,5 +113,27 @@ const userHook = {
         loading,
       };
     },
+    useUserTotalAccumulatedHours:(id, trigger) => {
+      const [data, setData] = useState();
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      useEffect(() => {
+        const getRequest = async () => {
+          handleResponseAsync(
+            () =>
+              userService.getUserTotalAccumulatedHours(id),
+            (e) => setData(e),
+            (e) => setError(e),
+            () => setLoading(false)
+          );
+        };
+        getRequest();
+      }, [id, trigger]);
+      return {
+        data,
+        error,
+        loading,
+      };
+    },
 }
 export default userHook;

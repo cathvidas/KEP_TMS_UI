@@ -4,7 +4,7 @@ const localhost = {
 }
 const testEnvi = {
     API_BASE_URL: "http://kep-testenvw16:2024/api",
-    APPLICATION_BASE_URL: "http://kep-testenvw16:2024/KEP_TMS/"
+    APPLICATION_BASE_URL: "http://kep-testenvw16:1010/KEP_TMS/"
 }
 const currentServer = localhost;
 export const API_BASE_URL = currentServer.API_BASE_URL
@@ -71,4 +71,6 @@ export const SearchValueConstant = {
   ATTACHMENT: "Attachment",
   REQUEST: "Request",
   DATERANGE: "daterange",
+  FACILITATED: "facilitated",
+  ATTENDED: "attended",
 }

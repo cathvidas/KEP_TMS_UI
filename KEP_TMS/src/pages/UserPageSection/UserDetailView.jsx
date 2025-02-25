@@ -16,12 +16,13 @@ import { Button } from "primereact/button";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CertificateTemplate from "../../components/certificate/CertificateTemplate";
 import CertificatesList from "../../components/certificate/CertificatesList";
-import { UserTypeValue } from "../../api/constants";
+import { SearchValueConstant, UserTypeValue } from "../../api/constants";
 import ErrorTemplate from "../../components/General/ErrorTemplate";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import commonService from "../../services/commonService";
 import NewUserForm from "../../components/forms/ModalForms/NewUserForm";
 import mapUserUpdateDetail from "../../services/DataMapping/mapUserUpdateDetails";
+import { Paginator } from "primereact/paginator";
 const DetailItem = (data) => (
   <>
     <div className="flex py-1">
@@ -59,12 +60,25 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
   const { data, error, loading } = userHook.useUserById(id, trigger);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const trainings = trainingRequestHook.useUserTrainingsSummary(id);
-  const facilitated = trainingRequestHook.useTrainingRequestByFacilitatorId(id);
-  const attended = trainingRequestHook.useTrainingRequestByTraineeId(id, true);
   const [showCertForm, setShowCertForm] = useState(false);
   const [isFacilitator, setIsFacilitator] = useState(false);
-  const [certificateTrainings, setCertificateTrainings] = useState(null);
   const superiorName = userHook.useUserById(data?.superiorBadge)?.data?.fullname;
+  const [attendedTrainingsConfig, setAttendedTrainingsConfig] = useState({
+    first: 0,
+    rows: 10,
+    page: 1,
+    value: "",
+  });  
+  const [facilitatedTrainingsConfig, setFacilitatedTrainingsConfig] = useState({
+    first: 0,
+    rows: 10,
+    page: 1,
+    value: "",
+  });
+const attendedTrainings = trainingRequestHook.usePagedTrainingRequest(attendedTrainingsConfig.page, attendedTrainingsConfig.rows, SearchValueConstant.ATTENDED, id, attendedTrainingsConfig.value);
+const facilitatedTrainings = trainingRequestHook.usePagedTrainingRequest(attendedTrainingsConfig.page, attendedTrainingsConfig.rows, SearchValueConstant.FACILITATED, id, attendedTrainingsConfig.value);
+const stackedTrainings = trainingRequestHook.usePagedTrainingRequest(1, 1000, isFacilitator ? SearchValueConstant.FACILITATED : SearchValueConstant.ATTENDED, id);
+const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
   const columnItem = [
     {field: "id", header: "Request #", },
     { field: "requesterName", header: "Name", body: <>{data?.fullname}</> },
@@ -77,13 +91,6 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
     { field: "durationInHours", header: "Total Hours" },
     { field: "totalParticipants", header: "Total Participants" },
   ];
-  const countTotalHours = (trainings) => {
-    let count = 0;
-    trainings?.map((item) => {
-      count += item?.durationInHours;
-    });
-    return count;
-  };
   return (
     <>
       {loading ? (
@@ -120,24 +127,24 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
                   <h6 className="theme-color fw-bold">Trainings Attended:</h6>
                   <DetailItem
                     label="No of Trainings"
-                    badge={attended?.data?.length}
+                    badge={attendedTrainings?.data?.totalRecords}
                     className="text-muted"
                   />
                   <DetailItem
                     label="Total Accumulated Hours"
-                    badge={countTotalHours(attended?.data)}
+                    badge={trainingSummary?.data?.totalHoursAttended}
                     className="text-muted"
                   />
                   <br />
                   <h6 className="theme-color fw-bold">Trainings Facilitated:</h6>
                   <DetailItem
                     label="No of Trainings"
-                    badge={facilitated?.data?.length}
+                    badge={facilitatedTrainings?.data?.totalRecords}
                     className="text-muted"
                   />
                   <DetailItem
                     label="Total Accumulated Hours"
-                    badge={countTotalHours(facilitated?.data)}
+                    badge={trainingSummary?.data?.totalHoursFacilitated}
                     className="text-muted"
                   />
                 </Col>
@@ -154,6 +161,7 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
                   <TabView className="custom-tab">
                     <TabPanel header={"Trainings Attended"}>
                       <CommonTable
+                      hidePaginator
                       headerComponent={
                          isAdmin ?
                           <Button
@@ -161,21 +169,36 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
                             label="Generate Certificate"
                             icon="pi pi-download"
                             onClick={() => {setShowCertForm(true);
-                              setCertificateTrainings(attended?.data)
                               setIsFacilitator(false)
                             }}
                             text
                           />
                         : null}
                         dataTable={mapTRequestToTableData(
-                          attended?.data
+                          attendedTrainings?.data?.results
                         )}
                         columnItems={columnItem}
+                      />
+                      <Paginator
+                        first={attendedTrainingsConfig?.first ?? 1}
+                        pageLinkSize={5}
+                        rows={attendedTrainingsConfig.rows}
+                        totalRecords={attendedTrainings?.data?.totalRecords}
+                        rowsPerPageOptions={[10, 20, 30, 50, 100]}
+                        onPageChange={(e) =>
+                          setAttendedTrainingsConfig((prev) => ({
+                            ...prev,
+                            first: e.first,
+                            rows: e.rows,
+                            page: e.page + 1,
+                          }))
+                        }
                       />
                     </TabPanel>
                     {(trainings?.data?.facilitated?.length > 0 || data?.roleName === UserTypeValue.FACILITATOR) &&
                     <TabPanel header={"Trainings Facilitated"}>
                       <CommonTable
+                      hidePaginator
                       headerComponent={
                          isAdmin ?
                           <Button
@@ -183,22 +206,36 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
                             label="Generate Certificate"
                             icon="pi pi-download"
                             onClick={() => {setShowCertForm(true);
-                              setCertificateTrainings(facilitated?.data)
                               setIsFacilitator(true)
                             }}
                             text
                           />
                         : null}
                         dataTable={mapTRequestToTableData(
-                          facilitated?.data
+                          facilitatedTrainings?.data?.results
                         )}
                         columnItems={[...columnItem, {header: "Evaluation Ratings", body: (rowData)=><AverageRateTemplate reqId={rowData?.id} userId={id}/>}]}
+                      />
+                      <Paginator
+                        first={facilitatedTrainingsConfig?.first ?? 1}
+                        pageLinkSize={5}
+                        rows={facilitatedTrainingsConfig.rows}
+                        totalRecords={facilitatedTrainings?.data?.totalRecords}
+                        rowsPerPageOptions={[10, 20, 30, 50, 100]}
+                        onPageChange={(e) =>
+                          setFacilitatedTrainingsConfig((prev) => ({
+                            ...prev,
+                            first: e.first,
+                            rows: e.rows,
+                            page: e.page + 1,
+                          }))
+                        }
                       />
                     </TabPanel>}
                     <TabPanel header={"Certificates"}>
                       <CertificatesList
                         userId={id}
-                        trainings={attended?.data}
+                        trainings={stackedTrainings?.data?.results}
                       />
                     </TabPanel>
                   </TabView>
@@ -220,7 +257,7 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
               />
             </div>
             <CertificateTemplate
-              trainings={certificateTrainings}
+              trainings={stackedTrainings?.data?.results}
               isFacilitator={isFacilitator}
               signatoryList={adminList}
             />
