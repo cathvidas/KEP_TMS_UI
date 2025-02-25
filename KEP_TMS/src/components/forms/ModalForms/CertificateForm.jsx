@@ -167,7 +167,7 @@ const CertificateForm = ({
   };
   const updateCertificate = () => {
     const updatedData = {
-      ...defaultValue,
+      ...defaultValue,requestId: formData?.training?.value,
       detail: formData.certificateDetail,
       updatedBy: SessionGetEmployeeId(),
     };
