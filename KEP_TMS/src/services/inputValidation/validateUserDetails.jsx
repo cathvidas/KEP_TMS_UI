@@ -6,11 +6,6 @@ const validateUserDetails = (data)=>{
         errors.employeeBadge = "Badge No is required";
         isValid = false;
     }
-    if(!data?.username){
-        errors.username = "Username is required";
-        isValid = false;
-    }
-    
     if(!data?.firstname){
         errors.firstname = "Firstname is required";
         isValid = false;
@@ -35,10 +30,6 @@ const validateUserDetails = (data)=>{
     }
     if(data?.departmentId === 0){
         errors.departmentId = "Department is required";
-        isValid = false;
-    }
-    if(data?.employeeTypeId === 0){
-        errors.employeeTypeId = "Employee Type is required";
         isValid = false;
     }
     if(!data?.superiorBadge){
