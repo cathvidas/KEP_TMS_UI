@@ -24,7 +24,6 @@ const AllUserPageSection = ({
   userType,
   id,
   options,
-  reloadData,
 }) => {
   const [defaultValue, setDefaultValue] = useState({});
   const [showForm, setShowForm] = useState(false);
@@ -118,7 +117,7 @@ const AllUserPageSection = ({
           () => userService.updateUser(newData),
           (e) => actionSuccessful("Success!", e.message),
           (e) => actionFailed("Error!", e.message),
-          reloadData
+          ()=>setTrigger(prev => prev + 1)
         );
       },
     });

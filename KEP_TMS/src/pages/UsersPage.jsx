@@ -4,15 +4,12 @@ import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import AllUserPageSection from "./UserPageSection/AllUserPageSection";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "primereact/button";
-import NewUserForm from "../components/forms/ModalForms/NewUserForm";
 import commonHook from "../hooks/commonHook";
 import { statusCode, UserTypeValue } from "../api/constants";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import NotFoundPage from "./NotFoundPage";
 
 const UserPage = () => {
-  const [showForm, setShowForm] = useState(false);
   const { page, id } = useParams();
   const navigate = useNavigate();
   const [options, setOptions] = useState({ options: [], loading: true });
@@ -22,9 +19,6 @@ const UserPage = () => {
   const empTypes = commonHook.useAllEmployeeTypes();  
   const [userType, setUserType] = useState("");
   
-  const refreshData = ()=>{
-    setShowForm(false);
-  }
   useEffect(() => {
     if (
       !roles?.loading &&
@@ -47,10 +41,6 @@ const UserPage = () => {
         label: emptype.name,
         value: emptype.id,
       }));
-      // const mappedUsers = data?.map((user) => ({
-      //   label: user.fullname,
-      //   value: user.employeeBadge,
-      // }));
       setOptions((prev) => ({
         ...prev,
         loading: false,
@@ -142,15 +132,6 @@ const UserPage = () => {
               label="Users"
               fullHeight
               itemList={items}
-              action={
-                <Button
-                  type="button"
-                  label="New User"
-                  className="theme-bg rounded py-1"
-                  icon="pi pi-plus"
-                  onClick={() => setShowForm(true)}
-                />
-              }
             />
           )}
           <div
@@ -158,22 +139,12 @@ const UserPage = () => {
             style={{ minHeight: "100vh" }}
           >
             <AllUserPageSection
-              key={3}
               options={options}
               id={id}
               userType={userType}
-              isFilter
-              reloadData={refreshData}
             />
           </div>
         </div>
-        <NewUserForm
-          showForm={showForm}
-          closeForm={() => setShowForm(false)}
-          options={options}
-          headerTitle="Add New User"
-          onFinish={refreshData}
-        />
       </>
     );
   };
