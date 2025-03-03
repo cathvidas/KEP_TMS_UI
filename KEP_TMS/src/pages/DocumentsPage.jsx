@@ -188,6 +188,7 @@ const DocumentsPage = () => {
                       columnItems={columnItems}
                       dataTable={data?.results}
                       hidePaginator
+                      hideOnEmpty={false}
                     />
                     <Paginator
                       first={paginatorConfig?.first ?? 1}
