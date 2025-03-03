@@ -67,7 +67,7 @@ export const SearchValueConstant = {
   REQUESTER : 'Requester',
   PARTICIPANT : 'Participant',
   REQ_STATUS: "Status",
-  VIDEOS: "Video",
+  VIDEOS: "video",
   ATTACHMENT: "Attachment",
   REQUEST: "Request",
   DATERANGE: "daterange",
