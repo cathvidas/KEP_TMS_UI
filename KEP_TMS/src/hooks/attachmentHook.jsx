@@ -38,7 +38,7 @@ const attachmentHook = {
     return { data, error, loading };
   },
   useAllVideoAttachments: (pageNumber, pageSize, searchValue, SecondSearchValue, trigger) => {
-    const [data, setData] = useState();
+    const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
