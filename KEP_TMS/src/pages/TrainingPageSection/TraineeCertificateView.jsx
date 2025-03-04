@@ -125,7 +125,6 @@ const TraineeCertificateView = ({ data, isAdmin }) => {
             setDataToUpdate(e);
           }}
           onFinish={()=>{
-            alert(1)
             setTrigger(prev=>prev + 1)}}
         />
       ) : (

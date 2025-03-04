@@ -9,6 +9,7 @@ import ProviderForm from "../../components/forms/ModalForms/ProviderForm";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 import { checkIfNullOrEmpty } from "../../utils/stringUtil";
 import { Paginator } from "primereact/paginator";
+import getStatusById from "../../utils/status/getStatusById";
 
 const ProviderListSection = () => {
   const [trigger, setTrigger] = useState(0);
@@ -101,7 +102,7 @@ const ProviderListSection = () => {
     {
       field: "statusName",
       header: "Status",
-      body: (rowData) => <>{rowData?.status?.name ?? "N/A"}</>,
+      body: (rowData) => <>{getStatusById(rowData.statusId)}</>,
     },
     {
       field: "",

@@ -59,6 +59,10 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
       formErrors.contactNumber = "Contact Number is required";
       isValid = false;
     }
+    if (!formData.statusId && selectedData) {
+      formErrors.status = "This field is required";
+      isValid = false;
+    }
     setErrors(formErrors);
     return isValid;
   };
@@ -68,13 +72,9 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
       const category = options?.category?.find(
         (option) => option.label === selectedData?.categoryName
       );
-      const status = options?.status?.find(
-        (option) => option.label === selectedData?.statusName
-      );
       const updatedData = {
         ...selectedData,
         categoryId: category?.value,
-        statusId: status?.value,
       };
       setFormData(updatedData);
     } else {
@@ -313,8 +313,8 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
                       }
                       name="status"
                     />
-                    {errors.description && (
-                      <small className="text-red">{errors.description}</small>
+                    {errors.status && (
+                      <small className="text-red">{errors.status}</small>
                     )}
                   </Form.Group>
                 </Col>

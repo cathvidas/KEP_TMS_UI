@@ -21,6 +21,7 @@ const AddUserForm = ({showForm, closeForm, userType, userRoles, optionList, onFi
     }); 
     
     const users = userHook.useAllUsers(paginatorConfig.page, paginatorConfig.rows, paginatorConfig.value);
+    const userDetail = userHook.useUserById(selectedUser.value)?.data;
     const [options, setOptions] = useState([]);
     const [error, setError] = useState("");
     useEffect(() => {
@@ -32,13 +33,10 @@ const AddUserForm = ({showForm, closeForm, userType, userRoles, optionList, onFi
     }, [users?.data?.results, userType]);
     const handleSubmit = () => {
       const isValid = validateForm();
-      const userData = users?.data?.results?.filter(
-        (user) => user.employeeBadge === selectedUser.value
-      )?.[0];
       const roleId = userRoles?.filter((role) => role?.label === userType)?.[0]
         ?.value;
-      if (isValid && userData && roleId) {
-        const newData = { ...mapUserUpdateDetail(userData, optionList), roleId: roleId, updatedBy: SessionGetEmployeeId() };
+      if (isValid && userDetail && roleId) {
+        const newData = { ...mapUserUpdateDetail(userDetail, optionList), roleId: roleId, updatedBy: SessionGetEmployeeId() };
         confirmAction({
           onConfirm: () => {
             handleResponseAsync(

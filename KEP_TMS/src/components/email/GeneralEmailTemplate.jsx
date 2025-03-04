@@ -12,6 +12,8 @@ import handleResponseAsync from "../../services/handleResponseAsync";
 import ErrorTemplate from "../General/ErrorTemplate";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import emailService from "../../services/emailService";
+import commonHook from "../../hooks/commonHook";
+import { formatDateOnly } from "../../utils/datetime/Formatting";
 const GeneralEmailTemplate = ({
   requestData,
   userFormData,
@@ -27,15 +29,17 @@ const GeneralEmailTemplate = ({
     ? "Report"
     : typeId == ActivityType.EVALUATION
     ? "Evaluation"
+    : typeId == ActivityType.EXAM
+    ? "Exams"
     : "Request"
   const [addRecipient, setAddRecipinet] = useState(false);
-  const [addFormLink, setAddFormLink] = useState(true);
+  const [addFormLink, setAddFormLink] = useState(false);
   const [statusSelected, setStatusSelected] = useState("Pending");
   const [greeting, setGreeting] = useState("Good Day");
   const [emailContent, setEmailContent] = useState("");
   const [error, setError] = useState("");
   const [subject, setSubject] = useState(
-    `Reminder: Pending Training ${formType} Form Submission`
+    `Reminder: Pending Training ${formType} ${typeId == ActivityType.EXAM ? "" :"Form "}Submission`
   );
   const [recipients, setRecipients] = useState([]);
   const [urlPlaceholder, setUrlPlaceholder] = useState(
@@ -78,7 +82,10 @@ const GeneralEmailTemplate = ({
       return `${base}/Form/Evaluation`
     }else if(typeId === ActivityType.EFFECTIVENESS){
       return `${base}/Form/Effectiveness`
-    }else{
+    }else if(typeId === ActivityType.EXAM){
+      return `${base}/Exams`
+    }
+    else{
       return `${base}`
     }
   }
@@ -89,7 +96,7 @@ const GeneralEmailTemplate = ({
     }
     content += emailContent;
     if (addFormLink) {
-      content += `<a href="${getPageLink()}" className="text-primary">${urlPlaceholder ? urlPlaceholder : `${APPLICATION_BASE_URL}TrainingDetail/${requestData?.id}/Reports`}</a>`;
+      content += `<a href="${getPageLink()}" className="text-primary">${urlPlaceholder ? urlPlaceholder : getPageLink()}</a>`;
     }
     if(recipients?.length > 0){
     const rec = recipients?.map(item=> {
@@ -154,7 +161,7 @@ const GeneralEmailTemplate = ({
                   {addFormLink && (
                     <div className="px-2" ref={emailFormLinkRef}>
                       <p className="text-primary">
-                        {urlPlaceholder ? urlPlaceholder : `${APPLICATION_BASE_URL}TrainingDetail/${requestData?.id}/Reports`}
+                        {urlPlaceholder ? urlPlaceholder : getPageLink()}
                       </p>
                     </div>
                   )}
@@ -162,22 +169,6 @@ const GeneralEmailTemplate = ({
               </Form.Group>
 
               <hr />
-              {/* <Form.Check
-                type="checkbox"
-                label="Add Recipient Detail"
-                checked={addRecipient}
-                onChange={(e) => setAddRecipinet(e.target.checked)}
-                id="addRecipient"
-              />
-              {addRecipient && (
-                <>
-                  <Form.Control
-                    value={greeting}
-                    onChange={(e) => setGreeting(e.target.value)}
-                    placeholder="Greeting [e.g. 'Good Day']"
-                  />
-                </>
-              )} */}
               <Form.Check
                 className="mt-2"
                 type="checkbox"
@@ -198,16 +189,103 @@ const GeneralEmailTemplate = ({
 
               <div ref={emailTempContentRef} className="d-none">
                 <p>Good Day,</p>
-                <br />
                 <p>
-                  This is a reminder to complete and submit the Training
-                   &nbsp;{formType} Form for the training program &apos;
-                  {requestData?.trainingProgram?.name}&apos;.
-                </p><br />
+                  Please be reminded to complete and submit the training
+                   &nbsp;<b>{formType} {typeId == ActivityType.EXAM ? "" :"Form "}</b> for your training.
+                </p>
+                
+                <table
+                  border="1"
+                  cellPadding="5"
+                  cellSpacing="0"
+                  style={{
+                    borderCollapse: "collapse",
+                    width: "100%",
+                    fontFamily: "Arial, sans-serif",
+                  }}
+                >
+                  <tbody>
+                    <tr>
+                      <th
+                        style={{
+                          padding: "5px",
+                          textAlign: "left",
+                          fontSize: "16px",
+                          border: "1px solid",
+                          backgroundColor: "#f2f2f2",
+                        }}
+                      >
+                        Title
+                      </th>
+                      <td style={{ padding: "5px" }}>
+                        {requestData?.trainingProgram?.name}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th
+                        style={{
+                          padding: "5px",
+                          textAlign: "left",
+                          fontSize: "16px",
+                          border: "1px solid",
+                          backgroundColor: "#f2f2f2",
+                        }}
+                      >
+                        Form
+                      </th>
+                      <td style={{ padding: "5px" }}>
+                        {formType} {typeId == ActivityType.EXAM ? "" :"Form "}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th
+                        style={{
+                          padding: "5px",
+                          textAlign: "left",
+                          fontSize: "16px",
+                          border: "1px solid",
+                          backgroundColor: "#f2f2f2",
+                        }}
+                      >
+                      Training  Date
+                      </th>
+                      <td style={{ padding: "5px" }}>
+                        {requestData?.trainingStartDate ===
+                        requestData?.trainingEndDate
+                          ? formatDateOnly(requestData?.trainingStartDate)
+                          : `${formatDateOnly(
+                              requestData?.trainingStartDate
+                            )} - ${formatDateOnly(
+                              requestData?.trainingEndDate
+                            )}`}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th
+                        style={{
+                          padding: "5px",
+                          textAlign: "left",
+                          fontSize: "16px",
+                          border: "1px solid",
+                          backgroundColor: "#f2f2f2",
+                        }}
+                      >
+                       Facilitator/s
+                      </th>
+                      <td style={{ padding: "5px" }}>
+                        {
+                          commonHook.useFormattedFacilitatorList(
+                            requestData?.trainingFacilitators
+                          )?.data
+                        }
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
                 <p>
                   If you have any questions or need assistance with the form,
                   feel free to reach out to HR Department.
-                </p><br />
+                </p>
                 <p>Thank you for your cooperation.</p>
                 <p></p>
               </div>

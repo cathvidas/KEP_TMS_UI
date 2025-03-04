@@ -43,6 +43,7 @@ const TrainingFormsEmailTemplate = ({
     `Reminder: Pending Training ${formType} Form Submission`
   );
   const [recipients, setRecipients] = useState([]);
+  const [toCC, setToCC] = useState();
   const [urlPlaceholder, setUrlPlaceholder] = useState("view more details");
   useEffect(() => {
     if (userFormData) {
@@ -71,7 +72,7 @@ const TrainingFormsEmailTemplate = ({
         subject,
         body: content,
         recipients: rec,
-        toCC: [],
+        toCC: toCC?.map(({superiorBadge}) => superiorBadge) ?? [],
         sender: SessionGetEmployeeId(),
       });
     } else {
@@ -151,6 +152,15 @@ const TrainingFormsEmailTemplate = ({
     evaluation: item?.evaluationDetail?.id ? "Submitted" : "Not yet Submitted",
     exam: getExamSumary(item?.userDetail?.employeeBadge),
   }));
+  const getSuperiors = ()=>{
+    let superiors = [];
+    recipients?.forEach(user=>{
+      if(user?.userDetail?.superiorBadge && !(superiors?.some(superior=>superior?.superiorBadge === user?.userDetail?.superiorBadge))){
+        superiors.push({superiorBadge: user?.userDetail?.superiorBadge, superiorName: user?.userDetail?.superiorName})
+      }
+    })
+    return superiors;
+  }
   return (
     <>
       <Card>
@@ -204,59 +214,97 @@ const TrainingFormsEmailTemplate = ({
                   )}
                 </div>
               </Form.Group>
-              {!disableFormLink && <>
-              <hr />
-              <Form.Check
-                className="mt-2"
-                type="checkbox"
-                label="Add Form Link"
-                checked={addFormLink}
-                onChange={(e) => setAddFormLink(e.target.checked)}
-                id="addFormLink"
-              />
-              {addFormLink && (
+              {!disableFormLink && (
                 <>
-                  <Form.Control
-                    value={urlPlaceholder}
-                    onChange={(e) => setUrlPlaceholder(e.target.value)}
-                    placeholder="Link placeholder"
+                  <hr />
+                  <Form.Check
+                    className="mt-2"
+                    type="checkbox"
+                    label="Add Form Link"
+                    checked={addFormLink}
+                    onChange={(e) => setAddFormLink(e.target.checked)}
+                    id="addFormLink"
                   />
+                  {addFormLink && (
+                    <>
+                      <Form.Control
+                        value={urlPlaceholder}
+                        onChange={(e) => setUrlPlaceholder(e.target.value)}
+                        placeholder="Link placeholder"
+                      />
+                    </>
+                  )}
                 </>
-              )}</>}
+              )}
 
               <div ref={emailTempContentRef} className="d-none">
+                <p>Good Day,</p>
                 <p>
-                  Good Day,
-                  <br />
-                  <br />
-                  This is a reminder to complete and submit the Training &nbsp;
-                  {formType} Form for the training program &apos;
+                  Please be reminded to complete and submit the following
+                  training forms for the training program &apos;
                   {requestData?.trainingProgram?.name}&apos;.
-                  <br />
-                  <br />
-                  If you have any questions or need assistance with the form,
-                  feel free to reach out to HR Department.
                 </p>
-                <p>Thank you for your cooperation.</p>
-                <table>
+                <p>
+                  If you have any questions or need assistance with the form,
+                  feel free to reach out to HR Department. Thank you for your
+                  cooperation.
+                </p>
+                <table
+                  border="1"
+                  cellPadding="5"
+                  cellSpacing="0"
+                  style={{
+                    borderCollapse: "collapse",
+                    width: "100%",
+                    fontFamily: "Arial, sans-serif",
+                  }}
+                >
                   <tbody>
                     <tr>
-                      <td style={{ backgroundColor: "#f2f2f2" }}>
-                        <strong>Title:</strong>
+                      <th
+                        style={{
+                          padding: "5px",
+                          textAlign: "left",
+                          fontSize: "16px",
+                          border: "1px solid",
+                          backgroundColor: "#f2f2f2",
+                        }}
+                      >
+                        Title
+                      </th>
+                      <td style={{ padding: "5px" }}>
+                        {requestData?.trainingProgram?.name}
                       </td>
-                      <td>{requestData?.trainingProgram?.name}</td>
                     </tr>
                     <tr>
-                      <td style={{ backgroundColor: "#f2f2f2" }}>
-                        <strong>Number of Participants:</strong>
+                      <th
+                        style={{
+                          padding: "5px",
+                          textAlign: "left",
+                          fontSize: "16px",
+                          border: "1px solid",
+                          backgroundColor: "#f2f2f2",
+                        }}
+                      >
+                        Number of Participants
+                      </th>
+                      <td style={{ padding: "5px" }}>
+                        {requestData?.totalParticipants}
                       </td>
-                      <td>{requestData?.totalParticipants}</td>
                     </tr>
                     <tr>
-                      <td style={{ backgroundColor: "#f2f2f2" }}>
-                        <strong>Date:</strong>
-                      </td>
-                      <td>
+                      <th
+                        style={{
+                          padding: "5px",
+                          textAlign: "left",
+                          fontSize: "16px",
+                          border: "1px solid",
+                          backgroundColor: "#f2f2f2",
+                        }}
+                      >
+                        Date
+                      </th>
+                      <td style={{ padding: "5px" }}>
                         {requestData?.trainingStartDate ===
                         requestData?.trainingEndDate
                           ? formatDateOnly(requestData?.trainingStartDate)
@@ -268,10 +316,24 @@ const TrainingFormsEmailTemplate = ({
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ backgroundColor: "#f2f2f2" }}>
-                        <strong>Facilitator/s:</strong>
+                      <th
+                        style={{
+                          padding: "5px",
+                          textAlign: "left",
+                          fontSize: "16px",
+                          border: "1px solid",
+                          backgroundColor: "#f2f2f2",
+                        }}
+                      >
+                        Facilitator/s
+                      </th>
+                      <td style={{ padding: "5px" }}>
+                        {
+                          commonHook.useFormattedFacilitatorList(
+                            requestData?.trainingFacilitators
+                          )?.data
+                        }
                       </td>
-                      <td>{commonHook.useFormattedFacilitatorList(requestData?.trainingFacilitators)?.data}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -281,7 +343,9 @@ const TrainingFormsEmailTemplate = ({
             {showRecipients && (
               <Col className="col-md-3 border-end px-3">
                 <div className="flex justify-content-between">
-                  <h5 className="m-0">Recipients {`(${recipients?.length})`}</h5>
+                  <h5 className="m-0">
+                    Recipients {`(${recipients?.length})`}
+                  </h5>
                   {showRecipients && (
                     <Button
                       type="button"
@@ -307,6 +371,36 @@ const TrainingFormsEmailTemplate = ({
                     field="fullname"
                     header="Name"
                     body={(rowData) => <>{rowData?.userDetail?.fullname}</>}
+                  ></Column>
+                </DataTable>
+                <ErrorTemplate message={error} />
+                <div className="flex justify-content-between">
+                  <h5 className="m-0">To CC {`(${toCC?.length ?? 0})`}</h5>
+                  {showRecipients && (
+                    <Button
+                      type="button"
+                      text
+                      icon="pi pi-angle-up"
+                      label={`Hide`}
+                      onClick={() => setShowRecipients(!showRecipients)}
+                    />
+                  )}{" "}
+                </div>
+                <DataTable
+                  size="small"
+                  value={getSuperiors()}
+                  selectionMode={true}
+                  selection={toCC}
+                  onSelectionChange={(e) => setToCC(e.value)}
+                >
+                  <Column
+                    selectionMode="multiple"
+                    headerStyle={{ width: "3rem" }}
+                  ></Column>
+                  <Column
+                    field="fullname"
+                    header="Name"
+                    body={(rowData) => <>{rowData?.superiorName}</>}
                   ></Column>
                 </DataTable>
                 <ErrorTemplate message={error} />

@@ -75,7 +75,7 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
           ? categoryService.updateCategory(data)
           : categoryService.createCategory(data),
       (e) => {
-        actionSuccessful(`Success!`, e.message);
+        actionSuccessful(`Success!`, e?.message);
         onFinish();
       },
       (error) => setErrors({ value: error.message })

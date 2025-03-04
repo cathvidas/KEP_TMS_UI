@@ -49,7 +49,7 @@ export const ActivityType = {
 export const UserTypeValue = {
   ADMIN: "Admin",
   FACILITATOR: "Facilitator",
-  TRAINEE: "Trainee",
+  USER: "User",
   SUPER_ADMIN: "SuperAdmin",
   APPROVER: "Approver",
   REQUESTOR: "Requester",

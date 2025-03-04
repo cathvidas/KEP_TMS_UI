@@ -13,7 +13,7 @@ const validateExamForm = (data) => {
         errors.questionLimit = "Number of questions to display is required";
         isValid = false;
     }
-    if (data.examQuestion?.length < data?.questionLimit ) {
+    if (data.examQuestions?.length < data?.questionLimit ) {
         errors.examQuestion = "You must add at least " + data?.questionLimit + " questions";
         isValid = false;
     }

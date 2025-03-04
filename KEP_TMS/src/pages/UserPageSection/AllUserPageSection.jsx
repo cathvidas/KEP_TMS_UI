@@ -98,9 +98,9 @@ const AllUserPageSection = ({
     </ButtonGroup>
   );
   const handleRemoveUser = (data) => {
-    const roleId = options?.options?.roles?.filter(
-      (role) => role.label === UserTypeValue.TRAINEE
-    )?.[0]?.value;
+    const roleId = options?.options?.roles?.find(
+      (role) => role.label === UserTypeValue.USER
+    )?.value;
     const newData = {
       ...mapUserUpdateDetail(data, options?.options),
       roleId: roleId,
