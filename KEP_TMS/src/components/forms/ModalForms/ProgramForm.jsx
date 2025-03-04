@@ -31,7 +31,6 @@ const ProgramForm = ({ handleShow, handleClose, selectedData, onReload }) => {
     setErrors(formErrors);
     return Object.keys(formErrors)?.length === 0;
   };
-
   useEffect(() => {
     if (validated) {
       validateForm();

@@ -185,7 +185,7 @@ const ExternalFacilitatorListSection = () => {
           >
             <Modal.Header closeButton>
               <Modal.Title className={`h5 theme-color`}>
-                Program Details
+                Facilitator Details
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>

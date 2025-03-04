@@ -141,26 +141,19 @@ const CategoryListSection = () => {
           >
             <Modal.Header closeButton>
               <Modal.Title className={`h5 theme-color`}>
-                Program Details
+                Category Details
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <h6>Name: </h6>
-              <p>{selectedData?.name}</p>
-              <h6>Description: </h6>
-              <p>{selectedData?.description}</p>
-              <h6>Status: </h6>
-              <p>{selectedData?.status}</p>
-              <h6 className="m-0">Created: </h6>
-              <p>
-                {formatDateOnly(selectedData?.createdDate)} by{" "}
-                {selectedData?.createdBy}
-              </p>
-              <h6 className="m-0">Updated: </h6>
-              <p>
-                {formatDateOnly(selectedData?.updatedDate)} by{" "}
-                {selectedData?.updatedBy}
-              </p>
+            <p><strong>Name: </strong><span>{selectedData?.name}</span></p>
+            <p><strong>Description: </strong><span>{selectedData?.description}</span></p>
+            <p><strong>Status: </strong><span>{selectedData?.status}</span></p>
+            <p><strong>Created: </strong><span>
+              {selectedData?.createdDate ? `${formatDateOnly(selectedData?.createdDate)} by ${selectedData?.createdBy}` : "N/A"}
+             </span></p>
+            <p><strong>Updated: </strong><span>
+              {selectedData?.updatedDate ? `${formatDateOnly(selectedData?.updatedDate)} by ${selectedData?.updatedBy}` : "N/A"}
+              </span></p>
             </Modal.Body>
             <Modal.Footer>
               <Button
