@@ -9,7 +9,7 @@ import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import logo from "../../img/Knowles_Gray_RGB.png";
 import CertificateContent from "./CertificateContent";
 import userHook from "../../hooks/userHook";
-const CertificateTemplate = ({ trainings, signatoryList, isFacilitator }) => {
+const CertificateTemplate = ({ trainings, signatoryList, isFacilitator, userDetail }) => {
   const certRef = useRef();
   const certHeaderTempRef = useRef();
   const certHeaderRef = useRef();
@@ -74,6 +74,7 @@ const CertificateTemplate = ({ trainings, signatoryList, isFacilitator }) => {
     <>
       <div ref={certRef} className="d-none showExport">
         <CertificateContent
+          userDetail={userDetail}
           trainings={trainings}
           signatory={signatoryList?.find(
             (item) => item?.employeeBadge === signatory?.value
@@ -184,5 +185,6 @@ CertificateTemplate.propTypes = {
   trainings: proptype.array,
   signatoryList: proptype.array,
   isFacilitator: proptype.bool,
+  userDetail: proptype.object,
 };
 export default CertificateTemplate;

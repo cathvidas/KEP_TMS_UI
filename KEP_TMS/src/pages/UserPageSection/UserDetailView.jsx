@@ -81,7 +81,7 @@ const stackedTrainings = trainingRequestHook.usePagedTrainingRequest(1, 1000, is
 const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
   const columnItem = [
     {field: "id", header: "Request #", },
-    { field: "requesterName", header: "Name", body: <>{data?.fullname}</> },
+    { field: "requesterName", header: "Requester Name", body: <>{data?.fullname}</> },
     { field: "program", header: "Program" },
     {
       field: "requesterName",
@@ -260,6 +260,7 @@ const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
               trainings={stackedTrainings?.data?.results}
               isFacilitator={isFacilitator}
               signatoryList={adminList}
+              userDetail={data}
             />
           </CardBody>
         </Card>

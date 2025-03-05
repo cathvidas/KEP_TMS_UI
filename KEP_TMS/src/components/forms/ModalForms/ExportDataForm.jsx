@@ -21,7 +21,7 @@ const ExportDataForm = ({trainingType})=>{
       { value: getStatusById(statusCode.SUBMITTED), label: "Submitted" },
       { value: getStatusById(statusCode.CLOSED), label: "Closed" },
       { value: getStatusById(statusCode.INACTIVE), label: "Cancelled" },
-      { value: "", label: "All" },
+      { value: "null", label: "All" },
     ];
     const [data, setData] = useState();
     const [error, setError] = useState(null);
@@ -36,7 +36,8 @@ const ExportDataForm = ({trainingType})=>{
               1000,
               SearchValueConstant.DATERANGE, 
               formatDateOnly(options.startDate) + " - "+formatDateOnly(options.endDate), 
-              options.status?.value, trainingType == TrainingType.INTERNAL ? "Internal" : "External"
+              options.status?.value, 
+              trainingType == TrainingType.INTERNAL ? "Internal" : "External"
             ),
           (e) => {setData(e);setLoading(false)},
           (e) => setError(e?.message ?? e),

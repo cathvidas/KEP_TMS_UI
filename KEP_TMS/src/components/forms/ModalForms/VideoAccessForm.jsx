@@ -48,13 +48,17 @@ const VideoAccessForm = ({
   }, [trainingRequests?.data?.results, userType, dataList]);
 
   const handleSubmit = () => {
+    if(!selectedItem?.value) {
+      setError("No training request selected")
+      return
+    }
     const formData = new FormData();
     formData.append("attachmentIds", data?.id);
       confirmAction({
         onConfirm: () => {
           handleResponseAsync(
             () => attachmentService.addAttachmentsAccess(selectedItem?.value, formData, SessionGetEmployeeId()),
-            (e) => actionSuccessful("Success!", e.message),
+            () => actionSuccessful("Success!", "Successfully added access to video"),
             (e) => actionFailed("Error!", e.message),
             onFinish
           );

@@ -22,22 +22,27 @@ export const AddAttachmentsAccessApi = async (id, data, creator) => {
   return await fetchFromApi(`/Attachment/AddAttachmentsAccess?requestId=${id}&createdBy=${creator}`, "POST", data, {'Content-Type': 'multipart/form-data'});
 }
 export const GetAttachmentsApi = async (pageNumber, pageSize, searchValue, SecondSearchValue) =>{
-  if(SecondSearchValue && searchValue){
-      return await fetchFromApi(`Attachment/GetAttachment?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}`);
-  }else if(searchValue){
-    return await fetchFromApi(`Attachment/GetAttachment?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);
+  let url = `Attachment/GetAttachment?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+  if (searchValue) {
+    url += `&searchValue=${searchValue}`;
   }
-  return await fetchFromApi(`Attachment/GetAttachment?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+  if (SecondSearchValue) {
+    url += `&secondSearchValue=${SecondSearchValue}`;
+  }
+  return await fetchFromApi(url);
 }
 export const GetAttachmentAccessApi = async (pageNumber, pageSize, searchValue, SecondSearchValue,thirdSearchValue) =>{
-  if(SecondSearchValue && searchValue && thirdSearchValue){
-    return await fetchFromApi(`Attachment/GetAttachmentAccess?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}&thirdSearchValue=${thirdSearchValue}`);
-}else if(SecondSearchValue && searchValue){
-      return await fetchFromApi(`Attachment/GetAttachmentAccess?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}`);
-  }else if(searchValue){
-    return await fetchFromApi(`Attachment/GetAttachmentAccess?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);
+  let url = `Attachment/GetAttachmentAccess?pageNumber=${pageNumber}&pageSize=${pageSize}`
+  if (searchValue) {
+    url += `&searchValue=${searchValue}`;
   }
-  return await fetchFromApi(`Attachment/GetAttachmentAccess?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+  if (SecondSearchValue) {
+    url += `&secondSearchValue=${SecondSearchValue}`;
+  }
+  if (thirdSearchValue) {
+    url += `&thirdSearchValue=${thirdSearchValue}`;
+  }
+  return await fetchFromApi(url);
 }
 export const DeleteAttachmentAccessApi = async (id) =>{
     return await fetchFromApi(`/Attachment/DeleteAttachmentAccess?Id=${id}`, "DELETE");

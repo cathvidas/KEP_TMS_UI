@@ -13,7 +13,11 @@ import { SessionGetEmployeeId } from "../../services/sessions";
 import TraineeStatusTemplate from "../TrainingPageComponents/TraineeStatusColumn";
 import RequestStatusColumn from "../TrainingPageComponents/RequestStatusColumn";
 import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
-import { SearchValueConstant, statusCode } from "../../api/constants";
+import {
+  SearchValueConstant,
+  statusCode,
+  TrainingType,
+} from "../../api/constants";
 import trainingRequestHook from "../../hooks/trainingRequestHook";
 import { Paginator } from "primereact/paginator";
 import getStatusById from "../../utils/status/getStatusById";
@@ -28,7 +32,7 @@ const TrainingRequestList = ({
   isTrainee,
   isFacilitator,
   requestStatus,
-  trainingType
+  trainingType,
 }) => {
   const [paginatorConfig, setPaginatorConfig] = useState({
     first: 0,
@@ -36,7 +40,15 @@ const TrainingRequestList = ({
     page: 1,
     value: "",
   });
-  const { data, error, loading } = (isAdmin && (requestStatus !== statusCode.DRAFTED))
+  const { data, error, loading } = trainingType
+    ? trainingRequestHook.usePagedTrainingRequest(
+        paginatorConfig.page,
+        paginatorConfig.rows,
+        SearchValueConstant.TRAINING_TYPE,
+        trainingType == TrainingType.INTERNAL ? "Internal" : "External",
+        paginatorConfig.value
+      )
+    : isAdmin && requestStatus !== statusCode.DRAFTED
     ? trainingRequestHook.usePagedTrainingRequest(
         paginatorConfig.page,
         paginatorConfig.rows,
@@ -44,11 +56,13 @@ const TrainingRequestList = ({
         requestStatus ? getStatusById(requestStatus) : null,
         requestStatus ? paginatorConfig.value : null
       )
-    : (isRequestor || isFacilitator)
+    : isRequestor || isFacilitator
     ? trainingRequestHook.usePagedTrainingRequest(
         paginatorConfig.page,
         paginatorConfig.rows,
-       isRequestor ? SearchValueConstant.REQUESTER : SearchValueConstant.FACILITATOR,
+        isRequestor
+          ? SearchValueConstant.REQUESTER
+          : SearchValueConstant.FACILITATOR,
         SessionGetEmployeeId(),
         requestStatus ? getStatusById(requestStatus) : paginatorConfig.value,
         requestStatus ? paginatorConfig.value : null
@@ -131,7 +145,7 @@ const TrainingRequestList = ({
             className="rounded-pill"
           />
         </IconField>
-        {isAdmin && <ExportDataForm trainingType={trainingType}/>}
+        {isAdmin && <ExportDataForm trainingType={trainingType} />}
       </div>
     );
   };

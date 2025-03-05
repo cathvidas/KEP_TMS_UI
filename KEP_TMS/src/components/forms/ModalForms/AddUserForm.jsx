@@ -4,7 +4,7 @@ import proptype from "prop-types"
 import { FormFieldItem } from "../../trainingRequestFormComponents/FormElements";
 import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
-import { UserTypeValue } from "../../../api/constants";
+import { statusCode, UserTypeValue } from "../../../api/constants";
 import mapUserUpdateDetail from "../../../services/DataMapping/mapUserUpdateDetails";
 import { actionFailed, actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import handleResponseAsync from "../../../services/handleResponseAsync";
@@ -36,7 +36,7 @@ const AddUserForm = ({showForm, closeForm, userType, userRoles, optionList, onFi
       const roleId = userRoles?.filter((role) => role?.label === userType)?.[0]
         ?.value;
       if (isValid && userDetail && roleId) {
-        const newData = { ...mapUserUpdateDetail(userDetail, optionList), roleId: roleId, updatedBy: SessionGetEmployeeId() };
+        const newData = { ...mapUserUpdateDetail(userDetail, optionList), roleId: roleId, updatedBy: SessionGetEmployeeId(), statusId: statusCode.ACTIVE };
         confirmAction({
           onConfirm: () => {
             handleResponseAsync(

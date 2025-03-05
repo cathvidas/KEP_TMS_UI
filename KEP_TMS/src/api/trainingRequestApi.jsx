@@ -28,14 +28,18 @@ export const GetTrainingRequestSummaryApi = async (id) =>{
     return await fetchFromApi(`TrainingRequest/GetTrainingRequestSummary?employeeBadge=${id}`);
 }
 export const getPagedTrainingRequestsApi = async (pageNumber, pageSize, searchValue, SecondSearchValue, thirdSearchValue, fourthSearchValue) =>{
-    if(SecondSearchValue && searchValue && thirdSearchValue, fourthSearchValue){
-        return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}&thirdSearchValue=${thirdSearchValue}&FourthSearchValue=${fourthSearchValue}`);
-    }else if(SecondSearchValue && searchValue && thirdSearchValue){
-        return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}&thirdSearchValue=${thirdSearchValue}`);
-    }else if(SecondSearchValue && searchValue){
-        return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}&secondSearchValue=${SecondSearchValue}`);
-    }else if(searchValue){
-      return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);
+    let url = `TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    if(searchValue){
+        url += `&searchValue=${searchValue}`
     }
-    return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+    if(SecondSearchValue){
+        url += `&secondSearchValue=${SecondSearchValue}`
+    }
+    if(thirdSearchValue && thirdSearchValue !== 'null'){
+        url += `&thirdSearchValue=${thirdSearchValue}`
+    }
+    if(fourthSearchValue){
+        url += `&fourthSearchValue=${fourthSearchValue}`
+    }
+    return await fetchFromApi(url);
 }

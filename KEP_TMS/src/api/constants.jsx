@@ -63,14 +63,15 @@ export const OtherConstant = {
   EFFECTIVENESS_MINHOUR : 16
 }
 export const SearchValueConstant = {
-  FACILITATOR : 'Facilitator',
-  REQUESTER : 'Requester',
-  PARTICIPANT : 'Participant',
-  REQ_STATUS: "Status",
+  FACILITATOR : 'facilitator',
+  REQUESTER : 'requester',
+  PARTICIPANT : 'participant',
+  REQ_STATUS: "status",
   VIDEOS: "video",
-  ATTACHMENT: "Attachment",
-  REQUEST: "Request",
+  ATTACHMENT: "attachment",
+  REQUEST: "request",
   DATERANGE: "daterange",
   FACILITATED: "facilitated",
   ATTENDED: "attended",
+  TRAINING_TYPE: "trainingtype",
 }
