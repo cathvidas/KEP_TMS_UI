@@ -13,11 +13,6 @@ import categoryHook from "../../../hooks/categoryHook";
 const VideoUploadForm = ({ handleClose, handleShow, selectedData, onSuccess }) => {
   const [errors, setErrors] = useState({});
   const [category, setCategory] = useState({});
-  const [validated, setValidated] = useState({});
-  const [options] = useState([
-    { label: "Active", value: true },
-    { label: "Inactive", value: false },
-  ]);
   const validFileTypes = [
     "video/*",
     "video/mp4",
@@ -29,6 +24,10 @@ const VideoUploadForm = ({ handleClose, handleShow, selectedData, onSuccess }) =
   const categories = categoryHook.useAllCategories(true);
   const fileUploadRef = useRef(null);
   const handleSubmit = () => {
+    if (!category?.value) {
+      setErrors("Category is required");
+      return;
+    }
     const files = fileUploadRef.current?.getFiles(); // getFiles() returns an array of files
     const formData = new FormData();
     formData.append("AttachmentType", attachmentType.VIDEO);
@@ -77,12 +76,11 @@ const VideoUploadForm = ({ handleClose, handleShow, selectedData, onSuccess }) =
         </Modal.Title>
       </Modal.Header>
       <Form
-        className={validated && "was-validated"}
         noValidate
       >
         <Modal.Body className="py-0">
-          {errors.value && (
-            <p className="text-red text-center">{errors.value}</p>
+          {errors && (
+            <p className="text-red text-center">{errors}</p>
           )}
           <Row className="g-3">
               <Col className="col-12">
