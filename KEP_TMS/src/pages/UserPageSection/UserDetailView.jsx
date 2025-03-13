@@ -79,8 +79,9 @@ const stackedTrainings = trainingRequestHook.usePagedTrainingRequest(1, 1000, is
 const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
   const columnItem = [
     {field: "id", header: "Request #", },
-    { field: "requesterName", header: "Requester Name", body: <>{data?.fullname}</> },
     { field: "program", header: "Program" },
+    { field: "requesterName", header: "Provider", 
+      body: (rowData) => <>{rowData?.trainingProvider?.name ?? "Knowles Electronics (Philippines) Corporation"}</>, },
     {
       field: "requesterName",
       header: "Training Dates",

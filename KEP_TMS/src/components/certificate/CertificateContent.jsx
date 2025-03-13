@@ -65,6 +65,14 @@ const CertificateContent = ({ trainings, isFacilitator, userDetail }) => {
                         textAlign: "center",
                         padding: "10px",
                       }}>
+                      Training Provider
+                  </th>
+                  <th 
+                      style={{
+                        verticalAlign: "middle",
+                        textAlign: "center",
+                        padding: "10px",
+                      }}>
                       Training Date
                   </th>
                   <th
@@ -80,8 +88,11 @@ const CertificateContent = ({ trainings, isFacilitator, userDetail }) => {
               <tbody>
                 {trainings?.map((training) => (
                   <tr key={training.id}>
+                  <td style={{ padding: "10px" }}>
+                    {training.trainingProgram?.name}
+                  </td>
                     <td style={{ padding: "10px" }}>
-                      {training.trainingProgram?.name}
+                      {training?.trainingProvider?.name ?? "Knowles Electronics (Philippines) Corporation"}
                     </td>
                     <td style={{ padding: "10px" }}>
                       {GenerateTrainingDates(training.trainingDates)}
