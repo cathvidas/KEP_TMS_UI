@@ -41,11 +41,6 @@ const trainingReportService = {
   },
   getApproverAssignedReports: async (id) => {
     const response = await getApproverAssignedReportsApi(id);
-    response?.map( async item =>{
-      const currentRouting = item?.routingActivity;
-      const approverDetail =await userService.getUserById(currentRouting?.assignedTo);
-      item.routingActivity = {...currentRouting, assignedDetail: approverDetail};
-    })
     return response;
   },
   approveTrainingReport: async (data)=>{

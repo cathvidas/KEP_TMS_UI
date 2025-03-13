@@ -1,6 +1,5 @@
 import { approveTrainingFormApi, disapproveActivityApi } from "../api/commonApi";
-import { statusCode } from "../api/constants";
-import {createTrainingRequestApi, getAllTrainingRequestsApi, getPagedTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestByFacilitatorIdApi, getTrainingRequestByTraineeIdApi, getTrainingRequestsByRequestorApi, GetTrainingRequestSummaryApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
+import {createTrainingRequestApi, getPagedTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestByFacilitatorIdApi, getTrainingRequestByTraineeIdApi, getTrainingRequestsByRequestorApi, GetTrainingRequestSummaryApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
 
 const trainingRequestService = {
   approveTrainingRequest: async (data) => {
@@ -10,10 +9,6 @@ const trainingRequestService = {
   disapproveTrainingRequest: async (data) => {
     const response = await disapproveActivityApi(data);
     return response;
-  },
-  getAllTrainingRequests: async () => {
-    const response = await getAllTrainingRequestsApi();
-    return response?.status === 1 ? response?.data : [];
   },
   getTrainingRequest: async (id) => {
     const response = id && await getTrainingRequestApi(id) ;
@@ -59,37 +54,6 @@ const trainingRequestService = {
       throw new Error(response.message);
     }
     return response?.data;
-  },
-  getTrainingRequestByParticipant: async (id, role) => {
-    const response = id && await getAllTrainingRequestsApi(id);
-    if (response.status !== 1) {
-      return [];
-    }
-    let request = [];
-    response?.data.forEach((item) => {
-      let isParticipant = false;
-      if (role === "trainer") {
-        item?.trainingFacilitators?.map((x) => {
-          if (x?.facilitatorBadge === id) {
-            isParticipant = true;
-          }
-        });
-      } else {
-        item?.trainingParticipants?.map((x) => {
-          if (x?.employeeBadge === id) {
-            isParticipant = true;
-          }
-        });
-      }
-      if (isParticipant) {
-        if (role === "trainer" && item?.status?.id === statusCode.APPROVED) {
-          request.push(item);
-        } else {
-          request.push(item);
-        }
-      }
-    });
-    return request;
   },
 };
 export default trainingRequestService;

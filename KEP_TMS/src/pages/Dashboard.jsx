@@ -22,9 +22,9 @@ const Dashboard = () => {
     SessionGetEmployeeId()
   );
   const pendings =  activityLogHook.useUserPendingTaskList(SessionGetEmployeeId())
-  const trainerAssignedData = trainingRequestHook.useParticipantTrainings(
-    SessionGetEmployeeId(),
-    "trainer"
+  const trainerAssignedData =
+  trainingRequestHook.usePagedTrainingRequest(1, 10, SearchValueConstant.FACILITATOR,
+    SessionGetEmployeeId()
   );
   const trainingRequests = trainingRequestHook.useTrainingRequestSummary(SessionGetEmployeeId())?.data;
   const values = [
@@ -90,15 +90,13 @@ const Dashboard = () => {
       label: "Facilitated Trainings",
       color: "#ff6bbd",
       value:
-        trainerAssignedData?.mappedData?.approved?.length +
-        trainerAssignedData?.mappedData?.closed?.length +
-        trainerAssignedData?.mappedData?.published?.length,
+        trainerAssignedData?.data?.totalRecords,
       icon: "pi pi-tag",
       status: "FacilitatedTrainings",
       isRequest: false,
       loading: trainerAssignedData?.loading,
       url: "/FacilitatedTrainings",
-      disabled: !(trainerAssignedData?.data?.length > 0 || SessionGetRole() === UserTypeValue.FACILITATOR),
+      disabled: !(trainerAssignedData?.data?.totalRecords > 0 || SessionGetRole() === UserTypeValue.FACILITATOR),
     },
     {
       label: "Enrolled Trainings",

@@ -13,7 +13,6 @@ import {
 } from "../../utils/datetime/Formatting";
 import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
-import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CertificateTemplate from "../../components/certificate/CertificateTemplate";
 import CertificatesList from "../../components/certificate/CertificatesList";
 import { SearchValueConstant, UserTypeValue } from "../../api/constants";
@@ -59,7 +58,6 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
   const [trigger, setTrigger] = useState(0);
   const { data, error, loading } = userHook.useUserById(id, trigger);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
-  const trainings = trainingRequestHook.useUserTrainingsSummary(id);
   const [showCertForm, setShowCertForm] = useState(false);
   const [isFacilitator, setIsFacilitator] = useState(false);
   const superiorName = userHook.useUserById(data?.superiorBadge)?.data?.fullname;
@@ -154,9 +152,6 @@ const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
           <br />
           <Card>
             <CardBody>
-              {trainings?.loading ? (
-                <SkeletonDataTable />
-              ) : (
                 <Row>
                   <TabView className="custom-tab">
                     <TabPanel header={"Trainings Attended"}>
@@ -195,7 +190,7 @@ const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
                         }
                       />
                     </TabPanel>
-                    {(trainings?.data?.facilitated?.length > 0 || data?.roleName === UserTypeValue.FACILITATOR) &&
+                    {(facilitatedTrainings?.data?.totalRecords > 0 || data?.roleName === UserTypeValue.FACILITATOR) &&
                     <TabPanel header={"Trainings Facilitated"}>
                       <CommonTable
                       hidePaginator
@@ -240,7 +235,6 @@ const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
                     </TabPanel>
                   </TabView>
                 </Row>
-              )}
             </CardBody>
           </Card>
         </>

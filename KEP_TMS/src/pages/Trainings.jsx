@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Layout from "../components/General/Layout";
 import TrainingRequestList from "../components/List/TrainingRequestList";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
-import trainingRequestHook from "../hooks/trainingRequestHook";
 import { SessionGetEmployeeId } from "../services/sessions";
 import { useNavigate, useParams } from "react-router-dom";
 import MenuContainer from "../components/menus/MenuContainer";
@@ -21,10 +20,6 @@ const Trainings = () => {
   const pendings = activityLogHook.useUserPendingTaskList(
     SessionGetEmployeeId()
   );
-  const trainerAssignedData = trainingRequestHook.useParticipantTrainings(
-    SessionGetEmployeeId(),
-    "trainer"
-  );
   const {data} = effectivenessHook.useEvaluatorAssignedEffectiveness(
     SessionGetEmployeeId(), trigger
   );
@@ -39,7 +34,7 @@ const Trainings = () => {
     } else {
       setCurrentContent(0);
     }
-  }, [page, trainerAssignedData]);
+  }, [page]);
   const items = [
     {
       items: [

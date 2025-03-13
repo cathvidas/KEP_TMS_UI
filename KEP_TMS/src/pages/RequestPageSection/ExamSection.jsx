@@ -8,7 +8,6 @@ import cardHeaderImg from "../../img/examHeader.png";
 import { Card } from "primereact/card";
 import ExamForm from "../../components/forms/ExamForm";
 import { SectionHeading } from "../../components/General/Section";
-import { CompareDateWithToday } from "../../utils/datetime/dateComparison";
 import trainingDetailsService from "../../services/common/trainingDetailsService";
 
 const ExamSection = ({ data }) => {

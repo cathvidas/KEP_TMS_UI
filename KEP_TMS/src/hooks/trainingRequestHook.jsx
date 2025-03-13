@@ -4,9 +4,6 @@ import userMapping from "../services/DataMapping/userMapping";
 import userService from "../services/userService";
 import handleResponseAsync from "../services/handleResponseAsync";
 import { ActivityType, SearchValueConstant, statusCode } from "../api/constants";
-import mapUserTrainings, {
-  mappedTrainingRequestByStatus,
-} from "../services/DataMapping/mapUserTrainings";
 import trainingReportService from "../services/trainingReportService";
 import evaluationService from "../services/evaluationService";
 import effectivenessService from "../services/effectivenessService";
@@ -73,105 +70,6 @@ const trainingRequestHook = {
       error,
       loading,
     };
-  },
-
-  useAllTrainingRequests: (id = 0) => {
-    const [data, setData] = useState([]);
-    const [mappedData, setMappedData] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      const fetchData = async () => {
-        handleResponseAsync(
-          () =>
-            id !== 0
-              ? trainingRequestService.getTrainingRequestsByRequestor(id)
-              : trainingRequestService.getAllTrainingRequests(),
-          async (e) => {
-            setData(e);
-            setMappedData(mappedTrainingRequestByStatus(e));
-            setLoading(false);
-          },
-          (e) => setError(e)
-        );
-      };
-      fetchData();
-    }, [id]);
-    return {
-      data,
-      mappedData,
-      error,
-      loading,
-    };
-  },
-  useParticipantTrainings: (id, role) => {
-    const [data, setData] = useState([]);
-    const [mappedData, setMappedData] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      const fetchData = async () => {
-        handleResponseAsync(
-          () =>
-            trainingRequestService.getTrainingRequestByParticipant(id, role),
-          async (e) => {
-            const updatedRequests = await Promise.all(
-              e.map(async (request) => {
-                const facilitators = await userMapping.mapUserIdList(
-                  request.trainingFacilitators,
-                  "facilitatorBadge"
-                );
-                const approver = await commonService.getCurrentRouting(
-                  request.id,
-                  ActivityType.REQUEST
-                );
-                const user = await userService.getUserById(approver.assignedTo);
-                const routing = {
-                  approverUsername: user.username,
-                  approverFullName: user.lastname + ", " + user.firstname,
-                  statusId: approver.statusId,
-                  approverId: user.employeeBadge,
-                  approverPosition: user.position,
-                };
-                return {
-                  ...request,
-                  trainingFacilitators: facilitators,
-                  routing: routing, // Replace with detailed facilitator information
-                };
-              })
-            );
-            setData(updatedRequests);
-            setMappedData(mappedTrainingRequestByStatus(updatedRequests));
-          },
-          (e) => setError(e),
-          () => setLoading(false)
-        );
-      };
-      fetchData();
-    }, [id, role]);
-    return {
-      data,
-      mappedData,
-      error,
-      loading,
-    };
-  },
-  useUserTrainingsSummary: (id) => {
-    const [data, setData] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      const fetchData = () => {
-        handleResponseAsync(
-          () => trainingRequestService.getAllTrainingRequests(),
-          (response) => setData(mapUserTrainings(response, id)),
-          (error) => setError(error),
-          () => setLoading(false)
-        );
-      };
-      fetchData();
-    }, [id]);
-    return { data, error, loading };
   },
   useAllParticipantsReports: (datalist) => {
     const [data, setData] = useState([]);
