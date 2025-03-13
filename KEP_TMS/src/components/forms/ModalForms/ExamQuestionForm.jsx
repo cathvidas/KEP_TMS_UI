@@ -96,7 +96,7 @@ handleUpdateQuestion
   return (
     <>
       <Modal show={showModal} >
-        <Modal.Header className="border-0" closeButton>
+        <Modal.Header className="border-0">
           <Modal.Title className={`h5 theme-color`}>{`${defaultData ? "Update" : "Add"} Item`} </Modal.Title>
         </Modal.Header>
         <Modal.Body className="py-0">

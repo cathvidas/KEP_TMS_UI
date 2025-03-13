@@ -22,6 +22,7 @@ import handleResponseAsync from "../../services/handleResponseAsync";
 import examService from "../../services/examService";
 import validateExamForm from "../../services/inputValidation/validateExamForm";
 import getPassingScore from "../../utils/common/getPassingScore";
+import UploadQuestionsForm from "./ModalForms/UploadQuestionsForm";
 const ExamForm = ({
   defaultData,
   handleRefresh,
@@ -34,6 +35,7 @@ const ExamForm = ({
   const [showModal, setShowModal] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [errors, setErrors] = useState({});
+  const [uploadQuestions, setUploadQuestions] = useState(false);
   useEffect(() => {
     if (defaultData) {
       setData(defaultData);
@@ -133,6 +135,27 @@ const ExamForm = ({
       },
     });
   };
+  const getTemplate = ()=>{
+    
+    const csvRequestHeaders = [
+      "Questions",
+      "Answer (1-n)",
+      "Option 1",
+      "Option 2",
+      "Option 3",
+      "Option 4",
+    ];
+
+    const csvContent = [
+      csvRequestHeaders.join(","), // header
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `TMS_EXAM QUESTIONS_TEMPLATE.csv`;
+    link.click();
+  }
   return (
     <>
       <Card className="rounded shadow-sm card border overflow-hidden">
@@ -219,11 +242,16 @@ const ExamForm = ({
               }
             />
           </Row>
+          {!readOnly &&
+              <div className="text-end mb-2">
+              <Button type="button" label="Get Template" className="rounded ms-auto py-1" size="small" onClick={getTemplate}/>
+              <Button type="button" label="Upload Questions" severity="success" className="rounded ms-2 py-1" size="small" onClick={()=>setUploadQuestions(true)}/>
+            </div>}
           <FormFieldItem
             label="Exam Questions"
             error={errors?.examQuestion}
             FieldComponent={
-              <>
+              <>   
                 {data?.examQuestions?.length > 0 ? (
                   <>
                     {!readOnly && (
@@ -344,6 +372,7 @@ const ExamForm = ({
         defaultData={selectedQuestion}
         handleUpdateQuestion={handleUpdateQuestion}
       />
+      <UploadQuestionsForm showModal={uploadQuestions} onSubmit={(e)=>setData((prev) => ({ ...prev, examQuestions: prev.examQuestions ? [...prev.examQuestions, ...e] : e }))} handleClose={() => setUploadQuestions(false)} />
     </>
   );
 };
