@@ -172,6 +172,23 @@ const ModuleSection = ({ data }) => {
                                 )}
                               </small>
                             ) : (
+                              new Date(data?.trainingEndDate) <=
+                              new Date(new Date().setMonth(new Date().getMonth() - 1))
+                            ) ?      <><span
+                            className={`text-danger rounded-pill px-2`}
+                          >
+                            <i
+                              className="pi pi-times-circle"
+                              style={{ fontSize: "0.8rem" }}
+                            ></i>{" "}
+                            Expired
+                          </span><span
+                            className={`text-muted rounded-pill px-2`}
+                            style={{fontSize: "0.8rem"}}
+                          >&#x28; default duration is one month&#x29;
+                          </span></> :
+                            
+                            (
                               <span
                                 className={`text-success rounded-pill px-2`}
                               >

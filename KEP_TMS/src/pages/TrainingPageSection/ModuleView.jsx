@@ -17,12 +17,15 @@ const ModuleView = ({ reqData, isEditor, isTrainee }) => {
   useEffect(() => {
     const filteredData = modules?.filter(
       (item) =>
-        (item?.availableAt === null && item?.unavailableAt === null) ||
+        (item?.availableAt === null && item?.unavailableAt === null && !(
+          new Date(reqData?.trainingEndDate) <=
+          new Date(new Date().setMonth(new Date().getMonth() - 1))
+        )) ||
         (CompareDateTimeWithToday(item?.availableAt)?.isPast &&
           CompareDateTimeWithToday(item?.unavailableAt)?.isFuture)
     );
     setFilteredModules(filteredData);
-  }, [modules]);
+  }, [modules, reqData?.trainingEndDate]);
   return (
     <>
       {isEditor ? (
