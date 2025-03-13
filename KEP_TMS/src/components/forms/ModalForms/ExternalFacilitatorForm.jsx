@@ -8,9 +8,22 @@ import Select from "react-select";
 import { statusCode } from "../../../api/constants";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import externalFacilitatorService from "../../../services/externalFacilitatorService";
+import providerHook from "../../../hooks/providerHook";
 const ExternalFacilitatorForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
+  const [provider, setProvider] = useState({});
+  const [providerOptions, setProviderOptions] = useState([]);
+  const [paginatorConfig, setPaginatorConfig] = useState({
+    first: 0,
+    rows: 10,
+    page: 1,
+    value:null,
+  });
+  
+  const providerData = providerHook.usePagedProvider(paginatorConfig.page, paginatorConfig.rows, paginatorConfig.value);
+  const selectedProvider = providerHook.usePagedProvider(1, 1, formData?.depatmentOrganization)?.data?.results;
+ 
   const options = useMemo(
     () => [
       { label: "Active", value: statusCode.ACTIVE },
@@ -18,6 +31,24 @@ const ExternalFacilitatorForm = ({ handleShow, handleClose, selectedData, onFini
     ],
     []
   );
+  console.log(selectedData, formData)
+  useEffect(() => {
+    const mappedSelectedProvider =
+      selectedProvider?.length > 0
+        ? { label: selectedProvider[0]?.name, value: selectedProvider[0]?.name }
+        : null;
+        if(!formData?.depatmentOrganization){
+    setProvider(mappedSelectedProvider);}
+  }, [selectedProvider, formData?.depatmentOrganization]);
+  useEffect(() => {
+    const mappedProvider = providerData?.data?.results?.map((provider) => ({
+      label: provider.name,
+      value: provider?.name?.trim(),
+    }))
+      setProviderOptions(mappedProvider)
+    
+  }, [providerData?.data]
+  )
   const handleOnChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -38,20 +69,21 @@ const ExternalFacilitatorForm = ({ handleShow, handleClose, selectedData, onFini
     }
   }, [selectedData, options]);
   const submitForm = async () => {
-    const data =
+    const data = { ...formData, depatmentOrganization: provider?.value ?? formData.depatmentOrganization };
+    const newData =
       selectedData != null
-        ? {...formData,
+        ? {...data,
             updatedBy: SessionGetEmployeeId(),
           }
-        : {...formData,
+        : {...data,
             createdBy: SessionGetEmployeeId(),
             statusId: statusCode.ACTIVE,
           };
     handleResponseAsync(
       () =>
         selectedData != null
-          ? externalFacilitatorService.updateExternalFacilitator(data)
-          : externalFacilitatorService.createExternalFacilitator(data),
+          ? externalFacilitatorService.updateExternalFacilitator(newData)
+          : externalFacilitatorService.createExternalFacilitator(newData),
       (e) => {
         actionSuccessful(`Success!`, e.message);
         onFinish();
@@ -113,13 +145,27 @@ const ExternalFacilitatorForm = ({ handleShow, handleClose, selectedData, onFini
               <Col className="col-12">
                 <Form.Group>
                   <Form.Label>Department / Organization</Form.Label>
+                    <Select
+                      options={providerOptions}
+                      value={provider}
+                      onChange={(e)=>{setProvider(e)}}
+                      name="status"
+                    onMenuScrollToBottom={() =>
+                      setPaginatorConfig((prev) => ({ ...prev, rows: prev.rows + 10 }))
+                    }    onInputChange={(e) =>
+                      setPaginatorConfig((prev) => ({ ...prev, value: e }))
+                    }
+                      isLoading={providerData?.loading}
+                    />
                   <Form.Control
-                    className="form-control"
-                    value={formData?.depatmentOrganization}
-                    placeholder="Department / Organization"
+                    className="form-control mt-2"
+                    value={formData?.depatmentOrganization == provider?.value ? "": formData?.depatmentOrganization}
+                    placeholder="Other"
                     name="depatmentOrganization"
                     rows="5"
-                    onChange={handleOnChange}
+                    onChange={(e)=>{handleOnChange(e);
+                      setProvider(null)
+                    }}
                     required
                  />
                   {errors.depatmentOrganization && (

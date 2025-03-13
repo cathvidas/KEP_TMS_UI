@@ -69,7 +69,7 @@ const ExternalFacilitatorListSection = () => {
     },
     {
       field: "depatmentOrganization",
-      header: "Depatment Organization",
+      header: "Department / Organization",
     },
     {
       field: "createdDate",
