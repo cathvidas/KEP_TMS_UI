@@ -1,4 +1,5 @@
-const validateUserDetails = (data)=>{
+const validateUserDetails = (data, noValidation)=>{
+    if(noValidation) return {isValid: true, errors: {}};
     let errors = {};
     let isValid = true;
     

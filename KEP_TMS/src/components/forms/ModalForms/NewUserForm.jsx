@@ -67,7 +67,7 @@ const NewUserForm = ({
     }
   }, [defaultData]);
   const handleSubmit = () => {
-    const { errors, isValid } = validateUserDetails(formData);
+    const { errors, isValid } = validateUserDetails(formData, true);
     if (!isValid) {
       setError(errors);
     } else {
@@ -136,7 +136,7 @@ const NewUserForm = ({
                     value={formData.firstname}
                     name="firstname"
                     onChange={handleOnChange}
-                    disabled={isUpdate && !isAdmin}
+                    disabled
                   />
                 }
               />
@@ -151,7 +151,7 @@ const NewUserForm = ({
                     value={formData.lastname}
                     name="lastname"
                     onChange={handleOnChange}
-                    disabled={isUpdate && !isAdmin}
+                    disabled
                   />
                 }
               />
@@ -182,6 +182,7 @@ const NewUserForm = ({
                     value={formData.email}
                     name="email"
                     onChange={handleOnChange}
+                    disabled
                   />
                 }
               />
@@ -210,7 +211,7 @@ const NewUserForm = ({
                     onChange={(e) =>
                       handleSelectOnChange("superiorBadge", e.value)
                     }
-                    isDisabled={isUpdate && !isAdmin}
+                    isDisabled
                   />
                 }
               />
@@ -232,7 +233,7 @@ const NewUserForm = ({
                     onChange={(e) =>
                       handleSelectOnChange("departmentId", e.value)
                     }
-                    isDisabled={isUpdate && !isAdmin}
+                    isDisabled
                   />
                 }
               />
@@ -254,7 +255,7 @@ const NewUserForm = ({
                     onChange={(e) =>
                       handleSelectOnChange("positionId", e.value)
                     }
-                    isDisabled={isUpdate && !isAdmin}
+                    isDisabled
                   />
                 }
               />
@@ -296,6 +297,7 @@ const NewUserForm = ({
                       )
                     }
                     isDisabled={isUpdate && !isAdmin}
+                    // isDisabled
                     onChange={(e) => handleSelectOnChange("roleId", e.value)}
                   />
                 }

@@ -1,4 +1,4 @@
-import { createUserApi, getAllUsersApi, getUserApi, getUsersByRoleApi, GetUserTotalAccumulatedHoursApi, updateUserApi } from "../api/userApi";
+import { createUserApi, getAllUsersApi, getUserApi, getUsersByRoleApi, GetUserTotalAccumulatedHoursApi, SetPasswordApi, updateUserApi } from "../api/userApi";
 
 const userService = {
   getAllUsers: async (pageNumber, pageSize, searchValue) => {
@@ -28,6 +28,13 @@ const userService = {
   getUserTotalAccumulatedHours: async (id) => {
     const response = await GetUserTotalAccumulatedHoursApi(id);
     return response?.status === 1 ? response.data : {};
+  },
+  setPassword: async (id) => {
+    const response = await SetPasswordApi(id);   
+    if(response.status !== 1){
+      throw new Error(response.message);
+    }
+    return response;
   },
 };
 export default userService;

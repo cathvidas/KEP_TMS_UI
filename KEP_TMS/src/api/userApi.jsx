@@ -2,6 +2,9 @@ import fetchFromApi from "./apiUtil";
 export const checkUserCredentials = async (LoginCredentials) => {
   return await fetchFromApi("/Users/Login", "POST", LoginCredentials);
 };
+export const SetPasswordApi = async (data) => {
+  return await fetchFromApi("/Users/SetPassword", "POST", data);
+};
 export const getAllUsersApi = async (pageNumber, pageSize, searchValue) => {
   if (searchValue) {
     return await fetchFromApi(
