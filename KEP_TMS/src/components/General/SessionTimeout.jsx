@@ -32,8 +32,8 @@ const SessionTimeout = () => {
             setLoggedOut(true);
             ClearSessions(); // Clear the session data
             confirmAction({
-              title: "Session Timeout",
-              text: "Please login again.",
+              title: "Timeout",
+              text: "Session timeout, please login again.",
               hideCancelButton: true,
               confirmButtonColor: "#3085d6",
               confirmButtonText: "OK",
