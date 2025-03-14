@@ -80,7 +80,7 @@ export const TrainingRequestForm = () => {
           ...formmatedData,
           updatedBy: SessionGetEmployeeId(),
           isDraft: draft,
-          statusId: !draft  && formmatedData?.statusId === statusCode.DRAFTED ?
+          statusId: !draft  && (formmatedData?.statusId === statusCode.DRAFTED || formmatedData?.statusId === statusCode.INACTIVE) ?
             calculateTotalHours(formmatedData?.trainingDates) >= 960 // 16 hours in minutes
               ? statusCode.SUBMITTED
               : statusCode.FORAPPROVAL : formmatedData?.statusId,

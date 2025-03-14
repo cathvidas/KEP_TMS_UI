@@ -377,7 +377,7 @@ const TrainingDetailPage = () => {
   const bodyContent = () => {
     return (
       <div className={`d-flex g-0`}>
-        {showMenu && data?.status?.id != statusCode.DRAFTED && data?.status?.id != statusCode.INACTIVE && (
+        {showMenu && data?.status?.id != statusCode.DRAFTED && data?.status?.id != statusCode.INACTIVE && !loading &&(
           <MenuContainer
             itemList={items}
             action={

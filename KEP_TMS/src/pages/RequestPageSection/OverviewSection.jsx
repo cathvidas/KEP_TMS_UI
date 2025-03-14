@@ -59,6 +59,7 @@ const OverviewSection = ({
       statusId: statusCode.INACTIVE,
     };
     confirmAction({
+      showLoaderOnConfirm: true,
       title: "Are you sure?",
       text: "Are you sure you want to cancel this training request?",
       confirmButtonText: "Yes",
@@ -66,7 +67,7 @@ const OverviewSection = ({
       confirmButtonColor: "#d33",
       onConfirm: () =>
         handleResponseAsync(() =>
-          trainingRequestService.updateTrainingRequest(formmatedData)
+          trainingRequestService.updateTrainingRequest(formmatedData), null, null, reloadData
         ),
     });
   };
@@ -105,10 +106,10 @@ const OverviewSection = ({
     },
     {
       label: "Cancel Request",
-      icon: "pi pi-trash",
+      icon: "pi pi-ban",
       command: cancelRequest,
       template: SpeedDialButtonItemTemplate,
-      inactive: data?.status?.id === statusCode.INACTIVE ? true : false,
+      inactive:( data?.status?.id === statusCode.INACTIVE || data?.status?.id === statusCode.CLOSED)? true : false,
     },
     {
       label: "Status",
@@ -175,7 +176,9 @@ const OverviewSection = ({
             <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
             <span> DATE: {formatDateTime(data?.createdDate)}</span>
             {(isAdmin || data?.requesterBadge === SessionGetEmployeeId())&&
-            <span> STATUS: <ActivityStatus status={data?.status?.id} /></span>}
+            <span> STATUS: <ActivityStatus icon={data?.status?.id == statusCode.INACTIVE ? "pi pi-ban": ""} 
+            severity={data?.status?.id == statusCode.INACTIVE ? "text-danger": ""} 
+            status={data?.status?.id == statusCode.INACTIVE ? "Cancelled": data?.status?.id} /></span>}
           </div></>}
         </div>
         <div className="flex justify-content-between">
