@@ -5,7 +5,7 @@ export const confirmAction = (prop) => {
     title: prop.title ??"Confirm Submission?",
     text: prop.text??"Are you sure you want to submit this form?",
     icon: prop.icon?? "warning",
-    showCancelButton: true,
+    showCancelButton: !prop.hideCancelButton,
     confirmButtonColor: prop.confirmButtonColor?? "#3085d6",
     cancelButtonColor:prop.cancelButtonColor?? "#dcdcdc",
     confirmButtonText: prop.confirmButtonText??"Submit",

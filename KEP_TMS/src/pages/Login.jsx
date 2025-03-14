@@ -14,7 +14,6 @@ import validateLogin from "../utils/LoginValidation";
 import handleUserLogin, { handleSetPassword } from "../services/loginServices";
 import { APP_DOMAIN } from "../api/constants";
 import { Button } from "primereact/button";
-import ErrorTemplate from "../components/General/ErrorTemplate";
 import { Toast } from "../components/SweetToast";
 
 const Login = () => {
