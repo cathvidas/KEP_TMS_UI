@@ -11,11 +11,11 @@ const UploadQuestionsForm = ({ showModal, handleClose, onSubmit }) => {
   const handleUpload = () => {
     const mappedIItems = examItems.map((item) => {
       return {
-        content: item.question,
-        answerOptions: item.options.map((opt, index)=>{
+        content: item.question?.trim(),
+        answerOptions: item.options?.filter(opt=> opt)?.map((opt, index)=>{
           return {
-            content: opt,
-            isCorrect: index === parseInt(item.answer) - 1 
+            content: opt?.trim(),
+            isCorrect: index === parseInt(item.answer) - 1,
           }
         }),
       };
@@ -34,8 +34,6 @@ const UploadQuestionsForm = ({ showModal, handleClose, onSubmit }) => {
     const regex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;  
     return csvRow.split(regex).map(item => item.trim().replace(/^"|"$/g, '')); // Remove external quotes and spaces  
 }   
-
-
   const extractFile = (files)=>{
     const file = files[0];
     setError(null);
@@ -84,7 +82,8 @@ const UploadQuestionsForm = ({ showModal, handleClose, onSubmit }) => {
                 error={error ?? ""}
                 FieldComponent={
                   <FileUpload
-                  
+                    onClear={()=>{setExamItems(null)}}
+                    onRemove={()=>{setExamItems(null)}}
                     ref={fileUploadRef}
                     cancelLabel="Clear"
                     customUpload
