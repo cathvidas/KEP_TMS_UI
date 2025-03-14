@@ -8,7 +8,7 @@ import { statusCode } from "../../../api/constants";
 import userHook from "../../../hooks/userHook";
 import handleResponseAsync from "../../../services/handleResponseAsync";
 import CostApprovalMatrixService from "../../../services/CostApprovalMatrixService";
-import { confirmAction } from "../../../services/sweetalert";
+import { actionSuccessful, confirmAction } from "../../../services/sweetalert";
 import { SessionGetEmployeeId } from "../../../services/sessions";
 
 const CostApprovalMatrixForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
@@ -42,6 +42,7 @@ const CostApprovalMatrixForm = ({ handleShow, handleClose, selectedData, onFinis
       return;
     }
     confirmAction({
+      showLoaderOnConfirm: true,
       title: selectedData ? "Update Cost Approval Matrix" : "Add Cost Approval Matrix",
       text: "Are you sure you want to submit?",
       onConfirm: () => 
@@ -57,6 +58,7 @@ const CostApprovalMatrixForm = ({ handleShow, handleClose, selectedData, onFinis
                 createdBy: SessionGetEmployeeId(),
               }),
           () => {
+            actionSuccessful("Success", `Cost Approval Matrix successfully ${selectedData ? "updated" : "saved"}`);
             handleClose();
             onFinish();
           }
@@ -142,17 +144,17 @@ const CostApprovalMatrixForm = ({ handleShow, handleClose, selectedData, onFinis
             
               <Col>
                 <Form.Group>
-                  <Form.Label className="required">Cost Range</Form.Label>
+                  <Form.Label className="required">Cost</Form.Label>
                   <Form.Control
                     type="text"
                     name="name"
-                    value={formData?.costRange ?? ""}
-                    placeholder="y-xxx"
+                    value={formData?.cost ?? ""}
+                    placeholder="00"
                     onChange={(e)=>
-                      handleSelectOnChange("costRange", e.target.value)}
+                      handleSelectOnChange("cost", e.target.value)}
                     required
                   />
-                  {errors.costRange && <ErrorTemplate message={errors?.costRange} />}
+                  {errors.cost && <ErrorTemplate message={errors?.cost} />}
                 </Form.Group>
               </Col>
               {selectedData && (

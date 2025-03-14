@@ -15,9 +15,11 @@ import TrainingDetailPage from "./pages/TrainingDetailPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SettingPage from "./pages/SettingPage";
 import DocumentsPage from "./pages/DocumentsPage";
+import SessionTimeout from './components/General/SessionTimeout';  
 function App() {
   return (
     <>
+      <SessionTimeout />
       <Routes>
         <Route path="/" element={<Navigate to="/KEP_TMS" />} />
         <Route path="/KEP_TMS" element={<Login />} />

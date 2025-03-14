@@ -9,6 +9,9 @@ import userHook from "../../hooks/userHook";
 import getStatusById from "../../utils/status/getStatusById";
 import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import ErrorTemplate from "../../components/General/ErrorTemplate";
+import { actionSuccessful, confirmAction } from "../../services/sweetalert";
+import { SessionGetEmployeeId } from "../../services/sessions";
+import { statusCode } from "../../api/constants";
 
 const CostApprovalMatrixSection = () => {
   const [visible, setVisible] = useState(false);
@@ -28,6 +31,28 @@ const CostApprovalMatrixSection = () => {
     };
     getRoles();
   }, [trigger]);
+  const removeMatrix = (rowData)=>{
+    
+    confirmAction({
+      showLoaderOnConfirm: true,
+      title: "Delete Cost Approval Matrix",
+      text: "Are you sure you want to continue?",
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Delete",
+      onConfirm: () => 
+        handleResponseAsync(
+          () => CostApprovalMatrixService.updateCostApprovalMatrix({
+                ...rowData,
+                statusId: statusCode.INACTIVE,
+                updatedBy: SessionGetEmployeeId(),
+              }),
+          () => {
+            actionSuccessful("Success", `Cost Approval Matrix deleted`);
+            setTrigger((prev) => prev + 1)
+          }
+        )
+    })
+  }
   const actionTemplate = (rowData) => (
     <>
       <div className="d-flex">
@@ -40,6 +65,17 @@ const CostApprovalMatrixSection = () => {
           onClick={() => {
             setVisible(true);
             setSelectedData(rowData);
+          }}
+        />
+        <Button
+          type="button"
+          size="small"
+          text
+          severity="danger"
+          icon="pi pi-trash"
+          className="rounded-circle"
+          onClick={() => {
+            removeMatrix(rowData);
           }}
         />
           </div>
@@ -62,7 +98,7 @@ const CostApprovalMatrixSection = () => {
       header: "Title",
     },
     {
-      field: "costRange",
+      field: "cost",
       header: "Cost Range",
     },
     {

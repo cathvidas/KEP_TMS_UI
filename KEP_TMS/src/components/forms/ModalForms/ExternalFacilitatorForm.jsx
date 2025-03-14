@@ -31,7 +31,6 @@ const ExternalFacilitatorForm = ({ handleShow, handleClose, selectedData, onFini
     ],
     []
   );
-  console.log(selectedData, formData)
   useEffect(() => {
     const mappedSelectedProvider =
       selectedProvider?.length > 0
