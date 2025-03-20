@@ -68,7 +68,7 @@ const ExternalFacilitatorListSection = () => {
       header: "Position",
     },
     {
-      field: "depatmentOrganization",
+      field: "departmentOrganization",
       header: "Department / Organization",
     },
     {
@@ -191,7 +191,7 @@ const ExternalFacilitatorListSection = () => {
             <Modal.Body>
               
               <h6><strong>Name:</strong> <span>{selectedData?.name}</span></h6>
-              <h6><strong>Depatment / Organization:</strong> <span>{selectedData?.depatmentOrganization}</span></h6>
+              <h6><strong>Department / Organization:</strong> <span>{selectedData?.departmentOrganization}</span></h6>
               <h6><strong>Position:</strong> <span>{selectedData?.position}</span></h6>
               <h6><strong>Status:</strong> <span>{getStatusById(selectedData?.statusId)}</span></h6>
               <h6><strong>Created:</strong> <span>{formatDateOnly(selectedData?.createdDate)}{" by "}

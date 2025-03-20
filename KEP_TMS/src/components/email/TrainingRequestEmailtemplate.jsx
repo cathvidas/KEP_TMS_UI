@@ -50,7 +50,7 @@ const TrainingRequestEmailtemplate = ({
         no: index + 1,
         name: item?.name,
         position: item?.position,
-        department: item?.depatmentOrganization,
+        department: item?.departmentOrganization,
       }
     }
   })
