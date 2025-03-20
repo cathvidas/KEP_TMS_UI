@@ -6,15 +6,8 @@ import { useEffect, useState } from "react";
 import AddUserForm from "../../components/forms/ModalForms/AddUserForm";
 import NewUserForm from "../../components/forms/ModalForms/NewUserForm";
 import mapUserUpdateDetail from "../../services/DataMapping/mapUserUpdateDetails";
-import {
-  actionFailed,
-  actionSuccessful,
-  confirmAction,
-} from "../../services/sweetalert";
-import handleResponseAsync from "../../services/handleResponseAsync";
-import userService from "../../services/userService";
 import { UserTypeValue } from "../../api/constants";
-import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
+import { SessionGetRole } from "../../services/sessions";
 import { ButtonGroup } from "primereact/buttongroup";
 import userHook from "../../hooks/userHook";
 import { Paginator } from "primereact/paginator";
@@ -84,47 +77,10 @@ const AllUserPageSection = ({
           }}
         />
       )}
-      {userType && (
-        <Button
-          type="button"
-          size="small"
-          text
-          icon="pi pi-trash"
-          severity="danger"
-          className="rounded-circle"
-          onClick={() => handleRemoveUser(rowData)}
-        />
-      )}
     </ButtonGroup>
   );
-  const handleRemoveUser = (data) => {
-    const roleId = options?.options?.roles?.find(
-      (role) => role.label === UserTypeValue.USER
-    )?.value;
-    const newData = {
-      ...mapUserUpdateDetail(data, options?.options),
-      roleId: roleId,
-      updatedBy: SessionGetEmployeeId(),
-    };
-    confirmAction({
-      title: "Confirm Remove?",
-      text: `Are you sure you want to remove this user as ${userType}?`,
-      confirmButtonText: "Remove",
-      confirmButtonColor: "#d33",
-
-      onConfirm: () => {
-        handleResponseAsync(
-          () => userService.updateUser(newData),
-          (e) => actionSuccessful("Success!", e.message),
-          (e) => actionFailed("Error!", e.message),
-          ()=>setTrigger(prev => prev + 1)
-        );
-      },
-    });
-  };
   const columnItems = [
     {
-      // field: "id",
       header: "No",
       body: (_, { rowIndex }) => <>{paginatorConfig.first + 1+ rowIndex}</>,
     },
