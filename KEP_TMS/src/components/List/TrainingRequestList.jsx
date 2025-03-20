@@ -176,23 +176,21 @@ const TrainingRequestList = ({
             sortMode="multiple"
             // onValueChange={(e) => mapFilteredData(e)}
           >
-            <Column field="id" header="Id" sortable></Column>
+            <Column field="id" header="Id"></Column>
             {isAdmin && (
               <Column
                 field="requesterName"
                 header="Requestor Name"
-                sortable
               ></Column>
             )}
-            <Column field="type" header="Type" sortable></Column>
-            <Column field="program" header="Program" sortable></Column>
-            <Column field="category" header="Category" sortable></Column>
-            <Column field="provider" header="Provider" sortable></Column>
-            <Column field="venue" header="Venue" sortable></Column>
+            <Column field="type" header="Type"></Column>
+            <Column field="program" header="Program"></Column>
+            <Column field="category" header="Category"></Column>
+            <Column field="provider" header="Provider"></Column>
+            <Column field="venue" header="Venue"></Column>
             <Column
               field="trainingStartDate"
               header="Start Date"
-              sortable
               style={{ width: "8%" }}
               body={(rowData) => {
                 return formatDateOnly(rowData.trainingStartDate);
@@ -201,7 +199,6 @@ const TrainingRequestList = ({
             <Column
               field="trainingEndDate"
               header="End Date"
-              sortable
               style={{ width: "8%" }}
               body={(rowData) => {
                 return formatDateOnly(rowData.trainingEndDate);
@@ -211,7 +208,6 @@ const TrainingRequestList = ({
               <Column
                 field="totalFee"
                 header="Total Fee"
-                sortable
                 style={{ width: "8%" }}
               ></Column>
             )}
@@ -219,7 +215,6 @@ const TrainingRequestList = ({
               <Column
                 field="createdDate"
                 header="Created"
-                sortable
                 style={{ width: "8%" }}
                 body={(rowData) => {
                   return formatDateOnly(rowData.createdDate);
