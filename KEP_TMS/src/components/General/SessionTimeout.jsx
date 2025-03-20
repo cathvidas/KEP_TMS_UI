@@ -37,6 +37,7 @@ const SessionTimeout = () => {
               hideCancelButton: true,
               confirmButtonColor: "#3085d6",
               confirmButtonText: "OK",
+              preventOutsideClick: true,
               onConfirm: () => {
                 navigate("/KEP_TMS/");
               },

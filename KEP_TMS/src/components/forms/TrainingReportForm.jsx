@@ -133,6 +133,9 @@ const populateData = () => {
         <div className="text-center  pb-3 mb-3">
           <h5 className="m-0">Training Report Form</h5>
           <small className="text-muted">Knowles Electronics Philippines</small>
+          {isSubmitted && (
+            <p className="hideExport">Training Report # {formData?.id}</p>
+          )}
         </div>
         <Row>
           <AutoCompleteField
@@ -259,20 +262,21 @@ const populateData = () => {
               />
             </>
           )}
-        {(formData?.statusId == statusCode.DISAPPROVED && defaultValue?.createdBy === SessionGetEmployeeId()) && (
-          <Button
-            type="button"
-            icon={!isUpdate && "pi pi-pencil"}
-            label={isUpdate ? "Cancel" : "Edit"}
-            className="rounded ms-auto"
-            severity="secondary"
-            text={isUpdate}
-            onClick={() => {
-              setIsUpdate(!isUpdate);
-              populateData();
-            }}
-          />
-        )}
+        {formData?.statusId == statusCode.DISAPPROVED &&
+          defaultValue?.createdBy === SessionGetEmployeeId() && (
+            <Button
+              type="button"
+              icon={!isUpdate && "pi pi-pencil"}
+              label={isUpdate ? "Cancel" : "Edit"}
+              className="rounded ms-auto"
+              severity="secondary"
+              text={isUpdate}
+              onClick={() => {
+                setIsUpdate(!isUpdate);
+                populateData();
+              }}
+            />
+          )}
         {data?.trainingParticipants?.some(
           (x) => x.employeeBadge === SessionGetEmployeeId()
         ) &&

@@ -115,7 +115,7 @@ const TrainingRequestList = ({
             onClick={() => handleButtonClick(data.id, "TrainingDetail")}
           />
         )}
-        {allowEdit && (
+        {(allowEdit && !(data?.statusId == statusCode.CLOSED || data?.statusId == statusCode.APPROVED)) && (
           <Button
             type="button"
             icon="pi pi-pencil"

@@ -40,7 +40,7 @@ const ApproverRouteForm = ({
   );
   const [options, setOptions] = useState([]);
   const [option2, setOption2] = useState([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState();
   useEffect(() => {
     const filteredData = users?.data?.results?.filter(
       (user) => user.roleName !== userType
@@ -68,8 +68,22 @@ const ApproverRouteForm = ({
     const isExist = routeData?.find(
       (user) => user.employeeBadge === selectedUser2?.value
     );
+    let newError = {};
+    let isValid = true;
+    if(!remarks){
+      newError.remarks = "No remarks";
+      isValid = false;
+    }
+    if(!selectedUser2?.value){
+      newError.selectedUser2 = "No selected approver";
+      isValid = false;
+    }
     if (isExist) {
-      setError("Selected user already an approver");
+      newError.selectedUser2 = "Selected user already an approver";
+      isValid = false;
+    }
+    if (!isValid) {
+    setError(newError);
       return;
     }
     const newData = {
@@ -81,6 +95,9 @@ const ApproverRouteForm = ({
       remarks: remarks,
     };
     confirmAction({
+      title: "Assign Approver",
+      text: "Are you sure you want to assign this approver?",
+      showLoaderOnConfirm: true,
       onConfirm: () => {
         handleResponseAsync(
           () => commonService.rerouteApprover(newData),
@@ -120,8 +137,9 @@ const ApproverRouteForm = ({
                 }
               />
               <FormFieldItem
+                required
                 label={"To"}
-                error={error}
+                error={error?.selectedUser2}
                 FieldComponent={
                   <Select
                     onMenuScrollToBottom={() =>
@@ -141,8 +159,9 @@ const ApproverRouteForm = ({
                 }
               />
               <FormFieldItem
+                required
                 label={"Reason"}
-                error={error}
+                error={error?.remarks}
                 FieldComponent={
                   <Form.Control
                     options={option2}

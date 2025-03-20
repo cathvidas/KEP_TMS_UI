@@ -22,7 +22,7 @@ import { StepperPanel } from "primereact/stepperpanel";
 import { Button } from "primereact/button";
 import validateTrainingDetails from "../../services/inputValidation/validateTrainingDetails";
 import { formatDateTime } from "../../utils/datetime/Formatting";
-import { statusCode, TrainingType, UserTypeValue } from "../../api/constants";
+import { APP_DOMAIN, statusCode, TrainingType, UserTypeValue } from "../../api/constants";
 import TrainingParticipantsForm from "../trainingRequestFormComponents/TrainingParticipantsForm";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
 import commonHook from "../../hooks/commonHook";
@@ -34,6 +34,9 @@ import handleResponseAsync from "../../services/handleResponseAsync";
 import { SectionHeading } from "../General/Section";
 import categoryHook from "../../hooks/categoryHook";
 import userService from "../../services/userService";
+import SkeletonForm from "../Skeleton/SkeletonForm";
+import ErrorTemplate from "../General/ErrorTemplate";
+import getStatusById from "../../utils/status/getStatusById";
 export const TrainingRequestForm = () => {
   const trainingType = useParams().type;
   const requestId = useParams().id;
@@ -92,8 +95,8 @@ export const TrainingRequestForm = () => {
           () => trainingRequestService.updateTrainingRequest(updateData),
           () => {
             actionSuccessful(
-              "updated",
-              `training request successfully ${draft ? "saved" : "submitted"}.`
+              "Updated",
+              `Training request successfully ${draft ? "saved" : "submitted"}.`
             );
             setTimeout(() => {
               navigate(draft ? "/KEP_TMS/RequestList/Draft" : "/KEP_TMS/TrainingDetail/" + formmatedData.id);
@@ -323,156 +326,176 @@ export const TrainingRequestForm = () => {
     <>
       <Card>
         <Card.Body>
-          <Form method="POST">
-            <h3 className="text-center theme-color">
-              {trainingType === "Update"
-                ? "Update " + formData?.trainingType?.name
-                : "New " + trainingType}{" "}
-              Training Request
-            </h3>
-            {trainingType?.toUpperCase() === "UPDATE" && formData.id !== 0 && (
-              <h6 className="text-muted text-center mb-3">
-                Request ID: {formData.id}
-              </h6>
-            )}
-            <div className="position-absolute end-0 top-0 ">
-              <Button
-                type="button"
-                onClick={() => history.back()}
-                icon="pi pi-times"
-                text
-              />
-            </div>
-            <div className="h6 d-flex gap-5 pb-4 justify-content-around border-bottom">
-              <span>
-                {" "}
-                Requestor:{" "}
-                {isUpdate
-                  ? formData?.requestor?.fullname
-                  : SessionGetFullName()}
-              </span>
-              <span>
-                {" "}
-                Badge No:{" "}
-                {isUpdate
-                  ? formData?.requestor?.employeeBadge
-                  : SessionGetEmployeeId()}
-              </span>
-              <span>
-                {" "}
-                Department:{" "}
-                {isUpdate
-                  ? formData?.requestor?.position
-                  : SessionGetDepartment()}
-              </span>
-              <span>
-                {" "}
-                Date:{" "}
-                {isUpdate
-                  ? formatDateTime(formData?.createdDate)
-                  : formatDateTime(new Date())}
-              </span>
-            </div>
-            <div className="">
-              <Stepper
-                linear
-                ref={stepperRef}
-                className="w-100"
-                style={{ flexBasis: "50rem" }}
-              >
-                <StepperPanel header="Details">
-                  <TrainingDetailsForm
-                    handleResponse={handleResponse}
-                    formData={formData}
-                    error={errors?.details}
-                    categories={categories}
-                  />
-                  <TrainingScheduleForm
-                    formData={formData}
-                    handleResponse={handleTrainingDates}
-                    errors={errors?.schedules}
-                  />
-                  {<StepperButton next={true} index={0} />}
-                </StepperPanel>
-                <StepperPanel header="Participants">
-                  <TrainingParticipantsForm
-                    formData={formData}
-                    handleResponse={handleResponse}
-                    errors={errors?.participants}
-                    departments={departments?.data}
-                    trainingType={formData?.trainingType?.id}
-                  />
-                  {<StepperButton back={true} next={true} index={1} />}
-                </StepperPanel>
-                {formData?.trainingType?.id === TrainingType.EXTERNAL && (
-                  <StepperPanel header="Cost">
-                    <TrainingCostForm
+          {trainingRequestData?.loading ? (
+            <SkeletonForm />
+          ) : (
+            <Form method="POST">
+              <h3 className="text-center theme-color">
+                {trainingType === "Update"
+                  ? "Update " + formData?.trainingType?.name
+                  : "New " + trainingType}{" "}
+                Training Request
+              </h3>
+              {trainingType?.toUpperCase() === "UPDATE" &&
+                formData.id !== 0 && (
+                  <h6 className="text-muted text-center mb-3">
+                    Request ID: {formData.id}
+                  </h6>
+                )}
+              <div className="position-absolute end-0 top-0 ">
+                <Button
+                  type="button"
+                  onClick={() => history.back()}
+                  icon="pi pi-times"
+                  text
+                />
+              </div>
+              <div className="h6 d-flex gap-5 pb-4 justify-content-around border-bottom">
+                <span>
+                  {" "}
+                  Requestor:{" "}
+                  {isUpdate
+                    ? formData?.requestor?.fullname
+                    : SessionGetFullName()}
+                </span>
+                <span>
+                  {" "}
+                  Badge No:{" "}
+                  {isUpdate
+                    ? formData?.requestor?.employeeBadge
+                    : SessionGetEmployeeId()}
+                </span>
+                <span>
+                  {" "}
+                  Department:{" "}
+                  {isUpdate
+                    ? formData?.requestor?.position
+                    : SessionGetDepartment()}
+                </span>
+                <span>
+                  {" "}
+                  Date:{" "}
+                  {isUpdate
+                    ? formatDateTime(formData?.createdDate)
+                    : formatDateTime(new Date())}
+                </span>
+              </div>
+              {formData?.status?.id == statusCode.APPROVED ||
+              formData?.status?.id == statusCode.CLOSED ? (<div className="text-center py-5">
+                <ErrorTemplate
+                  className={"py-4"}
+                  center
+                  message={`This training request has been ${getStatusById(
+                    formData?.status?.id
+                  )?.toLocaleUpperCase()} and cannot be edited.`}
+                />
+                <Button size="small" className="py-1 rounded mx-auto" label="View Request details" onClick={()=>navigate(`${APP_DOMAIN}/TrainingDetail/${formData?.id}`)}/>
+                </div>
+              ) : (
+                <Stepper
+                  linear
+                  ref={stepperRef}
+                  className="w-100"
+                  style={{ flexBasis: "50rem" }}
+                >
+                  <StepperPanel header="Details">
+                    <TrainingDetailsForm
+                      handleResponse={handleResponse}
+                      formData={formData}
+                      error={errors?.details}
+                      categories={categories}
+                    />
+                    <TrainingScheduleForm
+                      formData={formData}
+                      handleResponse={handleTrainingDates}
+                      errors={errors?.schedules}
+                    />
+                    {<StepperButton next={true} index={0} />}
+                  </StepperPanel>
+                  <StepperPanel header="Participants">
+                    <TrainingParticipantsForm
                       formData={formData}
                       handleResponse={handleResponse}
-                      errors={errors?.provider}
+                      errors={errors?.participants}
+                      departments={departments?.data}
+                      trainingType={formData?.trainingType?.id}
                     />
-                    {<StepperButton back={true} next={true} index={2} />}
+                    {<StepperButton back={true} next={true} index={1} />}
                   </StepperPanel>
-                )}
-                <StepperPanel header="Summary">
-                  <TrainingSummary formData={formData} update={trainingType.toUpperCase() === "UPDATE"}/>
-                  {(getTrainingTypeId() === TrainingType.EXTERNAL && SessionGetRole() === UserTypeValue.ADMIN) && (
-                    <>
-                      <SectionHeading
-                        title="Has Training Agreement"
-                        icon={<i className="pi pi-bookmark-fill"></i>}
+                  {formData?.trainingType?.id === TrainingType.EXTERNAL && (
+                    <StepperPanel header="Cost">
+                      <TrainingCostForm
+                        formData={formData}
+                        handleResponse={handleResponse}
+                        errors={errors?.provider}
                       />
-                      <div className="d-flex gap-5">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="flexRadioDefault"
-                            id="flexRadioDefault1"
-                            checked={formData?.forTrainingAgreement}
-                            onChange={() =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                forTrainingAgreement: true,
-                              }))
-                            }
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="flexRadioDefault1"
-                          >
-                            Yes
-                          </label>
-                        </div>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="flexRadioDefault"
-                            id="flexRadioDefault2"
-                            checked={!formData?.forTrainingAgreement}
-                            onChange={() =>
-                              setFormData((prev) => ({
-                                ...prev,
-                                forTrainingAgreement: false,
-                              }))
-                            }
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="flexRadioDefault2"
-                          >
-                            No
-                          </label>
-                        </div>
-                      </div>
-                    </>
+                      {<StepperButton back={true} next={true} index={2} />}
+                    </StepperPanel>
                   )}
-                  {<StepperButton back={true} submit={true} />}
-                </StepperPanel>
-              </Stepper>
-            </div>
-          </Form>
+                  <StepperPanel header="Summary">
+                    <TrainingSummary
+                      formData={formData}
+                      update={trainingType.toUpperCase() === "UPDATE"}
+                    />
+                    {getTrainingTypeId() === TrainingType.EXTERNAL &&
+                      SessionGetRole() === UserTypeValue.ADMIN && (
+                        <>
+                          <SectionHeading
+                            title="Has Training Agreement"
+                            icon={<i className="pi pi-bookmark-fill"></i>}
+                          />
+                          <div className="d-flex gap-5">
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="radio"
+                                name="flexRadioDefault"
+                                id="flexRadioDefault1"
+                                checked={formData?.forTrainingAgreement}
+                                onChange={() =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    forTrainingAgreement: true,
+                                  }))
+                                }
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="flexRadioDefault1"
+                              >
+                                Yes
+                              </label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                className="form-check-input"
+                                type="radio"
+                                name="flexRadioDefault"
+                                id="flexRadioDefault2"
+                                checked={!formData?.forTrainingAgreement}
+                                onChange={() =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    forTrainingAgreement: false,
+                                  }))
+                                }
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="flexRadioDefault2"
+                              >
+                                No
+                              </label>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    {<StepperButton back={true} submit={true} />}
+                  </StepperPanel>
+                </Stepper>
+              )}
+            </Form>
+          )}
         </Card.Body>
       </Card>
     </>

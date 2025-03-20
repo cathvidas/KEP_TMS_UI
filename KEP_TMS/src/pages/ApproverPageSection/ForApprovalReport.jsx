@@ -17,6 +17,8 @@ import commonService from "../../services/commonService";
 import ActivityStatus from "../../components/General/ActivityStatus";
 import proptype from "prop-types"
 import routingService from "../../services/common/routingService";
+import SkeletonForm from "../../components/Skeleton/SkeletonForm";
+import { formatDateTime } from "../../utils/datetime/Formatting";
 const ForApprovalReport = ({data, refreshData}) => {
   const [trigger, setTrigger] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -27,7 +29,7 @@ const ForApprovalReport = ({data, refreshData}) => {
   );
   const report = trainingReportHook.useTrainingReportById(
     selectedData?.trainingReport?.id,
-    trigger
+    trigger, true
   );
   const [showAnnotation, setShowAnnotation] = useState(false);
   const actionTemplate = (rowData) => (
@@ -108,16 +110,22 @@ const ForApprovalReport = ({data, refreshData}) => {
       },
     });
   };
+  console.log(data)
   const columnItems = [
     {
       field: "id",
-      header: "Request Id",
-      body: (rowData) => <>{rowData?.trainingReport?.trainingRequest?.id}</>,
+      header: "Id",
+      body: (rowData) => <>{rowData?.trainingReport?.id}</>,
     },
     {
       field: "name",
-      header: "Created By",
-      body: (rowData) => <>{rowData?.trainingReport?.traineeBadge}</>,
+      header: "Submitted By",
+      body: (rowData) => <>{rowData?.auditTrail?.createdBy}</>,
+    },
+    {
+      field: "name",
+      header: "Submitted Date",
+      body: (rowData) => <>{formatDateTime(rowData?.auditTrail?.createdDate)}</>,
     },
     {
       field: "description",
@@ -181,7 +189,7 @@ const ForApprovalReport = ({data, refreshData}) => {
         </Modal.Header>
         <Modal.Body className="p-4 px-5">
           {report?.loading ? (
-            "Loading..."
+            <SkeletonForm/>
           ) : (
             <TrainingReportForm
               userData={userData?.data}

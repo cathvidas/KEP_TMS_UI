@@ -4,12 +4,15 @@ import handleResponseAsync from "../services/handleResponseAsync";
 import { checkIfActualPerformanceRated } from "./activityLogHook";
 
 const effectivenessHook = {
-  useEffectivenessById: (id, trigger) => {
+  useEffectivenessById: (id, trigger, loader) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+      if(loader){
+        setLoading(true);
+      }
       const getRequest = async () => {
         handleResponseAsync(
           () => effectivenessService.getEffectivenessById(id),
@@ -19,7 +22,7 @@ const effectivenessHook = {
         );
       };
       getRequest();
-    }, [id, trigger]);
+    }, [id, trigger, loader]);
     return {
       data,
       error,

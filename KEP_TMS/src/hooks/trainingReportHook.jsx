@@ -3,11 +3,12 @@ import handleResponseAsync from "../services/handleResponseAsync";
 import trainingReportService from "../services/trainingReportService";
 
 const trainingReportHook = {
-  useTrainingReportById: (id, trigger) => {
+  useTrainingReportById: (id, trigger, loader) => {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
+      setLoading(true);
       const getRequest = async () => {
         handleResponseAsync(
           () => trainingReportService.getTrainingReportById(id),
@@ -17,7 +18,7 @@ const trainingReportHook = {
         );
       };
       getRequest();
-    }, [id, trigger]);
+    }, [id, trigger, loader]);
     return {
       data,
       error,

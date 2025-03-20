@@ -103,13 +103,15 @@ const OverviewSection = ({
       label: "Update",
       icon: "pi pi-pencil",
       command: () => navigate("/KEP_TMS/Request/Update/" + data.id),
+      template: SpeedDialButtonItemTemplate,
+      inactive: ( data?.status?.id === statusCode.APPROVED || data?.status?.id === statusCode.CLOSED)
     },
     {
       label: "Cancel Request",
       icon: "pi pi-ban",
       command: cancelRequest,
       template: SpeedDialButtonItemTemplate,
-      inactive:( data?.status?.id === statusCode.INACTIVE || data?.status?.id === statusCode.CLOSED)? true : false,
+      inactive: ( data?.status?.id === statusCode.INACTIVE || data?.status?.id === statusCode.CLOSED),
     },
     {
       label: "Status",
@@ -124,8 +126,6 @@ const OverviewSection = ({
       icon: "pi pi-info-circle",
       command: () => setShowLogModal(true),
       template: SpeedDialButtonItemTemplate,
-      // disable:true,
-      // inactive: true
     },
   ];
   const actionBodyTemplate = (

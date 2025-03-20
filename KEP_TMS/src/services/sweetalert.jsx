@@ -11,6 +11,8 @@ export const confirmAction = (prop) => {
     confirmButtonText: prop.confirmButtonText??"Submit",
     cancelButtonText: prop.cancelButtonText??"Cancel",
     reverseButtons: true,
+    allowOutsideClick: !prop.preventOutsideClick,
+    allowEscapeKey: !prop.preventOutsideClick,
   }).then((result) => {
     if (result.isConfirmed) {
       if(prop.showLoaderOnConfirm){

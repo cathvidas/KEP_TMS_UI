@@ -37,7 +37,7 @@ const ApproverList = ({data, activityType, hasEmailForm, optionColumn, reloadDat
         icon="pi pi-directions"
         title="Route Approvers"
         text
-        disabled={rowData?.status?.statusId === statusCode.APPROVED || rowData?.status?.statusId === statusCode.ROUTED ||rowData?.status?.statusId === statusCode.PENDING || SessionGetRole() !== UserTypeValue.ADMIN}
+        disabled={!((rowData?.status?.statusId === statusCode.FORAPPROVAL || rowData?.status?.statusId === statusCode.PENDING) && SessionGetRole() === UserTypeValue.ADMIN)}
         onClick={() => {setRouteForm(true);
           setSelectedApprover(rowData?.detail);
         }}
