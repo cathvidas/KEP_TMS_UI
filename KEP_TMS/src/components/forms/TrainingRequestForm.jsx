@@ -54,10 +54,13 @@ export const TrainingRequestForm = () => {
     details.current = data;
   }, []);
   const getTrainingTypeId = () => {
-    if (trainingType?.toUpperCase() === "INTERNAL") {
+    if(trainingType?.toUpperCase() === "UPDATE") {
+      return details?.current?.trainingType?.id;
+    }
+    else if (trainingType?.toUpperCase() === "INTERNAL") {
       return TrainingType.INTERNAL;
     }
-    if (trainingType?.toUpperCase() === "EXTERNAL") {
+    else if (trainingType?.toUpperCase() === "EXTERNAL") {
       return TrainingType.EXTERNAL;
     }
   };
@@ -128,6 +131,7 @@ export const TrainingRequestForm = () => {
     }
   };
   const handleButtonOnClick = (index, isDraft) => {
+    //detail and schedule validation
     if (index === 0) {
       const validateDates =
         details.current?.status?.id === statusCode.APPROVED ||
@@ -165,7 +169,9 @@ export const TrainingRequestForm = () => {
         }
       }
       //stepperRef.current.nextCallback();
-    } else if (index === 1) {
+    } 
+    //participants validation
+    else if (index === 1) {
       let hasErrors = false;
       let newErrors = { trainees: "", facilitators: "" };
       if (details.current.trainingParticipants?.length > 0) {
@@ -194,22 +200,21 @@ export const TrainingRequestForm = () => {
           participants: {},
         }));}
       }
-    } else if (index === 2) {
+    } 
+    //external details and cost validation
+    else if (index === 2) {
       let hasError = false;
       let newErrors = {};
       if (!details?.current?.trainingProvider?.id) {
         newErrors.provider = "Please select a training provider";
         hasError = true;
-      }
-      if (getTrainingTypeId() === TrainingType.EXTERNAL) {
-        if (details.current.trainingFacilitators?.length > 0) {
-          <></>;
-        } else {
-          newErrors.facilitators = "Please add facilitator";
+      } if (getTrainingTypeId() === TrainingType.EXTERNAL) {
+        if (!(details.current.trainingFacilitators?.length > 0)) {
+          newErrors.facilitators = "No facilitators selected";
           hasError = true;
-        }
+        } 
       }
-      setErrors({ ...errors, provider: newErrors.provider });
+      setErrors({ ...errors, provider: newErrors });
       if (!hasError || isDraft) {
         setFormData((prev) => ({ ...prev, ...details.current }));
         if (isDraft) {
@@ -404,7 +409,7 @@ export const TrainingRequestForm = () => {
                     <TrainingCostForm
                       formData={formData}
                       handleResponse={handleResponse}
-                      error={errors}
+                      errors={errors?.provider}
                     />
                     {<StepperButton back={true} next={true} index={2} />}
                   </StepperPanel>
