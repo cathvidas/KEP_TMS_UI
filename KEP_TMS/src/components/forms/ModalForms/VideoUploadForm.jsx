@@ -11,7 +11,7 @@ import attachmentService from "../../../services/attachmentService";
 import categoryHook from "../../../hooks/categoryHook";
 
 const VideoUploadForm = ({ handleClose, handleShow, selectedData, onSuccess }) => {
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState("");
   const [category, setCategory] = useState({});
   const validFileTypes = [
     "video/*",
