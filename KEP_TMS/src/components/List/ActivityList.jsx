@@ -11,7 +11,7 @@ const ActivityList = ({ data, show = true, label, toggle }) => {
     { field: "name", header: "Processed By" },
     { field: "process", header: "Process" },
     { field: "date", header: "Date" },
-    { field: "remark", header: "Remark" },
+    { field: "remark", header: "Remarks" },
   ];
   return (
     <>

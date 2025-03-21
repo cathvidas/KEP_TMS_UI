@@ -1,15 +1,15 @@
 const effectivenessConstant = {
   projectPerformanceEvaluation: {
     content: "",
-    performanceBeforeTraining: 0,
-    projectedPerformance: 0,
-    actualPerformance: 0,
-    evaluatedActualPerformance: 0,
+    performanceBeforeTraining: null,
+    projectedPerformance: null,
+    actualPerformance: null,
+    evaluatedActualPerformance: null,
   },
   performanceCharacteristics: {
     id: 0,
     content: "",
-    rating: 0,
+    rating: null,
     effectivenessId: 0,
   },
 };

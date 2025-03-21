@@ -1,6 +1,5 @@
 import { useState } from "react";
 import CommonTable from "../../components/General/CommonTable";
-import { SectionBanner } from "../../components/General/Section";
 import effectivenessHook from "../../hooks/effectivenessHook";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import { Button } from "primereact/button";
@@ -9,20 +8,17 @@ import SkeletonForm from "../../components/Skeleton/SkeletonForm";
 import { Card } from "react-bootstrap";
 import proptype from "prop-types";
 import userHook from "../../hooks/userHook";
-import routingService from "../../services/common/routingService";
-import { SessionGetEmployeeId } from "../../services/sessions";
-import { statusCode } from "../../api/constants";
+import trainingRequestHook from "../../hooks/trainingRequestHook";
 
 const ForEvaluationEffectiveness = ({data, refreshData}) => {
   const [trigger, setTrigger] = useState(0);
   const [selectedData, setSelectedData] = useState({});
   const [showForm, setShowForm] = useState(false);
   const effectivessDetail = effectivenessHook.useEffectivenessById(
-    selectedData?.trainingEffectiveness?.id, trigger
+    selectedData?.id, trigger
   );
-  const userDetail = userHook.useUserById(selectedData?.trainingEffectiveness?.employeeBadge);
-  const currentRouting = routingService.getApproverStatus(effectivessDetail?.data?.routings, SessionGetEmployeeId());
-  // const requestData = trainingRequestHook.useTrainingRequest(4);
+  const trainingRequestDetail = trainingRequestHook.useTrainingRequest(selectedData?.trainingRequestId);
+  const userDetail = userHook.useUserById(selectedData?.employeeBadge);
   const actionTemplate = (rowData) => (
     <>
       <div className="d-flex">
@@ -44,26 +40,26 @@ const ForEvaluationEffectiveness = ({data, refreshData}) => {
   const items = [
     {
       field: "id",
-      header: "No",
-      body: (rowData) => <>{rowData?.trainingEffectiveness?.id}</>,
+      header: "Id",
+      body: (rowData) => <>{rowData?.id}</>,
     },
     {
       field: "id",
       header: "Created By",
-      body: (rowData) => <>{rowData?.auditTrail?.createdBy}</>,
+      body: (rowData) => <>{rowData?.createdBy}</>,
     },
     {
       field: "trainingProgramName",
       header: "Program",
       body: (rowData) => (
-        <>{rowData?.trainingEffectiveness?.trainingProgram?.name}</>
+        <>{rowData?.trainingProgramName}</>
       ),
     },
     {
       field: "id",
       header: "Created Date",
       body: (rowData) => (
-        <>{formatDateTime(rowData?.auditTrail?.createdDate)}</>
+        <>{formatDateTime(rowData?.createdDate)}</>
       ),
     },
     {
@@ -82,10 +78,6 @@ const ForEvaluationEffectiveness = ({data, refreshData}) => {
       { !showForm ? (
         <>
           <div className="p-3">
-            <SectionBanner
-              title="For Evaluation Training Effectiveness"
-              subtitle="List of Training Effectiveness for Evaluation"
-            />
             <CommonTable
               columnItems={items}
               dataTable={data}
@@ -113,9 +105,9 @@ const ForEvaluationEffectiveness = ({data, refreshData}) => {
               </div>
               
               <EffectivenessForm
-                evaluate={currentRouting?.statusId === statusCode.TOUPDATE}
+                evaluate
                 onFinish={() => setTrigger((prev) => prev + 1)}
-                data={selectedData?.trainingEffectiveness?.trainingRequest}
+                data={trainingRequestDetail?.data}
                 formData={effectivessDetail?.data}
                 userData={userDetail?.data}
                 currentRouting={effectivessDetail?.data?.currentRouting}

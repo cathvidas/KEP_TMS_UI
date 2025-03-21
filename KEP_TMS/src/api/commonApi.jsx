@@ -33,12 +33,12 @@ export const getCurrentRoutingActivityApi = async (transactId, activityIn) =>{
 export const getApprovedFormsApi = async (assignedTo, activityIn) =>{
     return await fetchFromApi(`/Services/GetApprovedForms?assignedTo=${assignedTo}&activityIn=${activityIn}`);
 }
-export const getActivityApproversApi = async (id, activityIn, requestTotalCost) =>{
-    if(requestTotalCost){
-        return await fetchFromApi(`/Services/GetApprovers?userBadge=${id}&cost=${requestTotalCost}&requestType=${activityIn}`);
-    }else {
-    return await fetchFromApi(`/Services/GetApprovers?userBadge=${id}&requestType=${activityIn}`);}
+export const getActivityApproversApi = async (id, activityIn) =>{
+    return await fetchFromApi(`/Services/GetApprovers?TransactId=${id}&ActivityIn=${activityIn}`);
 }
 export const getFaciliatorRatingApi = async (requestId, facilitatorBadge) =>{
     return await fetchFromApi(`/Services/GetFacilitatorRating?requestId=${requestId}&facilitatorBadge=${facilitatorBadge}`);
+}
+export const rerouteApproverApi = async (data) =>{
+    return await fetchFromApi(`Services/AssignApprover`, "POST", data)
 }

@@ -16,7 +16,7 @@ const PendingTaskList = ({data}) => {
     },
     {
       field: "type",
-      header: "Type",
+      header: "Forms",
     },
     {
       field: "program",

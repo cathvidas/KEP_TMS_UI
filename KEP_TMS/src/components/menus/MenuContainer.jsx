@@ -10,7 +10,7 @@ const MenuContainer = ({itemList, action, label, fullHeight}) =>{
     return (
       <>
       <Tooltip target=".custom-target-icon" />
-        <div className={`position-sticky bg-white top-0 ${visible && "px-3 border-end"} z-1`} style={{ transition: "all .3s",minWidth: !visible ? "0px": "200px",  maxHeight: fullHeight ?  "100vh": "calc(100vh - 55px)"}}>
+        <div className={`position-sticky bg-white top-0 ${visible && "px-3 border-end"} z-1`} style={{ transition: "all .3s",minWidth: !visible ? "0px": "200px",  maxHeight: fullHeight ?  "100vh": "calc(100vh - 40px)"}}>
           {visible ? (
             <>
               <div className="flex justify-content-between pt-2 border-bottom">

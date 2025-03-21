@@ -37,13 +37,40 @@ const attachmentHook = {
     }, [id,type, trigger]);
     return { data, error, loading };
   },
-  useAllTraineeCertificate: (id, trigger) => {
-    const [data, setData] = useState([]);
+  useAllVideoAttachments: (pageNumber, pageSize, searchValue, SecondSearchValue, trigger) => {
+    const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
+      const getVideos = async () => {
+        handleResponseAsync(
+          () => attachmentService.getAttachments(pageNumber, pageSize, searchValue, SecondSearchValue),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      getVideos();
       
-    })
+    }, [pageNumber, pageSize, searchValue, SecondSearchValue, trigger])
+    return { data, error, loading };
+  },
+  useAttachmentAccess: (pageNumber, pageSize, searchValue, SecondSearchValue, thirdSearchValue, trigger) => {
+    const [data, setData] = useState();
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getVideos = async () => {
+        handleResponseAsync(
+          () => attachmentService.getAttachmentAccess(pageNumber, pageSize, searchValue, SecondSearchValue, thirdSearchValue),
+          (e) => setData(e),
+          (e) => setError(e?.message ?? e),
+          () => setLoading(false)
+        );
+      };
+      getVideos()
+    }, [pageNumber, pageSize, searchValue, SecondSearchValue, thirdSearchValue, trigger])
+    return { data, error, loading };
   }
 };
 export default attachmentHook;

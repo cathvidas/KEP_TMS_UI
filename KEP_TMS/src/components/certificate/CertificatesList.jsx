@@ -8,25 +8,16 @@ import { Button } from "primereact/button";
 import CertificateForm from "../forms/ModalForms/CertificateForm";
 import certificateHook from "../../hooks/certificateHook";
 import { SessionGetEmployeeId } from "../../services/sessions";
-const CertificatesList = ({ userId, trainings }) => {
+const CertificatesList = ({ userId }) => {
   const [showCerticateDetail, setShowCerticateDetail] = useState(false);
   const [selectedData, setSelectedData] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [trigger, setTrigger] = useState(0);
-  const [trainingsOption, setTrainingsOption] = useState([]);
   const [dataToUpdate, setDataToUpdate] = useState(null);
   const certificates = certificateHook.useAllTraineeCertificates(
     userId ?? SessionGetEmployeeId(),
-    trainings,
     trigger
   );
-  useEffect(() => {
-    const mappedData = trainings?.map(({ id, trainingProgram }) => ({
-      value: id,
-      label: trainingProgram.name,
-    }));
-    setTrainingsOption(mappedData);
-  }, [trainings]);
   useEffect(() => {
     if(selectedData){
     const selCert = certificates?.data?.find((item) =>item?.training?.id === selectedData?.training?.id);
@@ -43,7 +34,7 @@ const CertificatesList = ({ userId, trainings }) => {
       setShowCerticateDetail(false)
     }
 }
-  }, [certificates?.data]);
+  }, [certificates?.data, dataToUpdate, selectedData]);
   return (
     <>
       {!showCerticateDetail ? (
@@ -130,7 +121,6 @@ const CertificatesList = ({ userId, trainings }) => {
         userId={userId}
         showModal={showModal}
         hideModal={() => setShowModal(false)}
-        trainingOptions={trainingsOption}
         onFinish={(e) => {
           setShowModal(!e);
           setTrigger((prev) => prev + 1);

@@ -89,7 +89,7 @@ const ExamView = ({ reqData, isTrainee, isEditor }) => {
                           subTitle={`${item?.examDetail?.questionLimit} items`}
                           footer={
                             <div className="text-center">
-                              {getUser?.id ? (
+                              {getUser?.employeeBadge ? (
                                 getExamDetail(item)?.submitted ? (
                                   getExamDetail(item)?.isRetake  ? (
                                     <Button

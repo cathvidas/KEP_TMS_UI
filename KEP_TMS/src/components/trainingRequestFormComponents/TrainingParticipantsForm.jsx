@@ -6,12 +6,13 @@ import SearchBar from "./SearchBar";
 import { ActionButton } from "../General/Button";
 import { SectionHeading } from "../General/Section";
 import proptype from "prop-types";
-import { getAllUsersApi } from "../../api/userApi";
-import { FilterMatchMode } from "primereact/api";
 import EmptyState from "./EmptyState";
 import { Button } from "primereact/button";
 import { Modal } from "react-bootstrap";
-import { TrainingType } from "../../api/constants";
+import { TrainingType, UserTypeValue } from "../../api/constants";
+import userHook from "../../hooks/userHook";
+import { actionDelay } from "../../services/sweetalert";
+import Swal from "sweetalert2";
 const TrainingParticipantsForm = ({
   formData,
   handleResponse,
@@ -19,26 +20,31 @@ const TrainingParticipantsForm = ({
   departments,
   trainingType,
 }) => {
-  const [filters, setFilters] = useState({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  const [filter, setFilter] = useState({ name: "", department: "" });
+  const [paginatorConfig, setPaginatorConfig] = useState({
+    first: 0,
+    rows: 50,
+    page: 1,
+    value: filter?.name,
   });
+  const users = userHook.useAllUsers(
+    paginatorConfig.page,
+    paginatorConfig.rows,
+    paginatorConfig.value
+  );
   const [data, setFormData] = useState(formData);
   const [showModal, setShowModal] = useState(false);
-  const [filter, setFilter] = useState({ name: "", department: "" });
   const [participants, setParticipants] = useState({
     trainees: [],
     facilitators: [],
     provider: "",
   });
-  const onGlobalFilterChange = (data) => {
-    setFilter(data)
-    if (filters.global.value !== data?.value && data?.value !== undefined) {
-      setFilters((prev) => ({
-        ...prev,
-        global: { ...prev.global, value: data?.value }
-      }));
-    }
-  };
+  useEffect(() => {
+    setPaginatorConfig((prev) => ({
+      ...prev,
+      value: filter?.value || filter.department,
+    }));
+  }, [filter]);
 
   const [error, setError] = useState({});
   useEffect(() => {
@@ -56,6 +62,12 @@ const TrainingParticipantsForm = ({
 
   const handleShow = (type) => {
     setCurrentSelected(type);
+    const totalSelected =
+      data.trainingParticipants.length + data.trainingFacilitators.length;
+    setPaginatorConfig((prev) => ({
+      ...prev,
+      rows: totalSelected > 50 ? totalSelected + 50 : 50,
+    }));
     setShowModal(true);
   };
   useEffect(() => {
@@ -64,9 +76,8 @@ const TrainingParticipantsForm = ({
 
   useEffect(() => {
     const fetchDatas = async () => {
-      const user = await getAllUsersApi();
-      const activeUsers = user.filter((user) => user.statusName === "Active");
-
+      const user = users?.data?.results;
+      const activeUsers = user.filter((user) => user.statusName !== "Inactive");
       const availableUsers = activeUsers
         .filter(
           (x) =>
@@ -77,10 +88,9 @@ const TrainingParticipantsForm = ({
         .filter(
           (x) =>
             !data.trainingFacilitators?.some(
-              (y) => x.employeeBadge === y.employeeBadge
+              (y) => x.employeeBadge === y.facilitatorBadge
             )
         );
-
       setList({
         users: availableUsers,
       });
@@ -89,15 +99,15 @@ const TrainingParticipantsForm = ({
       });
     };
     fetchDatas();
-  }, [data]);
+  }, [data, users?.data?.results, participants, paginatorConfig]);
   useEffect(() => {
     var filtered = list.users;
-    if (filter?.name != null) {
+    if (filter?.name != null && filter?.name != "") {
       filtered = list.users.filter((user) =>
         user?.name?.toLowerCase().includes(filter?.name?.toLowerCase())
       );
     }
-    if (filter?.department != null) {
+    if (filter?.department != null && filter?.department != "") {
       filtered = list.users.filter((user) =>
         user?.departmentName
           ?.toLowerCase()
@@ -106,7 +116,6 @@ const TrainingParticipantsForm = ({
     }
     setFilteredList((prev) => ({ ...prev, users: filtered }));
   }, [filter, list.users]);
-
   const handleParticipants = (data) => {
     if (participants.trainees !== data && currentSelected === "trainees") {
       setParticipants((prev) => ({ ...prev, trainees: data }));
@@ -117,8 +126,16 @@ const TrainingParticipantsForm = ({
       setParticipants((prev) => ({ ...prev, facilitators: data }));
     }
   };
-
+  useEffect(() => {
+    const total =
+      participants?.trainees?.length + participants?.facilitators?.length;
+    const addedParticipants =
+      data?.trainingParticipants?.length + data?.trainingFacilitators?.length;
+    let addedRows = total + addedParticipants + 50;
+    setPaginatorConfig((prev) => ({ ...prev, rows: addedRows }));
+  }, [participants, data]);
   const checkUser = () => {
+    actionDelay();
     if (currentSelected === "trainees") {
       if (participants?.trainees != null) {
         const newParticipants = participants.trainees.filter(
@@ -127,7 +144,6 @@ const TrainingParticipantsForm = ({
               (y) => x.employeeBadge === y.employeeBadge
             )
         );
-
         setFormData({
           ...data,
           trainingParticipants: [
@@ -141,50 +157,81 @@ const TrainingParticipantsForm = ({
         const newParticipants = participants.facilitators.filter(
           (x) =>
             !data?.trainingFacilitators?.some(
-              (y) => x.employeeBadge === y.employeeBadge
+              (y) => y.facilitatorBadge === x.employeeBadge
             )
         );
-
+        const mapped = newParticipants.map((item) => {
+          return { facilitatorBadge: item.employeeBadge, faciDetail: item };
+        });
         setFormData({
           ...data,
-          trainingFacilitators: [
-            ...data.trainingFacilitators,
-            ...newParticipants,
-          ],
+          trainingFacilitators: [...data.trainingFacilitators, ...mapped],
         });
       }
     }
+    setShowModal(false);
+    Swal.close();
   };
-
-  const removeParticipant = (type, employeeBadge) => {
+  const removeParticipant = (employeeBadge) => {
     setFormData({
       ...data,
-      [type]: data[type].filter((obj) => obj.employeeBadge !== employeeBadge),
+      trainingParticipants: data?.trainingParticipants.filter(
+        (obj) => obj.employeeBadge !== employeeBadge
+      ),
+    });
+  };
+
+  const removeFacilitator = (employeeBadge) => {
+    setFormData({
+      ...data,
+      trainingFacilitators: data?.trainingFacilitators.filter(
+        (obj) => obj.facilitatorBadge !== employeeBadge
+      ),
     });
   };
   const bodyContent = (
     <>
       {" "}
-      <SearchBar handleOnInput={onGlobalFilterChange} options={departments} />
-      <div
-        className="overflow-auto max-vh-100 mt-2"
-        style={{ maxHeight: "calc(100vh - 275px)" }}
-      >
+      <SearchBar handleOnInput={setFilter} options={departments} />
+      <div className="overflow-auto max-vh-100 mt-2">
         <UserList
+        scrollHeight={"60vh"}
           leadingElement={true}
           userlist={
             currentSelected === "facilitators"
-              ? filteredList.users.filter((x) => x.roleName === "Facilitator")
-              : filteredList.users
+              ? filteredList.users
+                  .filter(
+                    (x) =>
+                      x?.roleName === UserTypeValue.FACILITATOR ||
+                      x?.roleName === UserTypeValue.ADMIN
+                  )
+                  .filter(
+                    (user) =>
+                      !participants?.facilitators?.some(
+                        (obj) => obj.employeeBadge === user.employeeBadge
+                      )
+                  )
+              : filteredList.users.filter(
+                  (user) =>
+                    !participants?.trainees?.some(
+                      (obj) => obj.employeeBadge === user.employeeBadge
+                    )
+                )
           }
           trailingElement={{ input: true }}
           property={"name"}
           handleParticipants={handleParticipants}
-          filterTemp={filters}
+          handleScroll={() => {
+            if (users?.data?.totalRecords >= paginatorConfig.rows) {
+              setPaginatorConfig((prev) => ({ ...prev, rows: prev.rows + 50 }));
+            }
+          }}
+          showSelected
         />
       </div>
     </>
   );
+
   return (
     <>
       <SectionHeading
@@ -211,8 +258,8 @@ const TrainingParticipantsForm = ({
             trailingElement={{ action: true }}
             col="3"
             property={"name"}
-            action={(e) => removeParticipant("trainingParticipants", e)}
-            scrollHeight={"400px"}
+            action={(e) => removeParticipant(e)}
+            // scrollHeight={"400px"}
           />
         </>
       ) : (
@@ -221,74 +268,79 @@ const TrainingParticipantsForm = ({
           action={() => handleShow("trainees")}
         />
       )}
-      {trainingType === TrainingType.INTERNAL &&<>
-      <div className="mt-4"></div>
-      <SectionHeading
-        title="Training faciltator"
-        icon={<FontAwesomeIcon icon={faUsers} />}
-      />
-      {error?.facilitators && (
-        <small className="text-red">{error.facilitators}</small>
-      )}
-      {(data.trainingFacilitators?.length > 0) ? (
+      {trainingType === TrainingType.INTERNAL && (
         <>
-          <span className="d-flex mb-2 justify-content-between">
-            <span className="text-muted">
-              {data.trainingFacilitators?.length} facilitators
-            </span>
-            <ActionButton
-              variant={{ size: "btn-sm" }}
-              title="Add Facilitator"
-              onClick={() => handleShow("facilitators")}
-            />
-          </span>
-          <UserList
-            leadingElement={true}
-            userlist={data.trainingFacilitators}
-            trailingElement={{ action: true }}
-            col="3"
-            property={"name"}
-            action={(e) => removeParticipant("trainingFacilitators", e)}
-          />
-        </>
-      ) : (
-        <EmptyState
-          placeholder="Click to add facilitator."
-          action={() => handleShow("facilitators")}
-        />
-      )}</>}
-
           <div className="mt-4"></div>
+          <SectionHeading
+            title="Training facilitator/s"
+            icon={<FontAwesomeIcon icon={faUsers} />}
+          />
+          {error?.facilitators && (
+            <small className="text-red">{error.facilitators}</small>
+          )}
+          {data.trainingFacilitators?.length > 0 ? (
+            <>
+              <span className="d-flex mb-2 justify-content-between">
+                <span className="text-muted">
+                  {data.trainingFacilitators?.length} facilitators
+                </span>
+                <ActionButton
+                  variant={{ size: "btn-sm" }}
+                  title="Add Facilitator"
+                  onClick={() => handleShow("facilitators")}
+                />
+              </span>
+              <UserList
+                leadingElement={true}
+                userlist={data.trainingFacilitators?.map(
+                  (item) => item?.faciDetail ?? item
+                )}
+                trailingElement={{ action: true }}
+                col="3"
+                action={(e) => removeFacilitator(e)}
+              />
+            </>
+          ) : (
+            <EmptyState
+              placeholder="Click to add facilitator."
+              action={() => handleShow("facilitators")}
+            />
+          )}
+        </>
+      )}
 
-          <Modal
-            show={showModal}
-            onHide={() => setShowModal(false)}
-            size={"xl"}
-          >
-            <Modal.Header className="border-0" closeButton>
-              <Modal.Title className={`h5 `}>
-                {currentSelected === "facilitators"
-                  ? "Facilitators"
-                  : currentSelected === "trainees"
-                  ? "Employees"
-                  : "Users"}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body className="py-0">{bodyContent}</Modal.Body>
-            <Modal.Footer className="border-0">
-              <Button
-                label="Cancel"
-                onClick={() => setShowModal(false)}
-                className="p-button-text rounded"
-              />
-              <Button
-                label="Add"
-                icon="pi pi-user-plus"
-                onClick={checkUser}
-                className="rounded"
-              />
-            </Modal.Footer>
-          </Modal>
+      <div className="mt-4"></div>
+
+      <Modal
+        show={showModal}
+        backdrop="static"
+        onHide={() => setShowModal(false)}
+        size={"xl"}
+      >
+        <Modal.Header className="border-0" closeButton>
+          <Modal.Title className={`h5 `}>
+            {currentSelected === "facilitators"
+              ? "Facilitators"
+              : currentSelected === "trainees"
+              ? "Employees"
+              : "Users"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="py-0">{bodyContent}</Modal.Body>
+        <Modal.Footer className="border-0">
+          <Button
+            label="Cancel"
+            onClick={() => setShowModal(false)}
+            className="p-button-text rounded"
+          />
+          <Button
+            label="Add"
+            icon="pi pi-user-plus"
+            onClick={checkUser}
+            className="rounded"
+          />
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };
@@ -296,5 +348,7 @@ TrainingParticipantsForm.propTypes = {
   formData: proptype.object,
   handleResponse: proptype.func,
   errors: proptype.oneOfType([proptype.object, proptype.string]),
+  departments: proptype.array,
+  trainingType: proptype.oneOf([TrainingType.INTERNAL, TrainingType.EXTERNAL]),
 };
 export default TrainingParticipantsForm;

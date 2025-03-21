@@ -1,14 +1,10 @@
 import fetchFromApi from "./apiUtil";
-
+import { API_BASE_URL } from "./constants";
+export const VideoFileUrl = API_BASE_URL + "/Attachment/GetVideoFile?attachmentId=";
 export const getModuleAttachmentByIdApi = async (id) => {
   return await fetchFromApi(`/Attachment/GetModuleFile?attachmentId=${id}`);
 };
 export const addAttachmentsApi = async (formData) => {
-  // serialise formdata
-  const serializedFormData = [];
-  for (let pair of formData.entries()) {
-    serializedFormData.push(encodeURIComponent(pair[0]) + "=" + encodeURIComponent(pair[1]));
-  }
   return await fetchFromApi("/Attachment/AddAttachments","POST", formData, {'Content-Type': 'multipart/form-data'});
 }
 export const deleteAttachmentApi = async (id) =>{
@@ -16,4 +12,36 @@ export const deleteAttachmentApi = async (id) =>{
 }
 export const getAttachmentByReferenceApi = async (referenceId, attachmentType) => {
   return await fetchFromApi(`/Attachment/GetAttachmentByReferenceId?referenceId=${referenceId}&attachmentType=${attachmentType}`);
+}
+export const AddAttachmentsAccessApi = async (id, data, creator) => {
+  return await fetchFromApi(`/Attachment/AddAttachmentsAccess?requestId=${id}&createdBy=${creator}`, "POST", data, {'Content-Type': 'multipart/form-data'});
+}
+export const GetAttachmentsApi = async (pageNumber, pageSize, searchValue, SecondSearchValue) =>{
+  let url = `Attachment/GetAttachment?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+  if (searchValue) {
+    url += `&searchValue=${searchValue}`;
+  }
+  if (SecondSearchValue) {
+    url += `&secondSearchValue=${SecondSearchValue}`;
+  }
+  return await fetchFromApi(url);
+}
+export const GetAttachmentAccessApi = async (pageNumber, pageSize, searchValue, SecondSearchValue,thirdSearchValue) =>{
+  let url = `Attachment/GetAttachmentAccess?pageNumber=${pageNumber}&pageSize=${pageSize}`
+  if (searchValue) {
+    url += `&searchValue=${searchValue}`;
+  }
+  if (SecondSearchValue) {
+    url += `&secondSearchValue=${SecondSearchValue}`;
+  }
+  if (thirdSearchValue) {
+    url += `&thirdSearchValue=${thirdSearchValue}`;
+  }
+  return await fetchFromApi(url);
+}
+export const DeleteAttachmentAccessApi = async (id) =>{
+    return await fetchFromApi(`/Attachment/DeleteAttachmentAccess?Id=${id}`, "DELETE");
+}
+export const GetVideoFileApi = async (id) =>{
+  return await fetchFromApi(`/Attachment/GetVideoFile?attachmentId=${id}`);
 }

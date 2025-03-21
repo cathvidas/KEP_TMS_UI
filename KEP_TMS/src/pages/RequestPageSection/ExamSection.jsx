@@ -8,7 +8,6 @@ import cardHeaderImg from "../../img/examHeader.png";
 import { Card } from "primereact/card";
 import ExamForm from "../../components/forms/ExamForm";
 import { SectionHeading } from "../../components/General/Section";
-import { CompareDateWithToday } from "../../utils/datetime/dateComparison";
 import trainingDetailsService from "../../services/common/trainingDetailsService";
 
 const ExamSection = ({ data }) => {
@@ -49,7 +48,7 @@ const ExamSection = ({ data }) => {
                 <Col>
                   <Card
                     title={item?.title}
-                    subTitle={`${item?.examQuestion?.length} Questions`}
+                    subTitle={`${item?.examQuestions?.length} Questions`}
                     footer={
                       <div className="text-center">
                         <Button

@@ -24,6 +24,22 @@ export const getTrainingRequestByTraineeIdApi = async (id) =>{
 export const getTrainingRequestByFacilitatorIdApi = async (id) =>{
     return await fetchFromApi(`TrainingRequest/GetByFacilitator?facilitatorBadge=${id}`);
 }
-export const getPagedTrainingRequestApi = async (pageNumber, pageSize, searchValue) =>{
-    return await fetchFromApi(`TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);
+export const GetTrainingRequestSummaryApi = async (id) =>{
+    return await fetchFromApi(`TrainingRequest/GetTrainingRequestSummary?employeeBadge=${id}`);
+}
+export const getPagedTrainingRequestsApi = async (pageNumber, pageSize, searchValue, SecondSearchValue, thirdSearchValue, fourthSearchValue) =>{
+    let url = `TrainingRequest/GetPagedTrainingRequests?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    if(searchValue){
+        url += `&searchValue=${searchValue}`
+    }
+    if(SecondSearchValue){
+        url += `&secondSearchValue=${SecondSearchValue}`
+    }
+    if(thirdSearchValue && thirdSearchValue !== 'null'){
+        url += `&thirdSearchValue=${thirdSearchValue}`
+    }
+    if(fourthSearchValue){
+        url += `&fourthSearchValue=${fourthSearchValue}`
+    }
+    return await fetchFromApi(url);
 }

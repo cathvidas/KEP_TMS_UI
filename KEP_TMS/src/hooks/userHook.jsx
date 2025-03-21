@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import userService from "../services/userService";
 import handleResponseAsync from "../services/handleResponseAsync";
+import { UserTypeValue } from "../api/constants";
 
 const userHook = {
     useUserById: (id, trigger) => {
@@ -25,34 +26,114 @@ const userHook = {
     };
     }
     , 
-    useAllUsersAndEmployee : (trigger)=>{
-      const [data, setData] = useState([]);
-      const [admins, setAdmins] = useState([]);
-      const [facilitators, setFacilitators] = useState([]);
+    useAllUsers:(pageNumber, pageSize, searchValue, trigger) => {
+      const [data, setData] = useState();
       const [error, setError] = useState(null);
       const [loading, setLoading] = useState(true);
-      useEffect(()=>{
-        const fetchRegisteredUsers = async ()=>{
+      useEffect(() => {
+        const getRequest = async () => {
           handleResponseAsync(
-            () => userService.getAllUsers(),
-            (e) => {
-              setData(e);
-              e?.map((user) => {
-                if (user?.roleName === "Admin") {
-                  setAdmins((admins) => [...admins, user]);
-                }
-                if (user?.roleName === "Facilitator") {
-                  setFacilitators((facilitators) => [...facilitators, user]);
-                }
-              });
-            },
-            (e)=>setError(e),
-            ()=>setLoading(false)
+            () =>
+              userService.getAllUsers(
+                pageNumber,
+                pageSize,
+                searchValue
+              ),
+            (e) => setData(e),
+            (e) => setError(e),
+            () => setLoading(false)
           );
-        }
-        fetchRegisteredUsers();
-      }, [trigger])
-      return {data, facilitators, admins, error, loading}
-    }
+        };
+        getRequest();
+      }, [pageNumber, pageSize, searchValue, trigger]);
+      return {
+        data,
+        error,
+        loading,
+      };
+    },
+    useUsersByRole:(pageNumber, pageSize, role, searchValue, trigger) => {
+      const [data, setData] = useState();
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      useEffect(() => {
+        const getRequest = async () => {
+          handleResponseAsync(
+            () =>
+              userService.getUsersByRole(
+                pageNumber,
+                pageSize,
+                role,
+                searchValue
+              ),
+            (e) => setData(e),
+            (e) => setError(e),
+            () => setLoading(false)
+          );
+        };
+        getRequest();
+      }, [pageNumber, pageSize, searchValue, role,trigger]);
+      return {
+        data,
+        error,
+        loading,
+      };
+    },
+    useFacilitators:(pageNumber = 1, pageSize = 100, searchValue, trigger) => {
+      const [data, setData] = useState([]);
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      useEffect(() => {
+        const getRequest = async () => {
+          try {
+            const admins = await userService.getUsersByRole(
+              pageNumber,
+              pageSize,
+              UserTypeValue.ADMIN,
+              searchValue
+            );
+            const facilitators = await userService.getUsersByRole(
+              pageNumber,
+              pageSize,
+              UserTypeValue.FACILITATOR,
+              searchValue
+            );
+            setData([...admins.results, ...facilitators.results]);
+          } catch (err) {
+            setError(err);
+          }finally {
+            setLoading(false);
+          }
+        };
+        getRequest();
+      }, [pageNumber, pageSize, searchValue,trigger]);
+      return {
+        data,
+        error,
+        loading,
+      };
+    },
+    useUserTotalAccumulatedHours:(id, trigger) => {
+      const [data, setData] = useState();
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      useEffect(() => {
+        const getRequest = async () => {
+          handleResponseAsync(
+            () =>
+              userService.getUserTotalAccumulatedHours(id),
+            (e) => setData(e),
+            (e) => setError(e),
+            () => setLoading(false)
+          );
+        };
+        getRequest();
+      }, [id, trigger]);
+      return {
+        data,
+        error,
+        loading,
+      };
+    },
 }
 export default userHook;

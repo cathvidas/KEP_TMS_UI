@@ -10,30 +10,28 @@ import { useNavigate } from "react-router-dom";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import commonHook from "../hooks/commonHook";
 import SkeletonCards from "../components/Skeleton/SkeletonCards";
-import { APP_DOMAIN, UserTypeValue } from "../api/constants";
+import { APP_DOMAIN, SearchValueConstant, UserTypeValue } from "../api/constants";
 import { TabPanel, TabView } from "primereact/tabview";
 import activityLogHook from "../hooks/activityLogHook";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const approval = commonHook.useAllAssignedForApproval(SessionGetEmployeeId());
-  const assignedTraining = trainingRequestHook.useTrainingRequestByTraineeId(
+  
+  const assignedTraining = trainingRequestHook.usePagedTrainingRequest(1,10, SearchValueConstant.PARTICIPANT,
     SessionGetEmployeeId()
   );
   const pendings =  activityLogHook.useUserPendingTaskList(SessionGetEmployeeId())
-  const trainingRequests =
-    SessionGetRole() == "Admin" || SessionGetRole() == "SuperAdmin"
-      ? trainingRequestHook.useAllTrainingRequests()
-      : trainingRequestHook.useAllTrainingRequests(SessionGetEmployeeId());
-  const trainerAssignedData = trainingRequestHook.useParticipantTrainings(
-    SessionGetEmployeeId(),
-    "trainer"
+  const trainerAssignedData =
+  trainingRequestHook.usePagedTrainingRequest(1, 10, SearchValueConstant.FACILITATOR,
+    SessionGetEmployeeId()
   );
+  const trainingRequests = trainingRequestHook.useTrainingRequestSummary(SessionGetEmployeeId())?.data;
   const values = [
     {
       label: "Submitted",
       color: "#fbbf24",
-      value: trainingRequests?.mappedData?.submitted?.length,
+      value: trainingRequests?.submitted,
       icon: "pi pi-list",
       status: "Pending",
       isRequest: true,
@@ -42,7 +40,7 @@ const Dashboard = () => {
     {
       label: "For Approval Requests",
       color: "#24ccfb",
-      value: trainingRequests?.mappedData?.forApproval?.length,
+      value: trainingRequests?.forApproval,
       icon: "pi pi-file-edit",
       status: "Pending",
       isRequest: true,
@@ -51,7 +49,7 @@ const Dashboard = () => {
     {
       label: "Disapproved Request",
       color: "#d36034",
-      value: trainingRequests?.mappedData?.returned?.length,
+      value: trainingRequests?.disapproved,
       icon: "pi pi-replay",
       status: "Disapproved",
       isRequest: true,
@@ -60,25 +58,16 @@ const Dashboard = () => {
     {
       label: "Approved Request",
       color: "#50d0a2",
-      value: trainingRequests?.mappedData?.approved?.length,
+      value: trainingRequests?.approved,
       icon: "pi pi-thumbs-up",
       status: "Disapproved",
       isRequest: true,
       url: "/RequestList/Approved",
     },
-    // {
-    //   label: "Published Request",
-    //   color: "#345ed3",
-    //   value: trainingRequests?.mappedData?.published?.length,
-    //   icon: "pi pi-clipboard",
-    //   status: "Published",
-    //   isRequest: true,
-    //   url: "/RequestList/Publised",
-    // },
     {
       label: "Closed Request",
       color: "#c084fc",
-      value: trainingRequests?.mappedData?.closed?.length,
+      value: trainingRequests?.closed,
       icon: "pi pi-check-circle",
       status: "Closed",
       isRequest: true,
@@ -95,27 +84,25 @@ const Dashboard = () => {
       isRequest: false,
       url: "/List/ForApproval",
       loading: approval?.loading,
-      // disabled: !approval?.data?.overallCount > 0,
+      disabled: !approval?.data?.overallCount > 0,
     },
     {
       label: "Facilitated Trainings",
       color: "#ff6bbd",
       value:
-        trainerAssignedData?.mappedData?.approved?.length +
-        trainerAssignedData?.mappedData?.closed?.length +
-        trainerAssignedData?.mappedData?.published?.length,
+        trainerAssignedData?.data?.totalRecords,
       icon: "pi pi-tag",
       status: "FacilitatedTrainings",
       isRequest: false,
       loading: trainerAssignedData?.loading,
       url: "/FacilitatedTrainings",
-      disabled: !(trainerAssignedData?.data?.length > 0 || SessionGetRole() === UserTypeValue.FACILITATOR),
+      disabled: !(trainerAssignedData?.data?.totalRecords > 0 || SessionGetRole() === UserTypeValue.FACILITATOR),
     },
     {
       label: "Enrolled Trainings",
       color: "#608dfa",
       value:
-        assignedTraining?.data?.length,
+        assignedTraining?.data?.totalRecords,
       icon: "pi pi-address-book",
       isRequest: false,
       url: "/Trainings",
@@ -131,6 +118,9 @@ const Dashboard = () => {
       loading: pendings?.loading,
     },
   ];
+  const hasRequestAccess = SessionGetRole() === UserTypeValue.ADMIN ||
+  SessionGetRole() === UserTypeValue.REQUESTOR ||
+  SessionGetRole() === UserTypeValue.FACILITATOR
   const Content = () => {
     return (
       <div className="p-3">
@@ -146,17 +136,13 @@ const Dashboard = () => {
               )}
 
               <TabView
-                className={`custom-tab ${
-                  SessionGetRole() === UserTypeValue.ADMIN ||
-                  SessionGetRole() === UserTypeValue.REQUESTOR
+                className={`custom-tab ${hasRequestAccess
                     ? ""
                     : "border-0 hide-nav"
                 }`}
               >
                 <TabPanel
-                  header={
-                    SessionGetRole() === UserTypeValue.ADMIN ||
-                    SessionGetRole() === UserTypeValue.REQUESTOR
+                  header={hasRequestAccess
                       ? "Activities"
                       : ""
                   }
@@ -221,14 +207,12 @@ const Dashboard = () => {
                     </>
                   )}
                 </TabPanel>
-                {(SessionGetRole() === UserTypeValue.ADMIN ||
-                  SessionGetRole() === UserTypeValue.REQUESTOR) && (
+                {(hasRequestAccess) && (
                   <TabPanel header={"Training Requests"}>
                     {trainingRequests?.loading ? (
                       <SkeletonCards />
                     ) : (
-                      (SessionGetRole() === UserTypeValue.ADMIN ||
-                        SessionGetRole() === UserTypeValue.REQUESTOR ||
+                      (hasRequestAccess ||
                         trainingRequests?.data?.length > 0) && (
                         <>
                           <Row className="g-2 row-cols-lg-4">
@@ -290,7 +274,6 @@ const Dashboard = () => {
       </div>
     );
   };
-
   return (
     <Layout
       navReference="Dashboard"

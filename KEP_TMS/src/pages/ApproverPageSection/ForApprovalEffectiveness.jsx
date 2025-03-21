@@ -18,6 +18,8 @@ import commonService from "../../services/commonService";
 import ActivityStatus from "../../components/General/ActivityStatus";
 import routingService from "../../services/common/routingService";
 import proptype from "prop-types"
+import SkeletonForm from "../../components/Skeleton/SkeletonForm";
+import { formatDateTime } from "../../utils/datetime/Formatting";
 const ForApprovaleffectiveness = ({data, refreshData}) => {
   const [trigger, setTrigger] = useState(0);
   const [remark] = useState(null);
@@ -32,7 +34,7 @@ const ForApprovaleffectiveness = ({data, refreshData}) => {
   );
   const effectiveness = effectivenessHook.useEffectivenessById(
     selectedData?.trainingEffectiveness?.id,
-    trigger
+    trigger, true
   );
   const actionTemplate = (rowData) => (
     <>
@@ -120,8 +122,13 @@ const ForApprovaleffectiveness = ({data, refreshData}) => {
     },
     {
       field: "name",
-      header: "Created By",
-      body: (rowData) => <>{rowData?.trainingEffectiveness?.employeeBadge}</>,
+      header: "Submitted By",
+      body: (rowData) => <>{rowData?.auditTrail?.createdBy}</>,
+    },
+    {
+      field: "name",
+      header: "Submitted Date",
+      body: (rowData) => <>{formatDateTime(rowData?.auditTrail?.createdDate)}</>,
     },
     {
       field: "description",
@@ -183,8 +190,8 @@ const ForApprovaleffectiveness = ({data, refreshData}) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-md-4 px-md-5">
-          {selectedData?.loading ? (
-            "Loading..."
+          {effectiveness?.loading ? (
+            <SkeletonForm/>
           ) : (
             <EffectivenessForm
               userData={userData?.data}

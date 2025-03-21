@@ -9,8 +9,8 @@ const RequestAuditTrailLogsItem = ({data})=>{
         <>
         {hasValue &&
           <div className="flex gap-0 flex-wrap ">
-            <h6 className="mb-0" style={{ fontSize: "0.9rem" }}>
-              {item.label}:
+            <h6 className="mb-0 text-secondary fw-bold" style={{ fontSize: "0.9rem" }}>
+              {item.label}:&nbsp;
             </h6>
             <small className="text-muted">{item?.value?.toString()}</small>
           </div>
@@ -42,6 +42,10 @@ const RequestAuditTrailLogsItem = ({data})=>{
                   value={item?.changes?.TrainingParticipants}
                 />
                 <ItemTemplate
+                  label={"Training CategoryID"}
+                  value={item?.changes?.TrainingCategoryId}
+                />
+                <ItemTemplate
                   label={"Training ProgramId"}
                   value={item?.changes?.TrainingProgramId}
                 />
@@ -51,7 +55,7 @@ const RequestAuditTrailLogsItem = ({data})=>{
                 />
                 <ItemTemplate
                   label={"Training Objectives"}
-                  value={item?.changes?.TrainingFee}
+                  value={item?.changes?.TrainingObjectives}
                 />
                 <ItemTemplate
                   label={"Training Fee"}

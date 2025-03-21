@@ -22,6 +22,7 @@ import handleResponseAsync from "../../services/handleResponseAsync";
 import examService from "../../services/examService";
 import validateExamForm from "../../services/inputValidation/validateExamForm";
 import getPassingScore from "../../utils/common/getPassingScore";
+import UploadQuestionsForm from "./ModalForms/UploadQuestionsForm";
 const ExamForm = ({
   defaultData,
   handleRefresh,
@@ -29,11 +30,12 @@ const ExamForm = ({
   closeForm,
   readOnly,
 }) => {
-  const [data, setData] = useState({ title: "", examQuestion: [] });
+  const [data, setData] = useState({ title: "", examQuestions: [] });
   const [isUpdate, setIsUpdate] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [errors, setErrors] = useState({});
+  const [uploadQuestions, setUploadQuestions] = useState(false);
   useEffect(() => {
     if (defaultData) {
       setData(defaultData);
@@ -43,22 +45,22 @@ const ExamForm = ({
     }
   }, [defaultData]);
   const handleSaveQuestion = (e) => {
-    setData((prev) => ({ ...prev, examQuestion: [...prev.examQuestion, e] }));
+    setData((prev) => ({ ...prev, examQuestions: [...prev.examQuestions, e] }));
   };
   const handleUpdateQuestion = (e) => {
-    const updatedData = data?.examQuestion?.map((item, index) => {
+    const updatedData = data?.examQuestions?.map((item, index) => {
       if (index === e.index) {
         return { ...item, ...e.data };
       }
       return item;
     });
-    setData({ ...data, examQuestion: updatedData });
+    setData({ ...data, examQuestions: updatedData });
     setShowModal(false);
   };
   const removeExamQuestion = (index) => {
     setData((prev) => ({
       ...prev,
-      examQuestion: prev.examQuestion.filter((_, i) => i !== index),
+      examQuestions: prev.examQuestions.filter((_, i) => i !== index),
     }));
   };
 
@@ -94,7 +96,7 @@ const ExamForm = ({
     if (validate?.isValid) {
       const updatedData = {
         ...data,
-        examQuestions: data.examQuestion,
+        examQuestions: data.examQuestions,
         trainingRequestId: data?.trainingRequestId,
         updatedBy: SessionGetEmployeeId(),
       };
@@ -133,6 +135,27 @@ const ExamForm = ({
       },
     });
   };
+  const getTemplate = ()=>{
+    
+    const csvRequestHeaders = [
+      "Questions",
+      "Answer (1-n)",
+      "Option 1",
+      "Option 2",
+      "Option 3",
+      "Option 4",
+    ];
+
+    const csvContent = [
+      csvRequestHeaders.join(","), // header
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `TMS_EXAM QUESTIONS_TEMPLATE.csv`;
+    link.click();
+  }
   return (
     <>
       <Card className="rounded shadow-sm card border overflow-hidden">
@@ -219,17 +242,22 @@ const ExamForm = ({
               }
             />
           </Row>
+          {!readOnly &&
+              <div className="text-end mb-2">
+              <Button type="button" label="Get Template" className="rounded ms-auto py-1" size="small" onClick={getTemplate}/>
+              <Button type="button" label="Upload Questions" severity="success" className="rounded ms-2 py-1" size="small" onClick={()=>setUploadQuestions(true)}/>
+            </div>}
           <FormFieldItem
             label="Exam Questions"
             error={errors?.examQuestion}
             FieldComponent={
-              <>
-                {data?.examQuestion?.length > 0 ? (
+              <>   
+                {data?.examQuestions?.length > 0 ? (
                   <>
                     {!readOnly && (
                       <span className="flex  justify-content-between">
                         <span className="text-muted">
-                          {`${data?.examQuestion?.length} items`}{" "}
+                          {`${data?.examQuestions?.length} items`}{" "}
                         </span>
                         <Button
                           type="button"
@@ -245,7 +273,7 @@ const ExamForm = ({
                       </span>
                     )}
                     <Row className="row-cols-lg-2  py-3 g-2 row-cols-1">
-                      {data?.examQuestion?.map((x, index) => {
+                      {data?.examQuestions?.map((x, index) => {
                         return (
                           <Col key={`item-${index}`}>
                             <div className="overflow-hidden border rounded">
@@ -344,6 +372,7 @@ const ExamForm = ({
         defaultData={selectedQuestion}
         handleUpdateQuestion={handleUpdateQuestion}
       />
+      <UploadQuestionsForm showModal={uploadQuestions} onSubmit={(e)=>setData((prev) => ({ ...prev, examQuestions: prev.examQuestions ? [...prev.examQuestions, ...e] : e }))} handleClose={() => setUploadQuestions(false)} />
     </>
   );
 };

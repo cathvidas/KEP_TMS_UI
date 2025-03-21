@@ -9,6 +9,7 @@ import ProviderForm from "../../components/forms/ModalForms/ProviderForm";
 import { formatDateOnly } from "../../utils/datetime/Formatting";
 import { checkIfNullOrEmpty } from "../../utils/stringUtil";
 import { Paginator } from "primereact/paginator";
+import getStatusById from "../../utils/status/getStatusById";
 
 const ProviderListSection = () => {
   const [trigger, setTrigger] = useState(0);
@@ -31,7 +32,7 @@ const ProviderListSection = () => {
           size="small"
           text
           icon="pi pi-eye"
-          severity="help"
+          severity="success"
           className="rounded-circle"
           onClick={() => handleOnclick(rowData)}
         />
@@ -39,7 +40,7 @@ const ProviderListSection = () => {
           type="button"
           size="small"
           text
-          icon="pi pi-pen-to-square"
+          icon="pi pi-pencil"
           className="rounded-circle"
           onClick={() => handleOnclick(rowData, true)}
         />
@@ -101,7 +102,7 @@ const ProviderListSection = () => {
     {
       field: "statusName",
       header: "Status",
-      body: (rowData) => <>{rowData?.status?.name ?? "N/A"}</>,
+      body: (rowData) => <>{getStatusById(rowData.statusId)}</>,
     },
     {
       field: "",

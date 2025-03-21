@@ -7,8 +7,10 @@ import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import { Button } from "primereact/button";
 import { confirmAction } from "../../services/sweetalert";
 import { APP_DOMAIN, UserTypeValue } from "../../api/constants";
+import commonHook from "../../hooks/commonHook";
+import { Badge } from "primereact/badge";
 
-const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
+const Sidebar = ({ activeNavigation, expanded, show, hide }) => {
   const navigate = useNavigate();
   const checkIfActive = (path) => {
     return path && path?.toUpperCase() === activeNavigation?.toUpperCase();
@@ -16,14 +18,17 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
   const firstname = sessionStorage.getItem("firstname");
   const lastname = sessionStorage.getItem("lastname");
   const fullname = sessionStorage.getItem("fullname");
-
+  const hasRequestAccess = SessionGetRole() === UserTypeValue.ADMIN ||
+  SessionGetRole() === UserTypeValue.REQUESTOR ||
+  SessionGetRole() === UserTypeValue.FACILITATOR 
+  const approvalCount = commonHook.useAllAssignedForApproval(SessionGetEmployeeId())?.data?.overallCount;
   const NavItem = ({
     item,
     icon,
     title,
     iconComponent,
     onClick,
-    hideLabel = false,
+    hideLabel = false,badgeValue
   }) => {
     return (
       <li className="nav-item">
@@ -44,10 +49,12 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
               expanded ? "row gap-3" : "column gap-1"
             } text-center`}
           >
+           
             {iconComponent ? (
               <>{iconComponent}</>
             ) : (
-              icon && <i className={icon} style={{ fontSize: "1.4rem" }}></i>
+              icon && <i className={icon + " p-overlay-badge"} style={{ fontSize: "1.4rem" }}> {badgeValue > 0 && 
+                <Badge value={badgeValue} severity="danger" size="small" style={{fontSize: "0.7rem", minWidth: "1.2rem", height: "1.2rem", lineHeight: "1.3rem"}}></Badge>}</i>
             )}
             {!hideLabel && (
               <small
@@ -66,9 +73,10 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
     );
   };
   NavItem.propTypes = {
-    item: proptype.string.isRequired,
+    item: proptype.string,
     icon: proptype.string,
-    title: proptype.string.isRequired,
+    badgeValue: proptype.number,
+    title: proptype.string,
     iconComponent: proptype.object,
     onClick: proptype.func,
     hideLabel: proptype.bool,
@@ -128,8 +136,7 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
           </Link>
           <ul className="nav nav-pills flex-column nav-flush w-100 mb-auto">
             <NavItem item={"Dashboard"} title="Dashboard" icon={"pi pi pi-home"} />
-            {(SessionGetRole() === UserTypeValue.ADMIN ||
-              SessionGetRole() === UserTypeValue.REQUESTOR) && (
+            {hasRequestAccess && (
               <NavItem
                 item={"RequestList"}
                 title="Training Requests"
@@ -148,11 +155,13 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
                 icon="pi pi-clipboard"
               />
             )}
+            {approvalCount > 0 &&
             <NavItem
               item={"List/ForApproval"}
               title="For Approval"
               icon="pi pi-pen-to-square"
-            />
+              badgeValue={approvalCount}
+            />}
             <NavItem
               item="Certificates"
               title="Certificates"
@@ -167,7 +176,7 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
                   icon="pi pi-list"
                 />
               <NavItem item="Setting" title="Setting" icon={"pi pi-cog"} />
-              {/* <NavItem item="Files" title="Files" icon={"pi pi-file"} /> */}
+              <NavItem item="Videos" title="Videos" icon={"pi pi-video"} />
               </>
             )}
           </ul>
@@ -192,10 +201,10 @@ const Sidebars = ({ activeNavigation, expanded, show, hide }) => {
   );
 };
 
-Sidebars.propTypes = {
+Sidebar.propTypes = {
   activeNavigation: proptype.string,
   expanded: proptype.bool,
   show: proptype.bool,
   hide: proptype.func,
 };
-export default Sidebars;
+export default Sidebar;

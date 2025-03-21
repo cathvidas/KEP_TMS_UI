@@ -30,12 +30,9 @@ export const deleteProviderApi = async (id) => {
 };
 
 export const getPagedProviderApi = async (pageNumber, pageSize, searchValue) => {
+  let url = `/TrainingProvider/GetPaged?pageNumber=${pageNumber}&pageSize=${pageSize}`
   if (searchValue) {
-    return await fetchFromApi(
-      `/TrainingProvider/GetPaged?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`
-    );
+    url += `&searchValue=${searchValue}`;
   }
-  return await fetchFromApi(
-    `/TrainingProvider/GetPaged?pageNumber=${pageNumber}&pageSize=${pageSize}`
-  );
+  return await fetchFromApi(url);
 };

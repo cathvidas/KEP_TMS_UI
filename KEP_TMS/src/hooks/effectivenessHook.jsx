@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import effectivenessService from "../services/effectivenessService";
 import handleResponseAsync from "../services/handleResponseAsync";
+import { checkIfActualPerformanceRated } from "./activityLogHook";
 
 const effectivenessHook = {
-  useEffectivenessById: (id, trigger) => {
+  useEffectivenessById: (id, trigger, loader) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+      if(loader){
+        setLoading(true);
+      }
       const getRequest = async () => {
         handleResponseAsync(
           () => effectivenessService.getEffectivenessById(id),
@@ -18,7 +22,7 @@ const effectivenessHook = {
         );
       };
       getRequest();
-    }, [id, trigger]);
+    }, [id, trigger, loader]);
     return {
       data,
       error,
@@ -63,7 +67,7 @@ const effectivenessHook = {
     }, [approverId, trigger]);
     return { data, error, loading };
   },
-  useEvaluatorAssignedEffectiveness: (id) => {
+  useEvaluatorAssignedEffectiveness: (id, trigger) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -72,13 +76,15 @@ const effectivenessHook = {
         handleResponseAsync(
           () => 
             effectivenessService.getEvaluatorAssignedEffectiveness(id),
-          (e) => setData(e),
+          (e) => {
+            const filtered = e?.filter(item => checkIfActualPerformanceRated(item))
+            setData(filtered)},
           (e) => setError(e),
           () => setLoading(false)
         );
       };
       getRequests();
-    }, [id]);
+    }, [id, trigger]);
     return { data, error, loading };
   },
   useAllParticipantsEffectiveness: (datalist) => {
@@ -105,23 +111,21 @@ const effectivenessHook = {
     }, [datalist]);
     return { data, error, loading };
   },
-  useAllAssignedEffectivenessEvalutaion :()=>{
+  useAllAssignedEffectivenessEvalutaion :(id)=>{
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequests = async () => {
         handleResponseAsync(
-          () => effectivenessService.getAllEffectiveness(),
-          (e) => {
-
-            setData(e)},
+          () => effectivenessService.getEvaluatorAssignedEffectiveness(id),
+          (e) => setData(e),
           (e) => setError(e),
           () => setLoading(false)
         );
       };
       getRequests();
-    }, []);
+    }, [id]);
     return { data, error, loading };
   },
   usePagedEffectiveness: (pageNumber, pageSize, searhValue) => {

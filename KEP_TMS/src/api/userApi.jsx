@@ -2,8 +2,28 @@ import fetchFromApi from "./apiUtil";
 export const checkUserCredentials = async (LoginCredentials) => {
   return await fetchFromApi("/Users/Login", "POST", LoginCredentials);
 };
-export const getAllUsersApi = async () => {
-  return await fetchFromApi("/Users/GetAllUsers");
+export const SetPasswordApi = async (data) => {
+  return await fetchFromApi("/Users/SetPassword", "POST", data);
+};
+export const getAllUsersApi = async (pageNumber, pageSize, searchValue) => {
+  if (searchValue) {
+    return await fetchFromApi(
+      `/Users/GetUsers?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`
+    );
+  }
+  return await fetchFromApi(
+    `/Users/GetUsers?pageNumber=${pageNumber}&pageSize=${pageSize}`
+  );
+};
+export const getUsersByRoleApi = async (pageNumber, pageSize,role, searchValue) => {
+  if (searchValue) {
+    return await fetchFromApi(
+      `/Users/GetUsersByRole?pageNumber=${pageNumber}&pageSize=${pageSize}&Role=${role}&SearchValue=${searchValue}`
+    );
+  }
+  return await fetchFromApi(
+      `/Users/GetUsersByRole?pageNumber=${pageNumber}&pageSize=${pageSize}&Role=${role}`
+  );
 };
 export const getUserApi = async (id) => {
   return await fetchFromApi(`/Users/GetUserById?badge=${id}`);
@@ -18,16 +38,7 @@ export const createUserApi = async (data) => {
 export const updateUserApi = async (data) => {
   return await fetchFromApi("/Users/UpdateUser", "PUT", data);
 };
-
-//KEP Common
-
-export const getpagedEmployeesApi = async (pageNumber, pageSize, searchValue) => {
-  if (searchValue) {
-    return await fetchFromApi(
-      `/Users/GetPagedEmployees?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`
-    );
-  }
-  return await fetchFromApi(
-    `/Users/GetPagedEmployees?pageNumber=${pageNumber}&pageSize=${pageSize}`
-  );
+export const GetUserTotalAccumulatedHoursApi = async (id) => {
+  return await fetchFromApi(`Users/GetTotalAccumulatedHours?EmployeeBadge=${id}`);
 };
+

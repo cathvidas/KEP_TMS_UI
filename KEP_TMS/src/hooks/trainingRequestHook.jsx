@@ -3,18 +3,16 @@ import trainingRequestService from "../services/trainingRequestService";
 import userMapping from "../services/DataMapping/userMapping";
 import userService from "../services/userService";
 import handleResponseAsync from "../services/handleResponseAsync";
-import { ActivityType, statusCode } from "../api/constants";
-import mapUserTrainings, { mappedTrainingRequestByStatus } from "../services/DataMapping/mapUserTrainings";
+import { ActivityType, SearchValueConstant, statusCode } from "../api/constants";
 import trainingReportService from "../services/trainingReportService";
 import evaluationService from "../services/evaluationService";
 import effectivenessService from "../services/effectivenessService";
 import commonService from "../services/commonService";
 import routingService from "../services/common/routingService";
-import externalFacilitatorService from "../services/externalFacilitatorService";
 import trainingDetailsService from "../services/common/trainingDetailsService";
 
 const trainingRequestHook = {
-  useTrainingRequest: (id,trigger) => {
+  useTrainingRequest: (id, trigger) => {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -27,44 +25,42 @@ const trainingRequestHook = {
               response.trainingParticipants,
               "employeeBadge"
             );
-            const approvers = await commonService.getActivityApprovers(response?.requesterBadge, ActivityType.REQUEST, response?.totalTrainingFee);
+            const approvers = await commonService.getActivityApprovers(
+              response?.id,
+              ActivityType.REQUEST
+            );
             const requestor = await userService.getUserById(
               response.requesterBadge
             );
-            const auditTrail = await commonService.getAuditTrail(id, ActivityType.REQUEST);
+            const auditTrail = await commonService.getAuditTrail(
+              id,
+              ActivityType.REQUEST
+            );
             const routings =
               await commonService.getRoutingActivityWithAuditTrail(
                 response.id,
                 ActivityType.REQUEST
               );
-              const currentRouting = await routingService.getCurrentApprover(approvers, routings);
-              if(!currentRouting?.assignedDetail){
-                currentRouting.assignedDetail = await userService.getUserById(currentRouting?.assignedTo);
-              }
-           const faciList =await Promise.all(
-             response?.trainingFacilitators?.map(async (faci) => {
-               const detail = faci?.isExternal
-                 ? await externalFacilitatorService.getExternaFacilitatorById(
-                     faci?.externalFacilitatorId
-                   )
-                 : await userService.getUserById(faci?.facilitatorBadge);
-                 
-               return { ...faci, faciDetail: detail };
-             })
-           );
-              setData({
+            const currentRouting = await routingService.getCurrentApprover(
+              routings
+            );
+            if (!currentRouting?.assignedDetail) {
+              currentRouting.assignedDetail = await userService.getUserById(
+                currentRouting?.assignedTo
+              );
+            }
+            setData({
               ...response,
               trainingParticipants: participants,
-              trainingFacilitators: faciList,
               requestor: requestor,
               routings,
               approvers,
-              currentRouting: {...currentRouting},
-              auditTrail
+              currentRouting: { ...currentRouting },
+              auditTrail,
             });
-            setLoading(false)
+            setLoading(false);
           },
-          (e) => setError(e),
+          (e) => setError(e)
         );
       };
       getRequest();
@@ -74,133 +70,6 @@ const trainingRequestHook = {
       error,
       loading,
     };
-  },
-
-  useAllTrainingRequests: (id = 0) => {
-    const [data, setData] = useState([]);
-    const [mappedData, setMappedData] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      const fetchData = async () => {
-        handleResponseAsync(
-          () =>
-            id !== 0
-              ? trainingRequestService.getTrainingRequestsByRequestor(id)
-              : trainingRequestService.getAllTrainingRequests(),
-          async (e) => {
-            const updatedRequests = await Promise.all(
-              e?.map(async (request) => {
-                // const facilitators = await userMapping.mapUserIdList(
-                //   request.trainingFacilitators,
-                //   "facilitatorBadge"
-                // );
-                // const approver =
-                //   await commonService.getCurrentRouting(
-                //     request.id,
-                //     ActivityType.REQUEST
-                //   );
-                // const user = await userService.getUserById(approver.assignedTo);
-                // const routing = {
-                //   approverUsername: user.username,
-                //   approverFullName: user.lastname + ", " + user.firstname,
-                //   statusId: approver.statusId,
-                //   approverId: user.employeeBadge,
-                //   approverPosition: user.position,
-                // };
-
-                return {
-                  ...request,
-                  // trainingFacilitators: facilitators,
-                  // routing, // Replace with detailed facilitator information
-                };
-              })
-            );
-            setData(updatedRequests);
-            setMappedData(mappedTrainingRequestByStatus(updatedRequests))
-           setLoading(false)
-          },
-          (e) => setError(e),
-        );
-      };
-      fetchData();
-    }, [id]);
-    return {
-      data,
-      mappedData,
-      error,
-      loading,
-    };
-  },
-  useParticipantTrainings: (id, role) => {
-    const [data, setData] = useState([]);
-    const [mappedData, setMappedData] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      const fetchData = async () => {
-        handleResponseAsync(
-          () =>
-            trainingRequestService.getTrainingRequestByParticipant(id, role),
-          async (e) => {
-            const updatedRequests = await Promise.all(
-              e.map(async (request) => {
-                const facilitators = await userMapping.mapUserIdList(
-                  request.trainingFacilitators,
-                  "facilitatorBadge"
-                );
-                const approver =
-                  await commonService.getCurrentRouting(
-                    request.id,
-                    ActivityType.REQUEST
-                  );
-                const user = await userService.getUserById(approver.assignedTo);
-                const routing = {
-                  approverUsername: user.username,
-                  approverFullName: user.lastname + ", " + user.firstname,
-                  statusId: approver.statusId,
-                  approverId: user.employeeBadge,
-                  approverPosition: user.position,
-                };
-                return {
-                  ...request,
-                  trainingFacilitators: facilitators,
-                  routing: routing, // Replace with detailed facilitator information
-                };
-              })
-            );
-            setData(updatedRequests);
-            setMappedData(mappedTrainingRequestByStatus(updatedRequests))
-          },
-          (e) => setError(e),
-          () => setLoading(false)
-        );
-      };
-      fetchData();
-    }, [id, role]);
-    return {
-      data,
-      mappedData,
-      error,
-      loading,
-    };
-  },
-  useUserTrainingsSummary: (id) => {
-    const [data, setData] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      const fetchData = () => {
-        handleResponseAsync(
-          () => trainingRequestService.getAllTrainingRequests(),
-          (response) => setData(mapUserTrainings(response, id)),
-          (error) => setError(error),
-          () => setLoading(false)
-        );
-      };
-      fetchData();
-    }, [id]);
-    return { data, error, loading };
   },
   useAllParticipantsReports: (datalist) => {
     const [data, setData] = useState([]);
@@ -246,21 +115,43 @@ const trainingRequestHook = {
     }, [datalist]);
     return { data, error, loading };
   },
-  usePagedTrainingRequest: (pageNumber, pageSize, searchValue) => {
-    const [data, setData] = useState([]);
+  usePagedTrainingRequest: (
+    pageNumber,
+    pageSize,
+    searchValue,
+    secondSearchValue,
+    thirdSearchValue,
+    fourthSearchValue
+  ) => {
+    const [data, setData] = useState();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequests = async () => {
-          handleResponseAsync(
-            () => trainingRequestService.getPagedTrainingRequest(pageNumber, pageSize, searchValue),
-            (e) => setData(e?.results),
-            (e) => setError(e),
-            () => setLoading(false)
-          );
+        handleResponseAsync(
+          () =>
+            trainingRequestService.getPagedTrainingRequest(
+              pageNumber,
+              pageSize,
+              searchValue,
+              secondSearchValue,
+              thirdSearchValue,
+              fourthSearchValue
+            ),
+          (e) => setData(e),
+          (e) => setError(e?.message ?? e),
+          () => setLoading(false)
+        );
       };
       getRequests();
-    }, [pageNumber, pageSize, searchValue]);
+    }, [
+      pageNumber,
+      pageSize,
+      searchValue,
+      secondSearchValue,
+      thirdSearchValue,
+      fourthSearchValue,
+    ]);
     return { data, error, loading };
   },
   useTrainingRequestByTraineeId: (id, attended) => {
@@ -270,8 +161,18 @@ const trainingRequestHook = {
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
-          () => trainingRequestService.getTrainingRequestByTraineeId(id),
-          (e) => {setData(e?.filter(item=> (attended ? trainingDetailsService.checkIfTrainingEndsAlready(item) : true) && (item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED) ));
+          () => trainingRequestService.getPagedTrainingRequest(1, 1000, SearchValueConstant.PARTICIPANT, id),
+          (e) => {
+            setData(
+              e?.results?.filter(
+                (item) =>
+                  (attended
+                    ? trainingDetailsService.checkIfTrainingEndsAlready(item)
+                    : true) &&
+                  (item?.status?.id !== statusCode.DISAPPROVED ||
+                    item?.status?.id !== statusCode.INACTIVE)
+              )
+            );
           },
           (e) => setError(e),
           () => setLoading(false)
@@ -292,9 +193,15 @@ const trainingRequestHook = {
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
-          () => trainingRequestService.getTrainingRequestByFacilitatorId(id),
-          (e) => 
-            {setData(e?.filter(item=>item?.status?.id === statusCode.APPROVED || item?.status?.id === statusCode.CLOSED));
+          () => trainingRequestService.getPagedTrainingRequest(1, 1000, SearchValueConstant.FACILITATOR, id),
+          (e) => {
+            setData(
+              e?.results?.filter(
+                (item) => trainingDetailsService.checkIfTrainingEndsAlready(item) &&
+                  (item?.status?.id !== statusCode.INACTIVE ||
+                  item?.status?.id !== statusCode.DISAPPROVED)
+              )
+            );
           },
           (e) => setError(e),
           () => setLoading(false)
@@ -308,7 +215,27 @@ const trainingRequestHook = {
       loading,
     };
   },
-   
+  useTrainingRequestSummary: (id) => {
+    const [data, setData] = useState({});
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+        handleResponseAsync(
+          () => trainingRequestService.getTrainingRequestSummary(id),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      fetchData();
+    }, [id]);
+    return {
+      data,
+      error,
+      loading,
+    };
+  },
 };
 
 export default trainingRequestHook;

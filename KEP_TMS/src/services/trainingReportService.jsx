@@ -2,7 +2,6 @@ import { approveTrainingFormApi } from "../api/commonApi";
 import { ActivityType } from "../api/constants";
 import {
   createTrainingReportApi,
-  getAllTrainingReportsApi,
   getApproverAssignedReportsApi,
   getTrainingReportByIdApi,
   updateTrainingReportApi,
@@ -26,16 +25,12 @@ const trainingReportService = {
     }
     return response?.data;
   },
-  getAllTrainingReports: async () => {
-    const response = await getAllTrainingReportsApi();
-    return response?.status === 1? response?.data: [];
-  },
   getTrainingReportById: async (id) => {
     const response = await getTrainingReportByIdApi(id);
     if(response?.status === 1){
-      const approvers = await commonService.getActivityApprovers(response?.data?.createdBy, ActivityType.REPORT)
+      const approvers = await commonService.getActivityApprovers(response?.data?.id, ActivityType.REPORT)
       const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.REPORT)
-      const currentRouting = await routingService.getCurrentApprover(approvers, routings);
+      const currentRouting = await routingService.getCurrentApprover(routings);
       if(!currentRouting?.assignedDetail){
         currentRouting.assignedDetail= await userService.getUserById(currentRouting?.assignedTo);
       }
@@ -46,11 +41,6 @@ const trainingReportService = {
   },
   getApproverAssignedReports: async (id) => {
     const response = await getApproverAssignedReportsApi(id);
-    response?.map( async item =>{
-      const currentRouting = item?.routingActivity;
-      const approverDetail =await userService.getUserById(currentRouting?.assignedTo);
-      item.routingActivity = {...currentRouting, assignedDetail: approverDetail};
-    })
     return response;
   },
   approveTrainingReport: async (data)=>{

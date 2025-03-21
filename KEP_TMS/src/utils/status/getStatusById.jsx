@@ -7,7 +7,7 @@ const getStatusById = (id) => {
       : id === statusCode.INACTIVE
       ? "Inactive"
       : id === statusCode.SUBMITTED
-      ? "Submited"
+      ? "Submitted"
       : id === statusCode.APPROVED
       ? "Approved"
       : id === statusCode.DISAPPROVED
@@ -17,7 +17,13 @@ const getStatusById = (id) => {
       : id === statusCode.TOUPDATE
       ? "ForUpdate"
       : id === statusCode.FORAPPROVAL
-      ? "ForApproval": 
+      ? "ForApproval"
+      :  id === statusCode.DRAFTED
+      ? "Drafted"
+      :  id === statusCode.ROUTED
+      ? "Routed"
+      : id === statusCode.PENDING
+      ? "Pending":
       "Pending";
   return status;
 };

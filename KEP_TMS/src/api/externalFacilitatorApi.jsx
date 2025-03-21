@@ -14,14 +14,11 @@ export const getPagedExternalFacilitatorApi = async (
   pageSize,
   searchValue
 ) => {
+  let url = `/ExternalFacilitator/GetPaged?pageNumber=${pageNumber}&pageSize=${pageSize}`;
   if (searchValue) {
-    return await fetchFromApi(
-      `/ExternalFacilitator/GetPaged?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`
-    );
+    url += `&searchValue=${searchValue}`;
   }
-  return await fetchFromApi(
-    `/ExternalFacilitator/GetPaged?pageNumber=${pageNumber}&pageSize=${pageSize}`
-  );
+  return await fetchFromApi(url);
 };
 export const deleteExternalFacilitatorApi = async (id) => {
   return await fetchFromApi(`/ExternalFacilitator/Delete?id=${id}`, "DELETE");

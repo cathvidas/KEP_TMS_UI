@@ -5,12 +5,14 @@ export const confirmAction = (prop) => {
     title: prop.title ??"Confirm Submission?",
     text: prop.text??"Are you sure you want to submit this form?",
     icon: prop.icon?? "warning",
-    showCancelButton: true,
+    showCancelButton: !prop.hideCancelButton,
     confirmButtonColor: prop.confirmButtonColor?? "#3085d6",
     cancelButtonColor:prop.cancelButtonColor?? "#dcdcdc",
     confirmButtonText: prop.confirmButtonText??"Submit",
     cancelButtonText: prop.cancelButtonText??"Cancel",
     reverseButtons: true,
+    allowOutsideClick: !prop.preventOutsideClick,
+    allowEscapeKey: !prop.preventOutsideClick,
   }).then((result) => {
     if (result.isConfirmed) {
       if(prop.showLoaderOnConfirm){
@@ -55,6 +57,6 @@ export const actionFailed = (title, text) => {
         title,
         text,
         icon: "error",
-        timer: 5000
+        // timer: 5000
     });
 }

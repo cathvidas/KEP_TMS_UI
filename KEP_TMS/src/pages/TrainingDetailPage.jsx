@@ -28,11 +28,12 @@ import MonitoringReportView from "./MonitoringPageSection/MonitoringReportView";
 import PendingView from "./MonitoringPageSection/PendingsView";
 import trainingDetailsService from "../services/common/trainingDetailsService";
 import mappingHook from "../hooks/mappingHook";
+import TrainingVideosList from "../components/List/TrainingVideosList";
 
 const TrainingDetailPage = () => {
   const [trigger, setTrigger] = useState(0);
   const { page, id, section } = useParams();
-  const [showMenu, setShowMenu]= useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [formtype, setFormType] = useState(null);
   const { data, error, loading } = trainingRequestHook.useTrainingRequest(
     parseInt(id),
@@ -53,7 +54,7 @@ const TrainingDetailPage = () => {
       ((data?.status?.id === statusCode.APPROVED ||
         data?.status?.id === statusCode.CLOSED) &&
         (isFacilitator || isTrainee)) ||
-      isAdmin
+      isAdmin || (data?.status?.id === statusCode.SUBMITTED && isTrainee)
     ) {
       setShowMenu(true);
     }
@@ -102,7 +103,7 @@ const TrainingDetailPage = () => {
       isEditor={isAdmin || isFacilitator}
       isTrainee={isTrainee ? true : false}
     />,
-    <TraineeCertificateView key={3} data={data} isAdmin={isAdmin}/>,
+    <TraineeCertificateView key={3} data={data} isAdmin={isAdmin} />,
     <TraineeReportView
       key={4}
       data={data}
@@ -150,6 +151,7 @@ const TrainingDetailPage = () => {
       formData={trainingForms}
       examDetail={examList?.data}
     />,
+    <TrainingVideosList requestId={data?.id} key={10} />,
     // <ActivityLogView key={7} logs={logs} />,
   ];
   const items = [
@@ -169,6 +171,14 @@ const TrainingDetailPage = () => {
           command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Modules`),
           template: MenuItemTemplate,
           active: currentContent === 1 ? true : false,
+          disable: !(isAdmin || isFacilitator || isTrainee),
+        },
+        {
+          label: "Videos",
+          icon: "pi pi-video",
+          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Videos`),
+          template: MenuItemTemplate,
+          active: currentContent === 10 ? true : false,
           disable: !(isAdmin || isFacilitator || isTrainee),
         },
         {
@@ -192,37 +202,48 @@ const TrainingDetailPage = () => {
         },
       ],
     },
-    isTrainee ?{
-      label: "Forms",
-      items:[
-        {
-          label: "Effectiveness",
-          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Effectiveness`),
-          template: MenuItemTemplate,
-          active: currentContent === 4 && formtype === ActivityType.EFFECTIVENESS,
-          notifBadge: data?.status?.id === statusCode.SUBMITTED &&
-            isTrainee?.effectivenessId === null,
-            disable: data?.durationInHours < OtherConstant.EFFECTIVENESS_MINHOUR
-        },
-        {
-          label: "Training Report",
-          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Report`),
-          template: MenuItemTemplate,
-          active: currentContent === 4 && formtype === ActivityType.REPORT,
-          notifBadge: isTrainee?.reportId === null &&
-          trainingDetailsService.checkIfTrainingEndsAlready(data)
-        },
-        {
-          label: "Evaluation",
-          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Evaluation`),
-          template: MenuItemTemplate,
-          active: currentContent === 4 && formtype === ActivityType.EVALUATION,
-          notifBadge: isTrainee?.evaluationId === null &&
-          trainingDetailsService.checkIfTrainingEndsAlready(data),
-        },
-      ]
-    }:[],
-    (isAdmin || (isFacilitator && examList?.data?.length > 0 ))
+    isTrainee
+      ? {
+          label: "Forms",
+          items: [
+            {
+              label: "Effectiveness",
+              command: () =>
+                navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Effectiveness`),
+              template: MenuItemTemplate,
+              active:
+                currentContent === 4 && formtype === ActivityType.EFFECTIVENESS,
+              notifBadge:
+                data?.status?.id === statusCode.SUBMITTED &&
+                isTrainee?.effectivenessId === null,
+              disable:
+                data?.durationInHours < OtherConstant.EFFECTIVENESS_MINHOUR,
+            },
+            {
+              label: "Training Report",
+              command: () =>
+                navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Report`),
+              template: MenuItemTemplate,
+              active: currentContent === 4 && formtype === ActivityType.REPORT,
+              notifBadge:
+                isTrainee?.reportId === null &&
+                trainingDetailsService.checkIfTrainingEndsAlready(data),
+            },
+            {
+              label: "Evaluation",
+              command: () =>
+                navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Evaluation`),
+              template: MenuItemTemplate,
+              active:
+                currentContent === 4 && formtype === ActivityType.EVALUATION,
+              notifBadge:
+                isTrainee?.evaluationId === null &&
+                trainingDetailsService.checkIfTrainingEndsAlready(data),
+            },
+          ],
+        }
+      : [],
+    isAdmin || (isFacilitator && examList?.data?.length > 0)
       ? {
           label: "Trainee Monitoring",
           items: [
@@ -236,7 +257,8 @@ const TrainingDetailPage = () => {
               template: MenuItemTemplate,
               active: currentContent === 5 ? true : false,
               disable:
-                (data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR && isAdmin)
+                data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR &&
+                isAdmin
                   ? false
                   : true,
             },
@@ -291,18 +313,18 @@ const TrainingDetailPage = () => {
       setCurrentContent(2);
     } else if (mainpage === "CERTIFICATE") {
       setCurrentContent(3);
-    }else if (mainpage === "FORM") {
-      if(pageSection === "EFFECTIVENESS"){
-        setCurrentContent(4)
-        setFormType(ActivityType.EFFECTIVENESS)
-      } else if(pageSection === "REPORT"){
-        setCurrentContent(4)
-        setFormType(ActivityType.REPORT)
-      }else if(pageSection === "EVALUATION"){
-        setCurrentContent(4)
-        setFormType(ActivityType.EVALUATION)
+    } else if (mainpage === "FORM") {
+      if (pageSection === "EFFECTIVENESS") {
+        setCurrentContent(4);
+        setFormType(ActivityType.EFFECTIVENESS);
+      } else if (pageSection === "REPORT") {
+        setCurrentContent(4);
+        setFormType(ActivityType.REPORT);
+      } else if (pageSection === "EVALUATION") {
+        setCurrentContent(4);
+        setFormType(ActivityType.EVALUATION);
       }
-    }  else if (mainpage === "MONITORING") {
+    } else if (mainpage === "MONITORING") {
       if (pageSection === "EFFECTIVENESS") {
         setCurrentContent(5);
       } else if (pageSection === "EXAM") {
@@ -314,7 +336,9 @@ const TrainingDetailPage = () => {
       } else {
         setCurrentContent(9);
       }
-    } else {
+    } else if (mainpage === "VIDEOS") {
+      setCurrentContent(10);
+    }else {
       setCurrentContent(0);
     }
   }, [section, page]);
@@ -325,22 +349,22 @@ const TrainingDetailPage = () => {
       statusId: status,
       updatedBy: SessionGetEmployeeId(),
     };
-    const isPublish = status === statusCode.PUBLISHED;
+    const toRoute = status === statusCode.FORAPPROVAL;
     confirmAction({
       showLoaderOnConfirm: true,
-      title: isPublish ? "Publish Training Request" : "Close Training Request",
+      title: toRoute ? "Route to Approvers" : "Close Training Request",
       text: `Are you sure you want to ${
-        isPublish ? "publish" : "close"
+        toRoute ? "change the status to 'For Approval' and route to approvers" : "close"
       } this training request?`,
-      confirmButtonText: isPublish ? "Publish" : "Close Training",
+      confirmButtonText: toRoute ? "Yes" : "Close Training",
       onConfirm: () => {
         handleResponseAsync(
           () => trainingRequestService.updateTrainingRequest(newData),
           () =>
             actionSuccessful(
-              ` ${isPublish ? "Published" : "Closed"} successfully`,
+              ` ${toRoute ? "Routed" : "Closed"} successfully`,
               `Successfully ${
-                isPublish ? "published" : "closed"
+                toRoute ? "routed" : "closed"
               }  training request`
             ),
           (error) =>
@@ -353,18 +377,18 @@ const TrainingDetailPage = () => {
   const bodyContent = () => {
     return (
       <div className={`d-flex g-0`}>
-        {showMenu && (
+        {showMenu && data?.status?.id != statusCode.DRAFTED && data?.status?.id != statusCode.INACTIVE && !loading &&(
           <MenuContainer
             itemList={items}
             action={
-               data?.status?.id === statusCode.PUBLISHED && isAdmin ? (
+              (data?.status?.id === statusCode.APPROVED) && isAdmin ? (
                 <Button
                   type="button"
-                  label="Close Training"
+                  label={data?.status?.id === statusCode.APPROVED ? "Close Training" : "Route to Approvers"}
                   size="small"
-                  severity="success"
+                  severity={data?.status?.id === statusCode.APPROVED ? "success" : "help"}
                   className="rounded py-1"
-                  onClick={() => handlePublish(statusCode.CLOSED)}
+                  onClick={() => handlePublish(data?.status?.id === statusCode.APPROVED ? statusCode.CLOSED : statusCode.FORAPPROVAL)}
                 />
               ) : (
                 <></>
@@ -392,18 +416,9 @@ const TrainingDetailPage = () => {
       {isTrainee || isFacilitator || isAdmin || isRequestor || isApprover ? (
         <Layout
           BodyComponent={bodyContent}
-          navReference={
-            isRequestor
-              ? "RequestList"
-              : isFacilitator
-              ? "FacilitatedTrainings"
-              : isTrainee
-              ? "Trainings"
-              : "RequestList"
-          }
           header={{
             title: data?.trainingProgram?.name,
-            hide: !showMenu
+            hide: !showMenu,
             // icon: <i className="pi pi-lightbulb"></i>,
           }}
         />

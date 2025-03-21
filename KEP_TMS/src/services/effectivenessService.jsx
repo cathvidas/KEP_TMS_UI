@@ -6,12 +6,12 @@ import {
   getApproverAssignedEffectivenessApi,
   getEffectivenessByIdApi,
   getPagedEffectivenessApi,
+  getTrainingEffectivenessToEvaluateApi,
   updateEffectivenessApi,
   updateProjectPerformanceEvaluationApi,
 } from "../api/effectivenessApi";
 import routingService from "./common/routingService";
 import commonService from "./commonService";
-import trainingRequestService from "./trainingRequestService";
 import userService from "./userService";
 const effectivenessService = {
   createTrainingEffectiveness: async (data) => {
@@ -39,7 +39,7 @@ const effectivenessService = {
     const response = id && await getEffectivenessByIdApi(id);
     if (response?.status === 1) {
       const approvers = await commonService.getActivityApprovers(
-        response?.data?.createdBy,
+        response?.data?.id,
         ActivityType.EFFECTIVENESS
       );
       const routings = await commonService.getRoutingActivityWithAuditTrail(
@@ -47,10 +47,9 @@ const effectivenessService = {
         ActivityType.EFFECTIVENESS
       );
       const currentRouting = await routingService.getCurrentApprover(
-        approvers,
         routings
       );
-      if (!currentRouting?.assignedDetail) {
+      if (!currentRouting?.assignedDetail?.employeeBadge) {
         currentRouting.assignedDetail = await userService.getUserById(
           currentRouting?.assignedTo
         );
@@ -78,11 +77,8 @@ const effectivenessService = {
     return response;
   },
   getEvaluatorAssignedEffectiveness: async (id) => {
-    const response = await getApproverAssignedEffectivenessApi(id);
-    response?.map(async item=>{
-      item.requestData = await trainingRequestService.getTrainingRequest(item?.trainingEffectiveness?.trainingRequestId)
-    })
-    return response;
+    const response = await getTrainingEffectivenessToEvaluateApi(id);
+    return response?.status == 1 ? response?.data : [];
   },
   approveTrainingEffectiveness: async (formData) => {
     const response = await approveTrainingFormApi(formData);

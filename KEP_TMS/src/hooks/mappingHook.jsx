@@ -12,7 +12,7 @@ const mappingHook = {
       const mappedApprovers = [];
       approvers?.map((app) => {
         const actItem = activity?.filter(
-          (act) => act?.assignedTo == app?.employeeBadge
+          (act) => act?.assignedTo == app?.employeeBadge && act?.statusId != statusCode.TOUPDATE
         );
         routingService.sortRoutingBySequence(actItem, true);
         mappedApprovers.push({
@@ -28,12 +28,13 @@ const mappingHook = {
     routingService.sortRoutingBySequence(activityData?.routings, false);
     const [data, setData] = useState([]);
     useEffect(() => {
-      const activityLogs = activityData?.routings;
+      const activityLogs = activityData?.routings?.filter(log=>log.statusId != statusCode.INACTIVE && log.statusId != statusCode.PENDING);
+      routingService.sortRoutingBySequence(activityLogs, false);
       const mappedActivityLogs = [];
       mappedActivityLogs.push({
         id: 1,
         name: author?.fullname,
-        process: "New / Submitted",
+        process: "Submitted",
         status: activityLogs?.length > 0 ? "Submitted" : "New",
         remark: "N/A",
         date: formatDateTime(activityData?.createdDate),
@@ -42,12 +43,11 @@ const mappingHook = {
         const activity = {
           id: index + 2,
           name: log?.userDetail.fullname,
-          process: log?.userDetail?.position + " Approval",
+          process: 
+          log?.statusId === statusCode.FORAPPROVAL
+            ? "Pending" : getStatusById(log?.statusId),
           status: getStatusById(log?.statusId),
-          remark:
-            log?.statusId === statusCode.FORAPPROVAL
-              ? "Pending"
-              : log?.remarks ?? getStatusById(log?.statusId),
+          remark: log?.remarks ?? "N/A" ,
           date: log?.updatedDate ? formatDateTime(log?.updatedDate) : "N/A",
         };
         if (log.statusId === statusCode.TOUPDATE) {
@@ -55,7 +55,7 @@ const mappingHook = {
             activityLogs.length > index + 1 &&
             log.assignedTo === author?.employeeBadge
           ) {
-            activity.remark = "N/A";
+            activity.remark =log?.remarks ?? "N/A";
             activity.name = author?.fullname;
             activity.process = "Updated";
             activity.status = "Updated";

@@ -13,12 +13,12 @@ import handleResponseAsync from "../../../services/handleResponseAsync";
 import { SessionGetEmployeeId, SessionGetRole } from "../../../services/sessions";
 import certificateService from "../../../services/certificateService";
 import attachmentService from "../../../services/attachmentService";
-import { attachmentType, UserTypeValue } from "../../../api/constants";
+import { attachmentType, SearchValueConstant, UserTypeValue } from "../../../api/constants";
+import trainingRequestHook from "../../../hooks/trainingRequestHook";
 const CertificateForm = ({
   showModal,
   hideModal,
   onFinish,
-  trainingOptions,
   userId,
   defaultValue,
   defaultTraining,
@@ -30,6 +30,25 @@ const CertificateForm = ({
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState("");
   const [update, setUpdate] = useState(false);
+  const [trainingOptions, setTrainingOptions] = useState([]);
+  const [attendedTrainingsConfig, setAttendedTrainingsConfig] = useState({
+    first: 0,
+    rows: 10,
+    page: 1,
+    value: "",
+  });  
+  const trainingDetail = trainingRequestHook.useTrainingRequest(defaultValue?.requestId)?.data;
+  const attendedTrainings = trainingRequestHook.usePagedTrainingRequest(attendedTrainingsConfig.page, attendedTrainingsConfig.rows, SearchValueConstant.ATTENDED, userId, attendedTrainingsConfig.value);
+  useEffect(() => {
+    const mappedData = attendedTrainings?.data?.results?.map((training) => {
+      return {
+        value: training.id,
+        label: training?.trainingProgram?.name,
+      };
+    })
+    setTrainingOptions(mappedData);
+  },[attendedTrainings?.data?.results]
+  ) 
   const handleFileUpload = (e) => {
     setErrors({ ...errors, file: "" });
     const newFiles = Array.from(e.target.files);
@@ -76,13 +95,10 @@ const CertificateForm = ({
   };
   useEffect(() => {
     if (defaultValue) {
-      const x = trainingOptions?.find(
-        (item) => item?.value === defaultValue?.requestId
-      );
       setFormData({
         ...formData,
         certificateDetail: defaultValue?.detail,
-        training: defaultTraining ?? x,
+        training: defaultTraining ?? {label: trainingDetail?.trainingProgram?.name, value: trainingDetail.id},
       });
       setOldFiles(defaultValue?.attachments);
       setUpdate(true);
@@ -90,7 +106,7 @@ const CertificateForm = ({
       setFormData(defaultTraining ? { training: defaultTraining } : {});
       setUpdate(false);
     }
-  }, [defaultValue]);
+  }, [defaultValue, trainingDetail, defaultTraining]);
   const handleRemoveSpecificFile = (index) => {
     const updatedFiles = [...files];
     updatedFiles.splice(index, 1);
@@ -151,7 +167,7 @@ const CertificateForm = ({
   };
   const updateCertificate = () => {
     const updatedData = {
-      ...defaultValue,
+      ...defaultValue,requestId: formData?.training?.value,
       detail: formData.certificateDetail,
       updatedBy: SessionGetEmployeeId(),
     };
@@ -230,6 +246,17 @@ const CertificateForm = ({
                     options={trainingOptions}
                     value={formData?.training}
                     onChange={(e) => setFormData({ ...formData, training: e })}
+                    onMenuScrollToBottom={() =>
+                      setAttendedTrainingsConfig((prev) => ({
+                        ...prev,
+                        rows: prev.rows + 10,
+                      }))
+                    }
+                    onInputChange={(e) =>
+                      setAttendedTrainingsConfig((prev) => ({ ...prev, value: e }))
+                    }
+                    isLoading={attendedTrainings?.loading}
+                   
                   />
                 }
               />
@@ -266,7 +293,7 @@ const CertificateForm = ({
                 ></textarea>
               }
             />
-            {update && (
+            {(update && oldFiles?.length > 0) && (
               <FormFieldItem
                 label={"Old Files"}
                 FieldComponent={

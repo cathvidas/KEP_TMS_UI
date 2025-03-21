@@ -13,32 +13,32 @@ const FacilitatorRatingExportTemplate = ({
             <TabPanel header={faci?.assignedDetail?.fullname} className="active">
               <RateFieldItem
                 label="Clarity of Presentation (delivery, platform skills, etc.)"
-                value={facilitatorRating[index]?.frOne}
+                value={facilitatorRating && facilitatorRating[index]?.frOne}
                 readOnly
               />
               <RateFieldItem
                 label="Mastery of subject matter"
-                value={facilitatorRating[index]?.frTwo}
+                value={facilitatorRating && facilitatorRating[index]?.frTwo}
                 readOnly
               />
               <RateFieldItem
                 label="Managing discussions"
-                value={facilitatorRating[index]?.frThree}
+                value={facilitatorRating && facilitatorRating[index]?.frThree}
                 readOnly
               />
               <RateFieldItem
                 label="Motivates learning"
-                value={facilitatorRating[index]?.frFour}
+                value={facilitatorRating && facilitatorRating[index]?.frFour}
                 readOnly
               />
               <RateFieldItem
                 label="Balanced theory w/ real life applications/examples"
-                value={facilitatorRating[index]?.frFive}
+                value={facilitatorRating && facilitatorRating[index]?.frFive}
                 readOnly
               />
               <RateFieldItem
                 label="Clear & well organized lectures/activities (time management) 5"
-                value={facilitatorRating[index]?.frSix}
+                value={facilitatorRating && facilitatorRating[index]?.frSix}
                 readOnly
               />
             </TabPanel>

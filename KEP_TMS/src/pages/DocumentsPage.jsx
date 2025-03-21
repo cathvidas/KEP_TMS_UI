@@ -1,124 +1,227 @@
 import { Button } from "primereact/button";
 import CommonTable from "../components/General/CommonTable";
 import Layout from "../components/General/Layout";
-import MenuItemTemplate from "../components/General/MenuItemTemplate";
-import MenuContainer from "../components/menus/MenuContainer";
 import { ButtonGroup } from "primereact/buttongroup";
-import fetchFromApi from "../api/apiUtil";
 import { useState } from "react";
+import VideoUploadForm from "../components/forms/ModalForms/VideoUploadForm";
+import VideoAccess from "../components/List/VideoAccess";
+import { SessionGetRole } from "../services/sessions";
+import {
+  API_BASE_URL,
+  SearchValueConstant,
+  UserTypeValue,
+} from "../api/constants";
+import attachmentHook from "../hooks/attachmentHook";
+import { Paginator } from "primereact/paginator";
+import { formatDateTime } from "../utils/datetime/Formatting";
+import { actionSuccessful, confirmAction } from "../services/sweetalert";
+import handleResponseAsync from "../services/handleResponseAsync";
+import attachmentService from "../services/attachmentService";
+import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
+import ErrorTemplate from "../components/General/ErrorTemplate";
 
 const DocumentsPage = () => {
-  const items = [
+  const [showModal, setShowModal] = useState(false);
+  const [trigger, setTrigger] = useState(0);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const isAdmin = SessionGetRole() === UserTypeValue.ADMIN;
+  const [paginatorConfig, setPaginatorConfig] = useState({
+    first: 0,
+    rows: 10,
+    page: 1,
+    value: null,
+  });
+  const { data, error, loading } = attachmentHook.useAllVideoAttachments(
+    paginatorConfig.page,
+    paginatorConfig.rows,
+    SearchValueConstant.VIDEOS,
+    paginatorConfig.value,
+    trigger
+  );
+  const columnItems = [
     {
-      items: [
-        {
-          label: "Category",
-          template: MenuItemTemplate,
-        },
-        {
-          label: "Programs",
-          // icon: "pi pi-file-check",
-          template: MenuItemTemplate,
-          // active: currentContent === 1 ? true : false,
-          // command: () => navigate("/KEP_TMS/MasterList/Programs"),
-        },
-        {
-          label: "Providers",
-          template: MenuItemTemplate,
-        },
-        {
-          label: "External Trainers",
-          template: MenuItemTemplate,
-        },
-        // {
-        //   label: "Training Type",
-        //   template: MenuItemTemplate,
-        //   icon: "pi pi-check-square",
-        // },
-      ],
+      field: "",
+      header: "No",
+      body: (_, { rowIndex }) => <>{rowIndex + 1}</>,
     },
-  ];
-  const sampleItems = [
     {
-      field: "Name",
+      field: "fileName",
       header: "File Name",
     },
+    isAdmin
+      ? {
+          field: "category",
+          header: "Category",
+        }
+      : "",
     {
-      field: "Type",
-      header: "Type",
+      field: "Access",
+      header: isAdmin ? "Access" : "Training Program",
+      body: (rowData) => (
+        <>
+          {isAdmin ? (
+            <span
+              className={`p-badge-info cursor-pointer`}
+              onClick={() => setSelectedItem(rowData)}
+            >
+              {rowData?.referenceCount > 0 ? rowData?.referenceCount : "N/A"}
+            </span>
+          ) : (
+            <>
+              <lu>
+                <span>Sample Training Request; </span>
+                <span>Sample Training Request; </span>
+                <span>Sample Training Request</span>
+              </lu>
+            </>
+          )}
+        </>
+      ),
     },
-    {
-      field: "Size",
-      header: "Size",
-    },
-    {
-      field: "Date",
-      header: "Date Modified",
-    },
+    isAdmin
+      ? {
+          field: "fileType",
+          header: "Type",
+        }
+      : "",
+    isAdmin
+      ? {
+          field: "updateDate",
+          header: "Date Modified",
+          body: (rowData) => <>{formatDateTime(rowData.updateDate ?? rowData.createDate)}</>,
+        }
+      : "",
     {
       field: "ExternalTrainer",
       header: "Action",
-      body: (
+      body: (rowData) => (
         <ButtonGroup>
           <Button
-          type="button"
-            label="View"
-            icon="pi pi-eye"
+            type="button"
+            text
+            severity="success"
+            icon="pi pi-play-circle"
             className="p-button-rounded"
+            title="Play Video"
             size="small"
+            onClick={() => window.open(API_BASE_URL + rowData?.url, "_blank")}
           />
-          <Button
-          type="button"
-            label="Update"
-            icon="pi pi-pencil"
-            size="small"
-            className="p-button-rounded"
-          />
+          {isAdmin && (
+            <>
+              <Button
+                type="button"
+                text
+                icon="pi pi-list"
+                className="p-button-rounded"
+                size="small"
+                title="View Access Management"
+                onClick={() => setSelectedItem(rowData)}
+              />
+              <Button
+                type="button"
+                text
+                icon="pi pi-trash"
+                severity="danger"
+                size="small"
+                title="Delete Video"
+                className="p-button-rounded"
+                onClick={() => deleteFile(rowData?.id)}
+              />
+            </>
+          )}
         </ButtonGroup>
       ),
     },
   ];
-const sampleData = [{
-  Name: "Name",
-  Type: "Category",
-  Size: "Program",
-  Date: "Provider",
-},
-{
-  Name: "Name",
-  header: "Name",
-  Category: "Category",
-  Program: "Program",
-  Provider: "Provider",
-  ExternalTrainer: "External Trainer",
-},
-]
-const [file, setFile] = useState(null)
-const uploadFile = async () => {
-  //TODO: Implement file upload functionality
-  const formData = new FormData();
-  formData.append("file", file);
- const res = await fetchFromApi("/Attachment/UploadLargeFile","POST", formData, {'Content-Type': 'multipart/form-data'});
- console.log(res);
-}
+  const deleteFile = (id) => {
+    confirmAction({
+      showLoaderOnConfirm: true,
+      title: "Delete Video?",
+      text: "Are you sure you want to delete this file?",
+      confirmButtonText: "Delete",
+      confirmButtonColor: "#d33",
+      onConfirm: () =>
+        handleResponseAsync(
+          () => attachmentService.deleteAttachment(id),
+          (e) => {
+            actionSuccessful("Success", e?.message);
+            setTrigger((prev) => prev + 1);
+          }
+        ),
+    });
+  };
+  const header = (
+    <>
+      <Button
+        label="Upload Video"
+        icon="pi pi-upload"
+        text
+        onClick={() => setShowModal(true)}
+      />
+    </>
+  );
   const Content = () => {
     return (
-      <div className="d-flex ">
-        <MenuContainer fullHeight label="Documents" itemList={items} />
-        <div
-          className="flex-fill overflow-auto p-3"
-          style={{ minHeight: "100vh" }}
-        >
-          <CommonTable columnItems={sampleItems} dataTable={sampleData}/>
-          <input type="file" onChange={(e) => setFile(e.target.files[0])}></input>
-          <Button label="upload" onClick={uploadFile}/>
+      <>
+        <div className="d-flex ">
+          <div
+            className="flex-fill overflow-auto p-3"
+            style={{ minHeight: "100vh" }}
+          >
+            {selectedItem ? (
+              <VideoAccess
+                data={selectedItem}
+                handleClose={() => setSelectedItem(null)}
+                refreshData={()=> setTrigger((prev) => prev + 1)}
+              />
+            ) : (
+              <>
+                {loading ? (
+                  <SkeletonDataTable />
+                ) : error ? (
+                  <ErrorTemplate message={error} />
+                ) : (
+                  <>
+                    <CommonTable
+                      headerComponent={header}
+                      tableName="Videos"
+                      columnItems={columnItems}
+                      dataTable={data?.results}
+                      hidePaginator
+                      hideOnEmpty={false}
+                    />
+                    <Paginator
+                      first={paginatorConfig?.first ?? 1}
+                      pageLinkSize={5}
+                      rows={paginatorConfig.rows}
+                      totalRecords={data?.totalRecords}
+                      rowsPerPageOptions={[10, 20, 30, 50, 100]}
+                      onPageChange={(e) =>
+                        setPaginatorConfig((prev) => ({
+                          ...prev,
+                          first: e.first,
+                          rows: e.rows,
+                          page: e.page + 1,
+                        }))
+                      }
+                    />
+                  </>
+                )}
+                <VideoUploadForm
+                  handleShow={showModal}
+                  handleClose={() => setShowModal(false)}
+                  onSuccess={() => setTrigger((prev) => prev + 1)}
+                />
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      </>
     );
   };
   return (
     <Layout
-      navReference="Files"
+      navReference="Videos"
       header={{
         title: "Dashboard",
         hide: true,

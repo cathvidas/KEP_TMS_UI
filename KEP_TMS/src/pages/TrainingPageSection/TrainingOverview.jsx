@@ -13,6 +13,7 @@ import TrainingScheduleList from "../../components/trainingRequestFormComponents
 import DetailsOverview from "../../components/TrainingPageComponents/DetailsOverview";
 import ApproverList from "../../components/List/ApproversList";
 import { formatDateTime } from "../../utils/datetime/Formatting";
+import { ActivityType } from "../../api/constants";
 // import { useHistory } from "react-router-dom";
 
 const TrainingOverview = ({ data }) => {
@@ -66,7 +67,7 @@ const TrainingOverview = ({ data }) => {
           title="Approvers"
           icon={<FontAwesomeIcon icon={faUsers} />}
         />
-        <ApproverList data={data} />
+        <ApproverList data={data} acivityType={ActivityType.REQUEST}/>
       </div>
     </div>
   );

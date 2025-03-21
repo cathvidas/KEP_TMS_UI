@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { OtherConstant, statusCode } from "../api/constants";
+import { OtherConstant, SearchValueConstant, statusCode } from "../api/constants";
 import effectivenessService from "../services/effectivenessService";
 import trainingReportService from "../services/trainingReportService";
 import examService from "../services/examService";
@@ -29,9 +29,17 @@ const activityLogHook = {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const assignedRequest = await trainingRequestService.getTrainingRequestByParticipant(id);
+          let requestList = [];
+          let page = 1;
+          const assignedRequest = await trainingRequestService.getPagedTrainingRequest(1, 10, SearchValueConstant.PARTICIPANT, id);
+          
+          while(requestList.length < assignedRequest.totalRecords && assignedRequest.totalRecords > 0) {
+            const response = await trainingRequestService.getPagedTrainingRequest(page, 10, SearchValueConstant.PARTICIPANT, id);
+            requestList = [...requestList, ...response.results];
+            page++;
+          }
           const pendingList = await Promise.all(
-            assignedRequest?.map(async (item) => {
+            requestList?.map(async (item) => {
               const user = item?.trainingParticipants?.find((i) => i.employeeBadge === id);
               if (!user) return [];
               const tasks = [];
@@ -84,19 +92,68 @@ export default activityLogHook;
 const handleEffectivenessReport = async (user, item) => {
   if (user?.effectivenessId > 0) {
     try {
-      const effDetail = await effectivenessService.getEffectivenessById(user?.effectivenessId);
-      if (effDetail?.statusName === getStatusById(statusCode.APPROVED) || effDetail?.statusName === getStatusById(statusCode.FORAPPROVAL)) return null;
-      const title = effDetail?.statusName === getStatusById(statusCode.DISAPPROVED) ? "Effectiveness Report Disapproved" : "Pending Effectiveness Report";
-      return {
-        type: "Effectiveness Report",
-        title,
-        status: effDetail?.statusName ?? "Not yet submitted",
-        detail: effDetail?.statusName === getStatusById(statusCode.DISAPPROVED) 
-          ? "Your effectiveness report has been disapproved. Click here to view more details." 
-          : "You have a pending effectiveness report to be submitted.",
-        link: `TrainingDetail/${item.id}/Form/Effectiveness`,
-        date: effDetail?.currentRouting?.createdDate || item?.trainingStartDate,
-      };
+      const effDetail = await effectivenessService.getEffectivenessById(
+        user?.effectivenessId
+      );
+      if (effDetail) {
+        if (effDetail?.statusName === getStatusById(statusCode.CLOSED)) return null;
+        const isAfter = trainingDetailsService.checkIfTrainingEndsAlready(item) 
+        const sixMonthsAfter = new Date(item?.trainingEndDate) <=
+        new Date(new Date().setMonth(new Date().getMonth() - 6));
+        if(isAfter && !effDetail?.annotation){
+          return {
+            type: "Effectiveness Report",
+            title:"Remarks/Comments Input",
+            status: "To update",
+            detail: "No remarks/comments available",
+            link: `TrainingDetail/${item.id}/Form/Effectiveness`,
+            date:
+              effDetail?.currentRouting?.createdDate ||
+              item?.trainingStartDate,
+          };
+        }
+         if (
+          effDetail?.statusName === getStatusById(statusCode.APPROVED) ||
+          effDetail?.statusName === getStatusById(statusCode.FORAPPROVAL)
+        ) {  if (isAfter && sixMonthsAfter && !checkIfActualPerformanceRated(effDetail)) {
+            return {
+              type: "Effectiveness Report",
+              title:"Actual Performance Rating",
+              status: "To Update",
+              detail: "Rating for Actual Performance.",
+              link: `TrainingDetail/${item.id}/Form/Effectiveness`,
+              date:
+                effDetail?.currentRouting?.createdDate ||
+                item?.trainingStartDate,
+            };
+          } else {
+            return null;
+          }
+        } else if (
+          effDetail?.statusName === getStatusById(statusCode.DISAPPROVED)
+        ) {
+          return {
+            type: "Effectiveness Report",
+            title: "Effectiveness Report Disapproved",
+            status: effDetail?.statusName,
+            detail:
+              "Your effectiveness report has been disapproved. Click here to view more details.",
+            link: `TrainingDetail/${item.id}/Form/Effectiveness`,
+            date:
+              effDetail?.currentRouting?.createdDate || item?.trainingStartDate,
+          };
+        }
+      } else {
+        return {
+          type: "Effectiveness Report",
+          title: "Pending Effectiveness Report",
+          status: "Not yet submitted",
+          detail: "You have a pending effectiveness report to be submitted.",
+          link: `TrainingDetail/${item.id}/Form/Effectiveness`,
+          date:
+            effDetail?.currentRouting?.createdDate || item?.trainingStartDate,
+        };
+      }
     } catch {
       return null;
     }
@@ -105,11 +162,39 @@ const handleEffectivenessReport = async (user, item) => {
     type: "Effectiveness Report",
     title: "Pending Effectiveness Report",
     status: null,
-    detail: "You have a pending effectiveness report to be submitted for this training request",
+    detail:
+      "You have a pending effectiveness report to be submitted for this training request",
     link: `TrainingDetail/${item.id}/Form/Effectiveness`,
     date: item?.trainingStartDate,
   };
 };
+
+export const checkIfActualPerformanceRated = (item) => {
+  let isRated = true;
+  if(!item){
+    return false;
+  }
+  item?.projectPerformanceEvaluation?.map((x) =>{
+    if(!(x?.actualPerformance > 1) && x?.content){
+      isRated = false;
+    }
+  })
+  return isRated;
+}
+
+
+export const checkIfEvaluatedActualPerformanceRated = (item) => {
+  let isRated = true;
+  if(!item){
+    return false;
+  }
+  item?.projectPerformanceEvaluation?.map((x) =>{
+    if(!(x?.evaluatedActualPerformance > 1) && x?.content){
+      isRated = false;
+    }
+  })
+  return isRated;
+}
 
 // Handle Training Report
 const handleTrainingReport = async (user, item) => {

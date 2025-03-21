@@ -13,10 +13,24 @@ const validateExamForm = (data) => {
         errors.questionLimit = "Number of questions to display is required";
         isValid = false;
     }
-    if (data.examQuestion?.length < data?.questionLimit ) {
-        errors.examQuestion = "You must add at least " + data?.questionLimit + " questions";
+    if (data.examQuestions?.length < data?.questionLimit ) {
+        errors.examQuestion = "You must add at least " + data?.questionLimit + " questions; ";
         isValid = false;
     }
+      let optionError = false;
+      let answerError = false;
+    data?.examQuestions?.forEach((question) => {
+        errors.examQuestion = errors.examQuestion || "";
+      if (!(question?.answerOptions?.length > 0) && !optionError) {
+        errors.examQuestion += "Some questions are missing options; ";
+        optionError = true;
+        isValid = true;
+      }
+      let answer = question?.answerOptions?.some((option) => option?.isCorrect);
+      if (!answer && !answerError) {
+        errors.examQuestion += "Some questions are missing correct answers; ";
+      }
+    });
     return {errors, isValid};
 }
 export default validateExamForm;

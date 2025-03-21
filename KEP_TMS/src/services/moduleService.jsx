@@ -10,7 +10,7 @@ const moduleService = {
         if(response.status !== 1){
           throw new Error(response.message);
         }
-        return response?.data;
+        return response;
     },
     updateModule: async (module) => {
         const response = await updateModuleApi(module);

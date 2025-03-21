@@ -16,10 +16,11 @@ export const UserList = ({
   column,
   allowEffectiveness = false,
   sortable= false,
-  selectionMode
+  selectionMode,showSelected,
+  handleScroll
 }) => {
   // const [filters, setFilters] = useState(filterTemp);
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState([]);
   const [removeEmpBadge, setRemoveEmpBadge] = useState(null);
   useEffect(() => {
     if (action != null) {
@@ -27,9 +28,6 @@ export const UserList = ({
     }
   }, [removeEmpBadge]);
 
-  useEffect(()=>{
-    setSelected([]);
-  }, [filterTemp])
   useEffect(() => {
     if (handleParticipants) {
       handleParticipants(selected)
@@ -53,22 +51,52 @@ export const UserList = ({
       </>
     );
   };
-  
+  const unselectUser = (id)=>{
+    setSelected(selected.filter(item=>item.employeeBadge != id))
+  }
+  const addSelectedUser = (users)=>{
+    const filtered = users.filter(item=> !selected?.includes(item)
+    )
+    setSelected(selected.concat(filtered))
+  }
+  const getUnselectedUser = ()=>{
+    return userlist.filter(item=>!selected?.includes(item))
+  } 
+   const onScroll = (event) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.target;
+    if (scrollTop + clientHeight >= scrollHeight && handleScroll) {
+      handleScroll();
+    }
+  };
   return (
     <>
+    {showSelected &&
+    <div className="flex flex-wrap gap- mb-2">
+          {selected?.map(item =><><div
+        className="ps-2 py-1  rounded"
+        style={{ backgroundColor: 'var(--highlight-bg)', color: 'var(--highlight-text-color)'}}
+        >
+            <span>{item?.fullname} </span> <Button type="button" className="p-0" size="small" text icon="pi pi-times" onClick={()=>unselectUser(item?.employeeBadge)}/>
+    </div>
+          </>)}
+      
+    </div>}
       {userlist && (
         <>
+        
           <DataTable 
-            value={userlist}
+          onScrollCapture={onScroll}
+          // onScrollCapture={handleScroll}
+            value={showSelected ?getUnselectedUser() : userlist}
             size="small"
             stripedRows
          //   tableStyle={{ minWidth: "30rem" }}
             selectionMode={selectionMode}
             selection={trailingElement?.input === true ? selected : false}
-            onSelectionChange={(e) => setSelected(e.value)}
+            onSelectionChange={(e) => addSelectedUser(e.value)}
             filters={filterTemp}
             scrollable showGridlines 
-            scrollHeight={scrollHeight ?? "60vh"} 
+            scrollHeight={scrollHeight ?? ""} 
           >
             {trailingElement?.input === true && (
               <Column
@@ -114,5 +142,7 @@ UserList.propTypes = {
   column: proptype.object,
   allowEffectiveness: proptype.bool,
   sortable: proptype.bool,
-  selectionMode: proptype.bool
+  selectionMode: proptype.bool,
+  showSelected: proptype.bool,
+  handleScroll: proptype.func,
 };

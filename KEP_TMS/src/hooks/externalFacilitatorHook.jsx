@@ -57,7 +57,7 @@ const externalFacilitatorHook = {
               return externalFacilitatorService.getExternaFacilitatorById(facilitator?.faciDetail?.id ?? facilitator?.externalFacilitatorId ?? facilitator[property]);
             })
           );
-          setData(response);
+          setData(response?.filter(x=>x));
           setLoading(false);
         } catch (e) {
           setError(e);

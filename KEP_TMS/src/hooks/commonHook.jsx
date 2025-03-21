@@ -40,30 +40,17 @@ const commonHook = {
             await effectivenessService.getApproverAssignedEffectiveness(id);
           const reports =
             await trainingReportService.getApproverAssignedReports(id);
-
-          const forApprovelEffectiveness = effectiveness?.filter(
+          const forApprovalEffectiveness = effectiveness?.filter(
             (item) => item.routingActivity?.statusId !== statusCode.TOUPDATE
           );
-          // Filter for evaluation (6 months from now)
-          const forEvaluation = effectiveness?.filter(
-            (item) =>
-              item.routingActivity?.statusId === statusCode.TOUPDATE &&
-              new Date(
-                item?.trainingEffectiveness?.trainingRequest?.trainingEndDate
-              ) <= new Date(new Date().setMonth(new Date().getMonth() - 6)) &&
-              item.routingActivity?.assignedTo !== id
-          );
-
           setData({
             requests: requests,
-            effectiveness: forApprovelEffectiveness,
+            effectiveness: forApprovalEffectiveness,
             reports: reports,
-            forEvaluation: forEvaluation,
             overallCount:
               requests?.length +
-              forApprovelEffectiveness?.length +
-              reports?.length +
-              forEvaluation?.length,
+              forApprovalEffectiveness?.length +
+              reports?.length
           });
         } catch (error) {
           setError(error.message);
@@ -143,7 +130,7 @@ const commonHook = {
     }, [assignedTo, activityIn]);
     return { data, error, loading };
   },
-  useAllActivityApprovers: (userBadge, activityIn, requestCost) => {
+  useAllActivityApprovers: (id, activityIn) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -152,9 +139,8 @@ const commonHook = {
         handleResponseAsync(
           () =>
             commonService.getActivityApprovers(
-              userBadge,
+              id,
               activityIn,
-              requestCost
             ),
           (e) => setData(e),
           (e) => setError(e),
@@ -162,7 +148,7 @@ const commonHook = {
         );
       };
       getRequests();
-    }, [userBadge, activityIn, requestCost]);
+    }, [id, activityIn]);
     return { data, error, loading };
   },
   useCurrentRouting: (requestId, activityIn) => {
@@ -211,7 +197,6 @@ const commonHook = {
       const fetchData = async () => {
         try {
           let formattedFacilitators = "";
-          console.log(faciList);
           const faciNames = await Promise.all(
             faciList?.map(async (faci) => {
               if (faci?.isExternal) {

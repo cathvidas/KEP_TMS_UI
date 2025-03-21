@@ -33,7 +33,7 @@ const ExternalFacilitatorListSection = () => {
           size="small"
           text
           icon="pi pi-eye"
-          severity="help"
+          severity="success"
           className="rounded-circle"
           onClick={() => {setSelectedData(rowData);
             setVisible({ ...visible, detail: true });
@@ -43,7 +43,7 @@ const ExternalFacilitatorListSection = () => {
           type="button"
           size="small"
           text
-          icon="pi pi-pen-to-square"
+          icon="pi pi-pencil"
           className="rounded-circle"
           onClick={() => {setSelectedData(rowData);
             setVisible({ ...visible, form: true });
@@ -68,8 +68,8 @@ const ExternalFacilitatorListSection = () => {
       header: "Position",
     },
     {
-      field: "depatmentOrganization",
-      header: "Depatment Organization",
+      field: "departmentOrganization",
+      header: "Department / Organization",
     },
     {
       field: "createdDate",
@@ -185,13 +185,13 @@ const ExternalFacilitatorListSection = () => {
           >
             <Modal.Header closeButton>
               <Modal.Title className={`h5 theme-color`}>
-                Program Details
+                Facilitator Details
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               
               <h6><strong>Name:</strong> <span>{selectedData?.name}</span></h6>
-              <h6><strong>Depatment / Organization:</strong> <span>{selectedData?.depatmentOrganization}</span></h6>
+              <h6><strong>Department / Organization:</strong> <span>{selectedData?.departmentOrganization}</span></h6>
               <h6><strong>Position:</strong> <span>{selectedData?.position}</span></h6>
               <h6><strong>Status:</strong> <span>{getStatusById(selectedData?.statusId)}</span></h6>
               <h6><strong>Created:</strong> <span>{formatDateOnly(selectedData?.createdDate)}{" by "}

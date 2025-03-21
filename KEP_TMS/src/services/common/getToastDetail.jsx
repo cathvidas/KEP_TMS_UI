@@ -1,11 +1,10 @@
-import { statusCode } from "../../api/constants";
+import { statusCode, UserTypeValue } from "../../api/constants";
 import countData from "../../utils/countData";
 import { SessionGetEmployeeId, SessionGetRole } from "../sessions";
 import getStatusById from "../../utils/status/getStatusById";
 import ToastTemplate from "../../components/General/ToastTemplate";
 import handleApproveRequest from "../handlers/handleApproveRequest";
 import sortRoutingBySequence from "./sortRoutingsBySequence";
-import { extractChanges } from "../../utils/stringUtil";
 
 const getToastDetail = (
   data,
@@ -17,7 +16,7 @@ const getToastDetail = (
   reloadData
 ) => {
   const isAdmin =
-    SessionGetRole() === "Admin" || SessionGetRole() === "SuperAdmin"
+    SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.SUPER_ADMIN
       ? true
       : false;
   const isTrainee = data?.trainingParticipants?.find(
@@ -62,7 +61,7 @@ const getToastDetail = (
         effStatus === getStatusById(statusCode.FORAPPROVAL)
           ? `Waiting for approval by ${userReports?.effectivenessDetail?.currentRouting?.assignedDetail?.fullname}`
           : effStatus === getStatusById(statusCode.DISAPPROVED)
-          ? "Your training effectiveness form was not approved. Navigate to report section to view more details."
+          ? "Your training effectiveness form was not approved. Navigate to forms section to view more details."
           : "Please wait for further details.";
       statusData.severity =
         effStatus === getStatusById(statusCode.DISAPPROVED)
@@ -74,7 +73,7 @@ const getToastDetail = (
       statusData.summary = "Waiting for participants Effectiveness";
       statusData.detail =
         isTrainee && isTrainee?.effectivenessId === null
-          ? "Navigate to Report section and fill out the effectiveness form"
+          ? "Navigate to forms section and fill out the effectiveness form"
           : // : isTrainee?.effectivenessId?.sta
             `${countData(data.trainingParticipants, "effectivenessId", 4)}/${
               data.totalParticipants

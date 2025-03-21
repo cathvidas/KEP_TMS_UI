@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import PDFViewer from "../../components/General/PDFViewer";
 import { CompareDateTimeWithToday } from "../../utils/datetime/dateComparison";
 import ModuleSection from "../RequestPageSection/ModuleSection";
+import { API_BASE_URL } from "../../api/constants";
 const ModuleView = ({ reqData, isEditor, isTrainee }) => {
   const [filteredModules, setFilteredModules] = useState([]);
   const { modules, error, loading } = moduleHook.useModulesByRequestId(reqData?.id);
@@ -16,12 +17,15 @@ const ModuleView = ({ reqData, isEditor, isTrainee }) => {
   useEffect(() => {
     const filteredData = modules?.filter(
       (item) =>
-        (item?.availableAt === null && item?.unavailableAt === null) ||
+        (item?.availableAt === null && item?.unavailableAt === null && !(
+          new Date(reqData?.trainingEndDate) <=
+          new Date(new Date().setMonth(new Date().getMonth() - 1))
+        )) ||
         (CompareDateTimeWithToday(item?.availableAt)?.isPast &&
           CompareDateTimeWithToday(item?.unavailableAt)?.isFuture)
     );
     setFilteredModules(filteredData);
-  }, [modules]);
+  }, [modules, reqData?.trainingEndDate]);
   return (
     <>
       {isEditor ? (
@@ -62,7 +66,7 @@ const ModuleView = ({ reqData, isEditor, isTrainee }) => {
                             onClick={() => {
                               setSelected({
                                 ...file,
-                                url: `http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${file.id}`,
+                                url: `${API_BASE_URL + file?.url}`,
                               });
                               setShowPDF(true);
                             }}

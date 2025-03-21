@@ -1,4 +1,5 @@
-import { disapproveActivityApi, getActivityApproversApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getCurrentRoutingActivityApi, getFaciliatorRatingApi, getRoutingActivityWithAuditTrailApi } from "../api/commonApi";
+import { disapproveActivityApi, getActivityApproversApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getFaciliatorRatingApi, getRoutingActivityWithAuditTrailApi, rerouteApproverApi } from "../api/commonApi";
+import routingService from "./common/routingService";
 import userMapping from "./DataMapping/userMapping";
 import userService from "./userService";
 
@@ -28,27 +29,20 @@ const commonService = {
       return {};
     }
   },
-  getActivityApprovers: async (id, activityIn, requestTotalCost) => {
-    const response = id && activityIn && await getActivityApproversApi(id, activityIn, requestTotalCost);
-    if (response?.status === 1) {
-      const updatedData = await Promise.all(
-        response?.data?.map(async (item) => {
-          return await userService.getUserById(item?.employeeBadge);
-        })
-      );
-      return updatedData;
-    }
-    return [];
+  getActivityApprovers: async (id, activityIn) => {
+    const response = id && activityIn && await getActivityApproversApi(id, activityIn);
+    return response;
   },
   getCurrentRouting: async (transactId, activityIn) => {
     try {
-      const response = await getCurrentRoutingActivityApi(
+      const response = await getRoutingActivityWithAuditTrailApi(
         transactId,
         activityIn
       );
-      if(response){
-        const userData = await userService.getUserById(response?.assignedTo)
-        return {...response, assignedDetail: userData};
+      const current = routingService.getCurrentApprover(response);
+      if(current){
+        const userData = await userService.getUserById(current?.assignedTo)
+        return {...current, assignedDetail: userData};
       }
       return response;
     } catch {
@@ -82,6 +76,13 @@ const commonService = {
   getFacilitatorRating: async (reqId, userId) => {
     const response = await getFaciliatorRatingApi(reqId, userId);
     return response.status === 1 ? response?.data : null;
+  },
+  rerouteApprover: async (data) => {
+    const response = await rerouteApproverApi(data);
+    if (response.status !== 1) {
+      throw new Error(response.message);
+    }
+    return response;
   },
 };
 

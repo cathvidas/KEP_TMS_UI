@@ -35,7 +35,7 @@ const SearchBar = ({handleOnInput, options}) => {
               aria-label="Username"
               aria-describedby="basic-addon1"
               value={filter.value}
-              onInput={(e) =>setFilter({...filter, value: e.target.value})}
+              onChange={(e) =>setFilter({...filter, value: e.target.value})}
             />
             {options && 
             <div className="position-absolute top-50 end-0 translate-middle-y border border-0 text-muted p-2">
@@ -49,8 +49,8 @@ const SearchBar = ({handleOnInput, options}) => {
   
                 <Dropdown.Menu align="end"  className="overflow-auto" style={{maxHeight: "300px"}}>
                   {options.map((option, index) => (
-                    <span key={index} onClick={()=>setFilter({...filter, department: option.name})}>
-                    <Dropdown.Item className={option.name == filter.department ? "active" : ""} >{option.name}</Dropdown.Item></span>
+                    <span key={index} onClick={()=>setFilter({...filter, department: option.deptName})}>
+                    <Dropdown.Item className={option.deptName == filter.department ? "active" : ""} >{option.deptName}</Dropdown.Item></span>
                   ))}
                 </Dropdown.Menu>
               </Dropdown>

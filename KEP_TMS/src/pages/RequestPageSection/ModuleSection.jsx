@@ -17,6 +17,7 @@ import attachmentService from "../../services/attachmentService";
 import ErrorTemplate from "../../components/General/ErrorTemplate";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 import { CompareDateTimeWithToday } from "../../utils/datetime/dateComparison";
+import { API_BASE_URL } from "../../api/constants";
 
 const ModuleSection = ({ data }) => {
   const [showForm, setShowForm] = useState(false);
@@ -171,6 +172,23 @@ const ModuleSection = ({ data }) => {
                                 )}
                               </small>
                             ) : (
+                              new Date(data?.trainingEndDate) <=
+                              new Date(new Date().setMonth(new Date().getMonth() - 1))
+                            ) ?      <><span
+                            className={`text-danger rounded-pill px-2`}
+                          >
+                            <i
+                              className="pi pi-times-circle"
+                              style={{ fontSize: "0.8rem" }}
+                            ></i>{" "}
+                            Expired
+                          </span><span
+                            className={`text-muted rounded-pill px-2`}
+                            style={{fontSize: "0.8rem"}}
+                          >&#x28; default duration is one month&#x29;
+                          </span></> :
+                            
+                            (
                               <span
                                 className={`text-success rounded-pill px-2`}
                               >
@@ -223,7 +241,7 @@ const ModuleSection = ({ data }) => {
                                 onClick={() => {
                                   setSelected({
                                     ...a,
-                                    url: `http://localhost:5030/api/Attachment/GetModuleFile?attachmentId=${a.id}`,
+                                    url: `${API_BASE_URL+ a?.url}`,
                                   });
                                   setShowPDF(true);
                                 }}

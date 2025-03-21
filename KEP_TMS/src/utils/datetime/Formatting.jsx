@@ -9,6 +9,9 @@ export const formatCurrency = (value) => {
 };
 
 export const formatDateTime = (value, hasSecond) => {
+  if(!value){
+    return "N/A";
+  }
   const date = value && new Date(value);
   if (hasSecond) {
     return date?.toLocaleString("en-US");
@@ -24,6 +27,7 @@ export const formatDateTime = (value, hasSecond) => {
 };
 
 export const formatDateOnly = (value, type = "slash") => {
+  if(!value) return "N/A";
   const date = new Date(value);
 
   if (isNaN(date.getTime())) {

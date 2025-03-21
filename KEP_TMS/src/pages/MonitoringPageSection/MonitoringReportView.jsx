@@ -206,7 +206,11 @@ const MonitoringReportView = ({
               </div>
 
               <CommonTable
-                headerComponent={SessionGetRole() === UserTypeValue.ADMIN ?<HeaderComponent /> : null}
+                headerComponent={
+                  SessionGetRole() === UserTypeValue.ADMIN ? (
+                    <HeaderComponent />
+                  ) : null
+                }
                 dataTable={formData?.data}
                 columnItems={columnItems}
               />
@@ -217,7 +221,9 @@ const MonitoringReportView = ({
         <>
           <Card>
             <Card.Header className="flex ">
-              {selectedData?.userDetail?.fullname && <h5 className="m-0">{selectedData?.userDetail?.fullname}</h5>}
+              {selectedData?.userDetail?.fullname && (
+                <h5 className="m-0">{selectedData?.userDetail?.fullname}</h5>
+              )}
               <Button
                 type="button"
                 icon="pi pi-times"
@@ -254,6 +260,7 @@ const MonitoringReportView = ({
               <>
                 {typeId === ActivityType.EFFECTIVENESS && (
                   <EffectivenessForm
+                    onFinish={onRefresh}
                     data={data}
                     userData={selectedData?.userDetail}
                     formData={selectedData?.effectivenessDetail}
@@ -270,6 +277,7 @@ const MonitoringReportView = ({
                 )}
                 {typeId === ActivityType.REPORT && (
                   <TrainingReportForm
+                    onFinish={onRefresh}
                     data={data}
                     userData={selectedData?.userDetail}
                     defaultValue={selectedData[reportType]}
@@ -285,6 +293,7 @@ const MonitoringReportView = ({
                 )}
                 {typeId === ActivityType.EVALUATION && (
                   <EvaluationForm
+                    onFinish={onRefresh}
                     data={data}
                     userData={selectedData?.userDetail}
                     defaultValue={selectedData?.evaluationDetail}

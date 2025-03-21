@@ -9,7 +9,7 @@ import {
 const externalFacilitatorService = {
   getExternaFacilitatorById: async (id) => {
     const response = id && await getExternalFacilitatorByIdApi(id);
-    return response?.status === 1 ? response?.data : {};
+    return response?.status === 1 ? response?.data : null;
   },
   getPagedExternaFacilitator: async (pageNumber, pageSize, searchValue) => {
     try {
@@ -52,7 +52,7 @@ const externalFacilitatorService = {
   },
   deleteExternalFacilitator: async (id) => {
     const response = await deleteExternalFacilitatorApi(id);
-    return response?.status === 1 ? response?.data : {};
+    return response?.status === 1 ? response?.data : null;
   },
 };
 export default externalFacilitatorService;

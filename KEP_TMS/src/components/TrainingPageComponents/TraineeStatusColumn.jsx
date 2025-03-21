@@ -38,7 +38,8 @@ const TraineeStatusTemplate = ({value, traineeId}) => {
       }else if(trainingDetailsService.checkTrainingScheduleStatus(value)?.isUpcoming){
         detail = "Upcoming"
       }else if(trainingDetailsService.checkTrainingScheduleStatus(value)?.isOngoing){
-        detail = "Ongoing"
+        detail =  value?.status?.id === statusCode.SUBMITTED &&
+        traineeFormDetail?.effectivenessId === null ? "Pending Effectiveness Report" : "Ongoing"
       }
       else{
         detail = value?.status?.name;

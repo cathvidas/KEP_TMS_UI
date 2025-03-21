@@ -28,12 +28,14 @@ const CertificateViewModal = ({
     confirmAction({
       title: "Delete Certificate",
       text: "Are you sure you want to delete this certificate?",
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Delete",
       onConfirm: () => {
         handleResponseAsync(
           () => certificateService.deleteCertificate(id),
           null,
           null,
-          onFinish()
+          onFinish
         );
       },
     });

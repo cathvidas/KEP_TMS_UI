@@ -23,8 +23,8 @@ const ExternalFacilitatorList = ({
       header: "Position",
     },
     {
-      field: "depatmentOrganization",
-      header: "Depatment Organization",
+      field: "departmentOrganization",
+      header: "Department Organization",
     },
   ];
   return (

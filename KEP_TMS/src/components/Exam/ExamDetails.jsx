@@ -17,15 +17,14 @@ const ExamDetails = ({ handleClose, traineeExam, examDetail, isAdmin , refreshDa
     const list = [];
     traineeExam?.map((item) => {
       const questions = item?.traineeExamQuestion?.map((e) =>
-        getExamItem(e.examQuestionId, e.traineeAnswer[0]?.answerOptionId)
+        getExamItem(e.examQuestionId, e.traineeAnswers[0]?.answerOptionId)
       );
       list.push({ examDetail: item, questions: questions });
     });
     setMappedDetail({ title: examDetail?.title, examList: list });
   }, [traineeExam, examDetail]);
-
   const getExamItem = (questionId, answerId) => {
-    const question = examDetail?.examQuestion?.find(
+    const question = examDetail?.examQuestions?.find(
       (q) => q?.id === questionId
     );
     const answer = question?.answerOptions?.find((a) => a?.id === answerId);

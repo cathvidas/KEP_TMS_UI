@@ -1,3 +1,4 @@
+import { SearchValueConstant } from "../api/constants";
 import Layout from "../components/General/Layout";
 import TrainingRequestList from "../components/List/TrainingRequestList";
 import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
@@ -7,7 +8,7 @@ import { SessionGetEmployeeId } from "../services/sessions";
 
 const TrainerPage = () => {
   const { data, loading } =
-    trainingRequestHook.useTrainingRequestByFacilitatorId(
+    trainingRequestHook.usePagedTrainingRequest(1, 10, SearchValueConstant.FACILITATOR,
       SessionGetEmployeeId()
     );
 
@@ -21,7 +22,7 @@ const TrainerPage = () => {
       ) : (
         <>
           <TrainingRequestList
-            data={data}
+            data={data.results}
             headingTitle="Assigned Trainings to Facilitate"
             isFacilitator
             allowEdit={false}

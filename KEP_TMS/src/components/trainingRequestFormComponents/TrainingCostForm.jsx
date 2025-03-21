@@ -6,14 +6,14 @@ import proptype from "prop-types";
 import { useEffect, useState } from "react";
 import { SectionHeading } from "../General/Section";
 import Select from "react-select";
-import { TrainingType } from "../../api/constants";
+import { statusCode, TrainingType } from "../../api/constants";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
 import providerHook from "../../hooks/providerHook";
 
 const TrainingCostForm = ({
   formData,
   handleResponse,
-  error,
+  errors,
 }) => {
   const [data, setFormData] = useState(formData);
   const [cost, setCost] = useState(data.trainingFee);
@@ -44,6 +44,7 @@ const TrainingCostForm = ({
         providerConfig.size,
         providerConfig.value
       );
+      const mappedFacilitator = externalFacilitatorHook.useListExternalFacilitators(data?.trainingFacilitators);
   useEffect(() => {
     if (externalFacilitator?.data?.results) {
       const newTrainerOptions = externalFacilitator.data.results.map(
@@ -52,7 +53,6 @@ const TrainingCostForm = ({
           label: item.name,
         })
       );
-
       // Prevent duplicates in the trainer options list
       setTrainerOptions((prev) => {
         const uniqueOptions = [
@@ -61,13 +61,14 @@ const TrainingCostForm = ({
             (newOption) =>
               !prev.some((option) => option.value === newOption.value)
           ),
+          // ...prevFaci
         ];
         return uniqueOptions;
       });
     }
   }, [externalFacilitator?.data]);
   useEffect(() => {
-  setProviders(providersData?.data?.results?.filter(item=> item?.status?.name === "Active")?.map(({ id, name }) => ({
+  setProviders(providersData?.data?.results?.filter(item=> item?.statusId ===statusCode.ACTIVE)?.map(({ id, name }) => ({
     label: name,
     value: id,
   })))
@@ -95,7 +96,6 @@ const TrainingCostForm = ({
       totalTrainingFee: totalCost,
     }));
   }, [cost, totalCost]);
-
   useEffect(() => {
     if (formData.discountedRate > 0 || formData.cutOffDate != null) {
       setWithEarlyRate(true);
@@ -105,13 +105,9 @@ const TrainingCostForm = ({
     if (formData?.trainingType?.id === TrainingType.EXTERNAL) {
       setTrainers(formData.trainingFacilitators);
     }
-    // console.log(formData)
   }, [formData]);
   useEffect(() => {
-    if (trainers) {
-      // setFormData(prev=>({...prev, trainingFacilitators: mappedFacilitator}));
       setFormData((prev) => ({ ...prev, trainingFacilitators: trainers }));
-    }
   }, [trainers]);
   return (
     <>
@@ -122,7 +118,7 @@ const TrainingCostForm = ({
       <FormFieldItem
         label={"Training Provider"}
         col="col-12"
-        error={error?.provider}
+        error={errors?.provider}
         required
         FieldComponent={
           <Select
@@ -154,7 +150,7 @@ const TrainingCostForm = ({
       <FormFieldItem
         label={"Trainer"}
         col="col-12"
-        error={error?.facilitators}
+        error={errors?.facilitators}
         required
         FieldComponent={
           <Select
@@ -166,7 +162,7 @@ const TrainingCostForm = ({
               setPageConfig((prev) => ({ ...prev, size: prev.size + 10 }))
             }
             isMulti
-            value={data?.trainingFacilitators?.map(({ faciDetail }) => ({
+            value={mappedFacilitator?.data?.map(faciDetail  => ({
               label: faciDetail?.name,
               value: faciDetail?.id,
             }))}
@@ -310,6 +306,6 @@ TrainingCostForm.propTypes = {
   formData: proptype.object.isRequired,
   handleResponse: proptype.func,
   providersData: proptype.object,
-  error: proptype.object,
+  errors: proptype.object,
 };
 export default TrainingCostForm;

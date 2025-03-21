@@ -29,12 +29,9 @@ export const updateProgramApi = async (data) => {
   );
 };
 export const getPagedProgramApi = async (pageNumber, pageSize, searchValue) => {
+  let url = `/TrainingProgram/GetPaged?pageNumber=${pageNumber}&pageSize=${pageSize}`
   if (searchValue) {
-    return await fetchFromApi(
-      `/TrainingProgram/GetPaged?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`
-    );
+    url += `&searchValue=${searchValue}`;
   }
-  return await fetchFromApi(
-    `/TrainingProgram/GetPaged?pageNumber=${pageNumber}&pageSize=${pageSize}`
-  );
+  return await fetchFromApi(url);
 };

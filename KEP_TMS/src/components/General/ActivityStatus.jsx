@@ -3,6 +3,7 @@ import { statusCode } from "../../api/constants";
 const ActivityStatus = ({ showIcon = true, icon, status, severity, color }) => {
   let newIcon = "";
   let newColor = "";
+  let customColor = color ? color : "";
   let placeholder = "";
   switch (status) {
     case statusCode.ACTIVE:
@@ -21,7 +22,7 @@ const ActivityStatus = ({ showIcon = true, icon, status, severity, color }) => {
       placeholder = "For Approval";
       break;
     case statusCode.DISAPPROVED:
-      newIcon = "pi pi-refresh";
+      newIcon = "pi pi-replay";
       newColor = "text-danger";
       placeholder = "Returned";
       break;
@@ -36,8 +37,8 @@ const ActivityStatus = ({ showIcon = true, icon, status, severity, color }) => {
       placeholder = "Returned";
       break;
     case statusCode.CLOSED:
+      customColor = "#c084fc";
       newIcon = "pi pi-check-circle";
-      newColor = "text-secondary";
       placeholder = "Closed";
       break;
     case statusCode.SUBMITTED:
@@ -54,13 +55,13 @@ const ActivityStatus = ({ showIcon = true, icon, status, severity, color }) => {
   return (
     <>
       <span
-        className={`${severity ?? (!color && newColor)}`}
-        style={{ color: color }}
+        className={`${severity ? severity : (!color && newColor) ? newColor : color}`}
+        style={{ color: customColor }}
       >
         {showIcon && (
           <>
             {" "}
-            <i className={icon ?? newIcon}></i>&nbsp;
+            <i className={icon ? icon : newIcon}></i>&nbsp;
           </>
         )}
         {placeholder}

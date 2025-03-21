@@ -35,7 +35,6 @@ import ActivityStatus from "../../components/General/ActivityStatus";
 import TrainingFacilitatorList from "../../components/List/TrainingFacilitatorList";
 const OverviewSection = ({
   data,
-  showParticipants = false,
   showFacilitators = false,
   showApprovers = false,
   isAdmin,
@@ -60,6 +59,7 @@ const OverviewSection = ({
       statusId: statusCode.INACTIVE,
     };
     confirmAction({
+      showLoaderOnConfirm: true,
       title: "Are you sure?",
       text: "Are you sure you want to cancel this training request?",
       confirmButtonText: "Yes",
@@ -67,7 +67,7 @@ const OverviewSection = ({
       confirmButtonColor: "#d33",
       onConfirm: () =>
         handleResponseAsync(() =>
-          trainingRequestService.updateTrainingRequest(formmatedData)
+          trainingRequestService.updateTrainingRequest(formmatedData), null, null, reloadData
         ),
     });
   };
@@ -103,13 +103,15 @@ const OverviewSection = ({
       label: "Update",
       icon: "pi pi-pencil",
       command: () => navigate("/KEP_TMS/Request/Update/" + data.id),
+      template: SpeedDialButtonItemTemplate,
+      inactive: ( data?.status?.id === statusCode.APPROVED || data?.status?.id === statusCode.CLOSED)
     },
     {
       label: "Cancel Request",
-      icon: "pi pi-trash",
+      icon: "pi pi-ban",
       command: cancelRequest,
       template: SpeedDialButtonItemTemplate,
-      inactive: data?.status?.id === statusCode.INACTIVE ? true : false,
+      inactive: ( data?.status?.id === statusCode.INACTIVE || data?.status?.id === statusCode.CLOSED),
     },
     {
       label: "Status",
@@ -124,8 +126,6 @@ const OverviewSection = ({
       icon: "pi pi-info-circle",
       command: () => setShowLogModal(true),
       template: SpeedDialButtonItemTemplate,
-      // disable:true,
-      // inactive: true
     },
   ];
   const actionBodyTemplate = (
@@ -176,7 +176,9 @@ const OverviewSection = ({
             <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
             <span> DATE: {formatDateTime(data?.createdDate)}</span>
             {(isAdmin || data?.requesterBadge === SessionGetEmployeeId())&&
-            <span> STATUS: <ActivityStatus status={data?.status?.id} /></span>}
+            <span> STATUS: <ActivityStatus icon={data?.status?.id == statusCode.INACTIVE ? "pi pi-ban": ""} 
+            severity={data?.status?.id == statusCode.INACTIVE ? "text-danger": ""} 
+            status={data?.status?.id == statusCode.INACTIVE ? "Cancelled": data?.status?.id} /></span>}
           </div></>}
         </div>
         <div className="flex justify-content-between">
@@ -225,7 +227,7 @@ const OverviewSection = ({
            <TrainingFacilitatorList requestData={data} />
           </>
         )}
-        {showApprovers && (
+        {showApprovers&& data?.status?.id != statusCode.DRAFTED && (
           <>
             <br />
             <hr />
@@ -251,6 +253,7 @@ const OverviewSection = ({
           </>
         )}
       </div>
+      {data?.status?.id != statusCode.DRAFTED && <>
       <Dialog
         header="History Log"
         visible={showLogModal}
@@ -295,10 +298,7 @@ const OverviewSection = ({
             buttonClassName="p-button-default rounded-circle "
           />
         </div>
-      )}
-         {/* <EmailForm handleShow activityTitle={"Tra"} activityId={data?.id} activityType={ActivityType.REQUEST}
-      activityData={data} recipient={{email: "", fullname: ""}} activityLogs={[]} */}
-      {/* /> */}
+      )}</>}
     </>
   );
 };

@@ -21,9 +21,9 @@ export const validateTrainingRequestForm = (formData) => {
     trainingFee: formData.trainingFee,
     discountedRate: formData.discountedRate,
     // cutOffDate: new Date(),
-    trainingDates: formData?.trainingDates?.map(
+    trainingDates: formData?.trainingDates?.length > 0 ? formData?.trainingDates?.map(
       ({ startTime, endTime, date }) => ({ startTime, endTime, date })
-    ),
+    ): null,
     trainingFacilitators: formData.trainingFacilitators
       ? formData?.trainingType?.id === TrainingType.EXTERNAL
         ? formData.trainingFacilitators.map(({ faciDetail }) => ({

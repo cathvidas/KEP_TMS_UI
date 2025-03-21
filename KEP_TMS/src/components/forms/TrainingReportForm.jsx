@@ -18,7 +18,6 @@ import {
   formatDateOnly,
   formatDateTime,
 } from "../../utils/datetime/Formatting";
-import getStatusById from "../../utils/status/getStatusById";
 import { ActivityType, statusCode } from "../../api/constants";
 import getStatusCode from "../../utils/status/getStatusCode";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
@@ -52,22 +51,21 @@ const TrainingReportForm = ({
   };
   useEffect(() => {
     if (defaultValue) {
-      const updatedData = {
-        id: defaultValue?.id,
-        trainingTakeaways: defaultValue?.trainingTakeaways,
-        actionPlan: defaultValue.actionPlan,
-        timeframe: defaultValue.timeframe,
-        statusId: getStatusCode(defaultValue.status),
-        activityRemarks: defaultValue.activityRemarks,
-      };
-      setFormData({ ...updatedData });
-      setIsUpdate(
-        defaultValue?.status === getStatusById(statusCode.DISAPPROVED)
-      );
+      populateData();
       setShowLogs(true);
     }
   }, [defaultValue, isSubmitted]);
-
+const populateData = () => {
+  const updatedData = {
+    id: defaultValue?.id,
+    trainingTakeaways: defaultValue?.trainingTakeaways,
+    actionPlan: defaultValue.actionPlan,
+    timeframe: defaultValue.timeframe,
+    statusId: getStatusCode(defaultValue.status),
+    activityRemarks: defaultValue.activityRemarks,
+  };
+  setFormData({ ...updatedData });
+};
   const handleSubmit = () => {
     const isValid = validateForm();
     if (isValid) {
@@ -99,15 +97,15 @@ const TrainingReportForm = ({
   const validateForm = () => {
     let formErrors = {};
     let isValid = true;
-    if (!formData.trainingTakeaways) {
+    if (!formData.trainingTakeaways.trim()) {
       formErrors.trainingTakeaways = "This field is required";
       isValid = false;
     }
-    if (!formData.actionPlan) {
+    if (!formData.actionPlan.trim()) {
       formErrors.actionPlan = "This field is required";
       isValid = false;
     }
-    if (!formData.timeframe) {
+    if (!formData.timeframe.trim()) {
       formErrors.timeframe = "This field is required";
       isValid = false;
     }
@@ -135,6 +133,9 @@ const TrainingReportForm = ({
         <div className="text-center  pb-3 mb-3">
           <h5 className="m-0">Training Report Form</h5>
           <small className="text-muted">Knowles Electronics Philippines</small>
+          {isSubmitted && (
+            <p className="hideExport">Training Report # {formData?.id}</p>
+          )}
         </div>
         <Row>
           <AutoCompleteField
@@ -261,25 +262,42 @@ const TrainingReportForm = ({
               />
             </>
           )}
+        {formData?.statusId == statusCode.DISAPPROVED &&
+          defaultValue?.createdBy === SessionGetEmployeeId() && (
+            <Button
+              type="button"
+              icon={!isUpdate && "pi pi-pencil"}
+              label={isUpdate ? "Cancel" : "Edit"}
+              className="rounded ms-auto"
+              severity="secondary"
+              text={isUpdate}
+              onClick={() => {
+                setIsUpdate(!isUpdate);
+                populateData();
+              }}
+            />
+          )}
         {data?.trainingParticipants?.some(
           (x) => x.employeeBadge === SessionGetEmployeeId()
         ) &&
           (!defaultValue || isUpdate) && (
             <>
+              {!isUpdate && (
+                <Button
+                  type="button"
+                  icon="pi pi-eraser"
+                  label="Reset"
+                  className="rounded ms-auto"
+                  severity="secondary"
+                  onClick={() => {
+                    setFormData(trainingreportConstant);
+                  }}
+                />
+              )}
               <Button
                 type="button"
-                icon="pi pi-eraser"
-                label="Reset"
-                className="rounded ms-auto"
-                severity="secondary"
-                onClick={() => {
-                  setFormData(trainingreportConstant);
-                }}
-              />
-              <Button
-                type="button"
-                icon={isUpdate ? "pi pi-pencil" : "pi pi-cloud-upload"}
-                label={isUpdate ? "Update Form" : "Submit Form"}
+                icon={"pi pi-save"}
+                label={"Submit"}
                 className="rounded ms-2"
                 severity="success"
                 onClick={handleSubmit}
@@ -298,6 +316,7 @@ const TrainingReportForm = ({
             activityTitle="Training Report"
             activityType={ActivityType.REPORT}
             hasEmailForm={isAdmin}
+            reloadData={onFinish}
           />
           <hr />
           <ActivityList data={logs} label={"Activities"} />
