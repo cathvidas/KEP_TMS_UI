@@ -21,6 +21,11 @@ const trainingRequestHook = {
         handleResponseAsync(
           () => trainingRequestService.getTrainingRequest(id),
           async (response) => {
+            if(!response){
+              setError("No Request Found");
+              setLoading(false);
+              return;
+            }
             const participants = await userMapping.mapUserIdList(
               response.trainingParticipants,
               "employeeBadge"
@@ -113,6 +118,47 @@ const trainingRequestHook = {
       };
       getRequests();
     }, [datalist]);
+    return { data, error, loading };
+  },
+  useAllParticipantsTrainingForms: (reqId, datalist) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequests = async () => {
+        const effectiveness = await effectivenessService.getEffectivenessByRequestId(reqId);
+        if (datalist?.length > 0) {
+          handleResponseAsync(
+            async () =>
+              await Promise.all(
+                datalist?.map(async (item) => {
+                  const report = item?.reportId
+                    ? await trainingReportService.getTrainingReportById(
+                        item.reportId
+                      )
+                    : {};
+                  const evaluation = item?.evaluationId
+                    ? await evaluationService.getTrainingEvaluationById(
+                        item.evaluationId
+                      )
+                    : {};
+                  const effectivenessDetail = effectiveness?.find(eff=> eff?.id ==item.effectivenessId) ?? {};
+                  return {
+                    userDetail: item,
+                    reportDetail: report,
+                    effectivenessDetail,
+                    evaluationDetail: evaluation,
+                  };
+                })
+              ),
+            (e) => setData(e),
+            (e) => setError(e),
+            () => setLoading(false)
+          );
+        }
+      };
+      getRequests();
+    }, [reqId, datalist]);
     return { data, error, loading };
   },
   usePagedTrainingRequest: (

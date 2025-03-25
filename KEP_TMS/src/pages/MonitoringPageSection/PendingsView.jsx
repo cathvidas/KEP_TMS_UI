@@ -113,7 +113,7 @@ const PendingView = ({ data, formData, examDetail }) => {
 };
 PendingView.propTypes = {
   data: proptype.object.isRequired,
-  formData: proptype.object.isRequired,
+  formData: proptype.object,
   examDetail: proptype.array,
 };
 export default PendingView;

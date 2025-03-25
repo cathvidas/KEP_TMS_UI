@@ -14,6 +14,7 @@ import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
 import ExamDetails from "../../components/Exam/ExamDetails";
 import GeneralEmailTemplate from "../../components/email/GeneralEmailTemplate";
 import { SessionGetRole } from "../../services/sessions";
+import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 const MonitoringReportView = ({
   data,
   reportType,
@@ -22,7 +23,8 @@ const MonitoringReportView = ({
   formData,
   typeId,
   examDetail,
-  onRefresh
+  onRefresh,
+  oldSystem,
 }) => {
   const [showForm, setShowForm] = useState(false);
   const [showEmailTemplate, setShowEmailTemplate] = useState(false);
@@ -39,7 +41,7 @@ const MonitoringReportView = ({
             );
             setShowForm(true);
           }}
-          disabled={rowData[reportType]?.id ? false : true}
+          disabled={!rowData[reportType]?.id}
         />
       </>
     );
@@ -127,7 +129,12 @@ const MonitoringReportView = ({
       });
     }
     columnItems.push(
-      typeId !== ActivityType.EXAM
+      oldSystem ? {
+        field: "exam",
+        header: "Status",
+        body: (rowData) => <>{rowData[reportType]?.statusName ?? "N/A"}</>
+      } :
+      (typeId !== ActivityType.EXAM && !oldSystem)
         ? {
             field: "department",
             header: "Status",
@@ -204,16 +211,16 @@ const MonitoringReportView = ({
                   icon={<i className="pi pi-clock"></i>}
                 />
               </div>
-
+                {formData?.loading ? <SkeletonDataTable/> :
               <CommonTable
                 headerComponent={
-                  SessionGetRole() === UserTypeValue.ADMIN ? (
+                  SessionGetRole() === UserTypeValue.ADMIN && !oldSystem ? (
                     <HeaderComponent />
                   ) : null
                 }
                 dataTable={formData?.data}
                 columnItems={columnItems}
-              />
+              />}
             </>
           )}
         </>
@@ -319,5 +326,6 @@ MonitoringReportView.propTypes = {
   typeId: proptype.number,
   examDetail: proptype.array,
   onRefresh: proptype.func,
+  oldSystem: proptype.bool,
 };
 export default MonitoringReportView;

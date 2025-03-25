@@ -9,7 +9,7 @@ const SpeedDialButtonItemTemplate = (data) => {
         tabIndex="-1"
         data-pr-tooltip={data?.label}
         data-pc-section="action"
-        onClick={data?.inactive ? "":data?.command}
+        onClick={data?.inactive ? null:data?.command}
       >
         <span
           className={`p-speeddial-action-icon ${data?.icon}`}
