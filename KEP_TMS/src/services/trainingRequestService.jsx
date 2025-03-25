@@ -12,7 +12,7 @@ const trainingRequestService = {
   },
   getTrainingRequest: async (id) => {
     const response = id && await getTrainingRequestApi(id) ;
-    return response?.status === 1 ? response?.data : {};
+    return response?.status === 1 ? response?.data : null;
   },
   updateTrainingRequest: async (data) => {
     const response = await updateTrainingRequestApi(data);

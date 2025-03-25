@@ -6,8 +6,8 @@ export const createTrainingEffectivenessApi = async (data)=>{
 export const getEffectivenessByIdApi = async (id)=>{
     return await fetchFromApi(`TrainingEffectiveness/GetTrainingEffectivenessById?id=${id}`);
 }
-export const getAllEffectivenessApi = async ()=>{
-    return await fetchFromApi(`TrainingEffectiveness/GetAllTrainingEffectiveness`);
+export const GetEffectivenessByRequestIdApi = async (reqId)=>{
+    return await fetchFromApi(`TrainingEffectiveness/GetEffectivenessByRequestIdAsync?requestId=${reqId}`);
 }
 export const getPagedEffectivenessApi = async (pageNumber, pageSize, searchValue)=>{
     return await fetchFromApi(`TrainingEffectiveness/GetPagedTrainingEffectiveness?pageNumber=${pageNumber}&pageSize=${pageSize}&searchValue=${searchValue}`);

@@ -2,9 +2,9 @@ import { approveTrainingFormApi } from "../api/commonApi";
 import { ActivityType } from "../api/constants";
 import {
   createTrainingEffectivenessApi,
-  getAllEffectivenessApi,
   getApproverAssignedEffectivenessApi,
   getEffectivenessByIdApi,
+  GetEffectivenessByRequestIdApi,
   getPagedEffectivenessApi,
   getTrainingEffectivenessToEvaluateApi,
   updateEffectivenessApi,
@@ -68,9 +68,41 @@ const effectivenessService = {
     }
     return {};
   },
-  getAllEffectiveness: async () => {
-    const response = await getAllEffectivenessApi();
-    return response.status === 1 ? response?.data : [];
+  getEffectivenessByRequestId: async (reqId) => {
+    const response = await GetEffectivenessByRequestIdApi(reqId);   
+    if (response.status !== 1) {
+      throw new Error(response.message);
+    }
+    const mappedData = Promise.all(response?.data?.map(async(item) =>{
+      const approvers = await commonService.getActivityApprovers(
+        item?.id,
+        ActivityType.EFFECTIVENESS
+      );
+      const routings = await commonService.getRoutingActivityWithAuditTrail(
+        item?.id,
+        ActivityType.EFFECTIVENESS
+      );
+      const currentRouting = await routingService.getCurrentApprover(
+        routings
+      );
+      if (!currentRouting?.assignedDetail?.employeeBadge) {
+        currentRouting.assignedDetail = await userService.getUserById(
+          currentRouting?.assignedTo
+        );
+      }
+      const auditTrail = await commonService.getAuditTrail(
+        item?.id,
+        ActivityType.EFFECTIVENESS
+      );
+      return {
+        ...item,
+        routings,
+        currentRouting,
+        auditTrail,
+        approvers,
+      };
+    }))
+    return mappedData;
   },
   getApproverAssignedEffectiveness: async (id) => {
     const response = await getApproverAssignedEffectivenessApi(id);

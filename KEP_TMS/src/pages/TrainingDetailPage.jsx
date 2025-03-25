@@ -10,7 +10,6 @@ import {
 import trainingRequestHook from "../hooks/trainingRequestHook";
 import examHook from "../hooks/examHook";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
-import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
 import MenuContainer from "../components/menus/MenuContainer";
 import Layout from "../components/General/Layout";
 import { validateTrainingRequestForm } from "../services/inputValidation/validateTrainingRequestForm";
@@ -29,6 +28,7 @@ import PendingView from "./MonitoringPageSection/PendingsView";
 import trainingDetailsService from "../services/common/trainingDetailsService";
 import mappingHook from "../hooks/mappingHook";
 import TrainingVideosList from "../components/List/TrainingVideosList";
+import ErrorTemplate from "../components/General/ErrorTemplate";
 
 const TrainingDetailPage = () => {
   const [trigger, setTrigger] = useState(0);
@@ -66,7 +66,7 @@ const TrainingDetailPage = () => {
     (user) => user.employeeBadge === SessionGetEmployeeId()
   );
   const [currentContent, setCurrentContent] = useState(0);
-  const trainingForms = trainingRequestHook.useAllParticipantsReports(
+  const trainingForms = trainingRequestHook.useAllParticipantsTrainingForms(data?.id,
     data?.trainingParticipants ?? []
   );
   const logs = mappingHook.useMappedActivityLogs(data, data?.requestor);
@@ -342,7 +342,6 @@ const TrainingDetailPage = () => {
       setCurrentContent(0);
     }
   }, [section, page]);
-
   const handlePublish = (status) => {
     const newData = {
       ...validateTrainingRequestForm(data),
@@ -400,25 +399,41 @@ const TrainingDetailPage = () => {
           className={` p-3 pb-5 flex-grow-1`}
           style={{ minHeight: "calc(100vh - 60px)" }}
         >
-          {loading ? (
-            <SkeletonBanner />
-          ) : error ? (
-            "Error while processing your request"
-          ) : (
-            pageContent[currentContent]
-          )}
+          {pageContent[currentContent]}
         </div>
       </div>
     );
   };
+  const hasAccess = isTrainee || isFacilitator || isAdmin || isRequestor || isApprover;
   return (
     <>
-      {isTrainee || isFacilitator || isAdmin || isRequestor || isApprover ? (
+      <Layout
+        BodyComponent={
+          loading
+            ? () => <SkeletonForm />
+            : error
+            ? () => <ErrorTemplate message={error} center className="py-5"/>
+            : hasAccess
+            ? bodyContent
+            : () => (
+                <div className="d-flex w-100 h-100 justify-content-center align-items-center h1 opacity-50 text-muted">
+                  Page Not Found
+                </div>
+              )
+        }
+        header={{
+          title: hasAccess ? data?.trainingProgram?.name : "",
+          hide: (!loading && !error && hasAccess) ? !showMenu : true,
+          // icon: <i className="pi pi-lightbulb"></i>,
+        }}
+      />
+
+      {/* {isTrainee || isFacilitator || isAdmin || isRequestor || isApprover ? (
         <Layout
           BodyComponent={bodyContent}
           header={{
             title: data?.trainingProgram?.name,
-            hide: !showMenu,
+            hide: hasAccess ? !showMenu : true,
             // icon: <i className="pi pi-lightbulb"></i>,
           }}
         />
@@ -438,7 +453,7 @@ const TrainingDetailPage = () => {
             hide: true,
           }}
         />
-      )}
+      )} */}
     </>
   );
 };

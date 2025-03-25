@@ -88,6 +88,7 @@ const EffectivenessForm = ({
         effectivenessId,
         evaluatedActualPerformance,
         id,
+        createdDate,
         performanceBeforeTraining,
         projectedPerformance,
       }) => ({
@@ -96,6 +97,7 @@ const EffectivenessForm = ({
         effectivenessId,
         evaluatedActualPerformance,
         id,
+        createdDate,
         performanceBeforeTraining,
         projectedPerformance,
       })
@@ -343,7 +345,7 @@ const EffectivenessForm = ({
                 label="Facilitator/s"
                 value={
                   commonHook.useFormattedFacilitatorList(
-                    data?.trainingFacilitators
+                    data?.trainingFacilitators, "N/A"
                   )?.data
                 }
                 className="col-12"
@@ -518,7 +520,7 @@ const EffectivenessForm = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {projectPerformanceEvaluation?.map((_, index) => (
+                  {projectPerformanceEvaluation?.map((evalItem, index) => (
                     <tr
                       key={`evaluation${index}`}
                       className="position-relative performanceTable"
@@ -531,7 +533,7 @@ const EffectivenessForm = ({
                           className="no-focus w-100 border-0"
                           name="content"
                           value={
-                            projectPerformanceEvaluation[index]?.content ?? ""
+                            evalItem?.content ?? ""
                           }
                           onChange={(e) =>
                             handlePerfEvaluationOnChange(e, index)
@@ -546,7 +548,7 @@ const EffectivenessForm = ({
                         <Rating
                           className="justify-content-center"
                           value={
-                            projectPerformanceEvaluation[index]
+                            evalItem
                               ?.performanceBeforeTraining
                           }
                           name="performanceBeforeTraining"
@@ -554,20 +556,21 @@ const EffectivenessForm = ({
                             handlePerfEvaluationOnChange(e, index, true)
                           }
                           cancel={
-                            projectPerformanceEvaluation[index]
+                            evalItem
                               ?.performanceBeforeTraining > 0 &&
                             (isUpdate || !isSubmitted)
                           }
                           readOnly={isSubmitted && !isUpdate}
                         />
                         <small className="mt-1 d-block">
-                          {projectPerformanceEvaluation[index]?.content ? (
+                          {evalItem?.content ? (
                             isSubmitted ? (
                               formatDateOnly(
+                                evalItem?.createdDate ??
                                 performanceRatingDate?.creatorAudit
                               )
                             ) : (
-                              projectPerformanceEvaluation[index]
+                              evalItem
                                 ?.performanceBeforeTraining > 0 &&
                               formatDateOnly(new Date())
                             )
@@ -583,7 +586,7 @@ const EffectivenessForm = ({
                         <Rating
                           className="justify-content-center"
                           value={
-                            projectPerformanceEvaluation[index]
+                            evalItem
                               ?.projectedPerformance
                           }
                           name="projectedPerformance"
@@ -591,20 +594,21 @@ const EffectivenessForm = ({
                             handlePerfEvaluationOnChange(e, index, true)
                           }
                           cancel={
-                            projectPerformanceEvaluation[index]
+                            evalItem
                               ?.projectedPerformance > 0 &&
                             (isUpdate || !isSubmitted)
                           }
                           readOnly={isSubmitted && !isUpdate}
                         />
                         <small className="mt-1 d-block">
-                          {projectPerformanceEvaluation[index]?.content ? (
+                          {evalItem?.content ? (
                             isSubmitted ? (
                               formatDateOnly(
+                                evalItem?.createdDate ??
                                 performanceRatingDate?.creatorAudit
                               )
                             ) : (
-                              projectPerformanceEvaluation[index]
+                              evalItem
                                 ?.projectedPerformance > 0 &&
                               formatDateOnly(new Date())
                             )
@@ -620,7 +624,7 @@ const EffectivenessForm = ({
                         <Rating
                           className="justify-content-center"
                           value={
-                            projectPerformanceEvaluation[index]
+                            evalItem
                               ?.actualPerformance
                           }
                           name="actualPerformance"
@@ -630,12 +634,12 @@ const EffectivenessForm = ({
                           readOnly={
                             !(
                               ((isUpdate || actualPerfRating.isRating) &&
-                                projectPerformanceEvaluation[index]?.content) ||
+                              evalItem?.content) ||
                               !isSubmitted
                             )
                           }
                           cancel={
-                            projectPerformanceEvaluation[index]
+                            evalItem
                               ?.actualPerformance > 0 &&
                             (isUpdate ||
                               !isSubmitted ||
@@ -644,14 +648,15 @@ const EffectivenessForm = ({
                           disabled={actualPerfRating.toBeRated}
                         />
                         <small className="mt-1 d-block">
-                          {projectPerformanceEvaluation[index]?.content ? (
+                          {evalItem?.content ? (
                             isSubmitted &&
                             performanceRatingDate?.evaluatorAudit ? (
                               formatDateOnly(
+                                evalItem?.createdDate ??
                                 performanceRatingDate?.evaluatorAudit
                               )
                             ) : (
-                              projectPerformanceEvaluation[index]
+                              evalItem
                                 ?.actualPerformance > 0 &&
                               formatDateOnly(new Date())
                             )
@@ -660,9 +665,9 @@ const EffectivenessForm = ({
                           )}
                           {(!actualPerfRating.isRated  && !actualPerfRating.toBeRated) &&
                             isSubmitted && formData?.createdBy == SessionGetEmployeeId() &&
-                            projectPerformanceEvaluation[index]
+                            evalItem
                               ?.actualPerformance === null &&
-                            projectPerformanceEvaluation[index]?.content && (
+                              evalItem?.content && (
                               <span className="text-danger">Please Rate</span>
                             )}
                         </small>
@@ -674,7 +679,7 @@ const EffectivenessForm = ({
                         <Rating
                           className="justify-content-center"
                           value={
-                            projectPerformanceEvaluation[index]
+                            evalItem
                               ?.evaluatedActualPerformance
                           }
                           name="evaluatedActualPerformance"
@@ -682,7 +687,7 @@ const EffectivenessForm = ({
                             handlePerfEvaluationOnChange(e, index, true)
                           }
                           cancel={
-                            projectPerformanceEvaluation[index]
+                            evalItem
                               ?.evaluatedActualPerformance > 0 && evaluatedActualPerfRating.isRating
                           }
                           readOnly={!evaluatedActualPerfRating.isRating}
@@ -691,17 +696,18 @@ const EffectivenessForm = ({
                         <small className="mt-1 d-block">
                           {isSubmitted && performanceRatingDate?.evaluatorAudit
                             ? formatDateOnly(
+                              evalItem?.createdDate ??
                                 performanceRatingDate?.evaluatorAudit
                               )
-                            : projectPerformanceEvaluation[index]
+                            : evalItem
                                 ?.evaluatedActualPerformance > 0 &&
                               formatDateOnly(new Date())}
                                        
                             {evaluatedActualPerfRating.isRating &&
                             isSubmitted &&
-                            !(projectPerformanceEvaluation[index]
+                            !(evalItem
                               ?.evaluatedActualPerformance > 1) &&
-                            projectPerformanceEvaluation[index]?.content && (
+                              evalItem?.content && (
                               <span className="text-danger">Please Rate</span>
                             )}
                         </small>
