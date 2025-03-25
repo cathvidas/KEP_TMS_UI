@@ -94,6 +94,6 @@ const ApproverPendingsEmailTemplate = ({ userId = "C-00590" }) => {
   );
 };
 ApproverPendingsEmailTemplate.propTypes = {
-  userId: proptype.string.isRequired,
+  userId: proptype.string,
 };
 export default ApproverPendingsEmailTemplate;

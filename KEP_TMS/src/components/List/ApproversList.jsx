@@ -27,6 +27,7 @@ const ApproverList = ({data, activityType, hasEmailForm, optionColumn, reloadDat
         type="button"
         icon="pi pi-envelope"
         text
+        className="py-0"
         disabled={rowData?.status?.statusId !== statusCode.FORAPPROVAL || SessionGetRole() !== UserTypeValue.ADMIN}
         onClick={() => {setVisible(true);
           setEmailRecipient(rowData?.detail);
@@ -36,6 +37,7 @@ const ApproverList = ({data, activityType, hasEmailForm, optionColumn, reloadDat
         type="button"
         icon="pi pi-directions"
         title="Route Approvers"
+        className="py-0"
         text
         disabled={!((rowData?.status?.statusId === statusCode.FORAPPROVAL || rowData?.status?.statusId === statusCode.PENDING) && SessionGetRole() === UserTypeValue.ADMIN)}
         onClick={() => {setRouteForm(true);
@@ -56,6 +58,7 @@ const ApproverList = ({data, activityType, hasEmailForm, optionColumn, reloadDat
         stripedRows
         dataKey={"id"}
         rows={10}
+        emptyMessage="No available data"
       >
         <Column header="No" body={(_, { rowIndex }) => rowIndex + 1} />
         <Column field="fullname" header="Name" body={(rowData)=><>{rowData?.detail?.fullname}</>}></Column>

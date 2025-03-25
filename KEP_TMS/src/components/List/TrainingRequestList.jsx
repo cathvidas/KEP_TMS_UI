@@ -8,7 +8,7 @@ import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 import proptype from "prop-types";
-import { formatDateOnly } from "../../utils/datetime/Formatting";
+import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import TraineeStatusTemplate from "../TrainingPageComponents/TraineeStatusColumn";
 import RequestStatusColumn from "../TrainingPageComponents/RequestStatusColumn";
@@ -217,7 +217,7 @@ const TrainingRequestList = ({
                 header="Created"
                 style={{ width: "8%" }}
                 body={(rowData) => {
-                  return formatDateOnly(rowData.createdDate);
+                  return formatDateTime(rowData.createdDate);
                 }}
               ></Column>
             )}

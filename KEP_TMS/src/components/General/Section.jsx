@@ -2,7 +2,7 @@ import proptype from "prop-types";
 import { Link } from "react-router-dom";
 export const SectionHeading = ({ title, icon }) => (
   <>
-    <h6 className="my-2 text-uppercase theme-color">
+    <h6 className="my-2 fw-bold theme-color">
       {icon && icon}
       &nbsp;{title}
     </h6>

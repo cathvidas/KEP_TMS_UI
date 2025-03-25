@@ -70,35 +70,31 @@ const TrainingVideosList = ({ requestId }) => {
           style={{ minHeight: "100vh" }}
         >
           <>
-            {loading ? (
-              <SkeletonDataTable />
-            ) : error ? (
-              <ErrorTemplate message={error} />
-            ) : (
-              <>
-                <CommonTable
-                  tableName="Videos"
-                  columnItems={columnItems}
-                  dataTable={data?.results}
-                  hidePaginator
-                  hideOnEmpty={false}
-                />
-                <Paginator
-                  first={paginatorConfig?.first ?? 1}
-                  pageLinkSize={5}
-                  rows={paginatorConfig.rows}
-                  totalRecords={data?.totalRecords}
-                  rowsPerPageOptions={[10, 20, 30, 50, 100]}
-                  onPageChange={(e) =>
-                    setPaginatorConfig((prev) => ({
-                      ...prev,
-                      first: e.first,
-                      rows: e.rows,
-                      page: e.page + 1,
-                    }))
-                  }
-                />
-              </>
+            <CommonTable
+              tableName="Videos"
+              columnItems={columnItems}
+              dataTable={data?.results}
+              hidePaginator
+              hideOnEmpty={false}
+              loading={loading}
+              errorMessage={error}
+            />
+            {(!loading && !error) && (
+              <Paginator
+                first={paginatorConfig?.first ?? 1}
+                pageLinkSize={5}
+                rows={paginatorConfig.rows}
+                totalRecords={data?.totalRecords}
+                rowsPerPageOptions={[10, 20, 30, 50, 100]}
+                onPageChange={(e) =>
+                  setPaginatorConfig((prev) => ({
+                    ...prev,
+                    first: e.first,
+                    rows: e.rows,
+                    page: e.page + 1,
+                  }))
+                }
+              />
             )}
           </>
         </div>
@@ -107,6 +103,6 @@ const TrainingVideosList = ({ requestId }) => {
   );
 };
 TrainingVideosList.propTypes = {
-  requestId: proptype.object,
+  requestId: proptype.number,
 }
 export default TrainingVideosList;

@@ -8,6 +8,7 @@ import { FilterMatchMode } from "primereact/api";
 import { InputText } from "primereact/inputtext";
 import "../../assets/css/customPrimeReact.css"
 import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
+import ErrorTemplate from "./ErrorTemplate";
 
 const CommonTable = ({
   dataTable,
@@ -20,7 +21,8 @@ const CommonTable = ({
   dataKey,
   onInputChange,
   hideOnEmpty=true,
-  loading
+  loading,
+  emptyMessage, errorMessage,
 }) => {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -53,11 +55,10 @@ const CommonTable = ({
       </div>
     );
   };
-  
   const dataRef = useRef();
   return (
     <>
-    {loading ? <SkeletonDataTable/> : <>
+    {loading ? <SkeletonDataTable/> : errorMessage ? <ErrorTemplate message={errorMessage}/> :<>
       <div className=" w-100 overflowX-auto" style={{ overflowX: "auto" }}>
         {((dataTable?.length > 0 && hideOnEmpty) || !hideOnEmpty) ?<>
         <DataTable
@@ -73,7 +74,7 @@ const CommonTable = ({
           stripedRows
           dataKey={dataKey}
           rows={10}
-          emptyMessage="No records found"
+          emptyMessage={emptyMessage ?? "No records found"}
           key={"id"}
           tableStyle={{ minWidth: "50rem" }}
           rowsPerPageOptions={[5, 10, 25, 50]}
@@ -107,5 +108,7 @@ CommonTable.propTypes = {
   onInputChange: proptype.func,
   hideOnEmpty: proptype.bool,
   loading: proptype.bool,
+  emptyMessage: proptype.string,
+  errorMessage: proptype.string,
 };
 export default CommonTable;

@@ -52,6 +52,7 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
     const isValid = validateForm();
     if (isValid) {
       confirmAction({
+        showLoaderOnConfirm: true,
         onConfirm: () => {
           handleResponseAsync(
             () => evaluationService.createTrainingEvaluation(data?.trainingType?.id === TrainingType.INTERNAL ? {...getFormData, 

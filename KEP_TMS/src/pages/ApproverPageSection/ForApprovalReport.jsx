@@ -110,7 +110,6 @@ const ForApprovalReport = ({data, refreshData}) => {
       },
     });
   };
-  console.log(data)
   const columnItems = [
     {
       field: "id",

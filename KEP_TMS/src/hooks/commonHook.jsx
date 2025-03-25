@@ -189,7 +189,7 @@ const commonHook = {
     }, [faciList]);
     return { data, error, loading };
   },
-  useFormattedFacilitatorList: (faciList) => {
+  useFormattedFacilitatorList: (faciList, placeholder) => {
     const [data, setData] = useState("");
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -214,14 +214,14 @@ const commonHook = {
             })
           );
           formattedFacilitators = faciNames.join("; ");
-          setData(formattedFacilitators);
+          setData(formattedFacilitators ? formattedFacilitators : placeholder ?? "");
           setLoading(false);
         } catch (err) {
           setError(err?.message);
         }
       };
       fetchData();
-    }, [faciList]);
+    }, [faciList, placeholder]);
     return { data, error, loading };
   },
 };

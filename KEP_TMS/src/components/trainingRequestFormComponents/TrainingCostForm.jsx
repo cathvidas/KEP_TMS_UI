@@ -107,7 +107,8 @@ const TrainingCostForm = ({
     }
   }, [formData]);
   useEffect(() => {
-      setFormData((prev) => ({ ...prev, trainingFacilitators: trainers }));
+    if(trainers){
+      setFormData((prev) => ({ ...prev, trainingFacilitators: mappedFacilitator?.data }));}
   }, [trainers]);
   return (
     <>

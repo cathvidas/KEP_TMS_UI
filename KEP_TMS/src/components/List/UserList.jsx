@@ -105,8 +105,8 @@ export const UserList = ({
               ></Column>
             )}
             <Column header="No" body={(_, { rowIndex }) => rowIndex + 1}  sortable={sortable}/>
-            <Column field="fullname" header="Name" sortable={sortable}></Column>
             <Column field="employeeBadge" header="Employee Id" sortable={sortable}></Column>
+            <Column field="fullname" header="Name" sortable={sortable}></Column>
             <Column field="position" header="Position" sortable={sortable}></Column>
             <Column field="departmentName" header="Department" sortable={sortable}></Column>
             {allowEffectiveness && 

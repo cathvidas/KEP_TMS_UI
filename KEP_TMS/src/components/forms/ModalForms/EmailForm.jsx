@@ -201,13 +201,6 @@ const validateEmailContent = () => {
 EmailForm.propTypes = {
   handleShow: proptype.bool.isRequired,
   handleClose: proptype.func,
-  activityData: proptype.object,
-  activityTitle: proptype.string,
-  activityType: proptype.number,
-  activityId: proptype.number,
-  recipient: proptype.string,
-  routeList: proptype.array,
-  activityLogs: proptype.array,
-  formTemplate: proptype.any,
+  recipient: proptype.object,
 };
 export default EmailForm;

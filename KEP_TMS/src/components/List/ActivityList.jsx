@@ -3,6 +3,7 @@ import CommonTable from "../General/CommonTable";
 import proptype from "prop-types";
 import { Button } from "primereact/button";
 import { Collapse } from "react-bootstrap";
+import { SectionHeading } from "../General/Section";
 
 const ActivityList = ({ data, show = true, label, toggle }) => {
   const [isShow, setIsShow] = useState(show);
@@ -16,11 +17,7 @@ const ActivityList = ({ data, show = true, label, toggle }) => {
   return (
     <>
       <div className="flex gap-0 mb-1">
-        {label && (
-          <h6 className="mb-1 theme-color" style={{ fontWeight: 600 }}>
-            {label}
-          </h6>
-        )}
+        {label && <SectionHeading title={label} />}
         {toggle && (
           <Button
             className="py-0"
