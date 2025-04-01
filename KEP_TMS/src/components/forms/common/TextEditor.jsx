@@ -36,6 +36,7 @@ const TextEditor = ({
   showToolbar,
   template,
   disableTable,
+  disabled
 }) => {
   const [editorData, setEditorData] = useState(defaultValue);
   useEffect(() => {
@@ -99,6 +100,7 @@ const TextEditor = ({
   return (
     <div className={`${showToolbar ? "" : "custom-text-editor"} ${template}`}>
       <CKEditor
+        disabled={disabled}
         editor={ClassicEditor}
         data={editorData}
         onChange={(event, editor) => {
@@ -106,6 +108,7 @@ const TextEditor = ({
           setEditorData(data);
         }}
         config={{
+          readOnly: true,
           allowedContent: true,
           htmlSupport: {
             allow: [
@@ -217,7 +220,7 @@ const TextEditor = ({
                   "data-*",
                   "colspan",
                   "rowspan",
-                  "*"
+                  "*",
                 ],
               },
               tableHeaderCell: {
@@ -251,5 +254,6 @@ TextEditor.propTypes = {
   showToolbar: proptype.bool,
   template: proptype.string,
   disableTable: proptype.bool,
+  disabled: proptype.bool,
 };
 export default TextEditor;

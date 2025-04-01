@@ -101,7 +101,7 @@ const CertificateContent = ({ trainings, isFacilitator, userDetail }) => {
                       <p
                         style={{ verticalAlign: "middle", textAlign: "center" }}
                       >
-                        {training.durationInHours} {training.durationInHours > 1 ? "hours" : "hour"}
+                        {Math.round(training.durationInHours * 100)/100} {training.durationInHours > 1 ? "hours" : "hour"}
                       </p>
                     </td>
                   </tr>

@@ -3,16 +3,18 @@ import handleResponseAsync from "../services/handleResponseAsync";
 import oldTrainingsService from "../services/oldTrainingsService";
 import userMapping from "../services/DataMapping/userMapping";
 import userService from "../services/userService";
+import { ActivityType, SearchValueConstant, TrainingType } from "../api/constants";
+import ErrorTemplate from "../components/General/ErrorTemplate";
 
 const oldTrainingsHook = {
-  useOldExternalRequestById: (id, trigger) => {
+  useOldTrainingRequestById: (type, id, trigger) => {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const getRequest = async () => {
         handleResponseAsync(
-          () => oldTrainingsService.getOldExternalRequestById(id),
+          () => type == TrainingType.EXTERNAL ? oldTrainingsService.getOldExternalRequestById(id): oldTrainingsService.getOldInternalRequestById(id),
           async (response) => {
             if (!response) {
               setError("No Request Found");
@@ -37,15 +39,16 @@ const oldTrainingsHook = {
         );
       };
       getRequest();
-    }, [id, trigger]);
+    }, [type, id, trigger]);
     return {
       data,
       error,
       loading,
     };
   },
-  useOldExternalRequest: (
+  useOldTrainingRequest: (
     loader,
+    trainingType,
     pageNumber,
     pageSize,
     searchValue,
@@ -63,7 +66,8 @@ const oldTrainingsHook = {
       const getRequests = async () => {
         handleResponseAsync(
           () =>
-            oldTrainingsService.getOldExternalRequest(
+            oldTrainingsService.getOldTrainingRequest(
+              trainingType,
               pageNumber,
               pageSize,
               searchValue,
@@ -79,6 +83,7 @@ const oldTrainingsHook = {
       getRequests();
     }, [
       loader,
+      trainingType,
       pageNumber,
       pageSize,
       searchValue,
@@ -148,21 +153,22 @@ const oldTrainingsHook = {
     }, [faciList]);
     return { data, error, loading };
   },
-  useTrainingActivities: (reqId) => {
+  useTrainingActivities: (id, activityType, trainingType) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
-          ()=>oldTrainingsService.getExternalActivitiesByRequestId(reqId),
+          ()=>activityType == ActivityType.REQUEST ? oldTrainingsService.getExternalActivitiesByRequestId(id) : 
+          activityType == ActivityType.EFFECTIVENESS ? oldTrainingsService.getOldEffectivenessActivityById(id, trainingType): null,
           (res)=>setData(res),
           (err)=>setError(err?.message),
           ()=>setLoading(false)
         )
       };
       fetchData();
-    }, [reqId]);
+    }, [id, activityType, trainingType]);
     return { data, error, loading };
   },
   useEffectivenessByRequestId: (reqId, reqType) => {
@@ -182,6 +188,23 @@ const oldTrainingsHook = {
     }, [reqId, reqType]);
     return { data, error, loading };
   },
+  useTrainingReportByRequestId: (reqId, reqType) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+        handleResponseAsync(
+          ()=>oldTrainingsService.getOldTrainingReportByRequestId(reqId, reqType),
+          (res)=>setData(res),
+          (err)=>setError(err?.message),
+          ()=>setLoading(false)
+        )
+      };
+      fetchData();
+    }, [reqId, reqType]);
+    return { data, error, loading };
+  },
   useOldTrainingForms: (reqId, reqType, participantList) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
@@ -190,11 +213,13 @@ const oldTrainingsHook = {
       const fetchData = async () => {
         try{
           const effectiveness = await oldTrainingsService.getOldEffectivenessByRequestId(reqId, reqType);
+          const reports = await oldTrainingsService.getOldTrainingReportByRequestId(reqId, reqType);
+          const evaluations = await oldTrainingsService.getOldTrainingEvaluationByRequestId(reqId, reqType);
           let traineeForms = [];
           participantList?.forEach((userDetail) =>{
             const effectivenessDetail = effectiveness?.find(eff => eff?.employeeBadge == userDetail?.employeeBadge);
-            const reportDetail = null;
-            const evaluationDetail = null;
+            const reportDetail = reports?.find(rep => rep?.id == userDetail?.reportId);
+            const evaluationDetail = evaluations?.find(eva => eva?.id == userDetail?.evaluationId);
             traineeForms.push({userDetail, effectivenessDetail, reportDetail, evaluationDetail});
           })
           setData(traineeForms);
@@ -207,5 +232,88 @@ const oldTrainingsHook = {
     }, [reqId, reqType, participantList]);
     return { data, error, loading };
   },
+  useOldSystemFacilitator: (id) => {
+    const [data, setData] = useState({});
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+        handleResponseAsync(
+          ()=>oldTrainingsService.getOldSystemFacilitator(id),
+          (res)=>setData(res),
+          (err)=>setError(err?.message),
+          ()=>setLoading(false)
+        )
+      };
+      fetchData();
+    }, [id]);
+    return {
+      data,
+      error,
+      loading,
+    };
+  },
+  useUserOldTrainings: (id, reqType) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+        handleResponseAsync(
+          ()=>reqType == SearchValueConstant.FACILITATED ? oldTrainingsService.getOldFacilitatedTrainings(id) : oldTrainingsService.getOldAttendedTrainings(id),
+          (res)=>setData(res),
+          (err)=>setError(err?.message),
+          ()=>setLoading(false)
+        )
+      };
+      fetchData();
+    }, [id, reqType]);
+    return {
+      data,
+      error,
+      loading,
+    };
+  },
+  useOldTotalAccumulatedHours: (id) => {
+    const [data, setData] = useState({});
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+        handleResponseAsync(
+          ()=>oldTrainingsService.getOldTotalAccumulatedHours(id),
+          (res)=>setData(res),
+          (err)=>setError(err?.message),
+          ()=>setLoading(false)
+        )
+      };
+      fetchData();
+    }, [id]);
+    return {
+      data,
+      error,
+      loading,
+    };
+  },
+  useOldFacilitatorRating: (userId, reqId) => {
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+        handleResponseAsync(
+          ()=>oldTrainingsService.getOldFacilitatorRating(userId, reqId),
+          (res)=>setData(res),
+          (err)=>setError(err?.message),
+          ()=>setLoading(false)
+        )
+      };
+      fetchData();
+    }, [userId, reqId]);
+  return <>
+  {loading ? <i className="pi pi-spinner pi-spin"></i> : error? <ErrorTemplate message={error}/> : <>{data ?? "No ratings Found"}</>}
+  </>
+  }
+
 };
 export default oldTrainingsHook;

@@ -11,49 +11,27 @@ import {
   formatDateTime,
   GenerateTrainingDates,
 } from "../../utils/datetime/Formatting";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "primereact/button";
 import CertificateTemplate from "../../components/certificate/CertificateTemplate";
 import CertificatesList from "../../components/certificate/CertificatesList";
-import { SearchValueConstant, UserTypeValue } from "../../api/constants";
-import ErrorTemplate from "../../components/General/ErrorTemplate";
-import handleResponseAsync from "../../services/handleResponseAsync";
-import commonService from "../../services/commonService";
+import { APP_DOMAIN, SearchValueConstant, UserTypeValue } from "../../api/constants";
 import NewUserForm from "../../components/forms/ModalForms/NewUserForm";
 import mapUserUpdateDetail from "../../services/DataMapping/mapUserUpdateDetails";
-import { Paginator } from "primereact/paginator";
-const DetailItem = (data) => (
+import oldTrainingsHook from "../../hooks/oldTrainingsHook";
+import { ButtonGroup } from "primereact/buttongroup";
+import { useNavigate } from "react-router-dom";
+export const DetailItem = (data) => (
   <>
     <div className="flex py-1">
       <h6 className={`mb-0 fw-bold ${data?.className}`}>{data.label}:</h6>
+      {data?.loading ? <i className="pi pi-spin pi-spinner text-muted"></i>: <>
       {data.value && <span>{data.value}</span>}
       {data.user && <span>{userHook.useUserById(data.user)?.data?.fullname ?? data?.user}</span>}
-      {data.badge && <Badge value={data.badge} />}
+      {data.badge && <Badge value={data.badge} />}</>}
     </div>
   </>
 );
-const AverageRateTemplate = ({ reqId, userId }) => {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    const fetchData = async () => {
-      handleResponseAsync(() =>
-        commonService.getFacilitatorRating(
-          reqId,
-          userId),
-          (e) => setData(e ? Math.round(e * 100) / 100 : e
-        ),
-          (e) => setError(e),
-          () => setLoading(false)
-        )
-    };
-    fetchData();
-  }, [reqId, userId]);
-  return <>
-  {loading ? error? <ErrorTemplate message={error}/> : <i className="pi pi-spinner pi-spin"></i>: <>{data ?? "No ratings Found"}</>}
-  </>
-};
 const UserDetailView = ({ id, adminList, isAdmin , options}) => {
   const [trigger, setTrigger] = useState(0);
   const { data, error, loading } = userHook.useUserById(id, trigger);
@@ -61,24 +39,25 @@ const UserDetailView = ({ id, adminList, isAdmin , options}) => {
   const [showCertForm, setShowCertForm] = useState(false);
   const [isFacilitator, setIsFacilitator] = useState(false);
   const superiorName = userHook.useUserById(data?.superiorBadge)?.data?.fullname;
-  const [attendedTrainingsConfig, setAttendedTrainingsConfig] = useState({
-    first: 0,
-    rows: 10,
-    page: 1,
-    value: "",
-  });  
-  const [facilitatedTrainingsConfig, setFacilitatedTrainingsConfig] = useState({
-    first: 0,
-    rows: 10,
-    page: 1,
-    value: "",
-  });
-const attendedTrainings = trainingRequestHook.usePagedTrainingRequest(attendedTrainingsConfig.page, attendedTrainingsConfig.rows, SearchValueConstant.ATTENDED, id, attendedTrainingsConfig.value);
-const facilitatedTrainings = trainingRequestHook.usePagedTrainingRequest(attendedTrainingsConfig.page, attendedTrainingsConfig.rows, SearchValueConstant.FACILITATED, id, attendedTrainingsConfig.value);
-const stackedTrainings = trainingRequestHook.usePagedTrainingRequest(1, 1000, isFacilitator ? SearchValueConstant.FACILITATED : SearchValueConstant.ATTENDED, id);
-const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
+  const [isOldSystem, setIsOldSystem] = useState(false);
+const oldTrainings = oldTrainingsHook.useUserOldTrainings(id, SearchValueConstant.ATTENDED);
+const oldFacilitatedTrainings = oldTrainingsHook.useUserOldTrainings(id, SearchValueConstant.FACILITATED);
+const newTrainings = trainingRequestHook.useTrainingsAttended(id);
+const newFacilitatedTrainings = trainingRequestHook.useTrainingsFacilitated(id);const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
+const oldTrainingSummary = oldTrainingsHook.useOldTotalAccumulatedHours(id);
+const navigate = useNavigate();
+const handleViewClick = (rowData) =>{
+  let url = `${APP_DOMAIN}/`;
+  if(isOldSystem){
+    url+=`OldTrainingDetail/${rowData?.type}/${rowData?.id}`
+  }else{
+  url += `TrainingDetail/${rowData?.id}`;}
+  navigate(url)
+ }
   const columnItem = [
-    {field: "id", header: "Request #", },
+    {field: "id", header: "Id", },
+    // {field: "id", header: "", body: (_, {rowIndex})=><>{((attendedTrainingsConfig?.page- 1) * 10) + (rowIndex+1)}</>},
+    { field: "type", header: "Type" },
     { field: "program", header: "Program" },
     { field: "requesterName", header: "Provider", 
       body: (rowData) => <>{rowData?.trainingProvider?.name ?? "Knowles Electronics (Philippines) Corporation"}</>, },
@@ -87,155 +66,186 @@ const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
       header: "Training Dates",
       body: (rowData) => <>{GenerateTrainingDates(rowData.trainingDates)}</>,
     },
-    { field: "durationInHours", header: "Total Hours" },
+    { field: "durationInHours", header: "Total Hours", body: (rowData) => <>{Math.round(rowData?.durationInHours * 100) / 100}</> },
     { field: "totalParticipants", header: "Total Participants" },
   ];
+  const ActionColumn = 
+  { field: "totalParticipants", header: "Action", body: (rowData)=><><Button
+    type="button"
+    icon="pi pi-eye"
+    size="small"
+    severity="success"
+    className="rounded"
+    text
+    onClick={() => handleViewClick(rowData)}
+  /></>};
+ const handleTabChange = (activeSystem) =>{
+  setIsOldSystem(activeSystem)
+ }
+ const getplaceholder = (value) =>{
+  return value > 0 ? `(${value})` : ""
+ }
+  const HeaderComponent = (prop)=> { 
+    return(
+    <>
+      <ButtonGroup>
+        <Button type="button" text={isOldSystem} label={`New Trainings ${getplaceholder(prop?.facilitator ? trainingSummary?.data?.totalTrainingsFacilitated : trainingSummary?.data?.totalTrainingsAttended)}`} onClick={()=>handleTabChange(false)} />
+        <Button text={!isOldSystem} label={`Old Trainings ${getplaceholder(prop?.facilitator ? oldTrainingSummary?.data?.totalTrainingsFacilitated : oldTrainingSummary?.data?.totalTrainingsAttended)}`} onClick={()=>handleTabChange(true)} />
+        {isAdmin &&
+        <Button
+        severity="help"
+          type="button"
+          label="Generate Certificate"
+          icon="pi pi-download"
+          onClick={() => {
+            setShowCertForm(true);
+            setIsFacilitator(prop?.facilitator);
+          }}
+          text
+        />}
+      </ButtonGroup>
+    </>
+  );}
   return (
     <>
-      {loading ? (
-        <SkeletonBanner />
-      ) : error ? (
-        <h1>error</h1>
-      ) : !showCertForm ? (
+      {!showCertForm ? (
         <>
-          <Card>
-            <CardBody>
-              <Row>
-                <Col>
-                  <h5 className="theme-color">User Details</h5>
-                  <hr />
-                  <DetailItem label="BadgeNo" value={data?.employeeBadge} />
-                  <DetailItem label="Name" value={data?.fullname} />
-                  <DetailItem label="NTName" value={data?.username} />
-                  <DetailItem label="Position" value={data?.position} />
-                  <DetailItem label="Department" value={data?.departmentName} />
-                  <DetailItem label="Email" value={data?.email} />
-                  <DetailItem label="User Type" value={data?.roleName} />
-                  <DetailItem label="Immediate Superior" value={superiorName} />
-                  <DetailItem label="Status" value={data?.statusName} />
-                  {/* <DetailItem label="Password" value={data?.password} /> */}
-                  <DetailItem label="Created By" user={data?.createdBy} />
-                  <DetailItem label="Created Date" value={formatDateTime(data?.createdDate)} />
-                  <DetailItem label="Updated By" user={data?.updatedBy ?? "N/A"} />
-                  <DetailItem label="Updated Date" value={data?.updatedDate ? formatDateTime(data?.updatedDate) : 'N/A'} />
-               {isAdmin &&  <Button type="button" icon="pi pi-user-edit" size="small" text label="Edit" onClick={() => setShowUpdateForm(true)}/>}
-                </Col>
-                <Col className="border-start">
-                  <h5 className="theme-color">Training Summary</h5>
-                  <hr />
-                  <h6 className="theme-color fw-bold">Trainings Attended:</h6>
-                  <DetailItem
-                    label="No of Trainings"
-                    badge={attendedTrainings?.data?.totalRecords}
-                    className="text-muted"
-                  />
-                  <DetailItem
-                    label="Total Accumulated Hours"
-                    badge={trainingSummary?.data?.totalHoursAttended}
-                    className="text-muted"
-                  />
-                  <br />
-                  <h6 className="theme-color fw-bold">Trainings Facilitated:</h6>
-                  <DetailItem
-                    label="No of Trainings"
-                    badge={facilitatedTrainings?.data?.totalRecords}
-                    className="text-muted"
-                  />
-                  <DetailItem
-                    label="Total Accumulated Hours"
-                    badge={trainingSummary?.data?.totalHoursFacilitated}
-                    className="text-muted"
-                  />
-                </Col>
-              </Row>
-            </CardBody>
-          </Card>
+          {loading ? (
+            <SkeletonBanner />
+          ) : error ? (
+            <h1>error</h1>
+          ) : (
+            <Card>
+              <CardBody>
+                <Row>
+                  <Col>
+                    <h5 className="theme-color">User Details</h5>
+                    <hr />
+                    <DetailItem label="BadgeNo" value={data?.employeeBadge} />
+                    <DetailItem label="Name" value={data?.fullname} />
+                    <DetailItem label="NTName" value={data?.username} />
+                    <DetailItem label="Position" value={data?.position} />
+                    <DetailItem
+                      label="Department"
+                      value={data?.departmentName}
+                    />
+                    <DetailItem label="Email" value={data?.email} />
+                    <DetailItem label="User Type" value={data?.roleName} />
+                    <DetailItem
+                      label="Immediate Superior"
+                      value={superiorName}
+                    />
+                    <DetailItem label="Status" value={data?.statusName} />
+                    {/* <DetailItem label="Password" value={data?.password} /> */}
+                    <DetailItem label="Created By" user={data?.createdBy} />
+                    <DetailItem
+                      label="Created Date"
+                      value={formatDateTime(data?.createdDate)}
+                    />
+                    <DetailItem
+                      label="Updated By"
+                      user={data?.updatedBy ?? "N/A"}
+                    />
+                    <DetailItem
+                      label="Updated Date"
+                      value={
+                        data?.updatedDate
+                          ? formatDateTime(data?.updatedDate)
+                          : "N/A"
+                      }
+                    />
+                    {isAdmin && (
+                      <Button
+                        type="button"
+                        icon="pi pi-user-edit"
+                        size="small"
+                        text
+                        label="Edit"
+                        onClick={() => setShowUpdateForm(true)}
+                      />
+                    )}
+                  </Col>
+                  <Col className="border-start">
+                    <h5 className="theme-color">Training Summary</h5>
+                    <hr />
+                    <h6 className="theme-color fw-bold">Trainings Attended:</h6>
+                    <DetailItem
+                      label="No of Trainings"
+                      badge={trainingSummary?.data?.totalTrainingsAttended + oldTrainingSummary?.data?.totalTrainingsAttended}
+                      className="text-muted"
+                      loading={trainingSummary?.loading || oldTrainingSummary?.loading}
+                    />
+                    <DetailItem
+                      label="Total Accumulated Hours"
+                      badge={Math.round((trainingSummary?.data?.totalHoursAttended + oldTrainingSummary?.data?.totalHoursAttended) * 100) / 100}
+                      className="text-muted"
+                      loading={trainingSummary?.loading || oldTrainingSummary?.loading}
+                    />
+                    <br />
+                    <h6 className="theme-color fw-bold">
+                      Trainings Facilitated:
+                    </h6>
+                    <DetailItem
+                      label="No of Trainings"
+                      badge={trainingSummary?.data?.totalTrainingsFacilitated + oldTrainingSummary?.data?.totalTrainingsFacilitated}
+                      className="text-muted"
+                      loading={trainingSummary?.loading || oldTrainingSummary?.loading}
+                    />
+                    <DetailItem
+                      label="Total Accumulated Hours"
+                      badge={Math.round((trainingSummary?.data?.totalHoursFacilitated + oldTrainingSummary?.data?.totalHoursFacilitated) * 100) / 100}
+                      className="text-muted"
+                      loading={trainingSummary?.loading || oldTrainingSummary?.loading}
+                    />
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
+          )}
           <br />
           <Card>
             <CardBody>
-                <Row>
-                  <TabView className="custom-tab">
-                    <TabPanel header={"Trainings Attended"}>
-                      <CommonTable
-                      hidePaginator
-                      headerComponent={
-                         isAdmin ?
-                          <Button
-                            type="button"
-                            label="Generate Certificate"
-                            icon="pi pi-download"
-                            onClick={() => {setShowCertForm(true);
-                              setIsFacilitator(false)
-                            }}
-                            text
-                          />
-                        : null}
-                        dataTable={mapTRequestToTableData(
-                          attendedTrainings?.data?.results
-                        )}
-                        columnItems={columnItem}
-                      />
-                      <Paginator
-                        first={attendedTrainingsConfig?.first ?? 1}
-                        pageLinkSize={5}
-                        rows={attendedTrainingsConfig.rows}
-                        totalRecords={attendedTrainings?.data?.totalRecords}
-                        rowsPerPageOptions={[10, 20, 30, 50, 100]}
-                        onPageChange={(e) =>
-                          setAttendedTrainingsConfig((prev) => ({
-                            ...prev,
-                            first: e.first,
-                            rows: e.rows,
-                            page: e.page + 1,
-                          }))
-                        }
-                      />
-                    </TabPanel>
-                    {(facilitatedTrainings?.data?.totalRecords > 0 || data?.roleName === UserTypeValue.FACILITATOR) &&
+              <Row>
+                <TabView className="custom-tab">
+                  <TabPanel header={"Trainings Attended"}>
+                        <CommonTable
+                          hideOnEmpty={false}
+                          emptyMessage={isOldSystem ? oldTrainings?.error : newTrainings?.error}
+                          loading={isOldSystem ? oldTrainings?.loading : newTrainings?.loading}
+                          headerComponent={<HeaderComponent/>}
+                          dataTable={mapTRequestToTableData(
+                            isOldSystem ? oldTrainings?.data : newTrainings?.data
+                          )}
+                          columnItems={[...columnItem, ActionColumn]}
+                        />
+                  </TabPanel>
+                  {(trainingSummary?.data?.totalTrainingsFacilitated + oldTrainingSummary?.data?.totalTrainingsFacilitated > 0 ||
+                    data?.roleName === UserTypeValue.FACILITATOR) && (
                     <TabPanel header={"Trainings Facilitated"}>
                       <CommonTable
-                      hidePaginator
-                      headerComponent={
-                         isAdmin ?
-                          <Button
-                            type="button"
-                            label="Generate Certificate"
-                            icon="pi pi-download"
-                            onClick={() => {setShowCertForm(true);
-                              setIsFacilitator(true)
-                            }}
-                            text
-                          />
-                        : null}
-                        dataTable={mapTRequestToTableData(
-                          facilitatedTrainings?.data?.results
+                        headerComponent={<HeaderComponent facilitator/>}
+                        dataTable={mapTRequestToTableData(isOldSystem ? oldFacilitatedTrainings?.data :
+                          newFacilitatedTrainings?.data
                         )}
-                        columnItems={[...columnItem, {header: "Evaluation Ratings", body: (rowData)=><AverageRateTemplate reqId={rowData?.id} userId={id}/>}]}
-                      />
-                      <Paginator
-                        first={facilitatedTrainingsConfig?.first ?? 1}
-                        pageLinkSize={5}
-                        rows={facilitatedTrainingsConfig.rows}
-                        totalRecords={facilitatedTrainings?.data?.totalRecords}
-                        rowsPerPageOptions={[10, 20, 30, 50, 100]}
-                        onPageChange={(e) =>
-                          setFacilitatedTrainingsConfig((prev) => ({
-                            ...prev,
-                            first: e.first,
-                            rows: e.rows,
-                            page: e.page + 1,
-                          }))
-                        }
-                      />
-                    </TabPanel>}
-                    <TabPanel header={"Certificates"}>
-                      <CertificatesList
-                        userId={id}
-                        trainings={stackedTrainings?.data?.results}
+                        columnItems={[
+                          ...columnItem,
+                          {
+                            header: "Evaluation Ratings",
+                            body: (rowData) => (<>{isOldSystem ? oldTrainingsHook.useOldFacilitatorRating(id, rowData?.id) : trainingRequestHook.useFacilitatorRating(id, rowData?.id)}</>
+                            ),
+                          }, ActionColumn
+                        ]}
+                        hideOnEmpty={false}
                       />
                     </TabPanel>
-                  </TabView>
-                </Row>
+                    )} 
+                  <TabPanel header={"Certificates"}>
+                    <CertificatesList
+                      userId={id}
+                    />
+                  </TabPanel>
+                </TabView>
+              </Row>
             </CardBody>
           </Card>
         </>
@@ -252,7 +262,7 @@ const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
               />
             </div>
             <CertificateTemplate
-              trainings={stackedTrainings?.data?.results}
+              trainings={ isFacilitator ? oldFacilitatedTrainings?.data?.concat(newFacilitatedTrainings?.data) : oldTrainings?.data?.concat(newTrainings?.data)}
               isFacilitator={isFacilitator}
               signatoryList={adminList}
               userDetail={data}
@@ -260,7 +270,7 @@ const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
           </CardBody>
         </Card>
       )}
-      
+
       <NewUserForm
         showForm={showUpdateForm}
         closeForm={setShowUpdateForm}
@@ -268,18 +278,14 @@ const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
         defaultData={mapUserUpdateDetail(data, options?.options)}
         headerTitle={"Update User Details"}
         isUpdate
-        onFinish={()=>{setTrigger(prev=>prev + 1);
+        onFinish={() => {
+          setTrigger((prev) => prev + 1);
           setShowUpdateForm(false);
         }}
       />
     </>
   );
 };
-
-AverageRateTemplate.propTypes = {
-  reqId: proptype.number,
-  userId: proptype.string,
-}
 UserDetailView.propTypes = {
   id: proptype.string, // User Data
   adminList: proptype.array,

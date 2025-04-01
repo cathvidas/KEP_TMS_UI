@@ -35,6 +35,7 @@ import ActivityStatus from "../../components/General/ActivityStatus";
 import TrainingFacilitatorList from "../../components/List/TrainingFacilitatorList";
 import OldSystemFacilitatorList from "../../components/List/OldSystemFacilitatorList";
 import OldSystemActivityList from "../../components/List/OldSystemActivityList";
+import { DetailItem } from "../UserPageSection/UserDetailView";
 const OverviewSection = ({
   data,
   showFacilitators = false,
@@ -176,33 +177,29 @@ const OverviewSection = ({
             <>
               {" "}
               <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
-                <span> REQUESTOR: {data?.requestor?.fullname}</span>
-                <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
-                <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
-                <span> DATE: {formatDateTime(data?.createdDate)}</span>
+                <DetailItem label="Requestor" value={data?.requestor?.fullname} />
+                <DetailItem label="Badge No" value={data?.requestor?.employeeBadge} />
+                <DetailItem label="Department" value={data?.requestor?.departmentName} />
+                <DetailItem label="Date" value={formatDateTime(data?.createdDate)} />
                 {(isAdmin ||
                   data?.requesterBadge === SessionGetEmployeeId()) && (
-                  <span>
-                    {" "}
-                    STATUS:{" "}
-                    <ActivityStatus
-                      icon={
-                        data?.status?.id == statusCode.INACTIVE
-                          ? "pi pi-ban"
-                          : ""
-                      }
-                      severity={
-                        data?.status?.id == statusCode.INACTIVE
-                          ? "text-danger"
-                          : ""
-                      }
-                      status={
-                        data?.status?.id == statusCode.INACTIVE
-                          ? "Cancelled"
-                          : data?.status?.id
-                      }
-                    />
-                  </span>
+                    <DetailItem label="Status" value={ <ActivityStatus
+                          icon={
+                            data?.status?.id == statusCode.INACTIVE
+                              ? "pi pi-ban"
+                              : ""
+                          }
+                          severity={
+                            data?.status?.id == statusCode.INACTIVE
+                              ? "text-danger"
+                              : ""
+                          }
+                          status={
+                            data?.status?.id == statusCode.INACTIVE
+                              ? "Cancelled"
+                              : data?.status?.id
+                          }
+                        />} />
                 )}
               </div>
             </>
@@ -253,7 +250,7 @@ const OverviewSection = ({
               facilitators={data?.trainingFacilitators}
             />
             <hr />
-            <OldSystemActivityList reqId={data?.id}/>
+            <OldSystemActivityList activityType={ActivityType.REQUEST} trainingType={data?.trainingType?.id} id={data?.id}/>
         </>}
         {(!isOldSystem && showFacilitators) && (
           <>

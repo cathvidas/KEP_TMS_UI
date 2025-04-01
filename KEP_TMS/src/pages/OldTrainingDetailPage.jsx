@@ -5,33 +5,31 @@ import Layout from "../components/General/Layout";
 import SkeletonForm from "../components/Skeleton/SkeletonForm";
 import ErrorTemplate from "../components/General/ErrorTemplate";
 import { SessionGetRole } from "../services/sessions";
-import { ActivityType, OtherConstant, TrainingType, UserTypeValue } from "../api/constants";
+import { ActivityType, APP_DOMAIN, OtherConstant, TrainingType, UserTypeValue } from "../api/constants";
 import MenuContainer from "../components/menus/MenuContainer";
 import OverviewSection from "./RequestPageSection/OverviewSection";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import MonitoringReportView from "./MonitoringPageSection/MonitoringReportView";
 import PendingView from "./MonitoringPageSection/PendingsView";
+import PrevPageBackButton from "../components/General/PrevPageBackButton";
 
 const OldTrainingDetailPage = () => {
-  const [trigger, setTrigger] = useState(0);
-  const { page, id, section } = useParams();
+  const {type, page, id, section } = useParams();
   const navigate = useNavigate();
-  const [showMenu, setShowMenu] = useState(false);
-  const [formtype, setFormType] = useState(null);
-  const { data, error, loading } = oldTrainingsHook.useOldExternalRequestById(
+  const { data, error, loading } =  oldTrainingsHook.useOldTrainingRequestById(type?.toLocaleLowerCase() == "external" ? TrainingType.EXTERNAL : TrainingType.INTERNAL,
     parseInt(id),
-    trigger
   );
-  const trainingForms = oldTrainingsHook.useOldTrainingForms(data?.id, TrainingType.EXTERNAL, data?.trainingParticipants);
+  const trainingForms = oldTrainingsHook.useOldTrainingForms(data?.id, type?.toLocaleLowerCase() == "external" ? TrainingType.EXTERNAL : TrainingType.INTERNAL, data?.trainingParticipants);
   const [currentContent, setCurrentContent] = useState(0);
   const hasAccess = SessionGetRole() === UserTypeValue.ADMIN;
+  const pageBaseUrl = `${APP_DOMAIN}/OldTrainingDetail/${type}/${id}`;
   const items = [
     {
       items: [
         {
           label: "Detail",
           icon: "pi pi-info-circle",
-          command: () => navigate(`/KEP_TMS/OldTrainingDetail/${id}`),
+          command: () => navigate(`${pageBaseUrl}`),
           template: MenuItemTemplate,
           active: currentContent === 0,
         },
@@ -44,7 +42,7 @@ const OldTrainingDetailPage = () => {
           label: "Effectiveness",
           icon: "pi pi-check-square",
           command: () =>
-            navigate(`/KEP_TMS/OldTrainingDetail/${id}/Monitoring/Effectiveness`),
+            navigate(`${pageBaseUrl}/Monitoring/Effectiveness`),
           template: MenuItemTemplate,
           active: currentContent === 5,
           disable: !(
@@ -55,7 +53,7 @@ const OldTrainingDetailPage = () => {
           label: "Reports",
           icon: "pi pi-address-book",
           command: () =>
-            navigate(`/KEP_TMS/OldTrainingDetail/${id}/Monitoring/Reports`),
+            navigate(`${pageBaseUrl}/Monitoring/Reports`),
           template: MenuItemTemplate,
           active: currentContent === 7,
         },
@@ -63,7 +61,7 @@ const OldTrainingDetailPage = () => {
           label: "Evaluation",
           icon: "pi pi-file-check",
           command: () =>
-            navigate(`/KEP_TMS/OldTrainingDetail/${id}/Monitoring/Evaluations`),
+            navigate(`${pageBaseUrl}/Monitoring/Evaluations`),
           template: MenuItemTemplate,
           active: currentContent === 8,
         },
@@ -71,7 +69,7 @@ const OldTrainingDetailPage = () => {
           label: "Summary",
           icon: "pi pi-info-circle",
           command: () =>
-            navigate(`/KEP_TMS/OldTrainingDetail/${id}/Monitoring/Summary`),
+            navigate(`${pageBaseUrl}/Monitoring/Summary`),
           template: MenuItemTemplate,
           active: currentContent === 9,
         },
@@ -103,7 +101,7 @@ const OldTrainingDetailPage = () => {
     <MonitoringReportView
       key={2}
       data={data}
-      // formData={trainingForms}
+      formData={trainingForms}
       reportType="reportDetail"
       typeId={ActivityType.REPORT}
       hasApprover
@@ -113,17 +111,18 @@ const OldTrainingDetailPage = () => {
     <MonitoringReportView
       key={3}
       data={data}
-      // formData={trainingForms}
+      formData={trainingForms}
       reportType="evaluationDetail"
       typeId={ActivityType.EVALUATION}
+      oldSystem
     />,
     <PendingView
       key={4}
       data={data}
-      // formData={trainingForms}
+      formData={trainingForms}
+      oldSystem
     />,
   ];
-
   useEffect(() => {
     const mainpage = page?.toUpperCase();
     const pageSection = section?.toUpperCase();
@@ -133,28 +132,17 @@ const OldTrainingDetailPage = () => {
       setCurrentContent(2);
     } else if (mainpage === "CERTIFICATE") {
       setCurrentContent(3);
-    } else if (mainpage === "FORM") {
-      if (pageSection === "EFFECTIVENESS") {
-        setCurrentContent(4);
-        setFormType(ActivityType.EFFECTIVENESS);
-      } else if (pageSection === "REPORT") {
-        setCurrentContent(4);
-        setFormType(ActivityType.REPORT);
-      } else if (pageSection === "EVALUATION") {
-        setCurrentContent(4);
-        setFormType(ActivityType.EVALUATION);
-      }
     } else if (mainpage === "MONITORING") {
       if (pageSection === "EFFECTIVENESS") {
         setCurrentContent(1);
       } else if (pageSection === "EXAM") {
         setCurrentContent(6);
       } else if (pageSection === "REPORTS") {
-        setCurrentContent(7);
+        setCurrentContent(2);
       } else if (pageSection === "EVALUATIONS") {
-        setCurrentContent(8);
+        setCurrentContent(3);
       } else {
-        setCurrentContent(9);
+        setCurrentContent(4);
       }
     } else if (mainpage === "VIDEOS") {
       setCurrentContent(10);
@@ -196,7 +184,8 @@ const OldTrainingDetailPage = () => {
         }
         header={{
           title: hasAccess ? data?.trainingProgram?.name : "",
-          hide: !loading && !error && hasAccess ? !showMenu : true,
+          hide: !(!loading && !error && hasAccess),
+          headerComponent: <PrevPageBackButton className="ms-auto" text/>
           // icon: <i className="pi pi-lightbulb"></i>,
         }}
       />

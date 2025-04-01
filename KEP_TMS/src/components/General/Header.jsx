@@ -4,7 +4,7 @@ import { Button } from "primereact/button";
 import { SessionGetRole } from "../../services/sessions";
 import { UserTypeValue } from "../../api/constants";
 
-const Header = ({ title, IconComponent, showModal, setShowModal,toggleSidebar, className, showRequestButton }) => {
+const Header = ({ title, IconComponent, showModal, setShowModal,toggleSidebar, className, showRequestButton, headerComponent }) => {
   const handleShow = () => {
     setShowModal(!showModal);
   };
@@ -26,6 +26,7 @@ const Header = ({ title, IconComponent, showModal, setShowModal,toggleSidebar, c
           </small>
         </span>
       </a>
+      {headerComponent}
       {((SessionGetRole() === UserTypeValue.ADMIN || SessionGetRole() === UserTypeValue.REQUESTOR) && showRequestButton) &&
       <div
         className="ms-auto justify-content-end align-items-center"
@@ -51,6 +52,7 @@ Header.propTypes = {
   toggleSidebar: proptype.func,
   className: proptype.string,
   showRequestButton: proptype.bool,
+  headerComponent: proptype.any,
 };
 
 export default Header;

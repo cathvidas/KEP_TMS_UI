@@ -68,6 +68,7 @@ const Layout = ({
                 <Header
                   title={header?.title}
                   // IconComponent={header?.icon}
+                  headerComponent={header?.headerComponent}
                   setShowModal={setShowModal}
                   toggleSidebar={()=>setShowSidebar(!showSidebar)}
                   className={header?.className}
@@ -91,6 +92,5 @@ Layout.propTypes = {
   returnAction: proptype.func,
   showModalAction: proptype.bool,
   navReference: proptype.string,
-
 };
 export default Layout;

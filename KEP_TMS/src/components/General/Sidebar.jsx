@@ -182,7 +182,7 @@ const Sidebar = ({ activeNavigation, expanded, show, hide }) => {
           </ul>
           <ul className={` nav nav-pills d-flex flex-column nav-flush`}>
             <NavItem
-              item={"Users/Detail/" + SessionGetEmployeeId()}
+              item="Profile"
               title={fullname ?? lastname + "," + firstname}
               icon="pi pi-users"
               iconComponent={

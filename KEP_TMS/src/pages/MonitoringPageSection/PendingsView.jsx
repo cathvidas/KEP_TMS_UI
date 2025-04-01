@@ -2,11 +2,11 @@ import { SectionHeading } from "../../components/General/Section";
 import proptype from "prop-types";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
-import { OtherConstant } from "../../api/constants";
+import { OtherConstant, statusCode } from "../../api/constants";
 import { Button } from "primereact/button";
 import TrainingFormsEmailTemplate from "../../components/email/TrainingFormsEmailTemplate";
 import getStatusById from "../../utils/status/getStatusById";
-const PendingView = ({ data, formData, examDetail }) => {
+const PendingView = ({ data, formData, examDetail, oldSystem }) => {
   const [showEmailTemplate, setShowEmailTemplate] = useState(false);
   const getExamSumary = (traineeId) => {
     const exams = examDetail?.filter((item) =>
@@ -44,7 +44,7 @@ const PendingView = ({ data, formData, examDetail }) => {
         <>
           {" "}
           {data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR
-            ? rowData?.effectivenessDetail?.currentRouting?.statusId ? getStatusById(rowData?.effectivenessDetail?.currentRouting?.statusId) :
+            ? rowData?.effectivenessDetail?.id ? "Submitted" :
               "Not yet submitted"
             : "N/A"}
         </>
@@ -54,13 +54,13 @@ const PendingView = ({ data, formData, examDetail }) => {
       field: "Report",
       header: "Report",
       body: (rowData) => (
-        <>{rowData?.reportDetail?.currentRouting?.statusId ? getStatusById(rowData?.reportDetail?.currentRouting?.statusId) : "Not yet submitted"}</>
+        <>{rowData?.reportDetail?.id ? "Submitted" : "Not yet submitted"}</>
       ),
     },
     {
       field: "Evaluation",
       header: "Evaluation",
-      body: (rowData) => <>{rowData?.evaluationDetail?.status ?? "Not yet submitted"}</>,
+      body: (rowData) => <>{rowData?.evaluationDetail?.id ? "Submitted" : "Not yet submitted"}</>,
     },
     {
       field: "exam",
@@ -93,7 +93,7 @@ const PendingView = ({ data, formData, examDetail }) => {
             icon={<i className="pi pi-clock"></i>}
           />
           <CommonTable
-            headerComponent={<HeaderComponent />}
+            headerComponent={!oldSystem ? <HeaderComponent /> : null}
             dataTable={formData?.data}
             columnItems={columnItems}
             dataKey={data?.data?.userDetail?.id}

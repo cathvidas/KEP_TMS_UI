@@ -58,13 +58,15 @@ const CommonTable = ({
   const dataRef = useRef();
   return (
     <>
+    {!hideHeader && <> <div className="p-2">
+      {header ?? renderHeader()}</div></>}
     {loading ? <SkeletonDataTable/> : errorMessage ? <ErrorTemplate message={errorMessage}/> :<>
       <div className=" w-100 overflowX-auto" style={{ overflowX: "auto" }}>
         {((dataTable?.length > 0 && hideOnEmpty) || !hideOnEmpty) ?<>
         <DataTable
           ref={dataRef}
           className="customTable"
-          header={!hideHeader ? header ?? renderHeader : ""}
+          // header={!hideHeader ? header ?? renderHeader : ""}
           filters={filters}
           value={dataTable}
           size="small"

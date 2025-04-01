@@ -7,6 +7,7 @@ import { SectionHeading } from "../General/Section";
 import proptype from "prop-types";
 import { useEffect, useState } from "react";
 import programHook from "../../hooks/programHook";
+import TextEditor from "../forms/common/TextEditor";
 const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) => {
   const [details, setDetails] = useState(formData);
   const [options, setOptions] = useState({ programs: [], categories: [] });
@@ -63,20 +64,29 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
           label={"Program"}
           FieldComponent={
             <Select
-            onInputChange={(e) =>
-              setPageConfig((prev) => ({ ...prev, value: e }))
-            }
-            onMenuScrollToBottom={() =>
-              setPageConfig((prev) => ({ ...prev, size: prev.size + 10 }))
-            }
-            isLoading={programs?.loading ? true : false}
+              onInputChange={(e) =>
+                setPageConfig((prev) => ({ ...prev, value: e }))
+              }
+              onMenuScrollToBottom={() =>
+                setPageConfig((prev) => ({ ...prev, size: prev.size + 10 }))
+              }
+              isLoading={programs?.loading ? true : false}
               options={options.programs}
-              name="TProgram"              
-              value={details?.trainingProgram?.id ? {
-                label: details?.trainingProgram?.name,
-                value: details?.trainingProgram?.id,
-              }: ""}
-              onChange={(e) => handleOnChange("trainingProgram", {id: e.value, name: e.label})}
+              name="TProgram"
+              value={
+                details?.trainingProgram?.id
+                  ? {
+                      label: details?.trainingProgram?.name,
+                      value: details?.trainingProgram?.id,
+                    }
+                  : ""
+              }
+              onChange={(e) =>
+                handleOnChange("trainingProgram", {
+                  id: e.value,
+                  name: e.label,
+                })
+              }
             />
           }
         />
@@ -88,11 +98,16 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
           FieldComponent={
             <Select
               isLoading={categories?.loading ? true : false}
-              options={options.categories}              
+              options={options.categories}
               value={options.categories.filter(
                 (x) => x.value === details.trainingCategory?.id
               )}
-              onChange={(e) => handleOnChange("trainingCategory", {id:e.value, name:e.label})}
+              onChange={(e) =>
+                handleOnChange("trainingCategory", {
+                  id: e.value,
+                  name: e.label,
+                })
+              }
             />
           }
         />
@@ -102,13 +117,11 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
           col="col-12"
           label={"Objective"}
           FieldComponent={
-            <textarea
-              className="form-control"
-              placeholder="Training objective"
-              value={details.trainingObjectives}
-              name="trainingObjectives"
-              onChange={(e)=>handleOnChange(e.target.name, e.target.value)}
-            ></textarea>
+            <TextEditor
+              defaultValue={details.trainingObjectives}
+              showToolbar
+              onChange={(e)=>handleOnChange("trainingObjectives", e)}
+            />
           }
         />
         <FormFieldItem
@@ -121,7 +134,7 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
               className="form-control"
               name="venue"
               placeholder="Venue"
-              value={details.venue}              
+              value={details.venue}
               onChange={(e) => {
                 handleOnChange(e.target.name, e.target.value);
               }}

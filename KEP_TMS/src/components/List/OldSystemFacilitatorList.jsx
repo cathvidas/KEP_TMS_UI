@@ -1,6 +1,5 @@
 import CommonTable from "../General/CommonTable";
 import proptype from "prop-types";
-import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 import oldTrainingsHook from "../../hooks/oldTrainingsHook";
 
 const OldSystemFacilitatorList = ({ facilitators }) => {
@@ -21,7 +20,7 @@ const OldSystemFacilitatorList = ({ facilitators }) => {
     },
     {
       field: "departmentName",
-      header: "Department",
+      header: "Department / Organization",
     },
   ];
   return (

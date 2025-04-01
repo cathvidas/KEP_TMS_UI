@@ -1,5 +1,5 @@
-import { SearchValueConstant } from "../api/constants";
-import { GetExternalActivitiesByRequestIdApi, GetOldEffectivenessByRequestIdApi, GetOldExternalRequestApi, GetOldExternalRequestByIdApi, GetOldSystemFacilitatorApi } from "../api/oldTrainingsApi";
+import { SearchValueConstant, TrainingType } from "../api/constants";
+import { GetExternalActivitiesByRequestIdApi, GetOldAttendedTrainingsApi, GetOldEffectivenessActivityByIdApi, GetOldEffectivenessByRequestIdApi, GetOldExternalRequestByIdApi, GetOldFacilitatedTrainingsApi, GetOldFacilitatorRatingApi, GetOldInternalRequestByIdApi, GetOldSystemFacilitatorApi, GetOldTotalAccumulatedHoursApi, GetOldTrainingEvaluationByRequestIdApi, GetOldTrainingReportByRequestIdApi, GetOldTrainingRequestApi } from "../api/oldTrainingsApi";
 import { getPagedTrainingRequestsApi } from "../api/trainingRequestApi";
 
 const oldTrainingsService = {
@@ -7,7 +7,12 @@ const oldTrainingsService = {
     const response = id && (await GetOldExternalRequestByIdApi(id));
     return response?.status === 1 ? response?.data : null;
   },
-  getOldExternalRequest: async (
+  getOldInternalRequestById: async (id) => {
+    const response = id && (await GetOldInternalRequestByIdApi(id));
+    return response?.status === 1 ? response?.data : null;
+  },
+  getOldTrainingRequest: async (
+    trainingType,
     pageNumber,
     pageSize,
     searchValue,
@@ -15,7 +20,8 @@ const oldTrainingsService = {
     thirdSerachValue,
     fourthSearchValue
   ) => {
-    const response = await GetOldExternalRequestApi(
+    const response = await GetOldTrainingRequestApi(
+      trainingType,
       pageNumber,
       pageSize,
       searchValue,
@@ -25,7 +31,8 @@ const oldTrainingsService = {
     );
     return response;
   },
-  getCombinedTrainings: async (pageNumber, pageSize, userId, searchValue) => {
+  getCombinedTrainings: async (
+    pageNumber, pageSize, userId, searchValue) => {
     const newTrainings = await getPagedTrainingRequestsApi(
       1,
       1,
@@ -33,7 +40,8 @@ const oldTrainingsService = {
       userId,
       searchValue
     );
-    const oldExTrainings = await GetOldExternalRequestApi(
+    const oldExTrainings = await GetOldTrainingRequestApi(
+      TrainingType.EXTERNAL,
       1,
       1,
       SearchValueConstant.PARTICIPANT,
@@ -57,7 +65,8 @@ const oldTrainingsService = {
       results = results.concat(trainings?.results);
     }
     if (oldExTrainings?.totalRecords > 0 && results?.length <= pageSize) {
-      const trainings = await GetOldExternalRequestApi(
+      const trainings = await GetOldTrainingRequestApi(
+        TrainingType.EXTERNAL,
         pageNumber,
         pageSize,
         SearchValueConstant.PARTICIPANT,
@@ -93,6 +102,10 @@ const oldTrainingsService = {
     const response = id && (await GetExternalActivitiesByRequestIdApi(id));
     return response?.status === 1 ? response?.data : [];
   },
+  getOldEffectivenessActivityById: async (id, type) => {
+    const response = await GetOldEffectivenessActivityByIdApi(id, type);
+    return response?.status === 1 ? response?.data : [];
+  },
   getOldEffectivenessByRequestId: async (id, type) => {
     const response = id && (await GetOldEffectivenessByRequestIdApi(id, type));
     return response?.status === 1
@@ -102,5 +115,29 @@ const oldTrainingsService = {
         }))
       : [];
   },
+  getOldTrainingReportByRequestId: async (id, type) => {
+    const response = id && (await GetOldTrainingReportByRequestIdApi(id, type));
+    return response?.status === 1 ? response?.data : [];
+  },
+  getOldTrainingEvaluationByRequestId: async (id, type) => {
+    const response = id && (await GetOldTrainingEvaluationByRequestIdApi(id, type));
+    return response?.status === 1 ? response?.data : [];
+  },
+  getOldFacilitatedTrainings: async (id) => {
+    const response = id && await GetOldFacilitatedTrainingsApi(id);
+    return response?.status === 1 ? response?.data : [];
+  },
+  getOldAttendedTrainings: async (id) => {
+    const response = id && await GetOldAttendedTrainingsApi(id);
+    return response?.status === 1 ? response?.data : [];
+  },
+  getOldTotalAccumulatedHours: async (id) => {
+    const response = id && await GetOldTotalAccumulatedHoursApi(id);
+    return response?.status === 1 ? response?.data : [];
+  },
+  getOldFacilitatorRating: async (userId, reqId) => {
+    const response = userId && (await GetOldFacilitatorRatingApi(userId, reqId));
+    return response?.status === 1 ? response?.data : null;
+  }
 };
 export default oldTrainingsService;

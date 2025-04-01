@@ -13,7 +13,7 @@ import handleResponseAsync from "../../../services/handleResponseAsync";
 import { SessionGetEmployeeId, SessionGetRole } from "../../../services/sessions";
 import certificateService from "../../../services/certificateService";
 import attachmentService from "../../../services/attachmentService";
-import { attachmentType, SearchValueConstant, UserTypeValue } from "../../../api/constants";
+import { attachmentType, UserTypeValue } from "../../../api/constants";
 import trainingRequestHook from "../../../hooks/trainingRequestHook";
 const CertificateForm = ({
   showModal,
@@ -31,23 +31,17 @@ const CertificateForm = ({
   const [errors, setErrors] = useState("");
   const [update, setUpdate] = useState(false);
   const [trainingOptions, setTrainingOptions] = useState([]);
-  const [attendedTrainingsConfig, setAttendedTrainingsConfig] = useState({
-    first: 0,
-    rows: 10,
-    page: 1,
-    value: "",
-  });  
   const trainingDetail = trainingRequestHook.useTrainingRequest(defaultValue?.requestId)?.data;
-  const attendedTrainings = trainingRequestHook.usePagedTrainingRequest(attendedTrainingsConfig.page, attendedTrainingsConfig.rows, SearchValueConstant.ATTENDED, userId, attendedTrainingsConfig.value);
+  const attendedTrainings = trainingRequestHook.useTrainingsAttended(userId);
   useEffect(() => {
-    const mappedData = attendedTrainings?.data?.results?.map((training) => {
+    const mappedData = attendedTrainings?.data?.map((training) => {
       return {
         value: training.id,
         label: training?.trainingProgram?.name,
       };
     })
     setTrainingOptions(mappedData);
-  },[attendedTrainings?.data?.results]
+  },[attendedTrainings?.data]
   ) 
   const handleFileUpload = (e) => {
     setErrors({ ...errors, file: "" });
@@ -246,15 +240,6 @@ const CertificateForm = ({
                     options={trainingOptions}
                     value={formData?.training}
                     onChange={(e) => setFormData({ ...formData, training: e })}
-                    onMenuScrollToBottom={() =>
-                      setAttendedTrainingsConfig((prev) => ({
-                        ...prev,
-                        rows: prev.rows + 10,
-                      }))
-                    }
-                    onInputChange={(e) =>
-                      setAttendedTrainingsConfig((prev) => ({ ...prev, value: e }))
-                    }
                     isLoading={attendedTrainings?.loading}
                    
                   />

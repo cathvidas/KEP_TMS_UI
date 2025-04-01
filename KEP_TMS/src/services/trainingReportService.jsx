@@ -4,6 +4,7 @@ import {
   createTrainingReportApi,
   getApproverAssignedReportsApi,
   getTrainingReportByIdApi,
+  GetTrainingReportByRequestIdApi,
   updateTrainingReportApi,
 } from "../api/trainingReportApi";
 import routingService from "./common/routingService";
@@ -13,29 +14,50 @@ import userService from "./userService";
 const trainingReportService = {
   createTrainingReport: async (data) => {
     const response = await createTrainingReportApi(data);
-    if(response.status !== 1){
+    if (response.status !== 1) {
       throw new Error(response.message);
     }
     return response?.data;
   },
   updateTrainingReport: async (data) => {
     const response = await updateTrainingReportApi(data);
-    if(response.status !== 1){
+    if (response.status !== 1) {
       throw new Error(response.message);
     }
     return response?.data;
   },
+  getTrainingReportByRequestId: async (reqId) => {
+    const response = await GetTrainingReportByRequestIdApi(reqId);
+    return response?.status == 1 ? response?.data : [];
+  },
   getTrainingReportById: async (id) => {
-    const response = await getTrainingReportByIdApi(id);
-    if(response?.status === 1){
-      const approvers = await commonService.getActivityApprovers(response?.data?.id, ActivityType.REPORT)
-      const routings = await commonService.getRoutingActivityWithAuditTrail(response?.data?.id, ActivityType.REPORT)
+    const response = id ? await getTrainingReportByIdApi(id) : null;
+    if (response?.status === 1) {
+      const approvers = await commonService.getActivityApprovers(
+        response?.data?.id,
+        ActivityType.REPORT
+      );
+      const routings = await commonService.getRoutingActivityWithAuditTrail(
+        response?.data?.id,
+        ActivityType.REPORT
+      );
       const currentRouting = await routingService.getCurrentApprover(routings);
-      if(!currentRouting?.assignedDetail){
-        currentRouting.assignedDetail= await userService.getUserById(currentRouting?.assignedTo);
+      if (!currentRouting?.assignedDetail) {
+        currentRouting.assignedDetail = await userService.getUserById(
+          currentRouting?.assignedTo
+        );
       }
-      const auditTrail = await commonService.getAuditTrail(response?.data?.id, ActivityType.REPORT);
-      return {...response?.data, routings, currentRouting, auditTrail, approvers};
+      const auditTrail = await commonService.getAuditTrail(
+        response?.data?.id,
+        ActivityType.REPORT
+      );
+      return {
+        ...response?.data,
+        routings,
+        currentRouting,
+        auditTrail,
+        approvers,
+      };
     }
     return {};
   },
@@ -43,12 +65,12 @@ const trainingReportService = {
     const response = await getApproverAssignedReportsApi(id);
     return response;
   },
-  approveTrainingReport: async (data)=>{
+  approveTrainingReport: async (data) => {
     const response = await approveTrainingFormApi(data);
-    if(response.status !== 1){
+    if (response.status !== 1) {
       throw new Error(response.message);
     }
     return response?.data;
-  }
+  },
 };
 export default trainingReportService;

@@ -12,3 +12,6 @@ export const updateTrainingReportApi = async (data) =>{
 export const getApproverAssignedReportsApi = async (id)=>{
     return await fetchFromApi(`Services/GetAssignedReports?assignedTo=${id}`);
 }
+export const GetTrainingReportByRequestIdApi = async (id)=>{
+    return await fetchFromApi(`TrainingReport/GetTrainingReportByRequestId?RequestId=${id}`);
+}

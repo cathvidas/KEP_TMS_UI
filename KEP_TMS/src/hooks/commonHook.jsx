@@ -8,6 +8,7 @@ import { statusCode } from "../api/constants";
 import userMapping from "../services/DataMapping/userMapping";
 import externalFacilitatorService from "../services/externalFacilitatorService";
 import userService from "../services/userService";
+import oldTrainingsService from "../services/oldTrainingsService";
 
 const commonHook = {
   useAllDepartments: () => {
@@ -189,7 +190,7 @@ const commonHook = {
     }, [faciList]);
     return { data, error, loading };
   },
-  useFormattedFacilitatorList: (faciList, placeholder) => {
+  useFormattedFacilitatorList: (faciList, isOldSystem, placeholder) => {
     const [data, setData] = useState("");
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -199,7 +200,13 @@ const commonHook = {
           let formattedFacilitators = "";
           const faciNames = await Promise.all(
             faciList?.map(async (faci) => {
-              if (faci?.isExternal) {
+              if(isOldSystem){
+                const faciDetail = await oldTrainingsService.getOldSystemFacilitator(
+                  faci?.externalFacilitatorId,
+                );
+                return faciDetail?.fullname;
+              }
+              else if (faci?.isExternal) {
                 const faciDetail =
                   await externalFacilitatorService.getExternaFacilitatorById(
                     faci?.externalFacilitatorId
@@ -221,7 +228,7 @@ const commonHook = {
         }
       };
       fetchData();
-    }, [faciList, placeholder]);
+    }, [faciList, isOldSystem, placeholder]);
     return { data, error, loading };
   },
 };

@@ -31,25 +31,6 @@ const attachmentService = {
     );
     return response.status === 1 ? response?.data : [];
   },
-  getAllTraineeCertificate: async (id) => {
-    const oldTrainings = await attachmentService.getAttachmentByReference(
-      id,
-      attachmentType.CERTIFICATE,
-    );
-    const newTrainings =
-      await trainingRequestService.getTrainingRequestByTraineeId(id);
-    const updated = await Promise.all(
-      newTrainings?.map(async (item) => {
-        const res = await attachmentService.getAttachmentByReference(
-          item.id,
-          attachmentType.CERTIFICATE,
-          null
-        );
-        return { ...item, certificate: res };
-      })
-    );
-    return {oldTrainings, newTrainings: updated};
-  },
   addAttachmentsAccess: async (id, data, creator
   ) => {
     const response = await AddAttachmentsAccessApi(id, data, creator

@@ -26,12 +26,15 @@ const userHook = {
     };
     }
     , 
-    useAllUsers:(pageNumber, pageSize, searchValue, trigger) => {
+    useAllUsers:(pageNumber, pageSize, searchValue, loader, trigger) => {
       const [data, setData] = useState();
       const [error, setError] = useState(null);
       const [loading, setLoading] = useState(true);
       useEffect(() => {
         const getRequest = async () => {
+          if(loader){
+            setLoading(true);
+          }
           handleResponseAsync(
             () =>
               userService.getAllUsers(
@@ -45,19 +48,22 @@ const userHook = {
           );
         };
         getRequest();
-      }, [pageNumber, pageSize, searchValue, trigger]);
+      }, [pageNumber, pageSize, searchValue, loader, trigger]);
       return {
         data,
         error,
         loading,
       };
     },
-    useUsersByRole:(pageNumber, pageSize, role, searchValue, trigger) => {
+    useUsersByRole:(loader, pageNumber, pageSize, role, searchValue, trigger) => {
       const [data, setData] = useState();
       const [error, setError] = useState(null);
       const [loading, setLoading] = useState(true);
       useEffect(() => {
         const getRequest = async () => {
+          if(loader){
+            setLoading(true);
+          }
           handleResponseAsync(
             () =>
               userService.getUsersByRole(
@@ -72,7 +78,7 @@ const userHook = {
           );
         };
         getRequest();
-      }, [pageNumber, pageSize, searchValue, role,trigger]);
+      }, [loader, pageNumber, pageSize, searchValue, role,trigger]);
       return {
         data,
         error,

@@ -31,6 +31,7 @@ const AllUserPageSection = ({
     value: null,
   });
   const { data, loading } = userType ?  userHook.useUsersByRole(
+    true,
     paginatorConfig.page,
     paginatorConfig.rows,
     userType,
@@ -38,7 +39,7 @@ const AllUserPageSection = ({
   ): userHook.useAllUsers(
     paginatorConfig.page,
     paginatorConfig.rows,
-    paginatorConfig.value,
+    paginatorConfig.value,true,
     trigger
   );
   useEffect(()=>{

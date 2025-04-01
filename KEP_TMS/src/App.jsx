@@ -16,10 +16,14 @@ import NotFoundPage from "./pages/NotFoundPage";
 import SettingPage from "./pages/SettingPage";
 import DocumentsPage from "./pages/DocumentsPage";
 import SessionTimeout from './components/General/SessionTimeout';  
+import OldTrainingDetailPage from "./pages/OldTrainingDetailPage";
+import PreviousUrlProvider from "./components/General/PreviousUrlProvider";
+import ProfilePage from "./pages/ProfilePage";
 function App() {
   return (
     <>
       <SessionTimeout />
+      <PreviousUrlProvider>
       <Routes>
         <Route path="/" element={<Navigate to="/KEP_TMS" />} />
         <Route path="/KEP_TMS" element={<Login />} />
@@ -33,11 +37,14 @@ function App() {
         <Route path="/KEP_TMS/Certificates" element={<CertificatesPage />} />
         <Route path="/KEP_TMS/AnalyticsPage" element={<AnalyticsPage />} />
         <Route path="/KEP_TMS/TrainingDetail/:id/:page?/:section?" element={<TrainingDetailPage />} />
+        <Route path="/KEP_TMS/OldTrainingDetail/:type/:id/:page?/:section?" element={<OldTrainingDetailPage />} />
         <Route path="/KEP_TMS/Users/:page?/:id?" element={<UserPage />} />
         <Route path="/KEP_TMS/Setting" element={<SettingPage />} />
         <Route path="/KEP_TMS/Videos" element={<DocumentsPage />} />
+        <Route path="/KEP_TMS/Profile" element={<ProfilePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </PreviousUrlProvider>
     </>
   );
 }

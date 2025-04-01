@@ -1,5 +1,5 @@
 import { approveTrainingFormApi, disapproveActivityApi } from "../api/commonApi";
-import {createTrainingRequestApi, getPagedTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestByFacilitatorIdApi, getTrainingRequestByTraineeIdApi, getTrainingRequestsByRequestorApi, GetTrainingRequestSummaryApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
+import {createTrainingRequestApi, getPagedTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestsByRequestorApi, GetTrainingRequestSummaryApi, GetTrainingsAttendedApi, GetTrainingsFacilitatedApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
 
 const trainingRequestService = {
   approveTrainingRequest: async (data) => {
@@ -36,12 +36,12 @@ const trainingRequestService = {
     const response = id && await getTrainingRequestByApproverApi(id);
     return response;
   },
-  getTrainingRequestByTraineeId: async (id) => {
-    const response = id && await getTrainingRequestByTraineeIdApi(id);
+  getTrainingsAttended: async (id) => {
+    const response = id && await GetTrainingsAttendedApi(id);
     return response?.status === 1 ? response?.data : [];
   },
-  getTrainingRequestByFacilitatorId: async (id) => {
-    const response = id && await getTrainingRequestByFacilitatorIdApi(id);
+  getTrainingsFacilitated: async (id) => {
+    const response = id && await GetTrainingsFacilitatedApi(id);
     return response?.status === 1 ? response?.data : [];
   },
   getPagedTrainingRequest: async (pageNumber, pageSize, searchValue, secondSearchValue, thirdSerachValue, fourthSearchValue) => {

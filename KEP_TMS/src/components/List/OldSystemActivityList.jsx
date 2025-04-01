@@ -5,8 +5,8 @@ import { SectionHeading } from "../General/Section";
 import oldTrainingsHook from "../../hooks/oldTrainingsHook";
 import { formatDateTime } from "../../utils/datetime/Formatting";
 
-const OldSystemActivityList = ({ reqId}) => {
-    const {data, loading} = oldTrainingsHook.useTrainingActivities(reqId);
+const OldSystemActivityList = ({ id, trainingType, activityType}) => {
+    const {data, loading} = oldTrainingsHook.useTrainingActivities(id, activityType, trainingType);
   const actionBodyTemplate = () => (
     <div>
       <Button
@@ -65,9 +65,8 @@ const OldSystemActivityList = ({ reqId}) => {
   );
 };
 OldSystemActivityList.propTypes = {
-  reqId: proptype.number,
-  show: proptype.bool,
-  toggle: proptype.bool,
-  label: proptype.string,
+  id: proptype.number,
+  trainingType: proptype.any,
+  activityType: proptype.any,
 };
 export default OldSystemActivityList;

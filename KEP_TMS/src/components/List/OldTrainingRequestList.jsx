@@ -17,8 +17,8 @@ const OldTrainingRequestList = ({ trainingType }) => {
     page: 1,
     value: "",
   });
-  const { data, loading, error } = trainingType == TrainingType.EXTERNAL ? oldTrainingsHook.useOldExternalRequest(true, paginatorConfig.page,
-    paginatorConfig.rows) : {};
+  const { data, loading, error } = oldTrainingsHook.useOldTrainingRequest(true, trainingType, paginatorConfig.page,
+    paginatorConfig.rows);
 
     const columnItems = [
       {
@@ -47,7 +47,7 @@ const OldTrainingRequestList = ({ trainingType }) => {
       {
         field: "Id",
         header: "Provider",
-        body: (rowData) => <>{rowData?.trainingProvider?.name}</>,
+        body: (rowData) => <>{rowData?.trainingProvider?.name ?? "N/A"}</>,
       },
       {
         field: "venue",
@@ -95,7 +95,7 @@ const OldTrainingRequestList = ({ trainingType }) => {
               severity="success"
               className="rounded-circle"
               text
-              onClick={()=>navigate(APP_DOMAIN + "/OldTrainingDetail/" + rowData?.id)}
+              onClick={()=>navigate(`${APP_DOMAIN}/OldTrainingDetail/${trainingType == TrainingType.EXTERNAL ? "External": "Internal"}/${rowData?.id}`)}
             />
           </>
         ),

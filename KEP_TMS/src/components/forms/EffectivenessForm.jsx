@@ -21,7 +21,7 @@ import { SessionGetEmployeeId, SessionGetRole } from "../../services/sessions";
 import getStatusById from "../../utils/status/getStatusById";
 import validateTrainingEffectiveness from "../../services/inputValidation/validateTrainingEffectiveness";
 import "../../assets/css/effectivenessForm.css";
-import { ActivityType, statusCode, UserTypeValue } from "../../api/constants";
+import { ActivityType, statusCode, TrainingType, UserTypeValue } from "../../api/constants";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import ApproverList from "../List/ApproversList";
 import ActivityList from "../List/ActivityList";
@@ -32,6 +32,8 @@ import commonHook from "../../hooks/commonHook";
 import { checkIfActualPerformanceRated, checkIfEvaluatedActualPerformanceRated } from "../../hooks/activityLogHook";
 import trainingDetailsService from "../../services/common/trainingDetailsService";
 import userHook from "../../hooks/userHook";
+import { SectionHeading } from "../General/Section";
+import OldSystemActivityList from "../List/OldSystemActivityList";
 const EffectivenessForm = ({
   data,
   evaluate,
@@ -41,6 +43,7 @@ const EffectivenessForm = ({
   currentRouting,
   auditTrail,
   isAdmin,
+  oldSystem
 }) => {
   const [errors, setErrors] = useState({});
   const [showLogs, setShowLogs] = useState(false);
@@ -293,8 +296,8 @@ const EffectivenessForm = ({
             </div>
             <div>
               Status: &nbsp;
-              <ActivityStatus status={currentRouting?.statusId} /> -{" "}
-              {currentRouting?.assignedDetail?.fullname}
+              <ActivityStatus status={currentRouting?.statusId ?? formData?.statusName} /> 
+              {currentRouting?.assignedDetail?.fullname ? " - " + currentRouting?.assignedDetail?.fullname : ""}
             </div>
           </div>
         )}
@@ -345,7 +348,9 @@ const EffectivenessForm = ({
                 label="Facilitator/s"
                 value={
                   commonHook.useFormattedFacilitatorList(
-                    data?.trainingFacilitators, "N/A"
+                    data?.trainingFacilitators,
+                    oldSystem,
+                    "N/A"
                   )?.data
                 }
                 className="col-12"
@@ -468,7 +473,9 @@ const EffectivenessForm = ({
                     Evaluator:
                   </label>
                   <span className="flex-grow-1 border-0 border-bottom">
-                    {isSubmitted ? evaluator?.fullname : userData?.superiorName ?? "N/A"}
+                    {isSubmitted
+                      ? evaluator?.fullname
+                      : userData?.superiorName ?? "N/A"}
                   </span>
                 </Col>
               </Row>
@@ -504,8 +511,8 @@ const EffectivenessForm = ({
                       className="theme-bg-light text-muted text-center"
                       style={{ verticalAlign: "middle" }}
                     >
-                      <b> Actual Performance </b> &#x28;to be filled up 6 months after
-                      the training by the employee&#x29;
+                      <b> Actual Performance </b> &#x28;to be filled up 6 months
+                      after the training by the employee&#x29;
                     </td>
                     <td
                       className="theme-bg-light text-muted text-center"
@@ -513,9 +520,10 @@ const EffectivenessForm = ({
                     >
                       <b>
                         {" "}
-                        Actual Performance evaluated by the immediate manager </b> &#x28;to be filled up by the manager 6 months after
-                        the employee&apos;s training&#x29;
-                     
+                        Actual Performance evaluated by the immediate manager{" "}
+                      </b>{" "}
+                      &#x28;to be filled up by the manager 6 months after the
+                      employee&apos;s training&#x29;
                     </td>
                   </tr>
                 </thead>
@@ -532,9 +540,7 @@ const EffectivenessForm = ({
                         <textarea
                           className="no-focus w-100 border-0"
                           name="content"
-                          value={
-                            evalItem?.content ?? ""
-                          }
+                          value={evalItem?.content ?? ""}
                           onChange={(e) =>
                             handlePerfEvaluationOnChange(e, index)
                           }
@@ -547,17 +553,13 @@ const EffectivenessForm = ({
                       >
                         <Rating
                           className="justify-content-center"
-                          value={
-                            evalItem
-                              ?.performanceBeforeTraining
-                          }
+                          value={evalItem?.performanceBeforeTraining}
                           name="performanceBeforeTraining"
                           onChange={(e) =>
                             handlePerfEvaluationOnChange(e, index, true)
                           }
                           cancel={
-                            evalItem
-                              ?.performanceBeforeTraining > 0 &&
+                            evalItem?.performanceBeforeTraining > 0 &&
                             (isUpdate || !isSubmitted)
                           }
                           readOnly={isSubmitted && !isUpdate}
@@ -567,11 +569,10 @@ const EffectivenessForm = ({
                             isSubmitted ? (
                               formatDateOnly(
                                 evalItem?.createdDate ??
-                                performanceRatingDate?.creatorAudit
+                                  performanceRatingDate?.creatorAudit
                               )
                             ) : (
-                              evalItem
-                                ?.performanceBeforeTraining > 0 &&
+                              evalItem?.performanceBeforeTraining > 0 &&
                               formatDateOnly(new Date())
                             )
                           ) : (
@@ -585,17 +586,13 @@ const EffectivenessForm = ({
                       >
                         <Rating
                           className="justify-content-center"
-                          value={
-                            evalItem
-                              ?.projectedPerformance
-                          }
+                          value={evalItem?.projectedPerformance}
                           name="projectedPerformance"
                           onChange={(e) =>
                             handlePerfEvaluationOnChange(e, index, true)
                           }
                           cancel={
-                            evalItem
-                              ?.projectedPerformance > 0 &&
+                            evalItem?.projectedPerformance > 0 &&
                             (isUpdate || !isSubmitted)
                           }
                           readOnly={isSubmitted && !isUpdate}
@@ -605,11 +602,10 @@ const EffectivenessForm = ({
                             isSubmitted ? (
                               formatDateOnly(
                                 evalItem?.createdDate ??
-                                performanceRatingDate?.creatorAudit
+                                  performanceRatingDate?.creatorAudit
                               )
                             ) : (
-                              evalItem
-                                ?.projectedPerformance > 0 &&
+                              evalItem?.projectedPerformance > 0 &&
                               formatDateOnly(new Date())
                             )
                           ) : (
@@ -623,10 +619,7 @@ const EffectivenessForm = ({
                       >
                         <Rating
                           className="justify-content-center"
-                          value={
-                            evalItem
-                              ?.actualPerformance
-                          }
+                          value={evalItem?.actualPerformance}
                           name="actualPerformance"
                           onChange={(e) =>
                             handlePerfEvaluationOnChange(e, index, true)
@@ -634,13 +627,12 @@ const EffectivenessForm = ({
                           readOnly={
                             !(
                               ((isUpdate || actualPerfRating.isRating) &&
-                              evalItem?.content) ||
+                                evalItem?.content) ||
                               !isSubmitted
                             )
                           }
                           cancel={
-                            evalItem
-                              ?.actualPerformance > 0 &&
+                            evalItem?.actualPerformance > 0 &&
                             (isUpdate ||
                               !isSubmitted ||
                               actualPerfRating.isRating)
@@ -653,21 +645,21 @@ const EffectivenessForm = ({
                             performanceRatingDate?.evaluatorAudit ? (
                               formatDateOnly(
                                 evalItem?.createdDate ??
-                                performanceRatingDate?.evaluatorAudit
+                                  performanceRatingDate?.evaluatorAudit
                               )
                             ) : (
-                              evalItem
-                                ?.actualPerformance > 0 &&
+                              evalItem?.actualPerformance > 0 &&
                               formatDateOnly(new Date())
                             )
                           ) : (
                             <></>
                           )}
-                          {(!actualPerfRating.isRated  && !actualPerfRating.toBeRated) &&
-                            isSubmitted && formData?.createdBy == SessionGetEmployeeId() &&
-                            evalItem
-                              ?.actualPerformance === null &&
-                              evalItem?.content && (
+                          {!actualPerfRating.isRated &&
+                            !actualPerfRating.toBeRated &&
+                            isSubmitted &&
+                            formData?.createdBy == SessionGetEmployeeId() &&
+                            evalItem?.actualPerformance === null &&
+                            evalItem?.content && (
                               <span className="text-danger">Please Rate</span>
                             )}
                         </small>
@@ -678,17 +670,14 @@ const EffectivenessForm = ({
                       >
                         <Rating
                           className="justify-content-center"
-                          value={
-                            evalItem
-                              ?.evaluatedActualPerformance
-                          }
+                          value={evalItem?.evaluatedActualPerformance}
                           name="evaluatedActualPerformance"
                           onChange={(e) =>
                             handlePerfEvaluationOnChange(e, index, true)
                           }
                           cancel={
-                            evalItem
-                              ?.evaluatedActualPerformance > 0 && evaluatedActualPerfRating.isRating
+                            evalItem?.evaluatedActualPerformance > 0 &&
+                            evaluatedActualPerfRating.isRating
                           }
                           readOnly={!evaluatedActualPerfRating.isRating}
                           disabled={evaluatedActualPerfRating.toBeRated}
@@ -696,18 +685,16 @@ const EffectivenessForm = ({
                         <small className="mt-1 d-block">
                           {isSubmitted && performanceRatingDate?.evaluatorAudit
                             ? formatDateOnly(
-                              evalItem?.createdDate ??
-                                performanceRatingDate?.evaluatorAudit
+                                evalItem?.createdDate ??
+                                  performanceRatingDate?.evaluatorAudit
                               )
-                            : evalItem
-                                ?.evaluatedActualPerformance > 0 &&
+                            : evalItem?.evaluatedActualPerformance > 0 &&
                               formatDateOnly(new Date())}
-                                       
-                            {evaluatedActualPerfRating.isRating &&
+
+                          {evaluatedActualPerfRating.isRating &&
                             isSubmitted &&
-                            !(evalItem
-                              ?.evaluatedActualPerformance > 1) &&
-                              evalItem?.content && (
+                            !(evalItem?.evaluatedActualPerformance > 1) &&
+                            evalItem?.content && (
                               <span className="text-danger">Please Rate</span>
                             )}
                         </small>
@@ -728,18 +715,27 @@ const EffectivenessForm = ({
             <Form.Group>
               <b>III. Comments / Remarks</b>
               <i> &#x28;to be filled up after the training&#x29; :</i>
-              <ErrorTemplate message={(!isUpdate && isSubmitted && isTrainingEnd && !formData?.annotation && formData?.createdBy == SessionGetEmployeeId()) ? "Please fill up this field" : ""} />
+              <ErrorTemplate
+                message={
+                  !isUpdate &&
+                  isSubmitted &&
+                  isTrainingEnd &&
+                  !formData?.annotation &&
+                  formData?.createdBy == SessionGetEmployeeId()
+                    ? "Please fill up this field"
+                    : ""
+                }
+              />
               <textarea
                 className="form-control"
                 rows={3}
                 value={annotation}
                 placeholder="Comments/Remarks"
-                disabled={ !(
-                 (isTrainingEnd || formData?.annotation)
-                )}
+                disabled={!(isTrainingEnd || formData?.annotation)}
                 readOnly={
                   !(
-                    ((isSubmitted && isUpdate) || !isSubmitted) && isTrainingEnd
+                    ((isSubmitted && isUpdate) || !isSubmitted) &&
+                    isTrainingEnd
                   )
                 }
                 onChange={(e) => setAnnotation(e.target.value)}
@@ -783,65 +779,85 @@ const EffectivenessForm = ({
               ) && (
                 <>
                   {(formData?.statusName ==
-                    getStatusById(statusCode.DISAPPROVED) ||(!actualPerfRating.isRated && !actualPerfRating.toBeRated) || (!isUpdate && isSubmitted && isTrainingEnd && !formData?.annotation) && isSubmitted ) && formData?.createdBy === SessionGetEmployeeId() && (
-                    <Button
-                      type="button"
-                      icon={!(isUpdate || actualPerfRating.isRating) && "pi pi-pencil"}
-                      label={(isUpdate || actualPerfRating.isRating) ? "Cancel" : "Edit"}
-                      className="rounded ms-auto"
-                      severity="secondary"
-                      text={isUpdate || actualPerfRating.isRating}
-                      onClick={() => {
-                        if(formData?.statusName ==
-                          getStatusById(statusCode.DISAPPROVED)|| (isTrainingEnd && isSubmitted)){
-                        setIsUpdate(!isUpdate);}
-                        if(!actualPerfRating.isRated && isSubmitted){
-                          setActualPerfRating((prev) => ({
-                            ...prev,
-                            isRating: !actualPerfRating.isRating,
-                          }));
-                        }
-                        populateData();
-                      }}
-                    />
-                  )}
-                  {(!isSubmitted || isUpdate || actualPerfRating.isRating) && (
-                  <>
-                    {!isSubmitted && (
+                    getStatusById(statusCode.DISAPPROVED) ||
+                    (!actualPerfRating.isRated &&
+                      !actualPerfRating.toBeRated) ||
+                    (!isUpdate &&
+                      isSubmitted &&
+                      isTrainingEnd &&
+                      !formData?.annotation &&
+                      isSubmitted)) &&
+                    formData?.createdBy === SessionGetEmployeeId() && (
                       <Button
                         type="button"
-                        icon="pi pi-eraser"
-                        label="Reset"
+                        icon={
+                          !(isUpdate || actualPerfRating.isRating) &&
+                          "pi pi-pencil"
+                        }
+                        label={
+                          isUpdate || actualPerfRating.isRating
+                            ? "Cancel"
+                            : "Edit"
+                        }
                         className="rounded ms-auto"
                         severity="secondary"
+                        text={isUpdate || actualPerfRating.isRating}
                         onClick={() => {
-                          setPerformanceCharacteristics([
-                            effectivenessConstant.performanceCharacteristics,
-                            effectivenessConstant.performanceCharacteristics,
-                            effectivenessConstant.performanceCharacteristics,
-                          ]);
-                          setProjectPerformanceEvaluation([
-                            effectivenessConstant.projectPerformanceEvaluation,
-                            effectivenessConstant.projectPerformanceEvaluation,
-                            effectivenessConstant.projectPerformanceEvaluation,
-                          ]);
+                          if (
+                            formData?.statusName ==
+                              getStatusById(statusCode.DISAPPROVED) ||
+                            (isTrainingEnd && isSubmitted)
+                          ) {
+                            setIsUpdate(!isUpdate);
+                          }
+                          if (!actualPerfRating.isRated && isSubmitted) {
+                            setActualPerfRating((prev) => ({
+                              ...prev,
+                              isRating: !actualPerfRating.isRating,
+                            }));
+                          }
+                          populateData();
                         }}
                       />
                     )}
-                    <Button
-                      type="button"
-                      icon={"pi pi-cloud-upload"}
-                      label={"Submit"}
-                      className="rounded ms-2"
-                      severity="success"
-                      onClick={
-                        isUpdate || actualPerfRating.isRating
-                          ? () => handleSubmit(true)
-                          : () => handleSubmit(false)
-                      }
-                    />
-                  </>
-                  )}</>
+                  {(!isSubmitted || isUpdate || actualPerfRating.isRating) && (
+                    <>
+                      {!isSubmitted && (
+                        <Button
+                          type="button"
+                          icon="pi pi-eraser"
+                          label="Reset"
+                          className="rounded ms-auto"
+                          severity="secondary"
+                          onClick={() => {
+                            setPerformanceCharacteristics([
+                              effectivenessConstant.performanceCharacteristics,
+                              effectivenessConstant.performanceCharacteristics,
+                              effectivenessConstant.performanceCharacteristics,
+                            ]);
+                            setProjectPerformanceEvaluation([
+                              effectivenessConstant.projectPerformanceEvaluation,
+                              effectivenessConstant.projectPerformanceEvaluation,
+                              effectivenessConstant.projectPerformanceEvaluation,
+                            ]);
+                          }}
+                        />
+                      )}
+                      <Button
+                        type="button"
+                        icon={"pi pi-cloud-upload"}
+                        label={"Submit"}
+                        className="rounded ms-2"
+                        severity="success"
+                        onClick={
+                          isUpdate || actualPerfRating.isRating
+                            ? () => handleSubmit(true)
+                            : () => handleSubmit(false)
+                        }
+                      />
+                    </>
+                  )}
+                </>
               )}
               {evaluatedActualPerfRating.isRating && (
                 <Button
@@ -860,22 +876,29 @@ const EffectivenessForm = ({
         {isSubmitted && showLogs && (
           <>
             <hr />
-            <h6 className="theme-color" style={{ fontWeight: 600 }}>
-              Routes
-            </h6>
-            <ApproverList
-              data={formData}
-              activityTitle="Training Effectiveness"
-              activityType={ActivityType.REPORT}
-              hasEmailForm={
-                SessionGetRole() === UserTypeValue.ADMIN ||
-                SessionGetRole() === UserTypeValue.SUPER_ADMIN
-              }
-              emailFormTemplate={reportTemplateRef}
-              reloadData={onFinish}
-            />
-            <hr />
-            <ActivityList data={activityLogs} label={"Activities"} />
+            {oldSystem ? (
+              <OldSystemActivityList
+                activityType={ActivityType.EFFECTIVENESS}
+                trainingType={TrainingType.EXTERNAL == formData?.trainingTypeName ? TrainingType.EXTERNAL : TrainingType.INTERNAL}
+                id={formData?.id}
+              />
+            ) : (
+              <>
+                <SectionHeading title="Routes" />
+                <ApproverList
+                  data={formData}
+                  activityTitle="Training Effectiveness"
+                  activityType={ActivityType.REPORT}
+                  hasEmailForm={
+                    SessionGetRole() === UserTypeValue.ADMIN ||
+                    SessionGetRole() === UserTypeValue.SUPER_ADMIN
+                  }
+                  emailFormTemplate={reportTemplateRef}
+                  reloadData={onFinish}
+                />
+                <ActivityList data={activityLogs} label={"Activities"} />
+              </>
+            )}
           </>
         )}
       </Card.Body>
@@ -891,5 +914,6 @@ EffectivenessForm.propTypes = {
   auditTrail: proptype.object,
   isAdmin: proptype.bool,
   evaluate: proptype.bool,
+  oldSystem: proptype.bool,
 };
 export default EffectivenessForm;

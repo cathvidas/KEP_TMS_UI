@@ -29,6 +29,7 @@ import trainingDetailsService from "../services/common/trainingDetailsService";
 import mappingHook from "../hooks/mappingHook";
 import TrainingVideosList from "../components/List/TrainingVideosList";
 import ErrorTemplate from "../components/General/ErrorTemplate";
+import PrevPageBackButton from "../components/General/PrevPageBackButton";
 
 const TrainingDetailPage = () => {
   const [trigger, setTrigger] = useState(0);
@@ -404,7 +405,8 @@ const TrainingDetailPage = () => {
       </div>
     );
   };
-  const hasAccess = isTrainee || isFacilitator || isAdmin || isRequestor || isApprover;
+  const hasAccess =
+    isTrainee || isFacilitator || isAdmin || isRequestor || isApprover;
   return (
     <>
       <Layout
@@ -424,6 +426,7 @@ const TrainingDetailPage = () => {
         header={{
           title: hasAccess ? data?.trainingProgram?.name : "",
           hide: (!loading && !error && hasAccess) ? !showMenu : true,
+          headerComponent: <PrevPageBackButton text className="ms-auto"/>
           // icon: <i className="pi pi-lightbulb"></i>,
         }}
       />
