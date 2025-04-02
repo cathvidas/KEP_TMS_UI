@@ -18,7 +18,7 @@ const RateFieldItem = ({ sequenceNo, label, onChange, value, error,disabled = fa
 }
 
 RateFieldItem.propTypes = {
-    sequenceNo: proptype.string,
+    sequenceNo: proptype.number,
     label: proptype.string,
     onChange: proptype.func,
     defvalue: proptype.number,

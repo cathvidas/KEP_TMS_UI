@@ -27,7 +27,7 @@ const trainingReportService = {
     return response?.data;
   },
   getTrainingReportByRequestId: async (reqId) => {
-    const response = await GetTrainingReportByRequestIdApi(reqId);
+    const response = await GetTrainingReportByRequestIdApi(reqId || 0);
     return response?.status == 1 ? response?.data : [];
   },
   getTrainingReportById: async (id) => {

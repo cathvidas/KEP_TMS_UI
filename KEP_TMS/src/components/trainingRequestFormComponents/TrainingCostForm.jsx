@@ -299,6 +299,6 @@ TrainingCostForm.propTypes = {
   formData: proptype.object.isRequired,
   handleResponse: proptype.func,
   providersData: proptype.object,
-  errors: proptype.object,
+  errors: proptype.any,
 };
 export default TrainingCostForm;

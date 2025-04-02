@@ -50,8 +50,8 @@ export const TrainingRequestForm = () => {
 
   const [errors, setErrors] = useState({
     details: {},
-    schedules: "",
-    participants: "",
+    schedules: {},
+    participants: {},
   });
   const handleResponse = useCallback((data) => {
     details.current = data;
@@ -167,7 +167,7 @@ export const TrainingRequestForm = () => {
           setErrors((prevErrors) => ({
             ...prevErrors,
             details: {},
-            schedules: "",
+            schedules: {},
           }));
         }
       }

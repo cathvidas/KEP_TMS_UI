@@ -6,7 +6,7 @@ import programHook from "../../hooks/programHook";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
-import { formatDateOnly } from "../../utils/datetime/Formatting";
+import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
 import { Paginator } from "primereact/paginator";
 
 const ProgramListSection = () => {
@@ -20,9 +20,7 @@ const ProgramListSection = () => {
   });
   
   const { data, error, loading } = programHook.usePagedPrograms(paginatorConfig.page, paginatorConfig.rows, paginatorConfig.value, trigger);
-  // const { data, error, loading } = programHook.useAllPrograms(false, trigger);
   const [selectedData, setSelectedData] = useState({});
-
   const actionTemplate = (rowData) => (
     <>
       <div className="d-flex">
@@ -46,24 +44,9 @@ const ProgramListSection = () => {
           onClick={() => {setSelectedData(rowData);
             setVisible({ ...visible, form: true });
           }}
-        />
-        {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
-      </div>
+        /> </div>
     </>
   );
-  // const handleDelete = (id) => {
-  //     confirmAction({
-  //       title: "Confirm Deletion",
-  //       text: `Are you sure you want to delete this Program?`,
-  //       confirmButtonText: "Delete",
-  //       cancelButtonText: "Cancel",
-  //       onConfirm:()=> handleResponseAsync(
-  //         ()=>programService.deleteProgram(id),
-  //         ()=>actionSuccessful("Success!", "Program deleted successfully"),
-  //         (e)=>actionFailed("Error!", e.message)
-  //       ),
-  //     })
-  // }
   const columnItems = [
     {
       // field: "id",
@@ -80,8 +63,8 @@ const ProgramListSection = () => {
     },
     {
       field: "createdDate",
-      header: "Created",
-      body: (rowData) => formatDateOnly(rowData.createdDate),
+      header: "Modified Date",
+      body: (rowData) => formatDateTime(rowData.createdDate),
     },
     {
       field: "statusName",

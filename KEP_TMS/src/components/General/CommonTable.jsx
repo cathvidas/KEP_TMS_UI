@@ -99,7 +99,7 @@ const CommonTable = ({
   );
 };
 CommonTable.propTypes = {
-  dataTable: proptype.array.isRequired,
+  dataTable: proptype.array,
   columnItems: proptype.array,
   tableName: proptype.string,
   header: proptype.func,

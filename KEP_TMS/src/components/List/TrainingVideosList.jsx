@@ -3,8 +3,6 @@ import { SearchValueConstant } from "../../api/constants";
 import attachmentHook from "../../hooks/attachmentHook";
 import { ButtonGroup } from "primereact/buttongroup";
 import { Button } from "primereact/button";
-import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
-import ErrorTemplate from "../General/ErrorTemplate";
 import CommonTable from "../General/CommonTable";
 import { Paginator } from "primereact/paginator";
 import proptype from "prop-types"
@@ -73,7 +71,7 @@ const TrainingVideosList = ({ requestId }) => {
             <CommonTable
               tableName="Videos"
               columnItems={columnItems}
-              dataTable={data?.results}
+              dataTable={data?.results || []}
               hidePaginator
               hideOnEmpty={false}
               loading={loading}

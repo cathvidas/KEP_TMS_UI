@@ -231,7 +231,7 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
 TrainingScheduleForm.propTypes = {
   formData: proptype.object,
   handleResponse: proptype.func,
-  errors: proptype.string,
+  errors: proptype.any,
 };
 export default TrainingScheduleForm;
   

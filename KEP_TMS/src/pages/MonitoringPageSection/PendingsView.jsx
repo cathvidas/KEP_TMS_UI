@@ -2,10 +2,9 @@ import { SectionHeading } from "../../components/General/Section";
 import proptype from "prop-types";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
-import { OtherConstant, statusCode } from "../../api/constants";
+import { OtherConstant } from "../../api/constants";
 import { Button } from "primereact/button";
 import TrainingFormsEmailTemplate from "../../components/email/TrainingFormsEmailTemplate";
-import getStatusById from "../../utils/status/getStatusById";
 const PendingView = ({ data, formData, examDetail, oldSystem }) => {
   const [showEmailTemplate, setShowEmailTemplate] = useState(false);
   const getExamSumary = (traineeId) => {
@@ -115,5 +114,6 @@ PendingView.propTypes = {
   data: proptype.object.isRequired,
   formData: proptype.object,
   examDetail: proptype.array,
+  oldSystem: proptype.bool,
 };
 export default PendingView;

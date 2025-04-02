@@ -77,7 +77,7 @@ const TrainingParticipantsForm = ({
   useEffect(() => {
     const fetchDatas = async () => {
       const user = users?.data?.results;
-      const activeUsers = user.filter((user) => user.statusName !== "Inactive");
+      const activeUsers = (user || []).filter((user) => user.statusName !== "Inactive");
       const availableUsers = activeUsers
         .filter(
           (x) =>

@@ -69,7 +69,7 @@ const effectivenessService = {
     return {};
   },
   getEffectivenessByRequestId: async (reqId) => {
-    const response = await GetEffectivenessByRequestIdApi(reqId);   
+    const response = await GetEffectivenessByRequestIdApi(reqId || 0);   
     return response?.status == 1 ? response?.data : [];
   },
   getApproverAssignedEffectiveness: async (id) => {

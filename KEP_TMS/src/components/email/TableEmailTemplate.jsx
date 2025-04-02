@@ -36,9 +36,9 @@ const TableEmailTemplate = ({ items, value, label, hideInNull = false }) => {
           </tr>
         </thead>
         <tbody>
-          {value?.map((item) => (
+          {value?.map((item, i) => (
             <>
-              <tr>
+              <tr key={i}>
                 {items?.map((x) => (
                   <>
                     <td style={{ padding: "5px"}}>

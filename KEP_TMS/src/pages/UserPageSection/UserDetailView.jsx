@@ -91,7 +91,7 @@ const handleViewClick = (rowData) =>{
       <ButtonGroup>
         <Button type="button" text={isOldSystem} label={`New Trainings ${getplaceholder(prop?.facilitator ? trainingSummary?.data?.totalTrainingsFacilitated : trainingSummary?.data?.totalTrainingsAttended)}`} onClick={()=>handleTabChange(false)} />
         <Button text={!isOldSystem} label={`Old Trainings ${getplaceholder(prop?.facilitator ? oldTrainingSummary?.data?.totalTrainingsFacilitated : oldTrainingSummary?.data?.totalTrainingsAttended)}`} onClick={()=>handleTabChange(true)} />
-        {isAdmin &&
+        {(isAdmin && (!(isFacilitator ? (newFacilitatedTrainings?.loading || oldFacilitatedTrainings?.loading) : (newTrainings?.loading || oldTrainings?.loading)))) &&
         <Button
         severity="help"
           type="button"

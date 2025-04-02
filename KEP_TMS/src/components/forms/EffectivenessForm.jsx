@@ -911,7 +911,7 @@ EffectivenessForm.propTypes = {
   formData: proptype.object,
   onFinish: proptype.func,
   currentRouting: proptype.object,
-  auditTrail: proptype.object,
+  auditTrail: proptype.array,
   isAdmin: proptype.bool,
   evaluate: proptype.bool,
   oldSystem: proptype.bool,

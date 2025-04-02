@@ -427,36 +427,8 @@ const TrainingDetailPage = () => {
           title: hasAccess ? data?.trainingProgram?.name : "",
           hide: (!loading && !error && hasAccess) ? !showMenu : true,
           headerComponent: <PrevPageBackButton text className="ms-auto"/>
-          // icon: <i className="pi pi-lightbulb"></i>,
         }}
       />
-
-      {/* {isTrainee || isFacilitator || isAdmin || isRequestor || isApprover ? (
-        <Layout
-          BodyComponent={bodyContent}
-          header={{
-            title: data?.trainingProgram?.name,
-            hide: hasAccess ? !showMenu : true,
-            // icon: <i className="pi pi-lightbulb"></i>,
-          }}
-        />
-      ) : (
-        <Layout
-          BodyComponent={() =>
-            loading ? (
-              <SkeletonForm />
-            ) : (
-              <div className="d-flex w-100 h-100 justify-content-center align-items-center h1 opacity-50 text-muted">
-                Page Not Found
-              </div>
-            )
-          }
-          header={{
-            title: "",
-            hide: true,
-          }}
-        />
-      )} */}
     </>
   );
 };

@@ -72,11 +72,11 @@ export const UserList = ({
     <>
     {showSelected &&
     <div className="flex flex-wrap gap- mb-2">
-          {selected?.map(item =><><div
+          {selected?.map((item, index) =><><div
         className="ps-2 py-1  rounded"
         style={{ backgroundColor: 'var(--highlight-bg)', color: 'var(--highlight-text-color)'}}
         >
-            <span>{item?.fullname} </span> <Button type="button" className="p-0" size="small" text icon="pi pi-times" onClick={()=>unselectUser(item?.employeeBadge)}/>
+            <span key={index}>{item?.fullname} </span> <Button type="button" className="p-0" size="small" text icon="pi pi-times" onClick={()=>unselectUser(item?.employeeBadge)}/>
     </div>
           </>)}
       

@@ -14,7 +14,7 @@ const userService = {
       return response;
   },
   getUserById: async (id) => {
-    const response = await getUserApi(id);
+    const response = await getUserApi(id || 0);
     return response?.status === 1 ? response.data : {};
   },
   createUser: async (user) => {

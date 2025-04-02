@@ -13,11 +13,11 @@ const evaluationService = {
     return response?.status === 1 ? response?.data : [];
   },
   getTrainingEvaluationById: async (id) => {
-    const response = await getTrainingEvaluationByIdApi(id);
+    const response = await getTrainingEvaluationByIdApi(id || 0);
     return response?.status === 1 ? response?.data : {};
   },
   getTrainingEvaluationsByRequestId: async (reqId) => {
-    const response = await GetTrainingEvaluationsByRequestIdApi(reqId);
+    const response = await GetTrainingEvaluationsByRequestIdApi(reqId || 0);
     return response?.status == 1 ? response?.data : [];
   },
 };

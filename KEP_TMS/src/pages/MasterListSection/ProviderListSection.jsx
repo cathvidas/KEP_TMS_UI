@@ -225,13 +225,15 @@ const ProviderListSection = () => {
               {selectedData?.statusName ?? selectedData?.status?.name}
               <p>
               <strong>Created: </strong>
+              {selectedData?.createdDate ? <>
                 {formatDateOnly(selectedData?.createdDate)} by{" "}
-                {selectedData?.createdBy}
+                {selectedData?.createdBy}</>: "N/A"}
               </p>
               <p>
               <strong>Updated: </strong>
+              {selectedData?.updatedDate ? <>
                 {formatDateOnly(selectedData?.updatedDate)} by{" "}
-                {selectedData?.updatedBy}
+                {selectedData?.updatedBy}</>: "N/A"}
               </p>
             </Modal.Body>
             <Modal.Footer>
