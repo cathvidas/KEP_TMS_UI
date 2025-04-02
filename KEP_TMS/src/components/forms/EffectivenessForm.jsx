@@ -324,7 +324,7 @@ const EffectivenessForm = ({
               <AutoCompleteField
                 label="Name of Employee"
                 value={userData?.fullname}
-                className="col-6"
+                className="col-12 col-lg-6"
               />
               <AutoCompleteField
                 label="Badge No"
@@ -333,7 +333,7 @@ const EffectivenessForm = ({
               <AutoCompleteField
                 label="Position"
                 value={userData?.position}
-                className="col-6"
+                className="col-12 col-lg-6"
               />
               <AutoCompleteField
                 label="Department"
@@ -360,7 +360,7 @@ const EffectivenessForm = ({
                 value={`${formatDateOnly(
                   data?.trainingStartDate
                 )} - ${formatDateOnly(data?.trainingEndDate)}`}
-                className="col-6"
+                className="col-12 col-lg-6"
               />
               <AutoCompleteField
                 label="Total Training Hours"
@@ -458,8 +458,8 @@ const EffectivenessForm = ({
                 undertaking or will be undertaking where the Knowledge and
                 skills developed from training will be applied.
               </b>
-              <Row>
-                <Col className={`d-flex gap-2 align-items-end`}>
+              <Row className="row-cols-1 row-cols-lg-2">
+                <Col className={`d-flex flex-wrap gap-2 align-items-end`}>
                   <label className="fw-bold" style={{ fontSize: "0.8rem" }}>
                     Target Date of Evaluation{" "}
                     <i> (specify date - 6 months after the training):</i>
@@ -468,7 +468,7 @@ const EffectivenessForm = ({
                     {getAfterTrainingDate().toString()}
                   </span>
                 </Col>
-                <Col className={`d-flex gap-2 align-items-end`}>
+                <Col className={`d-flex flex-wrap gap-2 align-items-end`}>
                   <label className="fw-bold" style={{ fontSize: "0.8rem" }}>
                     Evaluator:
                   </label>
@@ -479,7 +479,8 @@ const EffectivenessForm = ({
                   </span>
                 </Col>
               </Row>
-              <Table className="table-bordered custom-table mt-2 m-0">
+              <Row className="overflow-auto px-2">
+              <Table className="table-bordered custom-table mx-1 mt-2 m-0">
                 <thead>
                   <tr>
                     <th
@@ -702,7 +703,7 @@ const EffectivenessForm = ({
                     </tr>
                   ))}
                 </tbody>
-              </Table>
+              </Table></Row>
               <div className="flex hideExport">
                 {errors?.projectPerformanceEvaluation && (
                   <ErrorTemplate
