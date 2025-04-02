@@ -4,7 +4,7 @@ import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
-import { formatDateOnly } from "../../utils/datetime/Formatting";
+import { formatDateTime } from "../../utils/datetime/Formatting";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
 import getStatusById from "../../utils/status/getStatusById";
 import { Paginator } from "primereact/paginator";
@@ -57,7 +57,7 @@ const ExternalFacilitatorListSection = () => {
     {
       field: "",
       header: "No",
-      body: (_, { rowIndex }) => <>{paginatorConfig.first + 1+ rowIndex}</>,
+      body: (_, { rowIndex }) => <>{paginatorConfig.first + 1 + rowIndex}</>,
     },
     {
       field: "name",
@@ -73,8 +73,9 @@ const ExternalFacilitatorListSection = () => {
     },
     {
       field: "createdDate",
-      header: "Created",
-      body: (rowData) => formatDateOnly(rowData.createdDate),
+      header: "Created Date",
+      body: (rowData) =>
+        formatDateTime(rowData.updatedDate ?? rowData.createdDate),
     },
     {
       field: "status",
@@ -194,9 +195,9 @@ const ExternalFacilitatorListSection = () => {
               <h6><strong>Department / Organization:</strong> <span>{selectedData?.departmentOrganization}</span></h6>
               <h6><strong>Position:</strong> <span>{selectedData?.position}</span></h6>
               <h6><strong>Status:</strong> <span>{getStatusById(selectedData?.statusId)}</span></h6>
-              <h6><strong>Created:</strong> <span>{formatDateOnly(selectedData?.createdDate)}{" by "}
+              <h6><strong>Created:</strong> <span>{formatDateTime(selectedData?.createdDate)}{" by "}
               {selectedData?.createdBy}</span></h6>
-              <h6><strong>Added:</strong> <span>{selectedData?.updatedDate ? `${formatDateOnly(selectedData?.updatedDate)} by ${selectedData?.updatedBy}`: "N/A"}</span></h6>
+              <h6><strong>Added:</strong> <span>{selectedData?.updatedDate ? `${formatDateTime(selectedData?.updatedDate)} by ${selectedData?.updatedBy}`: "N/A"}</span></h6>
             </Modal.Body>
             <Modal.Footer>
               <Button

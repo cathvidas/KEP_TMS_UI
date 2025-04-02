@@ -106,7 +106,7 @@ const CostApprovalMatrixSection = () => {
       header: "Modified By",
       body: (rowData) =>
         userHook.useUserById(rowData.updatedBy ?? rowData.createdBy)?.data
-          ?.fullname ?? rowData?.createdBy,
+          ?.fullname ?? rowData.updatedBy ?? rowData.createdBy,
     },
     {
       field: "createdDate",

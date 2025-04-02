@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import providerHook from "../../hooks/providerHook";
 import ProviderForm from "../../components/forms/ModalForms/ProviderForm";
-import { formatDateOnly } from "../../utils/datetime/Formatting";
+import { formatDateTime } from "../../utils/datetime/Formatting";
 import { checkIfNullOrEmpty } from "../../utils/stringUtil";
 import { Paginator } from "primereact/paginator";
 import getStatusById from "../../utils/status/getStatusById";
@@ -226,13 +226,13 @@ const ProviderListSection = () => {
               <p>
               <strong>Created: </strong>
               {selectedData?.createdDate ? <>
-                {formatDateOnly(selectedData?.createdDate)} by{" "}
+                {formatDateTime(selectedData?.createdDate)} by{" "}
                 {selectedData?.createdBy}</>: "N/A"}
               </p>
               <p>
               <strong>Updated: </strong>
               {selectedData?.updatedDate ? <>
-                {formatDateOnly(selectedData?.updatedDate)} by{" "}
+                {formatDateTime(selectedData?.updatedDate)} by{" "}
                 {selectedData?.updatedBy}</>: "N/A"}
               </p>
             </Modal.Body>

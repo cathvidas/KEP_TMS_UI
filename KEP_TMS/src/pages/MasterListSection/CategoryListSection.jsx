@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import categoryHook from "../../hooks/categoryHook";
 import CategoryForm from "../../components/forms/ModalForms/CategoryForm";
-import { formatDateOnly } from "../../utils/datetime/Formatting";
+import { formatDateTime } from "../../utils/datetime/Formatting";
 
 const CategoryListSection = () => {
   const [visible, setVisible] = useState({ detail: false, form: false });
@@ -33,7 +33,6 @@ const CategoryListSection = () => {
           className="rounded-circle"
           onClick={() => handleOnclick(rowData.id, true)}
         />
-        {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
       </div>
     </>
   );
@@ -44,20 +43,6 @@ const CategoryListSection = () => {
       isUpdate ? { detail: false, form: true } : { detail: true, form: false }
     );
   };
-  // const handleDelete = (id) => {
-  //   confirmAction({
-  //     title: "Confirm Deletion",
-  //     text: `Are you sure you want to delete this Program?`,
-  //     confirmButtonText: "Delete",
-  //     cancelButtonText: "Cancel",
-  //     onConfirm: () =>
-  //       handleResponseAsync(
-  //         () => programService.deleteProgram(id),
-  //         () => actionSuccessful("Success!", "Program deleted successfully"),
-  //         (e) => actionFailed("Error!", e.message)
-  //       ),
-  //   });
-  // };
   const columnItems = [
     {
       field: "",
@@ -74,8 +59,8 @@ const CategoryListSection = () => {
     },
     {
       field: "createdDate",
-      header: "Created",
-      body: (rowData) => formatDateOnly(rowData.createdDate),
+      header: "Created Date",
+      body: (rowData) => formatDateTime(rowData.createdDate),
     },
     {
       field: "status",
@@ -149,10 +134,10 @@ const CategoryListSection = () => {
             <p><strong>Description: </strong><span>{selectedData?.description}</span></p>
             <p><strong>Status: </strong><span>{selectedData?.status}</span></p>
             <p><strong>Created: </strong><span>
-              {selectedData?.createdDate ? `${formatDateOnly(selectedData?.createdDate)} by ${selectedData?.createdBy}` : "N/A"}
+              {selectedData?.createdDate ? `${formatDateTime(selectedData?.createdDate)} by ${selectedData?.createdBy}` : "N/A"}
              </span></p>
             <p><strong>Updated: </strong><span>
-              {selectedData?.updatedDate ? `${formatDateOnly(selectedData?.updatedDate)} by ${selectedData?.updatedBy}` : "N/A"}
+              {selectedData?.updatedDate ? `${formatDateTime(selectedData?.updatedDate)} by ${selectedData?.updatedBy}` : "N/A"}
               </span></p>
             </Modal.Body>
             <Modal.Footer>
