@@ -18,8 +18,7 @@ const OldTrainingRequestList = ({ trainingType }) => {
     value: "",
   });
   const { data, loading, error } = oldTrainingsHook.useOldTrainingRequest(true, trainingType, paginatorConfig.page,
-    paginatorConfig.rows);
-
+    paginatorConfig.rows, paginatorConfig.value);
     const columnItems = [
       {
         field: "id",

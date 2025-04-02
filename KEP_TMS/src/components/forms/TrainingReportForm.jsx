@@ -25,6 +25,7 @@ import ActivityList from "../List/ActivityList";
 import ApproverList from "../List/ApproversList";
 import mappingHook from "../../hooks/mappingHook";
 import ActivityStatus from "../General/ActivityStatus";
+import OldSystemActivityList from "../List/OldSystemActivityList";
 
 const TrainingReportForm = ({
   data,
@@ -33,8 +34,8 @@ const TrainingReportForm = ({
   defaultValue,
   isSubmitted,
   currentRouting,
-  auditTrail,
   isAdmin,
+  oldSystem
 }) => {
   const [formData, setFormData] = useState(trainingreportConstant);
   const [errors, setErrors] = useState({});
@@ -56,15 +57,7 @@ const TrainingReportForm = ({
     }
   }, [defaultValue, isSubmitted]);
 const populateData = () => {
-  const updatedData = {
-    id: defaultValue?.id,
-    trainingTakeaways: defaultValue?.trainingTakeaways,
-    actionPlan: defaultValue.actionPlan,
-    timeframe: defaultValue.timeframe,
-    statusId: getStatusCode(defaultValue.status),
-    activityRemarks: defaultValue.activityRemarks,
-  };
-  setFormData({ ...updatedData });
+  setFormData({ ...defaultValue, statusId: getStatusCode(defaultValue.status) });
 };
   const handleSubmit = () => {
     const isValid = validateForm();
@@ -119,16 +112,14 @@ const populateData = () => {
       {
         isSubmitted && (
           <div className=" flex justify-content-between  mb-2">
-            <div>Submitted: {formatDateTime(auditTrail?.createdDate)}</div>
+            <div>Submitted: {formatDateTime(formData?.createdDate)}</div>
             <div>
               Status: &nbsp;
-              <ActivityStatus status={currentRouting?.statusId} /> -{" "}
-              {currentRouting?.assignedDetail?.fullname}
+              <ActivityStatus status={currentRouting?.statusId ?? formData?.status} />
+              {currentRouting?.assignedDetail?.fullname ? " - " + currentRouting?.assignedDetail?.fullname : ""}
             </div>
           </div>
-        )
-        // <small>Created: {formatDateTime(auditTrail?.createdDate)} {StatusColor({status: getStatusById(formData?.statusId), showStatus: true})}</small>
-      }{" "}
+        )  }{" "}
       <Form ref={reportTemplateRef}>
         <div className="text-center  pb-3 mb-3">
           <h5 className="m-0">Training Report Form</h5>
@@ -307,19 +298,30 @@ const populateData = () => {
       </div>
       {isSubmitted && showLogs && (
         <>
-          <hr />
-          <h6 className="theme-color" style={{ fontWeight: 600 }}>
-            Routes
-          </h6>
-          <ApproverList
-            data={defaultValue}
-            activityTitle="Training Report"
-            activityType={ActivityType.REPORT}
-            hasEmailForm={isAdmin}
-            reloadData={onFinish}
-          />
-          <hr />
-          <ActivityList data={logs} label={"Activities"} />
+          {" "}
+          {oldSystem ? (
+            <OldSystemActivityList
+              activityType={ActivityType.REPORT}
+              trainingType={data?.trainingType?.id}
+              id={formData?.id}
+            />
+          ) : (
+            <>
+              <hr />
+              <h6 className="theme-color" style={{ fontWeight: 600 }}>
+                Routes
+              </h6>
+              <ApproverList
+                data={defaultValue}
+                activityTitle="Training Report"
+                activityType={ActivityType.REPORT}
+                hasEmailForm={isAdmin}
+                reloadData={onFinish}
+              />
+              <hr />
+              <ActivityList data={logs} label={"Activities"} />
+            </>
+          )}
         </>
       )}
     </Card.Body>
@@ -335,5 +337,6 @@ TrainingReportForm.propTypes = {
   currentRouting: proptype.object,
   auditTrail: proptype.object,
   isAdmin: proptype.bool,
+  oldSystem: proptype.bool,
 };
 export default TrainingReportForm;

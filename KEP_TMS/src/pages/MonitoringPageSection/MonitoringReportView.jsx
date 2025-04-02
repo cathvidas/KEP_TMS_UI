@@ -156,7 +156,7 @@ const MonitoringReportView = ({
                 {typeId === ActivityType.EVALUATION
                   ? rowData[reportType]?.status ?? "Not yet submitted"
                   : StatusColor({
-                      status: rowData[reportType]?.statusName ?? 
+                      status: rowData[reportType]?.statusName ?? rowData[reportType]?.status ??
                         getStatusById(
                           rowData[reportType]?.currentRouting?.statusId
                         ) ?? "Pending",
@@ -172,7 +172,7 @@ const MonitoringReportView = ({
             header: "Current Approver",
             body: (rowData) => (
               <>
-                {rowData[reportType]?.currentApproverName ?? rowData[reportType]?.currentRouting?.assignedDetail
+                {rowData[reportType]?.currentApproverName ?? rowData[reportType]?.currentApprover ?? rowData[reportType]?.currentRouting?.assignedDetail
                   ?.fullname ?? "N/A"}
               </>
             ),
@@ -304,6 +304,7 @@ const MonitoringReportView = ({
                     defaultValue={selectedFormData}
                     isSubmitted
                     isAdmin
+                    oldSystem={oldSystem}
                     auditTrail={
                       selectedFormData?.auditTrail
                         ? selectedFormData?.auditTrail[0]

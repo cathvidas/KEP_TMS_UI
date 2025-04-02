@@ -12,10 +12,9 @@ const handleResponseAsync = async (
       } else {
         actionSuccessful("Success!", response.message);
       }
-    
   } catch (error) {
     if(onError){
-      onError(error)
+      onError(error?.message ?? error ?? null)
     }else{
       actionFailed("Error", error.message ?? "Something went wrong")
     }

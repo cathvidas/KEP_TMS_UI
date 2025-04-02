@@ -160,8 +160,9 @@ const oldTrainingsHook = {
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
-          ()=>activityType == ActivityType.REQUEST ? oldTrainingsService.getExternalActivitiesByRequestId(id) : 
-          activityType == ActivityType.EFFECTIVENESS ? oldTrainingsService.getOldEffectivenessActivityById(id, trainingType): null,
+          ()=>activityType == ActivityType.REQUEST ? oldTrainingsService.getOldTrainingActivitiesByRequestId(id, trainingType) : 
+          activityType == ActivityType.EFFECTIVENESS ? oldTrainingsService.getOldEffectivenessActivityById(id, trainingType): 
+          activityType == ActivityType.REPORT ? oldTrainingsService.getOldTrainingReportActivityById(id, trainingType) : null,
           (res)=>setData(res),
           (err)=>setError(err?.message),
           ()=>setLoading(false)
@@ -218,7 +219,7 @@ const oldTrainingsHook = {
           let traineeForms = [];
           participantList?.forEach((userDetail) =>{
             const effectivenessDetail = effectiveness?.find(eff => eff?.employeeBadge == userDetail?.employeeBadge);
-            const reportDetail = reports?.find(rep => rep?.id == userDetail?.reportId);
+            const reportDetail = reports?.find(rep => rep?.id == userDetail?.reportId || userDetail?.employeeBadge == rep?.createdBy);
             const evaluationDetail = evaluations?.find(eva => eva?.id == userDetail?.evaluationId);
             traineeForms.push({userDetail, effectivenessDetail, reportDetail, evaluationDetail});
           })

@@ -45,8 +45,7 @@ const oldFacilitatedTrainings = oldTrainingsHook.useUserOldTrainings(id, SearchV
 const newTrainings = trainingRequestHook.useTrainingsAttended(id);
 const newFacilitatedTrainings = trainingRequestHook.useTrainingsFacilitated(id);const trainingSummary = userHook.useUserTotalAccumulatedHours(id);
 const oldTrainingSummary = oldTrainingsHook.useOldTotalAccumulatedHours(id);
-const navigate = useNavigate();
-const handleViewClick = (rowData) =>{
+const navigate = useNavigate();const handleViewClick = (rowData) =>{
   let url = `${APP_DOMAIN}/`;
   if(isOldSystem){
     url+=`OldTrainingDetail/${rowData?.type}/${rowData?.id}`

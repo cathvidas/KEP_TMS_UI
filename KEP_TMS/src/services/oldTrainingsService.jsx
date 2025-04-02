@@ -1,5 +1,5 @@
 import { SearchValueConstant, TrainingType } from "../api/constants";
-import { GetExternalActivitiesByRequestIdApi, GetOldAttendedTrainingsApi, GetOldEffectivenessActivityByIdApi, GetOldEffectivenessByRequestIdApi, GetOldExternalRequestByIdApi, GetOldFacilitatedTrainingsApi, GetOldFacilitatorRatingApi, GetOldInternalRequestByIdApi, GetOldSystemFacilitatorApi, GetOldTotalAccumulatedHoursApi, GetOldTrainingEvaluationByRequestIdApi, GetOldTrainingReportByRequestIdApi, GetOldTrainingRequestApi } from "../api/oldTrainingsApi";
+import { GetOldAttendedTrainingsApi, GetOldEffectivenessActivityByIdApi, GetOldEffectivenessByRequestIdApi, GetOldExternalRequestByIdApi, GetOldFacilitatedTrainingsApi, GetOldFacilitatorRatingApi, GetOldInternalRequestByIdApi, GetOldSystemFacilitatorApi, GetOldTotalAccumulatedHoursApi, GetOldTrainingActivitiesByRequestIdApi, GetOldTrainingEvaluationByRequestIdApi, GetOldTrainingReportActivityByIdApi, GetOldTrainingReportByRequestIdApi, GetOldTrainingRequestApi } from "../api/oldTrainingsApi";
 import { getPagedTrainingRequestsApi } from "../api/trainingRequestApi";
 
 const oldTrainingsService = {
@@ -79,14 +79,6 @@ const oldTrainingsService = {
         }
       });
     }
-    // if(oldNewTrainings?.totalRecords > 0 && results?.length <= pageSize) {
-    //   const trainings = await GetOldNewRequestApi(pageNumber, pageSize, SearchValueConstant.PARTICIPANT, userId, searchValue);
-    //   oldNewTrainings?.results?.forEach((item) => {
-    //     if(results?.length <= pageSize){
-    //       results.push(item)
-    //     }
-    //   })
-    // }
     return {
       currentPage: pageNumber,
       pageSize: pageSize,
@@ -98,8 +90,8 @@ const oldTrainingsService = {
     const response = id && (await GetOldSystemFacilitatorApi(id));
     return response?.status === 1 ? response?.data : null;
   },
-  getExternalActivitiesByRequestId: async (id) => {
-    const response = id && (await GetExternalActivitiesByRequestIdApi(id));
+  getOldTrainingActivitiesByRequestId: async (id, type) => {
+    const response = await GetOldTrainingActivitiesByRequestIdApi(id || 0, type);
     return response?.status === 1 ? response?.data : [];
   },
   getOldEffectivenessActivityById: async (id, type) => {
@@ -114,6 +106,10 @@ const oldTrainingsService = {
           projectPerformanceEvaluation: item?.projectPerformanceEvaluationDto,
         }))
       : [];
+  },
+  getOldTrainingReportActivityById: async (id, type) => {
+    const response = await GetOldTrainingReportActivityByIdApi(id, type);
+    return response?.status === 1 ? response?.data : [];
   },
   getOldTrainingReportByRequestId: async (id, type) => {
     const response = id && (await GetOldTrainingReportByRequestIdApi(id, type));
