@@ -244,7 +244,7 @@ const ExamForm = ({
           </Row>
           {!readOnly &&
               <div className="text-end mb-2">
-              <Button type="button" label="Get Template" className="rounded ms-auto py-1" size="small" onClick={getTemplate}/>
+              <Button type="button" label="Download Template" className="rounded ms-auto py-1" size="small" onClick={getTemplate}/>
               <Button type="button" label="Upload Questions" severity="success" className="rounded ms-2 py-1" size="small" onClick={()=>setUploadQuestions(true)}/>
             </div>}
           <FormFieldItem
