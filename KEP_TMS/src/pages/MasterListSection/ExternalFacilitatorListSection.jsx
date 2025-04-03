@@ -8,9 +8,6 @@ import { formatDateTime } from "../../utils/datetime/Formatting";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
 import getStatusById from "../../utils/status/getStatusById";
 import { Paginator } from "primereact/paginator";
-import handleResponseAsync from "../../services/handleResponseAsync";
-import externalFacilitatorService from "../../services/externalFacilitatorService";
-import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import ExternalFacilitatorForm from "../../components/forms/ModalForms/ExternalFacilitatorForm";
 
 const ExternalFacilitatorListSection = () => {
@@ -49,7 +46,6 @@ const ExternalFacilitatorListSection = () => {
             setVisible({ ...visible, form: true });
           }}
         />
-        <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} />
         </div>
     </>
   );
@@ -115,21 +111,6 @@ const ExternalFacilitatorListSection = () => {
       </div>
     </div>
   );
-  const handleDelete = (id) => {
-    confirmAction({
-      title: "Confirm Deletion",
-      text: `Are you sure you want to delete this Program?`,
-      confirmButtonText: "Delete",
-      cancelButtonText: "Cancel",
-      onConfirm: () =>
-        handleResponseAsync(
-          () => externalFacilitatorService.deleteExternalFacilitator(id),
-          (e)=>{actionSuccessful("Success", e.message);
-            setTrigger(prev=>prev+1)
-          }
-        ),
-    });
-  };
   return (
     <>
       {loading ? (
