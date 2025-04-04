@@ -5,7 +5,6 @@ const DetailItem = ({ label, value, textStyle }) => (
       {label}:{" "}
     </label>{" "}
     <div 
-    // dangerouslySetInnerHTML={{ __html: value }}
       className={`px-2 py-1 m-0 ${
         textStyle != null ? textStyle : "text-uppercase"
       }`}

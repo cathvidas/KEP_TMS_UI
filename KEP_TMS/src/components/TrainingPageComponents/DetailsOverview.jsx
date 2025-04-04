@@ -4,7 +4,6 @@ import proptype from "prop-types";
 import { formatCurrency, formatDateOnly } from "../../utils/datetime/Formatting";
 import { formatTotalTime } from "../../utils/datetime/FormatDateTime";
 import calculateTotalHours from "../../utils/datetime/calculateTotalHours";
-import TextEditor from "../forms/common/TextEditor";
 const DetailsOverview = ({ data , showCost }) => {
   return (
     <div>
@@ -31,10 +30,11 @@ const DetailsOverview = ({ data , showCost }) => {
           <DetailItem
             label="Objective"
             textStyle=" "
-            value={
-              <TextEditor defaultValue={data?.trainingObjectives} disabled />
-            }
-          />
+            value={<div style={{whiteSpace: "pre-wrap"}}
+            dangerouslySetInnerHTML={{ __html: data?.trainingObjectives }}
+          ></div>}
+          />   
+       
         </Col>
         <Col className="col-12 col-md-3">
           <DetailItem label="Venue" value={data?.venue ?? "N/A"} />

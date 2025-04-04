@@ -7,7 +7,6 @@ import { SectionHeading } from "../General/Section";
 import proptype from "prop-types";
 import { useEffect, useState } from "react";
 import programHook from "../../hooks/programHook";
-import TextEditor from "../forms/common/TextEditor";
 const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) => {
   const [details, setDetails] = useState(formData);
   const [options, setOptions] = useState({ programs: [], categories: [] });
@@ -117,11 +116,13 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
           col="col-12"
           label={"Objective"}
           FieldComponent={
-            <TextEditor
-              defaultValue={details.trainingObjectives}
-              showToolbar
-              onChange={(e)=>handleOnChange("trainingObjectives", e)}
-            />
+            <textarea
+              className="form-control"
+              placeholder="Training objective"
+              value={details.trainingObjectives}
+              name="trainingObjectives"
+              onChange={(e)=>handleOnChange(e.target.name, e.target.value)}
+            ></textarea>
           }
         />
         <FormFieldItem

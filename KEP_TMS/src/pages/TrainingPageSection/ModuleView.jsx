@@ -53,7 +53,6 @@ const ModuleView = ({ reqData, isEditor, isTrainee }) => {
                       <div
                         dangerouslySetInnerHTML={{ __html: item.description }}
                       ></div>
-                      {/* <p className="m-0">{item.description}</p> */}
                       {item?.attachments?.map((file) => {
                         return (
                           <Button
