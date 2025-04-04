@@ -15,7 +15,7 @@ import { ModuleAvailability } from "../../services/constants/appConstants";
 import { combineDateTime } from "../../utils/datetime/FormatDateTime";
 import validateModuleForm from "../../services/inputValidation/validateModuleForm";
 import { CompareDates } from "../../utils/datetime/dateComparison";
-import TextEditor from "./common/TextEditor";
+import { formatDateOnly } from "../../utils/datetime/Formatting";
 const UploadModuleForm = ({
   requestData,
   setShowForm,
@@ -29,11 +29,10 @@ const UploadModuleForm = ({
     Name: "",
     Description: "",
     AvailableAt: null,
-    UnavailableAt: null,
+    UnavailableAt: getDefaultEndDate(),
   });
   const [errors, setErrors] = useState({});
   const [isUpdate, setIsUpdate] = useState(false);
-  const [isCustom, setIsCustom] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const availabilityOptions = [
     { label: "Default", value: ModuleAvailability.IMMEDIATELY },
@@ -41,7 +40,7 @@ const UploadModuleForm = ({
       label: "Based On Training Dates",
       value: ModuleAvailability.TRAINING_DATES_BASED,
     },
-    { label: "Custom Duration", value: ModuleAvailability.CUSTOM_DURATION },
+    { label: "No Restriction", value: ModuleAvailability.NO_RESTRICTION },
   ];
   useEffect(() => {
     if (defaultValue) {
@@ -63,11 +62,10 @@ const UploadModuleForm = ({
         )
       ) {
         setSelectedOption(availabilityOptions[1]);
-      } else if (defaultValue?.availableAt && defaultValue?.unavailableAt) {
-        setSelectedOption(availabilityOptions[2]);
-        setIsCustom(true);
-      } else {
+      } else if(defaultValue?.availableAt == null && defaultValue?.unavailableAt){
         setSelectedOption(availabilityOptions[0]);
+      }else {
+        setSelectedOption(availabilityOptions[2]);
       }
       setIsUpdate(true);
     } else setIsUpdate(false);
@@ -211,9 +209,29 @@ const UploadModuleForm = ({
     );
     return { AvailableAt, UnavailableAt };
   };
+  function getDefaultEndDate() {
+    const newDate = new Date(
+      new Date(requestData?.trainingEndDate).setMonth(
+        new Date(requestData?.trainingEndDate).getMonth() + 1
+      )
+    );
+    const UnavailableAt = combineDateTime(
+      formatDateOnly(newDate, "dash"),
+      "00:00:00",
+      true
+    );
+    return UnavailableAt;
+  }
   const setModuleAvailability = (e) => {
     const value = e.value;
     if (value === ModuleAvailability.IMMEDIATELY) {
+      setDetails((prev) => ({
+        ...prev,
+        AvailableAt: null,
+        UnavailableAt: getDefaultEndDate(),
+      }));
+    }
+    if (value === ModuleAvailability.NO_RESTRICTION) {
       setDetails((prev) => ({
         ...prev,
         AvailableAt: null,
@@ -222,11 +240,6 @@ const UploadModuleForm = ({
     }
     if (value === ModuleAvailability.TRAINING_DATES_BASED) {
       setDetails((prev) => ({ ...prev, ...getTrainingDates() }));
-    }
-    if (value === ModuleAvailability.CUSTOM_DURATION) {
-      setIsCustom(true);
-    } else {
-      setIsCustom(false);
     }
     setSelectedOption(e);
   };
@@ -262,16 +275,21 @@ const UploadModuleForm = ({
                 error={errors.Description}
                 FieldComponent={
                   <>
-                    <TextEditor
+                    <textarea
+                      className="form-control"
                       defaultValue={details.Description}
-                      showToolbar
+                      name="trainingObjectives"
                       onChange={(e) =>
-                        setDetails({ ...details, Description: e })
+                        setDetails({ ...details, Description: e.target.value })
                       }
-                    />
+                    ></textarea>
                   </>
                 }
               />
+               {(details.AvailableAt || details.UnavailableAt) && (
+                  <Col className="col-12">
+                    <hr className="mt-0" />
+                  </Col>)}
               <FormFieldItem
                 label={"Set Availability"}
                 error={errors.Description}
@@ -285,7 +303,7 @@ const UploadModuleForm = ({
                   </>
                 }
               />
-              {isCustom && (
+              {(details.AvailableAt || details.UnavailableAt) && (
                 <>
                   <FormFieldItem
                     label={"Start Date"}
@@ -296,7 +314,7 @@ const UploadModuleForm = ({
                         {" "}
                         <input
                           className="form-control"
-                          value={details.AvailableAt}
+                          value={details.AvailableAt ?? ""}
                           onChange={(e) =>
                             setDetails({
                               ...details,
@@ -317,7 +335,7 @@ const UploadModuleForm = ({
                         {" "}
                         <input
                           className="form-control"
-                          value={details.UnavailableAt}
+                          value={details.UnavailableAt ?? ""}
                           onChange={(e) =>
                             setDetails({
                               ...details,

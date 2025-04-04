@@ -17,10 +17,7 @@ const ModuleView = ({ reqData, isEditor, isTrainee }) => {
   useEffect(() => {
     const filteredData = modules?.filter(
       (item) =>
-        (item?.availableAt === null && item?.unavailableAt === null && !(
-          new Date(reqData?.trainingEndDate) <=
-          new Date(new Date().setMonth(new Date().getMonth() - 1))
-        )) ||
+        (item?.availableAt === null && item?.unavailableAt === null ) ||
         (CompareDateTimeWithToday(item?.availableAt)?.isPast &&
           CompareDateTimeWithToday(item?.unavailableAt)?.isFuture)
     );
@@ -29,7 +26,7 @@ const ModuleView = ({ reqData, isEditor, isTrainee }) => {
   return (
     <>
       {isEditor ? (
-        <ModuleSection data={reqData}/>
+        <ModuleSection data={reqData} />
       ) : isTrainee ? (
         <>
           {loading ? (
@@ -50,9 +47,9 @@ const ModuleView = ({ reqData, isEditor, isTrainee }) => {
                     className="custom-link"
                   >
                     <div className="h-100">
-                      <div
-                        dangerouslySetInnerHTML={{ __html: item.description }}
-                      ></div>
+                      <div style={{ whiteSpace: "pre-wrap" }}>
+                        {item.description}
+                      </div>
                       {item?.attachments?.map((file) => {
                         return (
                           <Button
@@ -83,7 +80,9 @@ const ModuleView = ({ reqData, isEditor, isTrainee }) => {
             </div>
           )}
         </>
-      ) : <></>}
+      ) : (
+        <></>
+      )}
 
       <PDFViewer
         data={selected}

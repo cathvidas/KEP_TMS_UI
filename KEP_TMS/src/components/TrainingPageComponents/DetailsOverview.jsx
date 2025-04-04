@@ -30,11 +30,12 @@ const DetailsOverview = ({ data , showCost }) => {
           <DetailItem
             label="Objective"
             textStyle=" "
-            value={<div style={{whiteSpace: "pre-wrap"}}
-            dangerouslySetInnerHTML={{ __html: data?.trainingObjectives }}
-          ></div>}
-          />   
-       
+            value={
+              <div style={{ whiteSpace: "pre-wrap" }}>
+                {data?.trainingObjectives}
+              </div>
+            }
+          />
         </Col>
         <Col className="col-12 col-md-3">
           <DetailItem label="Venue" value={data?.venue ?? "N/A"} />
