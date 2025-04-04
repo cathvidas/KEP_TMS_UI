@@ -7,10 +7,6 @@ const validateModuleForm = (data, moduleAvailability, files, requireFiles) => {
     formErrors.Name = "Title is required";
     isValid = false;
   }
-  if (!data.Description) {
-    formErrors.Description = "Description is required";
-    isValid = false;
-  }
   if (files?.length === 0 && requireFiles) {
     formErrors.file = "No files attached to this module";
     isValid = false;

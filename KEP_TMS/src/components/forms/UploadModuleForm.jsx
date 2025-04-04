@@ -271,14 +271,14 @@ const UploadModuleForm = ({
                 }
               />
               <FormFieldItem
-                label={"Content"}
+                label={"Description"}
                 error={errors.Description}
                 FieldComponent={
                   <>
                     <textarea
                       className="form-control"
                       defaultValue={details.Description}
-                      name="trainingObjectives"
+                      placeholder="Description"
                       onChange={(e) =>
                         setDetails({ ...details, Description: e.target.value })
                       }
@@ -292,7 +292,6 @@ const UploadModuleForm = ({
                   </Col>)}
               <FormFieldItem
                 label={"Set Availability"}
-                error={errors.Description}
                 FieldComponent={
                   <>
                     <Select
@@ -388,6 +387,7 @@ const UploadModuleForm = ({
               <FormFieldItem
                 label={isUpdate ? "New Attachment" : "Attachment"}
                 error={errors.file}
+                required={!isUpdate }
                 FieldComponent={
                   <>
                     {files && (
