@@ -145,6 +145,7 @@ const TrainingDetailPage = () => {
       formData={trainingForms}
       reportType="evaluationDetail"
       typeId={ActivityType.EVALUATION}
+      onRefresh={refreshData}
     />,
     <PendingView
       key={9}
