@@ -2,7 +2,7 @@ import { SectionHeading } from "../../components/General/Section";
 import proptype from "prop-types";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
-import { OtherConstant } from "../../api/constants";
+import { OtherConstant, statusCode } from "../../api/constants";
 import { Button } from "primereact/button";
 import TrainingFormsEmailTemplate from "../../components/email/TrainingFormsEmailTemplate";
 const PendingView = ({ data, formData, examDetail, oldSystem }) => {
@@ -92,7 +92,7 @@ const PendingView = ({ data, formData, examDetail, oldSystem }) => {
             icon={<i className="pi pi-clock"></i>}
           />
           <CommonTable
-            headerComponent={!oldSystem ? <HeaderComponent /> : null}
+            headerComponent={!oldSystem && data?.status?.id != statusCode.CLOSED ? <HeaderComponent /> : null}
             dataTable={formData?.data}
             columnItems={columnItems}
             dataKey={data?.data?.userDetail?.id}

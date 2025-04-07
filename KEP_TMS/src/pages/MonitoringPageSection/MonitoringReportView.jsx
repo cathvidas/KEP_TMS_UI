@@ -8,7 +8,7 @@ import { Card } from "react-bootstrap";
 import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import EvaluationForm from "../../components/forms/EvaluationForm";
-import { ActivityType, UserTypeValue } from "../../api/constants";
+import { ActivityType, statusCode, UserTypeValue } from "../../api/constants";
 import getStatusById from "../../utils/status/getStatusById";
 import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
 import ExamDetails from "../../components/Exam/ExamDetails";
@@ -226,7 +226,7 @@ const MonitoringReportView = ({
               </div>
                 {formData?.loading ? <SkeletonDataTable/> :
               <CommonTable
-                headerComponent={
+                headerComponent={data?.status?.id != statusCode.CLOSED &&
                   SessionGetRole() === UserTypeValue.ADMIN && !oldSystem ? (
                     <HeaderComponent />
                   ) : null
