@@ -7,7 +7,6 @@ import VideoUploadForm from "../components/forms/ModalForms/VideoUploadForm";
 import VideoAccess from "../components/List/VideoAccess";
 import { SessionGetRole } from "../services/sessions";
 import {
-  API_BASE_URL,
   SearchValueConstant,
   UserTypeValue,
 } from "../api/constants";
@@ -19,12 +18,16 @@ import handleResponseAsync from "../services/handleResponseAsync";
 import attachmentService from "../services/attachmentService";
 import SkeletonDataTable from "../components/Skeleton/SkeletonDataTable";
 import ErrorTemplate from "../components/General/ErrorTemplate";
+import VideoPlayer from "../components/General/VideoPlayer";
+import { getVideoAttachmentUrl } from "../utils/getVideoAttachmentUrl";
 
 const DocumentsPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [trigger, setTrigger] = useState(0);
   const [selectedItem, setSelectedItem] = useState(null);
   const isAdmin = SessionGetRole() === UserTypeValue.ADMIN;
+  const [playVideo, setPlayVideo] = useState(false);
+  const [activeVideo, setActiveVideo] = useState(null);
   const [paginatorConfig, setPaginatorConfig] = useState({
     first: 0,
     rows: 10,
@@ -104,7 +107,8 @@ const DocumentsPage = () => {
             className="p-button-rounded"
             title="Play Video"
             size="small"
-            onClick={() => window.open(API_BASE_URL + rowData?.url, "_blank")}
+            // onClick={()=>{setActiveVideo(rowData);setPlayVideo(true)}}
+            onClick={() => window.open(getVideoAttachmentUrl(rowData?.id, true), "_blank")}
           />
           {isAdmin && (
             <>
@@ -172,7 +176,7 @@ const DocumentsPage = () => {
               <VideoAccess
                 data={selectedItem}
                 handleClose={() => setSelectedItem(null)}
-                refreshData={()=> setTrigger((prev) => prev + 1)}
+                refreshData={() => setTrigger((prev) => prev + 1)}
               />
             ) : (
               <>
@@ -216,6 +220,7 @@ const DocumentsPage = () => {
             )}
           </div>
         </div>
+        <VideoPlayer handleShow={playVideo} handleClose={() => setPlayVideo(false)} data={activeVideo}/>
       </>
     );
   };

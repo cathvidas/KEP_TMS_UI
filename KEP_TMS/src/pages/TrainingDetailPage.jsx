@@ -30,6 +30,7 @@ import mappingHook from "../hooks/mappingHook";
 import TrainingVideosList from "../components/List/TrainingVideosList";
 import ErrorTemplate from "../components/General/ErrorTemplate";
 import PrevPageBackButton from "../components/General/PrevPageBackButton";
+import videoAccessMatrixHook from "../hooks/videoAccessMatrixHook";
 
 const TrainingDetailPage = () => {
   const [trigger, setTrigger] = useState(0);
@@ -40,6 +41,7 @@ const TrainingDetailPage = () => {
     parseInt(id),
     trigger
   );
+  const videoAccess = videoAccessMatrixHook.useAllVideoAccessMatrix();
   const refreshData = () => {
     setTrigger((prev) => prev + 1);
   };
@@ -181,7 +183,7 @@ const TrainingDetailPage = () => {
           command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Videos`),
           template: MenuItemTemplate,
           active: currentContent === 10 ? true : false,
-          disable: !(isAdmin || isFacilitator || isTrainee),
+          disable: !videoAccess?.data?.some(x=>x?.employeeBadge === SessionGetEmployeeId() && x?.statusId === statusCode.ACTIVE),
         },
         {
           label: isAdmin || isFacilitator ? "Questionnaire" : "Exam",

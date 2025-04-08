@@ -253,7 +253,7 @@ const ModuleSection = ({ data }) => {
             <>
               <br />
               <EmptyState
-                placeholder="No modules added yet, please click to add"
+                placeholder="No modules added yet, please click this to add"
                 action={() => setShowForm(true)}
               />
             </>

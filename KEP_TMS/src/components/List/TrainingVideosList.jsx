@@ -1,14 +1,19 @@
 import { useState } from "react";
-import { SearchValueConstant } from "../../api/constants";
+import { API_BASE_URL, SearchValueConstant } from "../../api/constants";
 import attachmentHook from "../../hooks/attachmentHook";
 import { ButtonGroup } from "primereact/buttongroup";
 import { Button } from "primereact/button";
 import CommonTable from "../General/CommonTable";
 import { Paginator } from "primereact/paginator";
 import proptype from "prop-types"
+import VideoPlayer from "../General/VideoPlayer";
 import { VideoFileUrl } from "../../api/attachmentApi";
+import { SessionGetEmployeeId } from "../../services/sessions";
+import { getVideoAttachmentUrl } from "../../utils/getVideoAttachmentUrl";
 
 const TrainingVideosList = ({ requestId }) => {
+  const [playVideo, setPlayVideo] = useState(false);
+  const [activeVideo, setActiveVideo] = useState(null);
   const [paginatorConfig, setPaginatorConfig] = useState({
     first: 0,
     rows: 10,
@@ -54,7 +59,8 @@ const TrainingVideosList = ({ requestId }) => {
             className="p-button-rounded"
             title="Play Video"
             size="small"
-            onClick={() => window.open(VideoFileUrl + `${rowData?.attachmentId}` , "_blank")}
+            // onClick={()=>{setActiveVideo(rowData);setPlayVideo(true)}}
+            onClick={() => window.open(getVideoAttachmentUrl(rowData?.attachmentId, true) , "_blank")}
           />
         </ButtonGroup>
       ),
@@ -97,6 +103,7 @@ const TrainingVideosList = ({ requestId }) => {
           </>
         </div>
       </div>
+      <VideoPlayer handleShow={playVideo} handleClose={() => setPlayVideo(false)} data={activeVideo}/>
     </>
   );
 };

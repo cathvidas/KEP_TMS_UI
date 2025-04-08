@@ -14,6 +14,7 @@ import { SessionGetRole } from "../services/sessions";
 import NotFoundPage from "./NotFoundPage";
 import ExternalFacilitatorListSection from "./MasterListSection/externalFacilitatorListSection";
 import CostApprovalMatrixSection from "./MasterListSection/CostApprovalMatrixSection";
+import VideoAccessMatrixSection from "./MasterListSection/VideoAccessMatrixSection";
 
 const MasterListPage = () => {
   const page = useParams();
@@ -57,6 +58,13 @@ const MasterListPage = () => {
           command: () => navigate("/KEP_TMS/MasterList/CostCodes"),
           icon: "pi pi-address-book",
         },
+        {
+          label: "Video Access Matrix",
+          template: MenuItemTemplate,
+          active: currentContent === 7 ,
+          command: () => navigate("/KEP_TMS/MasterList/VideoAccess"),
+          icon: "pi pi-play-circle",
+        },
         // {
         //   label: "Training Type",
         //   template: MenuItemTemplate,
@@ -92,7 +100,8 @@ const MasterListPage = () => {
     <ExternalFacilitatorListSection key={3} />,
     <TrainingListSection key={4} trainingType={TrainingType.INTERNAL} />,
     <TrainingListSection key={5} trainingType={TrainingType.EXTERNAL} />,
-    <CostApprovalMatrixSection key={6}/>
+    <CostApprovalMatrixSection key={6}/>,
+    <VideoAccessMatrixSection key={7}/>
   ];
   useEffect(() => {
     const pageName = page.category?.toUpperCase();
@@ -107,6 +116,8 @@ const MasterListPage = () => {
       setCurrentContent(3);
     }  else if (pageName === "COSTCODES") {
       setCurrentContent(6);
+    } else if (pageName === "VIDEOACCESS") {
+      setCurrentContent(7);
     } else if (pageName === "TRAINING") {
       if (pageType === "INTERNAL") {
         setCurrentContent(4);

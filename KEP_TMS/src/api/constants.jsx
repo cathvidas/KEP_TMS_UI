@@ -7,9 +7,9 @@ const testEnvi = {
     APPLICATION_BASE_URL: "http://kep-testenvw16:1010/KEP_TMS/"
 }
 const currentServer = localhost;
-export const API_BASE_URL = currentServer.API_BASE_URL
-export const APPLICATION_BASE_URL = currentServer.APPLICATION_BASE_URL
-export const APP_DOMAIN = "/KEP_TMS"
+export const API_BASE_URL = currentServer.API_BASE_URL //The base URL for API requests.
+export const APPLICATION_BASE_URL = currentServer.APPLICATION_BASE_URL // The base URL for the application.
+export const APP_DOMAIN = "/KEP_TMS" //The root path for the application.
 export const statusCode = {
   INACTIVE: 1,
   ACTIVE: 2,

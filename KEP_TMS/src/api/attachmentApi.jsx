@@ -1,6 +1,5 @@
 import fetchFromApi from "./apiUtil";
-import { API_BASE_URL } from "./constants";
-export const VideoFileUrl = API_BASE_URL + "/Attachment/GetVideoFile?attachmentId=";
+export const VideoFileUrl = "/Attachment/GetVideoFile?attachmentId=";
 export const getModuleAttachmentByIdApi = async (id) => {
   return await fetchFromApi(`/Attachment/GetModuleFile?attachmentId=${id}`);
 };
@@ -42,6 +41,6 @@ export const GetAttachmentAccessApi = async (pageNumber, pageSize, searchValue, 
 export const DeleteAttachmentAccessApi = async (id) =>{
     return await fetchFromApi(`/Attachment/DeleteAttachmentAccess?Id=${id}`, "DELETE");
 }
-export const GetVideoFileApi = async (id) =>{
-  return await fetchFromApi(`/Attachment/GetVideoFile?attachmentId=${id}`);
+export const GetVideoFileApi = async (id, empBadge) =>{
+  return await fetchFromApi(`${VideoFileUrl}${id}&employeeBadge=${empBadge}`);
 }
