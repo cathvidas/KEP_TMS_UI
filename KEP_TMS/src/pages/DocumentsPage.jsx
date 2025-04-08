@@ -2,7 +2,7 @@ import { Button } from "primereact/button";
 import CommonTable from "../components/General/CommonTable";
 import Layout from "../components/General/Layout";
 import { ButtonGroup } from "primereact/buttongroup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VideoUploadForm from "../components/forms/ModalForms/VideoUploadForm";
 import VideoAccess from "../components/List/VideoAccess";
 import { SessionGetRole } from "../services/sessions";
@@ -28,12 +28,32 @@ const DocumentsPage = () => {
   const isAdmin = SessionGetRole() === UserTypeValue.ADMIN;
   const [playVideo, setPlayVideo] = useState(false);
   const [activeVideo, setActiveVideo] = useState(null);
+  const [video, setVideo] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null);
   const [paginatorConfig, setPaginatorConfig] = useState({
     first: 0,
     rows: 10,
     page: 1,
     value: null,
   });
+  useEffect(()=>{
+    const fetchData = async () => {
+      const res = await fetch(`http://kep-testenvw16:2024/api/Attachment/GetVideoFile?attachmentId=7&employeeBadge=A-00007&isView=true`)   
+      setVideo(res)
+    }
+    fetchData();
+  },[])
+  useEffect(()=>{
+    const get =async ()=>{
+      if(video){
+      const blob = await video?.blob();  
+      const url = URL.createObjectURL(blob);  
+      console.log(url);
+      setVideoUrl(url);
+      return () => URL.revokeObjectURL(url);  }  
+    }
+    get()
+  }, [video])
   const { data, error, loading } = attachmentHook.useAllVideoAttachments(
     paginatorConfig.page,
     paginatorConfig.rows,
@@ -107,8 +127,8 @@ const DocumentsPage = () => {
             className="p-button-rounded"
             title="Play Video"
             size="small"
-            // onClick={()=>{setActiveVideo(rowData);setPlayVideo(true)}}
-            onClick={() => window.open(getVideoAttachmentUrl(rowData?.id, true), "_blank")}
+            onClick={()=>{setActiveVideo(rowData);setPlayVideo(true)}}
+            // onClick={() => window.open(getVideoAttachmentUrl(rowData?.id, true), "_blank")}
           />
           {isAdmin && (
             <>
@@ -167,6 +187,7 @@ const DocumentsPage = () => {
   const Content = () => {
     return (
       <>
+      {/* {video} */}
         <div className="d-flex ">
           <div
             className="flex-fill overflow-auto p-3"
@@ -221,6 +242,17 @@ const DocumentsPage = () => {
           </div>
         </div>
         <VideoPlayer handleShow={playVideo} handleClose={() => setPlayVideo(false)} data={activeVideo}/>
+        <video width="100%" height="100%" autoPlay controls>
+          <source src={videoUrl} type="video/mp4" />
+          <source src={videoUrl} type="video/ogg" />
+          Something went wrong.{" "}
+          <a
+            href={videoUrl+`&isView=true`}
+            target="_blank"
+          >
+            Please click here to play the video.
+          </a>
+        </video>
       </>
     );
   };
