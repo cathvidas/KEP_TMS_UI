@@ -12,6 +12,7 @@ const VideoPlayer = ({ data, handleShow, handleClose }) => {
     const fetchData = async () => {
       try {
         setLoading(true)
+        setError(null)
         const res = await fetch(
           getVideoAttachmentUrl(
             data.attachmentId ? data.attachmentId : data?.id
@@ -41,18 +42,26 @@ const VideoPlayer = ({ data, handleShow, handleClose }) => {
         <Modal.Title className="theme-color h6">{data?.fileName}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="p-0 d-flex justify-content-center align-items-center">
-        {loading ? <div className="">Loading...</div>: <>
-        {error && <ErrorTemplate message={error} />}
-        {videoUrl && (
-          <video width="100%" height="100%" autoPlay controls>
-            <source src={videoUrl} type="video/mp4" />
-            <source src={videoUrl} type="video/ogg" />
-            Something went wrong.{" "}
-            <a href={videoUrl + `&isView=true`} target="_blank">
-              Please click here to play the video.
-            </a>
-          </video>
-        )}</>}
+        {loading ? (
+          <div className="">Loading...</div>
+        ) : (
+          <>
+            {error ? (
+              <ErrorTemplate message={error} />
+            ) : (
+              videoUrl && (
+                <video width="100%" height="100%" autoPlay controls>
+                  <source src={videoUrl} type="video/mp4" />
+                  <source src={videoUrl} type="video/ogg" />
+                  Something went wrong.{" "}
+                  <a href={videoUrl + `&isView=true`} target="_blank">
+                    Please click here to play the video.
+                  </a>
+                </video>
+              )
+            )}
+          </>
+        )}
       </Modal.Body>
     </Modal>
   );

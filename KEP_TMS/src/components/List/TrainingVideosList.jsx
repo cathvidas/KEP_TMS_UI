@@ -59,8 +59,8 @@ const TrainingVideosList = ({ requestId }) => {
             className="p-button-rounded"
             title="Play Video"
             size="small"
-            // onClick={()=>{setActiveVideo(rowData);setPlayVideo(true)}}
-            onClick={() => window.open(getVideoAttachmentUrl(rowData?.attachmentId, true) , "_blank")}
+            onClick={()=>{setActiveVideo(rowData);setPlayVideo(true)}}
+            // onClick={() => window.open(getVideoAttachmentUrl(rowData?.attachmentId, true) , "_blank")}
           />
         </ButtonGroup>
       ),
