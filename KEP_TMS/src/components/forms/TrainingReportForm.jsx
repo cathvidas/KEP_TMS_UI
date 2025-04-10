@@ -254,7 +254,7 @@ const populateData = () => {
             </>
           )}
         {formData?.statusId == statusCode.DISAPPROVED &&
-          defaultValue?.createdBy === SessionGetEmployeeId() && (
+          defaultValue?.createdBy === SessionGetEmployeeId() && !oldSystem && (
             <Button
               type="button"
               icon={!isUpdate && "pi pi-pencil"}
@@ -270,7 +270,7 @@ const populateData = () => {
           )}
         {data?.trainingParticipants?.some(
           (x) => x.employeeBadge === SessionGetEmployeeId()
-        ) &&
+        ) && !oldSystem &&
           (!defaultValue || isUpdate) && (
             <>
               {!isUpdate && (

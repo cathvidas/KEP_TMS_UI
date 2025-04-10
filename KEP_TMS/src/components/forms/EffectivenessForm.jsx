@@ -263,7 +263,7 @@ const EffectivenessForm = ({
         toBeRated: true,
       }));
     }
-    if (SessionGetEmployeeId() === formData?.evaluatorBadge && evaluate) {
+    if (SessionGetEmployeeId() === formData?.evaluatorBadge && evaluate && !oldSystem) {
       setEvaluatedActualPerfRating((prev) => ({
         ...prev,
         isRating: !checkIfEvaluatedActualPerformanceRated(formData),
@@ -657,7 +657,7 @@ const EffectivenessForm = ({
                           )}
                           {!actualPerfRating.isRated &&
                             !actualPerfRating.toBeRated &&
-                            isSubmitted &&
+                            isSubmitted && !oldSystem &&
                             formData?.createdBy == SessionGetEmployeeId() &&
                             evalItem?.actualPerformance === null &&
                             evalItem?.content && (
@@ -693,7 +693,7 @@ const EffectivenessForm = ({
                               formatDateOnly(new Date())}
 
                           {evaluatedActualPerfRating.isRating &&
-                            isSubmitted &&
+                            isSubmitted && !oldSystem &&
                             !(evalItem?.evaluatedActualPerformance > 1) &&
                             evalItem?.content && (
                               <span className="text-danger">Please Rate</span>
@@ -718,6 +718,7 @@ const EffectivenessForm = ({
               <i> &#x28;to be filled up after the training&#x29; :</i>
               <ErrorTemplate
                 message={
+                  !oldSystem &&
                   !isUpdate &&
                   isSubmitted &&
                   isTrainingEnd &&
@@ -777,7 +778,7 @@ const EffectivenessForm = ({
 
               {data?.trainingParticipants?.some(
                 (x) => x.employeeBadge === SessionGetEmployeeId()
-              ) && (
+              ) && !oldSystem && (
                 <>
                   {(formData?.statusName ==
                     getStatusById(statusCode.DISAPPROVED) ||
