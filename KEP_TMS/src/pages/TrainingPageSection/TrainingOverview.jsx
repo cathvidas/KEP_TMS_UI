@@ -13,7 +13,7 @@ import TrainingScheduleList from "../../components/trainingRequestFormComponents
 import DetailsOverview from "../../components/TrainingPageComponents/DetailsOverview";
 import ApproverList from "../../components/List/ApproversList";
 import { formatDateTime } from "../../utils/datetime/Formatting";
-import { ActivityType } from "../../api/constants";
+import { ActivityType, APP_DOMAIN } from "../../api/constants";
 // import { useHistory } from "react-router-dom";
 
 const TrainingOverview = ({ data }) => {
@@ -27,7 +27,7 @@ const TrainingOverview = ({ data }) => {
           <span
             className="ms-3 text-secondary h6 mb-0 btn border-0"
             title="Edit Request"
-            onClick={() => navigate("/KEP_TMS/Request/Update/" + data?.id)}
+            onClick={() => navigate(`${APP_DOMAIN}/Request/Update/${data?.id}`)}
           >
             {/* <i className="pi pi-pencil"></i> Edit */}
           </span>

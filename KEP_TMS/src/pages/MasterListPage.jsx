@@ -9,7 +9,7 @@ import CategoryListSection from "./MasterListSection/CategoryListSection";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
 import ProviderListSection from "./MasterListSection/ProviderListSection";
 import TrainingListSection from "./MasterListSection/TrainingListSection";
-import { TrainingType, UserTypeValue } from "../api/constants";
+import { APP_DOMAIN, TrainingType, UserTypeValue } from "../api/constants";
 import { SessionGetRole } from "../services/sessions";
 import NotFoundPage from "./NotFoundPage";
 import ExternalFacilitatorListSection from "./MasterListSection/externalFacilitatorListSection";
@@ -28,48 +28,43 @@ const MasterListPage = () => {
           icon: "pi pi-filter",
           template: MenuItemTemplate,
           active: currentContent === 0,
-          command: () => navigate("/KEP_TMS/MasterList/Categories"),
+          command: () => navigate(`${APP_DOMAIN}/MasterList/Categories`),
         },
         {
           label: "Programs",
           icon: "pi pi-file-check",
           template: MenuItemTemplate,
           active: currentContent === 1,
-          command: () => navigate("/KEP_TMS/MasterList/Programs"),
+          command: () => navigate(`${APP_DOMAIN}/MasterList/Programs`),
         },
         {
           label: "Providers",
           template: MenuItemTemplate,
           active: currentContent === 2,
-          command: () => navigate("/KEP_TMS/MasterList/Providers"),
+          command: () => navigate(`${APP_DOMAIN}/MasterList/Providers`),
           icon: "pi pi-building",
         },
         {
           label: "External Trainers",
           template: MenuItemTemplate,
           active: currentContent === 3,
-          command: () => navigate("/KEP_TMS/MasterList/ExternalTrainers"),
+          command: () => navigate(`${APP_DOMAIN}/MasterList/ExternalTrainers`),
           icon: "pi pi-users",
         },
         {
           label: "Cost Approval Matrix",
           template: MenuItemTemplate,
           active: currentContent === 6 ,
-          command: () => navigate("/KEP_TMS/MasterList/CostCodes"),
+          command: () => navigate(`${APP_DOMAIN}/MasterList/CostCodes`),
           icon: "pi pi-address-book",
         },
         {
           label: "Video Access Matrix",
           template: MenuItemTemplate,
           active: currentContent === 7 ,
-          command: () => navigate("/KEP_TMS/MasterList/VideoAccess"),
+          command: () => navigate(`${APP_DOMAIN}/MasterList/VideoAccess`),
           icon: "pi pi-play-circle",
         },
-        // {
-        //   label: "Training Type",
-        //   template: MenuItemTemplate,
-        //   icon: "pi pi-check-square",
-        // },
       ],
     },
     {
@@ -78,14 +73,14 @@ const MasterListPage = () => {
         {
           label: "Internal",
           icon: "pi pi-arrow-down-left-and-arrow-up-right-to-center",
-          command: () => navigate("/KEP_TMS/MasterList/Training/Internal"),
+          command: () => navigate(`${APP_DOMAIN}/MasterList/Training/Internal`),
           active: currentContent === 4 ? true : false,
           template: MenuItemTemplate,
         },
         {
           label: "External",
           icon: "pi pi-external-link",
-          command: () => navigate("/KEP_TMS/MasterList/Training/External"),
+          command: () => navigate(`${APP_DOMAIN}/MasterList/Training/External`),
           active: currentContent === 5 ? true : false,
           template: MenuItemTemplate,
         },
@@ -125,7 +120,6 @@ const MasterListPage = () => {
         setCurrentContent(5);
       }
     } else {
-      // navigate("/KEP_TMS/MasterList")
       setCurrentContent(0);
     }
   }, [page]);

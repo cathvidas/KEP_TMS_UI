@@ -24,7 +24,7 @@ import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import trainingRequestService from "../../services/trainingRequestService";
 import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
-import { ActivityType, statusCode } from "../../api/constants";
+import { ActivityType, APP_DOMAIN, statusCode } from "../../api/constants";
 import SpeedDialButtonItemTemplate from "../../components/General/SpeedDialButtonItemTemplate";
 import RequestAuditTrailLogsItem from "../../components/TrainingPageComponents/RequestAuditTrailLogsItem";
 import { Dialog } from "primereact/dialog";
@@ -81,7 +81,7 @@ const OverviewSection = ({
       SessionGetEmployeeId(),
       userReports ?? null,
       () => cancelRequest(),
-      () => navigate("/KEP_TMS/Request/Update/" + data.id),
+      () => navigate(`${APP_DOMAIN}/Request/Update/${data.id}`),
       () => setShowCommentBox(true),
       reloadData
     );
@@ -106,7 +106,7 @@ const OverviewSection = ({
     {
       label: "Update",
       icon: "pi pi-pencil",
-      command: () => navigate("/KEP_TMS/Request/Update/" + data.id),
+      command: () => navigate(`${APP_DOMAIN}/Request/Update/${data.id}`),
       template: SpeedDialButtonItemTemplate,
       inactive: ( data?.status?.id === statusCode.APPROVED || data?.status?.id === statusCode.CLOSED)
     },

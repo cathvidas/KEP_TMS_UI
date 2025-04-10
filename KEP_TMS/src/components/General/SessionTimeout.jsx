@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';  
 import { ClearSessions, SessionGetToken } from '../../services/sessions';
 import { confirmAction } from '../../services/sweetalert';
+import { APP_DOMAIN } from '../../api/constants';
 
 const SESSION_TIMEOUT_DURATION = 30 * 60000; // 30 minutes  
 
@@ -39,7 +40,7 @@ const SessionTimeout = () => {
               confirmButtonText: "OK",
               preventOutsideClick: true,
               onConfirm: () => {
-                navigate("/KEP_TMS/");
+                navigate(`${APP_DOMAIN}/`);
               },
             });
           }

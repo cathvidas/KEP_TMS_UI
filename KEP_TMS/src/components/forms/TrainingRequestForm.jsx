@@ -99,7 +99,7 @@ export const TrainingRequestForm = () => {
               `Training request successfully ${draft ? "saved" : "submitted"}.`
             );
             setTimeout(() => {
-              navigate(draft ? "/KEP_TMS/RequestList/Draft" : "/KEP_TMS/TrainingDetail/" + formmatedData.id);
+              navigate(draft ? `${APP_DOMAIN}/RequestList/Draft` : `${APP_DOMAIN}/TrainingDetail/` + formmatedData.id);
             }, 2500);
           }
         );
@@ -123,7 +123,7 @@ export const TrainingRequestForm = () => {
                 `Training request successfully ${draft ? "saved" : "submitted"}.`
               );
               setTimeout(() => {
-                navigate(draft ? "/KEP_TMS/RequestList/Draft" : "/KEP_TMS/TrainingDetail/" + res?.data?.id);
+                navigate(draft ? `${APP_DOMAIN}/RequestList/Draft` : `${APP_DOMAIN}/TrainingDetail/` + res?.data?.id);
               }, 2500);
             }
           );

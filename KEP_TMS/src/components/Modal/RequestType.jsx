@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import proptypes from "prop-types";
-import { TrainingType } from "../../api/constants";
+import { APP_DOMAIN, TrainingType } from "../../api/constants";
 
 const RequestModal = ({ showModal, setShowModal }) => {
   const handleResponse = (res) => {
@@ -35,7 +35,7 @@ const RequestModal = ({ showModal, setShowModal }) => {
             <Col>
               <div className="text-center text-theme-hover d-flex flex-column align-items-center align-items-xl-center">
                 <Link
-                  to="/KEP_TMS/Request/Internal"
+                  to={`${APP_DOMAIN}/Request/Internal`}
                   className="text-decoration-none"
                   onClick={() => handleResponse(TrainingType.INTERNAL)}
                 >
@@ -52,7 +52,7 @@ const RequestModal = ({ showModal, setShowModal }) => {
               <div className="text-center text-theme-hover d-flex flex-column align-items-center align-items-xl-center">
                 <Link
                   className="text-decoration-none"
-                  to="/KEP_TMS/Request/External"
+                  to={`${APP_DOMAIN}/Request/External`}
                   onClick={() => handleResponse(TrainingType.EXTERNAL)}
                 >
                   <FontAwesomeIcon

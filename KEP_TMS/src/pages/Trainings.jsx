@@ -57,7 +57,7 @@ const Trainings = () => {
         {
           label: "For Evaluation",
           //   icon: "pi pi-arrow-down-left-and-arrow-up-right-to-center",
-          command: () => navigate("/KEP_TMS/Trainings/EffectivenessEvaluation"),
+          command: () => navigate(`${APP_DOMAIN}/Trainings/EffectivenessEvaluation`),
           active: currentContent === 2,
           template: MenuItemTemplate,
           badge: data?.length > 0 ?{value: data?.length}:false,

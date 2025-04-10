@@ -14,6 +14,7 @@ import TraineeStatusTemplate from "../TrainingPageComponents/TraineeStatusColumn
 import RequestStatusColumn from "../TrainingPageComponents/RequestStatusColumn";
 import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 import {
+  APP_DOMAIN,
   SearchValueConstant,
   statusCode,
   TrainingType,
@@ -78,11 +79,6 @@ const TrainingRequestList = ({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  // const [filteredData, setFilteredData] = useState(data);
-  // const mapFilteredData = (e) => {
-  //   const f = data?.filter((item) => e?.some(y => item.id === y.id));
-  //   setFilteredData(f);
-  // };
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     setPaginatorConfig((prev) => ({
@@ -99,7 +95,7 @@ const TrainingRequestList = ({
   };
   const navigate = useNavigate();
   const handleButtonClick = (id, page) => {
-    navigate(`/KEP_TMS/${page}/${id}`);
+    navigate(`${APP_DOMAIN}/${page}/${id}`);
   };
   const actionTemplate = (data) => {
     return (

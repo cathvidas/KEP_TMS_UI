@@ -91,7 +91,7 @@ const Sidebar = ({ activeNavigation, expanded, show, hide }) => {
       cancelButtonText: "No",
       showCancelButton: true,
       onConfirm: () => {
-        navigate("/KEP_TMS");
+        navigate(`${APP_DOMAIN}`);
         sessionStorage.clear();
         localStorage.clear();
       },
@@ -113,7 +113,7 @@ const Sidebar = ({ activeNavigation, expanded, show, hide }) => {
         <div className="d-flex w-100 flex-column  h-100 theme2-bg top-0 bottom-0">
           <Link
             className={`border-bottom fw-bold lh-1 bg-white gap-0 flex text-decoration-none py-1`}
-            to={expanded ? "" : "/KEP_TMS/Dashboard"}
+            to={expanded ? "" : `${APP_DOMAIN}/Dashboard`}
           >
             <img
               className={`${expanded ? `mx-2` : `mx-auto`} bg-white`}

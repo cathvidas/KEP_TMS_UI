@@ -5,7 +5,7 @@ import AllUserPageSection from "./UserPageSection/AllUserPageSection";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import commonHook from "../hooks/commonHook";
-import { statusCode, UserTypeValue } from "../api/constants";
+import { APP_DOMAIN, statusCode, UserTypeValue } from "../api/constants";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import NotFoundPage from "./NotFoundPage";
 
@@ -75,38 +75,25 @@ const UserPage = () => {
         {
           label: "All Users",
           template: MenuItemTemplate,
-          command: () => navigate("/KEP_TMS/Users"),
+          command: () => navigate(`${APP_DOMAIN}/Users`),
           active: userType === null,
         },
-        // {
-        //   label: "Trainees",
-        //   template: MenuItemTemplate,
-        //   command: () => navigate("/KEP_TMS/Users/Trainee"),
-        //   active: currentContent === 2 ? true : false,
-        // },
-        // {
-        //   label: "Approvers",
-        //   icon: "pi pi-users",
-        //   template: MenuItemTemplate,
-        //   command: () => navigate("/KEP_TMS/Users/Approver"),
-        //   active: currentContent === 3 ? true : false,
-        // },
         {
           label: "Requester",
           template: MenuItemTemplate,
-          command: () => navigate("/KEP_TMS/Users/Requester"),
+          command: () => navigate(`${APP_DOMAIN}/Users/Requester`),
           active: userType === UserTypeValue.REQUESTOR,
         },
         {
           label: "Facilitators",
           template: MenuItemTemplate,
-          command: () => navigate("/KEP_TMS/Users/Facilitator"),
+          command: () => navigate(`${APP_DOMAIN}/Users/Facilitator`),
           active: userType === UserTypeValue.FACILITATOR,
         },
         {
           label: "Admins",
           template: MenuItemTemplate,
-          command: () => navigate("/KEP_TMS/Users/Admin"),
+          command: () => navigate(`${APP_DOMAIN}/Users/Admin`),
           active: userType === UserTypeValue.ADMIN,
         },
       ],

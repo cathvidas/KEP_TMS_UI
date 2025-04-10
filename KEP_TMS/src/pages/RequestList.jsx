@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import getStatusCode from "../utils/status/getStatusCode";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import {
+  APP_DOMAIN,
   statusCode,
   UserTypeValue,
 } from "../api/constants";
@@ -36,7 +37,7 @@ const RequestList = () => {
         {
           label: "All",
           icon: "pi pi-list",
-          command: () => navigate(`/KEP_TMS/RequestList`),
+          command: () => navigate(`${APP_DOMAIN}/RequestList`),
           template: MenuItemTemplate,
           count: data?.active + data?.approved + data?.cancelled + data?.closed + data?.disapproved + data?.forApproval + data?.submitted + (isAdmin ? 0 : data?.drafted),
           active: currentContent === 8 ? true : false,
@@ -44,7 +45,7 @@ const RequestList = () => {
         {
           label: "Submitted",
           icon: "pi pi-file-import",
-          command: () => navigate(`/KEP_TMS/RequestList/Pending`),
+          command: () => navigate(`${APP_DOMAIN}/RequestList/Pending`),
           template: MenuItemTemplate,
           count: data?.submitted ,
           active: currentContent === 0 ? true : false,
@@ -52,7 +53,7 @@ const RequestList = () => {
         {
           label: "For Approval",
           icon: "pi pi-pen-to-square",
-          command: () => navigate(`/KEP_TMS/RequestList/ForApproval`),
+          command: () => navigate(`${APP_DOMAIN}/RequestList/ForApproval`),
           template: MenuItemTemplate,
           count: data?.forApproval ,
           active: currentContent === 1 ? true : false,
@@ -60,7 +61,7 @@ const RequestList = () => {
         {
           label: "Approved",
           icon: "pi pi-thumbs-up",
-          command: () => navigate(`/KEP_TMS/RequestList/Approved`),
+          command: () => navigate(`${APP_DOMAIN}/RequestList/Approved`),
           template: MenuItemTemplate,
           count: data?.approved ,
           active: currentContent === 2 ? true : false,
@@ -68,7 +69,7 @@ const RequestList = () => {
         {
           label: "Disapproved",
           icon: "pi pi-replay",
-          command: () => navigate(`/KEP_TMS/RequestList/Returned`),
+          command: () => navigate(`${APP_DOMAIN}/RequestList/Returned`),
           template: MenuItemTemplate,
           count: data?.disapproved ,
           active: currentContent === 3 ? true : false,
@@ -76,7 +77,7 @@ const RequestList = () => {
         {
           label: "Closed",
           icon: "pi pi-check-circle",
-          command: () => navigate(`/KEP_TMS/RequestList/Closed`),
+          command: () => navigate(`${APP_DOMAIN}/RequestList/Closed`),
           template: MenuItemTemplate,
           count: data?.closed ,
           active: currentContent === 5 ? true : false,
@@ -84,7 +85,7 @@ const RequestList = () => {
         {
           label: "Cancelled",
           icon: "pi pi-times-circle",
-          command: () => navigate(`/KEP_TMS/RequestList/Cancelled`),
+          command: () => navigate(`${APP_DOMAIN}/RequestList/Cancelled`),
           template: MenuItemTemplate,
           count: data?.cancelled ,
           active: currentContent === 6 ? true : false,
@@ -92,7 +93,7 @@ const RequestList = () => {
         {
           label: "Draft",
           icon: "pi pi-file-edit",
-          command: () => navigate(`/KEP_TMS/RequestList/Draft`),
+          command: () => navigate(`${APP_DOMAIN}/RequestList/Draft`),
           template: MenuItemTemplate,
           count: data?.drafted ,
           active: currentContent === 7 ? true : false,

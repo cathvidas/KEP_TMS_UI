@@ -44,7 +44,7 @@ const Login = () => {
         setConfirmPassword("");
       } else if(res){
         if(location.pathname === APP_DOMAIN || location.pathname === APP_DOMAIN + "/"){
-          navigate("/KEP_TMS/Dashboard");
+          navigate(`${APP_DOMAIN}/Dashboard`);
         }
         else{
           navigate()}
