@@ -87,7 +87,7 @@ const CostApprovalMatrixForm = ({ handleShow, handleClose, selectedData, onFinis
       <Modal show={handleShow} onHide={handleClose} size={"md"}>
         <Modal.Header className="border-0" closeButton>
           <Modal.Title className={`h5 theme-color`}>
-            {selectedData != null ? "Update Metrics" : "Add New Metrics"}
+            {selectedData != null ? "Update Matrix" : "Add New Matrix"}
           </Modal.Title>
         </Modal.Header>
         <Form

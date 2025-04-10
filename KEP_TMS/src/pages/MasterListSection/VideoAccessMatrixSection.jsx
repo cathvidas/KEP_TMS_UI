@@ -122,7 +122,7 @@ const VideoAccessMatrixSection = () => {
     <div className="flex justify-content-between">
       <div className="flex flex-wrap gap-3">
         <div className="flex theme-color">
-          <h6 className="theme-color m-0 fw-bold">Cost Codes</h6>
+          <h6 className="theme-color m-0 fw-bold">Video Access Matrix</h6>
         </div>
         <Button
           type="button"

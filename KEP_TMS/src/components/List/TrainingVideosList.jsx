@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { API_BASE_URL, SearchValueConstant } from "../../api/constants";
+import { SearchValueConstant } from "../../api/constants";
 import attachmentHook from "../../hooks/attachmentHook";
 import { ButtonGroup } from "primereact/buttongroup";
 import { Button } from "primereact/button";
@@ -7,9 +7,6 @@ import CommonTable from "../General/CommonTable";
 import { Paginator } from "primereact/paginator";
 import proptype from "prop-types"
 import VideoPlayer from "../General/VideoPlayer";
-import { VideoFileUrl } from "../../api/attachmentApi";
-import { SessionGetEmployeeId } from "../../services/sessions";
-import { getVideoAttachmentUrl } from "../../utils/getVideoAttachmentUrl";
 
 const TrainingVideosList = ({ requestId }) => {
   const [playVideo, setPlayVideo] = useState(false);

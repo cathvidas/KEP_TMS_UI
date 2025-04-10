@@ -87,7 +87,7 @@ const VideoAccessMatrixForm = ({ handleShow, handleClose, selectedData, onFinish
       <Modal show={handleShow} onHide={handleClose} size={"md"}>
         <Modal.Header className="border-0" closeButton>
           <Modal.Title className={`h5 theme-color`}>
-            {selectedData != null ? "Update Metrics" : "Add New Metrics"}
+            {selectedData != null ? "Update Matrix" : "Add User in Matrix"}
           </Modal.Title>
         </Modal.Header>
         <Form
