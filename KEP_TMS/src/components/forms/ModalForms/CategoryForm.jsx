@@ -27,10 +27,10 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
   };
   const validateForm = useCallback(() => {
     let formErrors = {};
-    if (!formData.name) {
+    if (!formData.name?.trim()) {
       formErrors.name = "Name is required";
     }
-    if (!formData.description) {
+    if (!formData.description?.trim()) {
       formErrors.description = "Description is required";
     }
     setErrors(formErrors);
@@ -58,14 +58,14 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
       selectedData != null
         ? {
             id: formData.id,
-            name: formData.name,
-            description: formData.description,
+            name: formData.name?.trim(),
+            description: formData.description?.trim(),
             statusId: formData.statusId,
             updatedBy: SessionGetEmployeeId(),
           }
         : {
-            name: formData.name,
-            description: formData.description,
+            name: formData.name?.trim(),
+            description: formData.description?.trim(),
             createdBy: SessionGetEmployeeId(),
             statusId: statusCode.ACTIVE,
           };
@@ -109,7 +109,6 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
           </Modal.Title>
         </Modal.Header>
         <Form
-          className={validated && "was-validated"}
           onSubmit={handleSubmit}
           noValidate
         >
