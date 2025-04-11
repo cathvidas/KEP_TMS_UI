@@ -34,6 +34,12 @@ import trainingDetailsService from "../../services/common/trainingDetailsService
 import userHook from "../../hooks/userHook";
 import { SectionHeading } from "../General/Section";
 import OldSystemActivityList from "../List/OldSystemActivityList";
+import validateEffectivenessEvaluation from "../../services/inputValidation/validateEffectivenessEvaluation";
+import CommentBox from "../General/CommentBox";
+import TextEditor from "./common/TextEditor";
+import EvaluatorEmailTemplate from "../email/EvaluatorEmailTemplate";
+import emailService from "../../services/emailService";
+import formatUserName from "../../utils/common/fomatUserName";
 const EffectivenessForm = ({
   data,
   evaluate,
@@ -50,6 +56,9 @@ const EffectivenessForm = ({
   const [actualPerfRating, setActualPerfRating] = useState({isRated: false, isRating: false, toBeRated: true});
   const [evaluatedActualPerfRating, setEvaluatedActualPerfRating] = useState({isRated: false, isRating: false, toBeRated: true});
   const [annotation, setAnnotation] = useState("");
+  const [showEmailTemplate, setShowEmailTemplate] = useState(false);
+  const [emailContent, setEmailContent] = useState(<></>);
+  const admins = userHook.useActiveAdmins();
   const [performanceCharacteristics, setPerformanceCharacteristics] = useState([
     effectivenessConstant.performanceCharacteristics, 
     effectivenessConstant.performanceCharacteristics,
@@ -210,6 +219,13 @@ const EffectivenessForm = ({
       });
     }
   };
+  const serializeContent = (evaluatorComment) => {
+   const div = document.createElement("div");
+   div.innerHTML = emailContent;
+   div.querySelector('#messageHolder').innerHTML = evaluatorComment;
+   return div.innerHTML;
+ }
+ const headerRef = useRef(null)
   const EvaluateEffectiveness = () => {
     const { formErrors, isValid } = validateTrainingEffectiveness(
       getFormData,
@@ -221,30 +237,64 @@ const EffectivenessForm = ({
     );
     setErrors(formErrors);
     if (isValid) {
-      confirmAction({
-        showLoaderOnConfirm: true,
-        title: "Submit Evaluation",
-        message: `Are you sure you want to submit this form?`,
-        confirmButtonText: "Submit",
-        cancelButtonText: "Cancel",
-        onConfirm: () =>
-          handleResponseAsync(
-            () =>
-              effectivenessService.updateTrainingEffectiveness({
-                ...getFormData,
-                updatedBy: SessionGetEmployeeId(),
-                id: formData.id,
-                statusId: statusCode.CLOSED,
-              }),
-            (e) => {
-              actionSuccessful("Success!", e?.message);
-              onFinish();
-            },
-            (e) => actionFailed("Error!", e.message)
-          ),
-      });
+      const lowRating = validateEffectivenessEvaluation(projectPerformanceEvaluation);
+      if(!lowRating){
+        submitManagerEvaluation(false)
+      }else{
+        setShowEmailTemplate(true)
+      }
     }
   };
+  const submitManagerEvaluation = (sendEmail, comment) => {   
+    confirmAction({
+      showLoaderOnConfirm: true,
+      title: "Submit Evaluation",
+      message: `Are you sure you want to submit this form?`,
+      confirmButtonText: "Submit",
+      cancelButtonText: "Cancel",
+      onConfirm: () => 
+        handleResponseAsync(
+          () =>
+            effectivenessService.updateTrainingEffectiveness({
+              ...getFormData,
+              updatedBy: SessionGetEmployeeId(),
+              id: formData.id,
+              statusId: statusCode.CLOSED,
+            }),
+          (e) => {
+            if (sendEmail) {
+              emailRemarks(comment);
+            } else {
+              actionSuccessful("Success!", e?.message);
+              onFinish();
+            }
+          },
+          (e) => actionFailed("Error!", e.message)
+        ),
+    });}
+  const emailRemarks = (comment) =>{
+    const mappedAdmins = admins?.data?.map((admin) => admin.employeeBadge);
+    const emailData = {
+      recipients: [userData?.employeeBadge],
+      toCC: [...mappedAdmins, userData?.superiorBadge],
+      subject: `6th Month Training Effectiveness Rating of the Evaluator: ${data?.trainingType?.name} Training Request no. ${data?.id} (Low  Effectiveness Rating)`,
+      body: serializeContent(comment),
+      sender: SessionGetEmployeeId()
+    } 
+    handleResponseAsync(
+      () =>
+        emailService.sendEmailToMany(emailData),
+      () => {
+        actionSuccessful("Success!", "Successfully evaluated effectiveness");
+        setShowEmailTemplate(false)
+        onFinish();
+      },
+      () => {actionFailed("Error!", "Error while sending an email notification");
+        onFinish();
+        setShowEmailTemplate(false);
+      }
+    );
+  }
   useEffect(() => {
     if (
       isTrainingEnd &&
@@ -296,8 +346,12 @@ const EffectivenessForm = ({
             </div>
             <div>
               Status: &nbsp;
-              <ActivityStatus status={currentRouting?.statusId ?? formData?.statusName} /> 
-              {currentRouting?.assignedDetail?.fullname ? " - " + currentRouting?.assignedDetail?.fullname : ""}
+              <ActivityStatus
+                status={currentRouting?.statusId ?? formData?.statusName}
+              />
+              {currentRouting?.assignedDetail?.fullname
+                ? " - " + currentRouting?.assignedDetail?.fullname
+                : ""}
             </div>
           </div>
         )}
@@ -480,230 +534,234 @@ const EffectivenessForm = ({
                 </Col>
               </Row>
               <Row className="overflow-auto px-2">
-              <Table className="table-bordered custom-table mx-1 mt-2 m-0">
-                <thead>
-                  <tr>
-                    <th
-                      colSpan={2}
-                      className="theme-bg-light text-muted text-center"
-                      style={{
-                        minWidth: "10rem",
-                        width: "100%",
-                        verticalAlign: "middle",
-                      }}
-                    >
-                      Project / Task / Assignment
-                    </th>
-                    <td
-                      className="theme-bg-light text-muted text-center"
-                      style={{ verticalAlign: "middle" }}
-                    >
-                      <b> Performance Before Training </b> &#x28;to be filled up
-                      before the training by the employee&#x29;
-                    </td>
-                    <td
-                      className="theme-bg-light text-muted text-center"
-                      style={{ verticalAlign: "middle" }}
-                    >
-                      <b> Projected Performance </b> &#x28;to be filled up
-                      before the training by the employee&#x29;
-                    </td>
-                    <td
-                      className="theme-bg-light text-muted text-center"
-                      style={{ verticalAlign: "middle" }}
-                    >
-                      <b> Actual Performance </b> &#x28;to be filled up 6 months
-                      after the training by the employee&#x29;
-                    </td>
-                    <td
-                      className="theme-bg-light text-muted text-center"
-                      style={{ verticalAlign: "middle" }}
-                    >
-                      <b>
-                        {" "}
-                        Actual Performance evaluated by the immediate manager{" "}
-                      </b>{" "}
-                      &#x28;to be filled up by the manager 6 months after the
-                      employee&apos;s training&#x29;
-                    </td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {projectPerformanceEvaluation?.map((evalItem, index) => (
-                    <tr
-                      key={`evaluation${index}`}
-                      className="position-relative performanceTable"
-                    >
-                      <th scope="row" className="text-center">
-                        {index + 1}
+                <Table className="table-bordered custom-table mx-1 mt-2 m-0">
+                  <thead>
+                    <tr>
+                      <th
+                        colSpan={2}
+                        className="theme-bg-light text-muted text-center"
+                        style={{
+                          minWidth: "10rem",
+                          width: "100%",
+                          verticalAlign: "middle",
+                        }}
+                      >
+                        Project / Task / Assignment
                       </th>
-                      <td>
-                        <textarea
-                          className="no-focus w-100 border-0"
-                          name="content"
-                          value={evalItem?.content ?? ""}
-                          onChange={(e) =>
-                            handlePerfEvaluationOnChange(e, index)
-                          }
-                          readOnly={isSubmitted && !isUpdate}
-                        ></textarea>
-                      </td>
                       <td
-                        className="text-center"
+                        className="theme-bg-light text-muted text-center"
                         style={{ verticalAlign: "middle" }}
                       >
-                        <Rating
-                          className="justify-content-center"
-                          value={evalItem?.performanceBeforeTraining}
-                          name="performanceBeforeTraining"
-                          onChange={(e) =>
-                            handlePerfEvaluationOnChange(e, index, true)
-                          }
-                          cancel={
-                            evalItem?.performanceBeforeTraining > 0 &&
-                            (isUpdate || !isSubmitted)
-                          }
-                          readOnly={isSubmitted && !isUpdate}
-                        />
-                        <small className="mt-1 d-block">
-                          {evalItem?.content ? (
-                            isSubmitted ? (
-                              formatDateOnly(
-                                evalItem?.createdDate ??
-                                  performanceRatingDate?.creatorAudit
-                              )
-                            ) : (
-                              evalItem?.performanceBeforeTraining > 0 &&
-                              formatDateOnly(new Date())
-                            )
-                          ) : (
-                            <></>
-                          )}
-                        </small>
+                        <b> Performance Before Training </b> &#x28;to be filled
+                        up before the training by the employee&#x29;
                       </td>
                       <td
-                        className="text-center"
+                        className="theme-bg-light text-muted text-center"
                         style={{ verticalAlign: "middle" }}
                       >
-                        <Rating
-                          className="justify-content-center"
-                          value={evalItem?.projectedPerformance}
-                          name="projectedPerformance"
-                          onChange={(e) =>
-                            handlePerfEvaluationOnChange(e, index, true)
-                          }
-                          cancel={
-                            evalItem?.projectedPerformance > 0 &&
-                            (isUpdate || !isSubmitted)
-                          }
-                          readOnly={isSubmitted && !isUpdate}
-                        />
-                        <small className="mt-1 d-block">
-                          {evalItem?.content ? (
-                            isSubmitted ? (
-                              formatDateOnly(
-                                evalItem?.createdDate ??
-                                  performanceRatingDate?.creatorAudit
-                              )
-                            ) : (
-                              evalItem?.projectedPerformance > 0 &&
-                              formatDateOnly(new Date())
-                            )
-                          ) : (
-                            <></>
-                          )}
-                        </small>
+                        <b> Projected Performance </b> &#x28;to be filled up
+                        before the training by the employee&#x29;
                       </td>
                       <td
-                        className="text-center"
+                        className="theme-bg-light text-muted text-center"
                         style={{ verticalAlign: "middle" }}
                       >
-                        <Rating
-                          className="justify-content-center"
-                          value={evalItem?.actualPerformance}
-                          name="actualPerformance"
-                          onChange={(e) =>
-                            handlePerfEvaluationOnChange(e, index, true)
-                          }
-                          readOnly={
-                            !(
-                              ((isUpdate || actualPerfRating.isRating) &&
-                                evalItem?.content) ||
-                              !isSubmitted
-                            )
-                          }
-                          cancel={
-                            evalItem?.actualPerformance > 0 &&
-                            (isUpdate ||
-                              !isSubmitted ||
-                              actualPerfRating.isRating)
-                          }
-                          disabled={actualPerfRating.toBeRated}
-                        />
-                        <small className="mt-1 d-block">
-                          {evalItem?.content ? (
-                            isSubmitted &&
-                            performanceRatingDate?.evaluatorAudit ? (
-                              formatDateOnly(
-                                evalItem?.createdDate ??
-                                  performanceRatingDate?.evaluatorAudit
-                              )
-                            ) : (
-                              evalItem?.actualPerformance > 0 &&
-                              formatDateOnly(new Date())
-                            )
-                          ) : (
-                            <></>
-                          )}
-                          {!actualPerfRating.isRated &&
-                            !actualPerfRating.toBeRated &&
-                            isSubmitted && !oldSystem &&
-                            formData?.createdBy == SessionGetEmployeeId() &&
-                            evalItem?.actualPerformance === null &&
-                            evalItem?.content && (
-                              <span className="text-danger">Please Rate</span>
-                            )}
-                        </small>
+                        <b> Actual Performance </b> &#x28;to be filled up 6
+                        months after the training by the employee&#x29;
                       </td>
                       <td
-                        className="text-center"
+                        className="theme-bg-light text-muted text-center"
                         style={{ verticalAlign: "middle" }}
                       >
-                        <Rating
-                          className="justify-content-center"
-                          value={evalItem?.evaluatedActualPerformance}
-                          name="evaluatedActualPerformance"
-                          onChange={(e) =>
-                            handlePerfEvaluationOnChange(e, index, true)
-                          }
-                          cancel={
-                            evalItem?.evaluatedActualPerformance > 0 &&
-                            evaluatedActualPerfRating.isRating
-                          }
-                          readOnly={!evaluatedActualPerfRating.isRating}
-                          disabled={evaluatedActualPerfRating.toBeRated}
-                        />
-                        <small className="mt-1 d-block">
-                          {isSubmitted && performanceRatingDate?.evaluatorAudit
-                            ? formatDateOnly(
-                                evalItem?.createdDate ??
-                                  performanceRatingDate?.evaluatorAudit
-                              )
-                            : evalItem?.evaluatedActualPerformance > 0 &&
-                              formatDateOnly(new Date())}
-
-                          {evaluatedActualPerfRating.isRating &&
-                            isSubmitted && !oldSystem &&
-                            !(evalItem?.evaluatedActualPerformance > 1) &&
-                            evalItem?.content && (
-                              <span className="text-danger">Please Rate</span>
-                            )}
-                        </small>
+                        <b>
+                          {" "}
+                          Actual Performance evaluated by the immediate manager{" "}
+                        </b>{" "}
+                        &#x28;to be filled up by the manager 6 months after the
+                        employee&apos;s training&#x29;
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </Table></Row>
+                  </thead>
+                  <tbody>
+                    {projectPerformanceEvaluation?.map((evalItem, index) => (
+                      <tr
+                        key={`evaluation${index}`}
+                        className="position-relative performanceTable"
+                      >
+                        <th scope="row" className="text-center">
+                          {index + 1}
+                        </th>
+                        <td>
+                          <textarea
+                            className="no-focus w-100 border-0"
+                            name="content"
+                            value={evalItem?.content ?? ""}
+                            onChange={(e) =>
+                              handlePerfEvaluationOnChange(e, index)
+                            }
+                            readOnly={isSubmitted && !isUpdate}
+                          ></textarea>
+                        </td>
+                        <td
+                          className="text-center"
+                          style={{ verticalAlign: "middle" }}
+                        >
+                          <Rating
+                            className="justify-content-center"
+                            value={evalItem?.performanceBeforeTraining}
+                            name="performanceBeforeTraining"
+                            onChange={(e) =>
+                              handlePerfEvaluationOnChange(e, index, true)
+                            }
+                            cancel={
+                              evalItem?.performanceBeforeTraining > 0 &&
+                              (isUpdate || !isSubmitted)
+                            }
+                            readOnly={isSubmitted && !isUpdate}
+                          />
+                          <small className="mt-1 d-block">
+                            {evalItem?.content ? (
+                              isSubmitted ? (
+                                formatDateOnly(
+                                  evalItem?.createdDate ??
+                                    performanceRatingDate?.creatorAudit
+                                )
+                              ) : (
+                                evalItem?.performanceBeforeTraining > 0 &&
+                                formatDateOnly(new Date())
+                              )
+                            ) : (
+                              <></>
+                            )}
+                          </small>
+                        </td>
+                        <td
+                          className="text-center"
+                          style={{ verticalAlign: "middle" }}
+                        >
+                          <Rating
+                            className="justify-content-center"
+                            value={evalItem?.projectedPerformance}
+                            name="projectedPerformance"
+                            onChange={(e) =>
+                              handlePerfEvaluationOnChange(e, index, true)
+                            }
+                            cancel={
+                              evalItem?.projectedPerformance > 0 &&
+                              (isUpdate || !isSubmitted)
+                            }
+                            readOnly={isSubmitted && !isUpdate}
+                          />
+                          <small className="mt-1 d-block">
+                            {evalItem?.content ? (
+                              isSubmitted ? (
+                                formatDateOnly(
+                                  evalItem?.createdDate ??
+                                    performanceRatingDate?.creatorAudit
+                                )
+                              ) : (
+                                evalItem?.projectedPerformance > 0 &&
+                                formatDateOnly(new Date())
+                              )
+                            ) : (
+                              <></>
+                            )}
+                          </small>
+                        </td>
+                        <td
+                          className="text-center"
+                          style={{ verticalAlign: "middle" }}
+                        >
+                          <Rating
+                            className="justify-content-center"
+                            value={evalItem?.actualPerformance}
+                            name="actualPerformance"
+                            onChange={(e) =>
+                              handlePerfEvaluationOnChange(e, index, true)
+                            }
+                            readOnly={
+                              !(
+                                ((isUpdate || actualPerfRating.isRating) &&
+                                  evalItem?.content) ||
+                                !isSubmitted
+                              )
+                            }
+                            cancel={
+                              evalItem?.actualPerformance > 0 &&
+                              (isUpdate ||
+                                !isSubmitted ||
+                                actualPerfRating.isRating)
+                            }
+                            disabled={actualPerfRating.toBeRated}
+                          />
+                          <small className="mt-1 d-block">
+                            {evalItem?.content ? (
+                              isSubmitted &&
+                              performanceRatingDate?.evaluatorAudit ? (
+                                formatDateOnly(
+                                  evalItem?.createdDate ??
+                                    performanceRatingDate?.evaluatorAudit
+                                )
+                              ) : (
+                                evalItem?.actualPerformance > 0 &&
+                                formatDateOnly(new Date())
+                              )
+                            ) : (
+                              <></>
+                            )}
+                            {!actualPerfRating.isRated &&
+                              !actualPerfRating.toBeRated &&
+                              isSubmitted &&
+                              !oldSystem &&
+                              formData?.createdBy == SessionGetEmployeeId() &&
+                              evalItem?.actualPerformance === null &&
+                              evalItem?.content && (
+                                <span className="text-danger">Please Rate</span>
+                              )}
+                          </small>
+                        </td>
+                        <td
+                          className="text-center"
+                          style={{ verticalAlign: "middle" }}
+                        >
+                          <Rating
+                            className="justify-content-center"
+                            value={evalItem?.evaluatedActualPerformance}
+                            name="evaluatedActualPerformance"
+                            onChange={(e) =>
+                              handlePerfEvaluationOnChange(e, index, true)
+                            }
+                            cancel={
+                              evalItem?.evaluatedActualPerformance > 0 &&
+                              evaluatedActualPerfRating.isRating
+                            }
+                            readOnly={!evaluatedActualPerfRating.isRating}
+                            disabled={evaluatedActualPerfRating.toBeRated}
+                          />
+                          <small className="mt-1 d-block">
+                            {isSubmitted &&
+                            performanceRatingDate?.evaluatorAudit
+                              ? formatDateOnly(
+                                  evalItem?.createdDate ??
+                                    performanceRatingDate?.evaluatorAudit
+                                )
+                              : evalItem?.evaluatedActualPerformance > 0 &&
+                                formatDateOnly(new Date())}
+
+                            {evaluatedActualPerfRating.isRating &&
+                              isSubmitted &&
+                              !oldSystem &&
+                              !(evalItem?.evaluatedActualPerformance > 1) &&
+                              evalItem?.content && (
+                                <span className="text-danger">Please Rate</span>
+                              )}
+                          </small>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Row>
               <div className="flex hideExport">
                 {errors?.projectPerformanceEvaluation && (
                   <ErrorTemplate
@@ -778,89 +836,92 @@ const EffectivenessForm = ({
 
               {data?.trainingParticipants?.some(
                 (x) => x.employeeBadge === SessionGetEmployeeId()
-              ) && !oldSystem && (
-                <>
-                  {(formData?.statusName ==
-                    getStatusById(statusCode.DISAPPROVED) ||
-                    (!actualPerfRating.isRated &&
-                      !actualPerfRating.toBeRated) ||
-                    (!isUpdate &&
-                      isSubmitted &&
-                      isTrainingEnd &&
-                      !formData?.annotation &&
-                      isSubmitted)) &&
-                    formData?.createdBy === SessionGetEmployeeId() && (
-                      <Button
-                        type="button"
-                        icon={
-                          !(isUpdate || actualPerfRating.isRating) &&
-                          "pi pi-pencil"
-                        }
-                        label={
-                          isUpdate || actualPerfRating.isRating
-                            ? "Cancel"
-                            : "Edit"
-                        }
-                        className="rounded ms-auto"
-                        severity="secondary"
-                        text={isUpdate || actualPerfRating.isRating}
-                        onClick={() => {
-                          if (
-                            formData?.statusName ==
-                              getStatusById(statusCode.DISAPPROVED) ||
-                            (isTrainingEnd && isSubmitted)
-                          ) {
-                            setIsUpdate(!isUpdate);
-                          }
-                          if (!actualPerfRating.isRated && isSubmitted) {
-                            setActualPerfRating((prev) => ({
-                              ...prev,
-                              isRating: !actualPerfRating.isRating,
-                            }));
-                          }
-                          populateData();
-                        }}
-                      />
-                    )}
-                  {(!isSubmitted || isUpdate || actualPerfRating.isRating) && (
-                    <>
-                      {!isSubmitted && (
+              ) &&
+                !oldSystem && (
+                  <>
+                    {(formData?.statusName ==
+                      getStatusById(statusCode.DISAPPROVED) ||
+                      (!actualPerfRating.isRated &&
+                        !actualPerfRating.toBeRated) ||
+                      (!isUpdate &&
+                        isSubmitted &&
+                        isTrainingEnd &&
+                        !formData?.annotation &&
+                        isSubmitted)) &&
+                      formData?.createdBy === SessionGetEmployeeId() && (
                         <Button
                           type="button"
-                          icon="pi pi-eraser"
-                          label="Reset"
+                          icon={
+                            !(isUpdate || actualPerfRating.isRating) &&
+                            "pi pi-pencil"
+                          }
+                          label={
+                            isUpdate || actualPerfRating.isRating
+                              ? "Cancel"
+                              : "Edit"
+                          }
                           className="rounded ms-auto"
                           severity="secondary"
+                          text={isUpdate || actualPerfRating.isRating}
                           onClick={() => {
-                            setPerformanceCharacteristics([
-                              effectivenessConstant.performanceCharacteristics,
-                              effectivenessConstant.performanceCharacteristics,
-                              effectivenessConstant.performanceCharacteristics,
-                            ]);
-                            setProjectPerformanceEvaluation([
-                              effectivenessConstant.projectPerformanceEvaluation,
-                              effectivenessConstant.projectPerformanceEvaluation,
-                              effectivenessConstant.projectPerformanceEvaluation,
-                            ]);
+                            if (
+                              formData?.statusName ==
+                                getStatusById(statusCode.DISAPPROVED) ||
+                              (isTrainingEnd && isSubmitted)
+                            ) {
+                              setIsUpdate(!isUpdate);
+                            }
+                            if (!actualPerfRating.isRated && isSubmitted) {
+                              setActualPerfRating((prev) => ({
+                                ...prev,
+                                isRating: !actualPerfRating.isRating,
+                              }));
+                            }
+                            populateData();
                           }}
                         />
                       )}
-                      <Button
-                        type="button"
-                        icon={"pi pi-cloud-upload"}
-                        label={"Submit"}
-                        className="rounded ms-2"
-                        severity="success"
-                        onClick={
-                          isUpdate || actualPerfRating.isRating
-                            ? () => handleSubmit(true)
-                            : () => handleSubmit(false)
-                        }
-                      />
-                    </>
-                  )}
-                </>
-              )}
+                    {(!isSubmitted ||
+                      isUpdate ||
+                      actualPerfRating.isRating) && (
+                      <>
+                        {!isSubmitted && (
+                          <Button
+                            type="button"
+                            icon="pi pi-eraser"
+                            label="Reset"
+                            className="rounded ms-auto"
+                            severity="secondary"
+                            onClick={() => {
+                              setPerformanceCharacteristics([
+                                effectivenessConstant.performanceCharacteristics,
+                                effectivenessConstant.performanceCharacteristics,
+                                effectivenessConstant.performanceCharacteristics,
+                              ]);
+                              setProjectPerformanceEvaluation([
+                                effectivenessConstant.projectPerformanceEvaluation,
+                                effectivenessConstant.projectPerformanceEvaluation,
+                                effectivenessConstant.projectPerformanceEvaluation,
+                              ]);
+                            }}
+                          />
+                        )}
+                        <Button
+                          type="button"
+                          icon={"pi pi-cloud-upload"}
+                          label={"Submit"}
+                          className="rounded ms-2"
+                          severity="success"
+                          onClick={
+                            isUpdate || actualPerfRating.isRating
+                              ? () => handleSubmit(true)
+                              : () => handleSubmit(false)
+                          }
+                        />
+                      </>
+                    )}
+                  </>
+                )}
               {evaluatedActualPerfRating.isRating && (
                 <Button
                   type="button"
@@ -881,7 +942,11 @@ const EffectivenessForm = ({
             {oldSystem ? (
               <OldSystemActivityList
                 activityType={ActivityType.EFFECTIVENESS}
-                trainingType={TrainingType.EXTERNAL == formData?.trainingTypeName ? TrainingType.EXTERNAL : TrainingType.INTERNAL}
+                trainingType={
+                  TrainingType.EXTERNAL == formData?.trainingTypeName
+                    ? TrainingType.EXTERNAL
+                    : TrainingType.INTERNAL
+                }
                 id={formData?.id}
               />
             ) : (
@@ -904,6 +969,31 @@ const EffectivenessForm = ({
           </>
         )}
       </Card.Body>
+      <CommentBox
+        header={"Comments"}
+        show={showEmailTemplate}
+        onClose={() => {
+          setShowEmailTemplate(false);
+        }}
+        placeholder={"Add a comment here..."}
+        description={
+          "Please provide your feedback or explain why you rated the employee's actual performance lower than their actual performance rating."
+        }
+        cancelButtonText="Edit Ratings"
+        submitButtonText="Submit Evaluation"
+        onSubmit={(e) => {submitManagerEvaluation(true, e);
+        }}
+      />
+      <div className="d-none">
+        <div ref={headerRef}>
+          <EvaluatorEmailTemplate reqData={data} recipientName={formatUserName(userData)}/>
+        </div>
+        <TextEditor
+          defaultValue={headerRef.current?.innerHTML}
+          showToolbar
+          onChange={(e) => setEmailContent(e)}
+        />
+      </div>
     </>
   );
 };

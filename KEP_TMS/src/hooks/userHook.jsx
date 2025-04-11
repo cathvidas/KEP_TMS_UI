@@ -85,6 +85,32 @@ const userHook = {
         loading,
       };
     },
+    useActiveAdmins:(loader, trigger) => {
+      const [data, setData] = useState();
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      useEffect(() => {
+        const getRequest = async () => {
+          if(loader){
+            setLoading(true);
+          }
+          handleResponseAsync(
+            () =>
+              userService.getActiveAdmins(
+              ),
+            (e) => setData(e),
+            (e) => setError(e),
+            () => setLoading(false)
+          );
+        };
+        getRequest();
+      }, [loader,trigger]);
+      return {
+        data,
+        error,
+        loading,
+      };
+    },
     useFacilitators:(pageNumber = 1, pageSize = 100, searchValue, trigger) => {
       const [data, setData] = useState([]);
       const [error, setError] = useState(null);
