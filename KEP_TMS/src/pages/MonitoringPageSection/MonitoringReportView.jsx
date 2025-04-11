@@ -18,6 +18,7 @@ import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import effectivenessHook from "../../hooks/effectivenessHook";
 import trainingReportHook from "../../hooks/trainingReportHook";
 import evaluationHook from "../../hooks/evaluationHook";
+import NotFoundPage from "../NotFoundPage";
 const MonitoringReportView = ({
   data,
   reportType,
@@ -202,6 +203,7 @@ const MonitoringReportView = ({
   addcolumns();
   return (
     <>
+    {SessionGetRole() === UserTypeValue.ADMIN ? <>
       {!showForm ? (
         <>
           {showEmailTemplate ? (
@@ -329,6 +331,7 @@ const MonitoringReportView = ({
           </Card>
         </>
       )}{" "}
+      </> : <NotFoundPage/>}
     </>
   );
 };

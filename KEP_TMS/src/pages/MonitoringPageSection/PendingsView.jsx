@@ -2,9 +2,11 @@ import { SectionHeading } from "../../components/General/Section";
 import proptype from "prop-types";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
-import { OtherConstant, statusCode } from "../../api/constants";
+import { OtherConstant, statusCode, UserTypeValue } from "../../api/constants";
 import { Button } from "primereact/button";
 import TrainingFormsEmailTemplate from "../../components/email/TrainingFormsEmailTemplate";
+import NotFoundPage from "../NotFoundPage";
+import { SessionGetRole } from "../../services/sessions";
 const PendingView = ({ data, formData, examDetail, oldSystem }) => {
   const [showEmailTemplate, setShowEmailTemplate] = useState(false);
   const getExamSumary = (traineeId) => {
@@ -84,7 +86,8 @@ const PendingView = ({ data, formData, examDetail, oldSystem }) => {
     );
   };
   return (
-    <>
+    <>   
+    {SessionGetRole() === UserTypeValue.ADMIN ? <>
       {!showEmailTemplate ? (
         <>
           <SectionHeading
@@ -106,7 +109,7 @@ const PendingView = ({ data, formData, examDetail, oldSystem }) => {
           onClose={() => setShowEmailTemplate(false)}
           disableFormLink
         />
-      )}{" "}
+      )}{" "}</> : <NotFoundPage/>}
     </>
   );
 };
