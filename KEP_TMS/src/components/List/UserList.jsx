@@ -5,6 +5,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import StatusColor from "../General/StatusColor";
 import effectivenessHook from "../../hooks/effectivenessHook";
+import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 
 export const UserList = ({
   userlist,
@@ -17,7 +18,8 @@ export const UserList = ({
   allowEffectiveness = false,
   sortable= false,
   selectionMode,showSelected,
-  handleScroll
+  handleScroll,
+  loading
 }) => {
   // const [filters, setFilters] = useState(filterTemp);
   const [selected, setSelected] = useState([]);
@@ -81,6 +83,7 @@ export const UserList = ({
           </>)}
       
     </div>}
+    {loading ? <SkeletonDataTable/> : <>
       {userlist && (
         <>
         
@@ -124,7 +127,7 @@ export const UserList = ({
             {column && column}
           </DataTable>
         </>
-      )}
+      )}</>}
     </>
   );
 };
@@ -145,4 +148,5 @@ UserList.propTypes = {
   selectionMode: proptype.bool,
   showSelected: proptype.bool,
   handleScroll: proptype.func,
+  loading: proptype.bool,
 };
