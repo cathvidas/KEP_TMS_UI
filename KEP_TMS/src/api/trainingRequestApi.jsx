@@ -43,3 +43,6 @@ export const getPagedTrainingRequestsApi = async (pageNumber, pageSize, searchVa
     }
     return await fetchFromApi(url);
 }
+export const DeleteTrainingRequestApi = async (id) =>{
+    return await fetchFromApi(`TrainingRequest/DeleteTrainingRequest?Id=${id}`, "DELETE");
+}

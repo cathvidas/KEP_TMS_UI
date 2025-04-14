@@ -245,7 +245,7 @@ const trainingRequestHook = {
       loading,
     };
   },
-  useTrainingRequestSummary: (id) => {
+  useTrainingRequestSummary: (id, trigger) => {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -259,7 +259,7 @@ const trainingRequestHook = {
         );
       };
       fetchData();
-    }, [id]);
+    }, [id, trigger]);
     return {
       data,
       error,

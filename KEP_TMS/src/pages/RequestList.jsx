@@ -19,12 +19,13 @@ const RequestList = () => {
   const { type } = useParams();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [trigger, setTrigger] = useState(0);
   const isAdmin =
     SessionGetRole() == UserTypeValue.ADMIN ||
     SessionGetRole() == UserTypeValue.SUPER_ADMIN
       ? true
       : false;
-  const {data} = trainingRequestHook.useTrainingRequestSummary(SessionGetEmployeeId());
+  const {data} = trainingRequestHook.useTrainingRequestSummary(SessionGetEmployeeId(), trigger);
   const [filter, setFilter] = useState({
     label: type,
     value: getStatusCode(type),
@@ -185,6 +186,7 @@ const RequestList = () => {
                 isAdmin={isAdmin}
                 isRequestor
                 enablePagination
+                reload={()=>setTrigger(prev => prev + 1)}
               />
             </div>
           </div>

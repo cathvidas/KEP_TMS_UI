@@ -1,5 +1,5 @@
 import { approveTrainingFormApi, disapproveActivityApi } from "../api/commonApi";
-import {createTrainingRequestApi, getPagedTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestsByRequestorApi, GetTrainingRequestSummaryApi, GetTrainingsAttendedApi, GetTrainingsFacilitatedApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
+import {createTrainingRequestApi, DeleteTrainingRequestApi, getPagedTrainingRequestsApi, getTrainingRequestApi, getTrainingRequestByApproverApi, getTrainingRequestsByRequestorApi, GetTrainingRequestSummaryApi, GetTrainingsAttendedApi, GetTrainingsFacilitatedApi, updateTrainingRequestApi } from "../api/trainingRequestApi"
 
 const trainingRequestService = {
   approveTrainingRequest: async (data) => {
@@ -54,6 +54,13 @@ const trainingRequestService = {
       throw new Error(response.message);
     }
     return response?.data;
+  },
+  deleteTrainingRequest: async (id) => {
+    const response =  await DeleteTrainingRequestApi(id || 0);
+    if(response.status !== 1){
+      throw new Error(response.message);
+    }
+    return response;
   },
 };
 export default trainingRequestService;
