@@ -231,5 +231,22 @@ const commonHook = {
     }, [faciList, isOldSystem, placeholder]);
     return { data, error, loading };
   },
+  useDepartmentManager: (userId) => {
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+        handleResponseAsync(
+          () => commonService.getDepartmentManager(userId),
+          (res) => setData(res),
+          (err) => setError(err),
+          () => setLoading(false)
+        );
+      };
+      fetchData();
+    }, [userId]);
+    return { data, error, loading };
+  },
 };
 export default commonHook;

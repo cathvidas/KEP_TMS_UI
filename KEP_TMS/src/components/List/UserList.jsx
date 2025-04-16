@@ -37,7 +37,7 @@ export const UserList = ({
   }, [selected, handleParticipants]);
   const actionBodyTemplate = (data) => {
     return (
-      <Button type="button" severity="danger" icon="pi pi-trash" text onClick={() => setRemoveEmpBadge(data.employeeBadge)}/>
+      <Button type="button" severity="danger" className="py-0" icon="pi pi-trash" text onClick={() => setRemoveEmpBadge(data.employeeBadge)}/>
     );
   };
   const effectivenessTemplate = (rowData) => {

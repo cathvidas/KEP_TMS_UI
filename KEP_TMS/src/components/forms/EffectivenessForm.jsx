@@ -59,6 +59,7 @@ const EffectivenessForm = ({
   const [showEmailTemplate, setShowEmailTemplate] = useState(false);
   const [emailContent, setEmailContent] = useState(<></>);
   const admins = userHook.useActiveAdmins();
+  const deptManager = commonHook.useDepartmentManager(userData?.employeeBadge);
   const [performanceCharacteristics, setPerformanceCharacteristics] = useState([
     effectivenessConstant.performanceCharacteristics, 
     effectivenessConstant.performanceCharacteristics,
@@ -220,6 +221,7 @@ const EffectivenessForm = ({
     }
   };
   const serializeContent = (evaluatorComment) => {
+  evaluatorComment = evaluatorComment.replace(/\n/g, "<br>");
    const div = document.createElement("div");
    div.innerHTML = emailContent;
    div.querySelector('#messageHolder').innerHTML = evaluatorComment;
@@ -275,11 +277,10 @@ const EffectivenessForm = ({
   const emailRemarks = (comment) =>{
     const mappedAdmins = admins?.data?.map((admin) => admin.employeeBadge);
     const emailData = {
-      recipients: [userData?.employeeBadge],
+      recipients: [deptManager?.data?.employeeBadge],
       toCC: [...mappedAdmins, userData?.superiorBadge],
       subject: `6th Month Training Effectiveness Rating of the Evaluator: ${data?.trainingType?.name} Training Request no. ${data?.id} (Low  Effectiveness Rating)`,
       body: serializeContent(comment),
-      sender: SessionGetEmployeeId()
     } 
     handleResponseAsync(
       () =>
@@ -427,16 +428,16 @@ const EffectivenessForm = ({
               />
             </Row>
             <br />
-            <small>
+            <p>
               <b>
                 Part I and II to be filled out by the trainee with the
                 concurrence of the immediate manager BEFORE the training
               </b>
-            </small>
+            </p>
+            <p className="text-muted">
+              <b>Rating Scale:  0 - not competent; 1 - less competent; 2- competent; 3- very competent; 4 - exceptionally competent</b>{" "}
+            </p>
             <br />
-            <label>
-              <b>Rating Scale:</b>{" "}
-            </label>
             <Form.Group>
               <b>
                 I. What are the specific performance characteristics that you
@@ -481,6 +482,7 @@ const EffectivenessForm = ({
                         </td>
                         <td style={{ verticalAlign: "middle" }}>
                           <Rating
+                            stars={4}
                             className="justify-content-center"
                             value={performanceCharacteristics[index]?.rating}
                             name="rating"
@@ -542,7 +544,7 @@ const EffectivenessForm = ({
                         className="theme-bg-light text-muted text-center"
                         style={{
                           minWidth: "10rem",
-                          width: "100%",
+                          width: "50%",
                           verticalAlign: "middle",
                         }}
                       >
@@ -607,6 +609,7 @@ const EffectivenessForm = ({
                           style={{ verticalAlign: "middle" }}
                         >
                           <Rating
+                            stars={4}
                             className="justify-content-center"
                             value={evalItem?.performanceBeforeTraining}
                             name="performanceBeforeTraining"
@@ -640,6 +643,7 @@ const EffectivenessForm = ({
                           style={{ verticalAlign: "middle" }}
                         >
                           <Rating
+                            stars={4}
                             className="justify-content-center"
                             value={evalItem?.projectedPerformance}
                             name="projectedPerformance"
@@ -673,6 +677,7 @@ const EffectivenessForm = ({
                           style={{ verticalAlign: "middle" }}
                         >
                           <Rating
+                            stars={4}
                             className="justify-content-center"
                             value={evalItem?.actualPerformance}
                             name="actualPerformance"
@@ -725,6 +730,7 @@ const EffectivenessForm = ({
                           style={{ verticalAlign: "middle" }}
                         >
                           <Rating
+                            stars={4}
                             className="justify-content-center"
                             value={evalItem?.evaluatedActualPerformance}
                             name="evaluatedActualPerformance"
@@ -970,15 +976,13 @@ const EffectivenessForm = ({
         )}
       </Card.Body>
       <CommentBox
-        header={"Comments"}
+        header={"Action Plan"}
         show={showEmailTemplate}
         onClose={() => {
           setShowEmailTemplate(false);
         }}
-        placeholder={"Add a comment here..."}
-        description={
-          "Please provide your feedback or explain why you rated the employee's actual performance lower than their actual performance rating."
-        }
+        placeholder={"start writing here..."}
+        description={"Please provide a detailed description of the action plan."}
         cancelButtonText="Edit Ratings"
         submitButtonText="Submit Evaluation"
         onSubmit={(e) => {submitManagerEvaluation(true, e);
@@ -986,7 +990,7 @@ const EffectivenessForm = ({
       />
       <div className="d-none">
         <div ref={headerRef}>
-          <EvaluatorEmailTemplate reqData={data} recipientName={formatUserName(userData)}/>
+          <EvaluatorEmailTemplate evaluatorName={evaluator?.fullname} targetDateEvaluation={getAfterTrainingDate().toString()} ratingDate={performanceRatingDate} reqData={data} employeeName={formatUserName(userData)} projectPerformanceEvaluation={projectPerformanceEvaluation}/>
         </div>
         <TextEditor
           defaultValue={headerRef.current?.innerHTML}
