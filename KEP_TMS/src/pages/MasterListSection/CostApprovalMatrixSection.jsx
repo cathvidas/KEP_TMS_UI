@@ -99,7 +99,7 @@ const CostApprovalMatrixSection = () => {
     },
     {
       field: "cost",
-      header: "Cost Range",
+      header: "Amount",
     },
     {
       field: "description",
