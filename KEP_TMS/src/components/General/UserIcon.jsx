@@ -10,7 +10,7 @@ const UserIcon = ({ Name }) => {
           className="border rounded-circle ratio ratio-1x1 d-flex text-center align-items-center justify-content-center"
           style={{ width: "30px" }}
         >
-          <span style={{ marginTop: "1px" }}>{GetInitials(Name)}</span>
+          <span style={{ marginTop: "3px" }}>{GetInitials(Name)}</span>
         </div>
       </div>
     </>

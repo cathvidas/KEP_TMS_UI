@@ -34,7 +34,7 @@ const Sidebar = ({ activeNavigation, expanded, show, hide }) => {
       <li className="nav-item">
         <div
           className={`nav-link py-2 cursor-pointer  ${
-            expanded ? "px-3" : "px-2"
+            expanded ? "px-3" : "px-1"
           } link-body-emphasis rounded-0  ${
             checkIfActive(item) ? "link-light active" : "text-secondary"
           }`}
@@ -110,7 +110,7 @@ const Sidebar = ({ activeNavigation, expanded, show, hide }) => {
           width: expanded ? "" : "5rem",
         }}
       >
-        <div className="d-flex w-100 flex-column  h-100 theme2-bg top-0 bottom-0">
+        <div className="d-flex w-100 flex-column  h-100 theme2-bg top-0 bottom-0 overflow-y-auto">
           <Link
             className={`border-bottom fw-bold lh-1 bg-white gap-0 flex text-decoration-none py-1`}
             to={expanded ? "" : `${APP_DOMAIN}/Dashboard`}
