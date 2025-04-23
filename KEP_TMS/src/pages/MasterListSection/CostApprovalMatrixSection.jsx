@@ -96,6 +96,8 @@ const CostApprovalMatrixSection = () => {
     {
       field: "title",
       header: "Title",
+      body: (rowData) =>
+        userHook.useUserById(rowData.employeeBadge)?.data?.position,
     },
     {
       field: "cost",
