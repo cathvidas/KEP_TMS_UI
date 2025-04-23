@@ -48,6 +48,7 @@ return (
           <td style={{ padding: "5px", width: "17%"}}><strong>Actual Performance evaluated by the immediate manager</strong></td>
         </tr>
         {projectPerformanceEvaluation?.map((item, index)=>{
+          if(item.content?.trim()){
           return(
             <tr key={index}  style={{textAlign: "center"}}>
               <td style={{ padding: "5px" }}>{index + 1}</td>
@@ -57,7 +58,7 @@ return (
               <td style={{ padding: "5px" }}><strong>{item.actualPerformance}</strong>; {formatDateOnly(item?.createdDate ?? ratingDate?.creatorAudit)}</td>
               <td style={{ padding: "5px" }}><strong>{item.evaluatedActualPerformance}</strong>; {formatDateOnly(item?.createdDate ?? ratingDate?.evaluatorAudit ?? formatDateOnly(new Date()))}</td>
             </tr>
-          )
+          )}
         })}
       </tbody>
     </table>
