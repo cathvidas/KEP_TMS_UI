@@ -42,10 +42,10 @@ return (
         </tr>
         <tr style={{textAlign: "center"}}>
           <td style={{ padding: "5px", fontWeight: "bold", width: "25%", textAlign: "left" }} colSpan={2}>Project / Task / Assignment</td>
-          <td style={{ padding: "5px", width: "17%"}}><strong>Performance Before Training </strong></td>
-          <td style={{ padding: "5px", width: "17%"}}><strong>Projected Performance</strong></td>
-          <td style={{ padding: "5px", width: "17%"}}><strong>Actual Performance</strong></td>
-          <td style={{ padding: "5px", width: "17%"}}><strong>Actual Performance evaluated by the immediate manager</strong></td>
+          <td style={{ padding: "5px", width: "17%"}}><strong>Performance Before Training </strong> (to be filled up before the training by the employee)</td>
+          <td style={{ padding: "5px", width: "17%"}}><strong>Projected Performance</strong> (to be filled up before the training by the employee)</td>
+          <td style={{ padding: "5px", width: "17%"}}><strong>Actual Performance</strong> (to be filled up 6 months after the training by the employee)</td>
+          <td style={{ padding: "5px", width: "17%"}}><strong>Actual Performance evaluated by the immediate manager</strong> (to be filled up by the manager 6 months after the employee&apos;s training)</td>
         </tr>
         {projectPerformanceEvaluation?.map((item, index)=>{
           if(item.content?.trim()){
