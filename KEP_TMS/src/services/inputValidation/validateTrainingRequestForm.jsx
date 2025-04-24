@@ -26,9 +26,9 @@ export const validateTrainingRequestForm = (formData) => {
     ): null,
     trainingFacilitators: formData.trainingFacilitators
       ? formData?.trainingType?.id === TrainingType.EXTERNAL
-        ? formData.trainingFacilitators.map(({ faciDetail }) => ({
+        ? formData.trainingFacilitators.map(({ externalFacilitatorId, faciDetail }) => ({
             ExternalFacilitatorId:
-              faciDetail?.id ?? formData?.externalFacilitatorId,
+              faciDetail?.id ?? externalFacilitatorId,
           }))
         : formData.trainingFacilitators.map((faci) => ({
             FacilitatorBadge: faci?.employeeBadge ?? faci?.facilitatorBadge,
