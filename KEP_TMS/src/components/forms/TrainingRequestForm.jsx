@@ -136,11 +136,7 @@ export const TrainingRequestForm = () => {
   const handleButtonOnClick = (index, isDraft) => {
     //detail and schedule validation
     if (index === 0) {
-      const validateDates =
-        details.current?.status?.id === statusCode.APPROVED ||
-        details.current?.status?.id === statusCode.CLOSED
-          ? false
-          : true;
+      const validateDates = requestId > 0 ? false : true;
       const schedulesIsValid = validateTrainingSchedules(
         details.current?.trainingDates,
         validateDates
