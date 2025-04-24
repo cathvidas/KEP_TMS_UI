@@ -136,10 +136,8 @@ export const TrainingRequestForm = () => {
   const handleButtonOnClick = (index, isDraft) => {
     //detail and schedule validation
     if (index === 0) {
-      const validateDates = requestId > 0 ? false : true;
       const schedulesIsValid = validateTrainingSchedules(
-        details.current?.trainingDates,
-        validateDates
+        details.current?.trainingDates, false
       );
       const { hasErrors, newErrors } = validateTrainingDetails(details.current);
       let detailsValid = !hasErrors;
