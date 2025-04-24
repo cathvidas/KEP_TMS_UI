@@ -27,10 +27,10 @@ const CategoryForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
   };
   const validateForm = useCallback(() => {
     let formErrors = {};
-    if (!formData.name?.trim()) {
+    if (!formData?.name?.trim()) {
       formErrors.name = "Name is required";
     }
-    if (!formData.description?.trim()) {
+    if (!formData?.description?.trim()) {
       formErrors.description = "Description is required";
     }
     setErrors(formErrors);
