@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { SessionGetEmployeeId, SessionGetRole } from "../services/sessions";
 import {
   ActivityType,
+  APP_DOMAIN,
   OtherConstant,
   statusCode,
   UserTypeValue,
@@ -10,7 +11,6 @@ import {
 import trainingRequestHook from "../hooks/trainingRequestHook";
 import examHook from "../hooks/examHook";
 import MenuItemTemplate from "../components/General/MenuItemTemplate";
-import SkeletonBanner from "../components/Skeleton/SkeletonBanner";
 import MenuContainer from "../components/menus/MenuContainer";
 import Layout from "../components/General/Layout";
 import { validateTrainingRequestForm } from "../services/inputValidation/validateTrainingRequestForm";
@@ -29,6 +29,9 @@ import PendingView from "./MonitoringPageSection/PendingsView";
 import trainingDetailsService from "../services/common/trainingDetailsService";
 import mappingHook from "../hooks/mappingHook";
 import TrainingVideosList from "../components/List/TrainingVideosList";
+import ErrorTemplate from "../components/General/ErrorTemplate";
+import PrevPageBackButton from "../components/General/PrevPageBackButton";
+import videoAccessMatrixHook from "../hooks/videoAccessMatrixHook";
 
 const TrainingDetailPage = () => {
   const [trigger, setTrigger] = useState(0);
@@ -39,6 +42,7 @@ const TrainingDetailPage = () => {
     parseInt(id),
     trigger
   );
+  const videoAccess = videoAccessMatrixHook.useAllVideoAccessMatrix();
   const refreshData = () => {
     setTrigger((prev) => prev + 1);
   };
@@ -66,7 +70,7 @@ const TrainingDetailPage = () => {
     (user) => user.employeeBadge === SessionGetEmployeeId()
   );
   const [currentContent, setCurrentContent] = useState(0);
-  const trainingForms = trainingRequestHook.useAllParticipantsReports(
+  const trainingForms = trainingRequestHook.useAllParticipantsTrainingForms(data?.id,
     data?.trainingParticipants ?? []
   );
   const logs = mappingHook.useMappedActivityLogs(data, data?.requestor);
@@ -144,6 +148,7 @@ const TrainingDetailPage = () => {
       formData={trainingForms}
       reportType="evaluationDetail"
       typeId={ActivityType.EVALUATION}
+      onRefresh={refreshData}
     />,
     <PendingView
       key={9}
@@ -161,14 +166,14 @@ const TrainingDetailPage = () => {
         {
           label: "Overview",
           icon: "pi pi-info-circle",
-          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}`),
+          command: () => navigate(`${APP_DOMAIN}/TrainingDetail/${id}`),
           template: MenuItemTemplate,
           active: currentContent === 0 ? true : false,
         },
         {
           label: "Modules",
           icon: "pi pi-book",
-          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Modules`),
+          command: () => navigate(`${APP_DOMAIN}/TrainingDetail/${id}/Modules`),
           template: MenuItemTemplate,
           active: currentContent === 1 ? true : false,
           disable: !(isAdmin || isFacilitator || isTrainee),
@@ -176,15 +181,15 @@ const TrainingDetailPage = () => {
         {
           label: "Videos",
           icon: "pi pi-video",
-          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Videos`),
+          command: () => navigate(`${APP_DOMAIN}/TrainingDetail/${id}/Videos`),
           template: MenuItemTemplate,
           active: currentContent === 10 ? true : false,
-          disable: !(isAdmin || isFacilitator || isTrainee),
+          disable: !videoAccess?.data?.some(x=>x?.employeeBadge === SessionGetEmployeeId() && x?.statusId === statusCode.ACTIVE),
         },
         {
           label: isAdmin || isFacilitator ? "Questionnaire" : "Exam",
           icon: "pi pi-list-check",
-          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Exams`),
+          command: () => navigate(`${APP_DOMAIN}/TrainingDetail/${id}/Exams`),
           template: MenuItemTemplate,
           active: currentContent === 2,
           disable: !(isAdmin || isFacilitator || isTrainee),
@@ -192,7 +197,7 @@ const TrainingDetailPage = () => {
         {
           label: "Certificate",
           icon: "pi pi-upload",
-          command: () => navigate(`/KEP_TMS/TrainingDetail/${id}/Certificate`),
+          command: () => navigate(`${APP_DOMAIN}/TrainingDetail/${id}/Certificate`),
           template: MenuItemTemplate,
           active: currentContent === 3 ? true : false,
           disable: !(
@@ -209,7 +214,7 @@ const TrainingDetailPage = () => {
             {
               label: "Effectiveness",
               command: () =>
-                navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Effectiveness`),
+                navigate(`${APP_DOMAIN}/TrainingDetail/${id}/Form/Effectiveness`),
               template: MenuItemTemplate,
               active:
                 currentContent === 4 && formtype === ActivityType.EFFECTIVENESS,
@@ -222,7 +227,7 @@ const TrainingDetailPage = () => {
             {
               label: "Training Report",
               command: () =>
-                navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Report`),
+                navigate(`${APP_DOMAIN}/TrainingDetail/${id}/Form/Report`),
               template: MenuItemTemplate,
               active: currentContent === 4 && formtype === ActivityType.REPORT,
               notifBadge:
@@ -232,7 +237,7 @@ const TrainingDetailPage = () => {
             {
               label: "Evaluation",
               command: () =>
-                navigate(`/KEP_TMS/TrainingDetail/${id}/Form/Evaluation`),
+                navigate(`${APP_DOMAIN}/TrainingDetail/${id}/Form/Evaluation`),
               template: MenuItemTemplate,
               active:
                 currentContent === 4 && formtype === ActivityType.EVALUATION,
@@ -252,7 +257,7 @@ const TrainingDetailPage = () => {
               icon: "pi pi-check-square",
               command: () =>
                 navigate(
-                  `/KEP_TMS/TrainingDetail/${id}/Monitoring/Effectiveness`
+                  `${APP_DOMAIN}/TrainingDetail/${id}/Monitoring/Effectiveness`
                 ),
               template: MenuItemTemplate,
               active: currentContent === 5 ? true : false,
@@ -266,7 +271,7 @@ const TrainingDetailPage = () => {
               label: "Exam",
               icon: "pi pi-clock",
               command: () =>
-                navigate(`/KEP_TMS/TrainingDetail/${id}/Monitoring/Exam`),
+                navigate(`${APP_DOMAIN}/TrainingDetail/${id}/Monitoring/Exam`),
               template: MenuItemTemplate,
               active: currentContent === 6 ? true : false,
               disable: examList?.data?.length > 0 ? false : true,
@@ -275,7 +280,7 @@ const TrainingDetailPage = () => {
               label: "Reports",
               icon: "pi pi-address-book",
               command: () =>
-                navigate(`/KEP_TMS/TrainingDetail/${id}/Monitoring/Reports`),
+                navigate(`${APP_DOMAIN}/TrainingDetail/${id}/Monitoring/Reports`),
               template: MenuItemTemplate,
               active: currentContent === 7 ? true : false,
               disable: !isAdmin,
@@ -285,7 +290,7 @@ const TrainingDetailPage = () => {
               icon: "pi pi-file-check",
               command: () =>
                 navigate(
-                  `/KEP_TMS/TrainingDetail/${id}/Monitoring/Evaluations`
+                  `${APP_DOMAIN}/TrainingDetail/${id}/Monitoring/Evaluations`
                 ),
               template: MenuItemTemplate,
               active: currentContent === 8 ? true : false,
@@ -295,7 +300,7 @@ const TrainingDetailPage = () => {
               label: "Summary",
               icon: "pi pi-info-circle",
               command: () =>
-                navigate(`/KEP_TMS/TrainingDetail/${id}/Monitoring/Summary`),
+                navigate(`${APP_DOMAIN}/TrainingDetail/${id}/Monitoring/Summary`),
               template: MenuItemTemplate,
               active: currentContent === 9 ? true : false,
               disable: !isAdmin,
@@ -342,7 +347,6 @@ const TrainingDetailPage = () => {
       setCurrentContent(0);
     }
   }, [section, page]);
-
   const handlePublish = (status) => {
     const newData = {
       ...validateTrainingRequestForm(data),
@@ -400,45 +404,35 @@ const TrainingDetailPage = () => {
           className={` p-3 pb-5 flex-grow-1`}
           style={{ minHeight: "calc(100vh - 60px)" }}
         >
-          {loading ? (
-            <SkeletonBanner />
-          ) : error ? (
-            "Error while processing your request"
-          ) : (
-            pageContent[currentContent]
-          )}
+          {pageContent[currentContent]}
         </div>
       </div>
     );
   };
+  const hasAccess =
+    isTrainee || isFacilitator || isAdmin || isRequestor || isApprover;
   return (
     <>
-      {isTrainee || isFacilitator || isAdmin || isRequestor || isApprover ? (
-        <Layout
-          BodyComponent={bodyContent}
-          header={{
-            title: data?.trainingProgram?.name,
-            hide: !showMenu,
-            // icon: <i className="pi pi-lightbulb"></i>,
-          }}
-        />
-      ) : (
-        <Layout
-          BodyComponent={() =>
-            loading ? (
-              <SkeletonForm />
-            ) : (
-              <div className="d-flex w-100 h-100 justify-content-center align-items-center h1 opacity-50 text-muted">
-                Page Not Found
-              </div>
-            )
-          }
-          header={{
-            title: "",
-            hide: true,
-          }}
-        />
-      )}
+      <Layout
+        BodyComponent={
+          loading
+            ? () => <SkeletonForm />
+            : error
+            ? () => <ErrorTemplate message={error} center className="py-5"/>
+            : hasAccess
+            ? bodyContent
+            : () => (
+                <div className="d-flex w-100 h-100 justify-content-center align-items-center h1 opacity-50 text-muted">
+                  Page Not Found
+                </div>
+              )
+        }
+        header={{
+          title: hasAccess ? data?.trainingProgram?.name : "",
+          hide: (!loading && !error && hasAccess) ? !showMenu : true,
+          headerComponent: <PrevPageBackButton text className="ms-auto"/>
+        }}
+      />
     </>
   );
 };

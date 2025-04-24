@@ -3,7 +3,7 @@ import bannerimg from "../../img/banner.png";
 import proptypes from "prop-types";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
-import { UserTypeValue } from "../../api/constants";
+import { APP_DOMAIN, UserTypeValue } from "../../api/constants";
 import { SessionGetRole } from "../../services/sessions";
 
 const Banner = ({ setShowModal }) => {
@@ -50,7 +50,7 @@ const Banner = ({ setShowModal }) => {
                 label="View All Request"
                 className="theme-secondary rounded py-1"
                 style={{ borderColor: "transparent" }}
-                onClick={() => navigate("/KEP_TMS/RequestList")}
+                onClick={() => navigate(`${APP_DOMAIN}/RequestList`)}
                 variant={{ theme: "secondary", size: "btn-xl" }}
               />
             </div></> : <p>Explore Your Training Dashboard and Get Started!</p>

@@ -3,14 +3,14 @@ import { SearchValueConstant } from "../../api/constants";
 import attachmentHook from "../../hooks/attachmentHook";
 import { ButtonGroup } from "primereact/buttongroup";
 import { Button } from "primereact/button";
-import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
-import ErrorTemplate from "../General/ErrorTemplate";
 import CommonTable from "../General/CommonTable";
 import { Paginator } from "primereact/paginator";
 import proptype from "prop-types"
-import { VideoFileUrl } from "../../api/attachmentApi";
+import VideoPlayer from "../General/VideoPlayer";
 
 const TrainingVideosList = ({ requestId }) => {
+  const [playVideo, setPlayVideo] = useState(false);
+  const [activeVideo, setActiveVideo] = useState(null);
   const [paginatorConfig, setPaginatorConfig] = useState({
     first: 0,
     rows: 10,
@@ -56,7 +56,8 @@ const TrainingVideosList = ({ requestId }) => {
             className="p-button-rounded"
             title="Play Video"
             size="small"
-            onClick={() => window.open(VideoFileUrl + `${rowData?.attachmentId}` , "_blank")}
+            onClick={()=>{setActiveVideo(rowData);setPlayVideo(true)}}
+            // onClick={() => window.open(getVideoAttachmentUrl(rowData?.attachmentId, true) , "_blank")}
           />
         </ButtonGroup>
       ),
@@ -70,43 +71,40 @@ const TrainingVideosList = ({ requestId }) => {
           style={{ minHeight: "100vh" }}
         >
           <>
-            {loading ? (
-              <SkeletonDataTable />
-            ) : error ? (
-              <ErrorTemplate message={error} />
-            ) : (
-              <>
-                <CommonTable
-                  tableName="Videos"
-                  columnItems={columnItems}
-                  dataTable={data?.results}
-                  hidePaginator
-                  hideOnEmpty={false}
-                />
-                <Paginator
-                  first={paginatorConfig?.first ?? 1}
-                  pageLinkSize={5}
-                  rows={paginatorConfig.rows}
-                  totalRecords={data?.totalRecords}
-                  rowsPerPageOptions={[10, 20, 30, 50, 100]}
-                  onPageChange={(e) =>
-                    setPaginatorConfig((prev) => ({
-                      ...prev,
-                      first: e.first,
-                      rows: e.rows,
-                      page: e.page + 1,
-                    }))
-                  }
-                />
-              </>
+            <CommonTable
+              tableName="Videos"
+              columnItems={columnItems}
+              dataTable={data?.results || []}
+              hidePaginator
+              hideOnEmpty={false}
+              loading={loading}
+              errorMessage={error}
+            />
+            {(!loading && !error) && (
+              <Paginator
+                first={paginatorConfig?.first ?? 1}
+                pageLinkSize={5}
+                rows={paginatorConfig.rows}
+                totalRecords={data?.totalRecords}
+                rowsPerPageOptions={[10, 20, 30, 50, 100]}
+                onPageChange={(e) =>
+                  setPaginatorConfig((prev) => ({
+                    ...prev,
+                    first: e.first,
+                    rows: e.rows,
+                    page: e.page + 1,
+                  }))
+                }
+              />
             )}
           </>
         </div>
       </div>
+      <VideoPlayer handleShow={playVideo} handleClose={() => setPlayVideo(false)} data={activeVideo}/>
     </>
   );
 };
 TrainingVideosList.propTypes = {
-  requestId: proptype.object,
+  requestId: proptype.number,
 }
 export default TrainingVideosList;

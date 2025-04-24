@@ -3,13 +3,13 @@ import trainingRequestService from "../services/trainingRequestService";
 import userMapping from "../services/DataMapping/userMapping";
 import userService from "../services/userService";
 import handleResponseAsync from "../services/handleResponseAsync";
-import { ActivityType, SearchValueConstant, statusCode } from "../api/constants";
+import { ActivityType } from "../api/constants";
 import trainingReportService from "../services/trainingReportService";
 import evaluationService from "../services/evaluationService";
 import effectivenessService from "../services/effectivenessService";
 import commonService from "../services/commonService";
 import routingService from "../services/common/routingService";
-import trainingDetailsService from "../services/common/trainingDetailsService";
+import ErrorTemplate from "../components/General/ErrorTemplate";
 
 const trainingRequestHook = {
   useTrainingRequest: (id, trigger) => {
@@ -21,6 +21,11 @@ const trainingRequestHook = {
         handleResponseAsync(
           () => trainingRequestService.getTrainingRequest(id),
           async (response) => {
+            if (!response) {
+              setError("No Request Found");
+              setLoading(false);
+              return;
+            }
             const participants = await userMapping.mapUserIdList(
               response.trainingParticipants,
               "employeeBadge"
@@ -115,6 +120,50 @@ const trainingRequestHook = {
     }, [datalist]);
     return { data, error, loading };
   },
+  useAllParticipantsTrainingForms: (reqId, datalist) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const getRequests = async () => {
+        const effectiveness =
+          await effectivenessService.getEffectivenessByRequestId(reqId);
+        const reports =
+          await trainingReportService.getTrainingReportByRequestId(reqId);
+        const evaluations =
+          await evaluationService.getTrainingEvaluationsByRequestId(reqId);
+        if (datalist?.length > 0) {
+          handleResponseAsync(
+            async () =>
+              await Promise.all(
+                datalist?.map(async (item) => {
+                  const reportDetail =
+                    reports?.find((r) => r?.id === item?.reportId) ?? {};
+                  const evaluationDetail =
+                    evaluations?.find((r) => r?.id === item?.evaluationId) ??
+                    {};
+                  const effectivenessDetail =
+                    effectiveness?.find(
+                      (eff) => eff?.id == item.effectivenessId
+                    ) ?? {};
+                  return {
+                    userDetail: item,
+                    reportDetail,
+                    effectivenessDetail,
+                    evaluationDetail,
+                  };
+                })
+              ),
+            (e) => setData(e),
+            (e) => setError(e),
+            () => setLoading(false)
+          );
+        }
+      };
+      getRequests();
+    }, [reqId, datalist]);
+    return { data, error, loading };
+  },
   usePagedTrainingRequest: (
     pageNumber,
     pageSize,
@@ -154,55 +203,15 @@ const trainingRequestHook = {
     ]);
     return { data, error, loading };
   },
-  useTrainingRequestByTraineeId: (id, attended) => {
+  useTrainingsAttended: (id) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
       const fetchData = async () => {
         handleResponseAsync(
-          () => trainingRequestService.getPagedTrainingRequest(1, 1000, SearchValueConstant.PARTICIPANT, id),
-          (e) => {
-            setData(
-              e?.results?.filter(
-                (item) =>
-                  (attended
-                    ? trainingDetailsService.checkIfTrainingEndsAlready(item)
-                    : true) &&
-                  (item?.status?.id !== statusCode.DISAPPROVED ||
-                    item?.status?.id !== statusCode.INACTIVE)
-              )
-            );
-          },
-          (e) => setError(e),
-          () => setLoading(false)
-        );
-      };
-      fetchData();
-    }, [id, attended]);
-    return {
-      data,
-      error,
-      loading,
-    };
-  },
-  useTrainingRequestByFacilitatorId: (id) => {
-    const [data, setData] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-      const fetchData = async () => {
-        handleResponseAsync(
-          () => trainingRequestService.getPagedTrainingRequest(1, 1000, SearchValueConstant.FACILITATOR, id),
-          (e) => {
-            setData(
-              e?.results?.filter(
-                (item) => trainingDetailsService.checkIfTrainingEndsAlready(item) &&
-                  (item?.status?.id !== statusCode.INACTIVE ||
-                  item?.status?.id !== statusCode.DISAPPROVED)
-              )
-            );
-          },
+          () => trainingRequestService.getTrainingsAttended(id),
+          (e) => setData(e),
           (e) => setError(e),
           () => setLoading(false)
         );
@@ -215,7 +224,28 @@ const trainingRequestHook = {
       loading,
     };
   },
-  useTrainingRequestSummary: (id) => {
+  useTrainingsFacilitated: (id) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+      const fetchData = async () => {
+        handleResponseAsync(
+          () => trainingRequestService.getTrainingsFacilitated(id),
+          (e) => setData(e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      fetchData();
+    }, [id]);
+    return {
+      data,
+      error,
+      loading,
+    };
+  },
+  useTrainingRequestSummary: (id, trigger) => {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -229,12 +259,39 @@ const trainingRequestHook = {
         );
       };
       fetchData();
-    }, [id]);
+    }, [id, trigger]);
     return {
       data,
       error,
       loading,
     };
+  },
+  useFacilitatorRating: (userId, reqId) => {
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+      const fetchData = async () => {
+        handleResponseAsync(
+          () => commonService.getFacilitatorRating(reqId, userId),
+          (e) => setData(e ? Math.round(e * 100) / 100 : e),
+          (e) => setError(e),
+          () => setLoading(false)
+        );
+      };
+      fetchData();
+    }, [reqId, userId]);
+    return (
+      <>
+        {loading ? (
+          <i className="pi pi-spinner pi-spin"></i>
+        ) : error ? (
+          <ErrorTemplate message={error} />
+        ) : (
+          <>{data ?? "No ratings Found"}</>
+        )}
+      </>
+    );
   },
 };
 

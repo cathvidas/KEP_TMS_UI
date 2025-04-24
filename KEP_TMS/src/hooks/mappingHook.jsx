@@ -68,6 +68,18 @@ const mappingHook = {
           mappedActivityLogs.push(activity);
         }
       });
+      if(activityData?.status?.id === statusCode.CLOSED){
+        const auditTrail = activityData?.auditTrail[0] || {};
+        if (auditTrail) {
+          mappedActivityLogs.push({
+            userId: auditTrail?.updatedBy,
+            process: "Closed",
+            status: "Closed",
+            remark: activityData?.remarks ?? "N/A",
+            date: formatDateTime(auditTrail?.updatedDate),
+          });
+        }
+      }
       setData(mappedActivityLogs);
     }, [activityData, author]);
     return data;

@@ -37,8 +37,21 @@ const CostApprovalMatrixForm = ({ handleShow, handleClose, selectedData, onFinis
   const approverDetail = userHook.useUserById(formData?.employeeBadge);
   const handleSubmit = (e) => {
     e.preventDefault();
+    setErrors({}); // Clear previous errors
+    let isValid = true;
     if(!formData?.employeeBadge){
       setErrors(prev=>({...prev, approver: "No Approver selected" }));
+      isValid = false;
+    }
+    if(!formData?.level){
+      setErrors(prev=>({...prev, level: "This field is required" }));
+      isValid = false;
+    }
+    if(!formData?.cost){
+      setErrors(prev=>({...prev, cost: "This field is required" }));
+      isValid = false;
+    }
+    if(!isValid){
       return;
     }
     confirmAction({
@@ -76,6 +89,7 @@ const CostApprovalMatrixForm = ({ handleShow, handleClose, selectedData, onFinis
   }, [users?.data?.results]);
   useEffect(()=>{
       setFormData(selectedData)
+      setErrors({})
   }, [selectedData])
   
   const   handleSelectOnChange = (name, value) => {
@@ -87,7 +101,7 @@ const CostApprovalMatrixForm = ({ handleShow, handleClose, selectedData, onFinis
       <Modal show={handleShow} onHide={handleClose} size={"md"}>
         <Modal.Header className="border-0" closeButton>
           <Modal.Title className={`h5 theme-color`}>
-            {selectedData != null ? "Update Metrics" : "Add New Metrics"}
+            {selectedData != null ? "Update Matrix" : "Add New Matrix"}
           </Modal.Title>
         </Modal.Header>
         <Form
@@ -146,7 +160,7 @@ const CostApprovalMatrixForm = ({ handleShow, handleClose, selectedData, onFinis
                 <Form.Group>
                   <Form.Label className="required">Cost</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="number"
                     name="name"
                     value={formData?.cost ?? ""}
                     placeholder="00"

@@ -6,7 +6,7 @@ import programHook from "../../hooks/programHook";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
-import { formatDateOnly } from "../../utils/datetime/Formatting";
+import { formatDateTime } from "../../utils/datetime/Formatting";
 import { Paginator } from "primereact/paginator";
 
 const ProgramListSection = () => {
@@ -20,9 +20,7 @@ const ProgramListSection = () => {
   });
   
   const { data, error, loading } = programHook.usePagedPrograms(paginatorConfig.page, paginatorConfig.rows, paginatorConfig.value, trigger);
-  // const { data, error, loading } = programHook.useAllPrograms(false, trigger);
   const [selectedData, setSelectedData] = useState({});
-
   const actionTemplate = (rowData) => (
     <>
       <div className="d-flex">
@@ -46,27 +44,11 @@ const ProgramListSection = () => {
           onClick={() => {setSelectedData(rowData);
             setVisible({ ...visible, form: true });
           }}
-        />
-        {/* <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} /> */}
-      </div>
+        /> </div>
     </>
   );
-  // const handleDelete = (id) => {
-  //     confirmAction({
-  //       title: "Confirm Deletion",
-  //       text: `Are you sure you want to delete this Program?`,
-  //       confirmButtonText: "Delete",
-  //       cancelButtonText: "Cancel",
-  //       onConfirm:()=> handleResponseAsync(
-  //         ()=>programService.deleteProgram(id),
-  //         ()=>actionSuccessful("Success!", "Program deleted successfully"),
-  //         (e)=>actionFailed("Error!", e.message)
-  //       ),
-  //     })
-  // }
   const columnItems = [
     {
-      // field: "id",
       header: "No",
       body: (_, { rowIndex }) => <>{paginatorConfig.first + 1+ rowIndex}</>,
     },
@@ -80,8 +62,8 @@ const ProgramListSection = () => {
     },
     {
       field: "createdDate",
-      header: "Created",
-      body: (rowData) => formatDateOnly(rowData.createdDate),
+      header: "Created Date",
+      body: (rowData) => formatDateTime(rowData.updatedDate ?? rowData.createdDate),
     },
     {
       field: "statusName",
@@ -179,10 +161,10 @@ const ProgramListSection = () => {
             <p><strong>Description: </strong><span>{selectedData?.description}</span></p>
             <p><strong>Status: </strong><span>{selectedData?.statusName}</span></p>
             <p><strong>Created: </strong><span>
-              {selectedData?.createdDate ? `${formatDateOnly(selectedData?.createdDate)} by ${selectedData?.createdBy}` : "N/A"}
+              {selectedData?.createdDate ? `${formatDateTime(selectedData?.createdDate)} by ${selectedData?.createdBy}` : "N/A"}
               </span></p>
             <p><strong>Updated: </strong><span>
-              {selectedData?.updatedDate ? `${formatDateOnly(selectedData?.updatedDate)} by ${selectedData?.updatedBy}` : "N/A"}
+              {selectedData?.updatedDate ? `${formatDateTime(selectedData?.updatedDate)} by ${selectedData?.updatedBy}` : "N/A"}
               </span></p>
             </Modal.Body>
             <Modal.Footer>

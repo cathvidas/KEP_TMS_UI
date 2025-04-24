@@ -28,6 +28,9 @@ export const getUsersByRoleApi = async (pageNumber, pageSize,role, searchValue) 
 export const getUserApi = async (id) => {
   return await fetchFromApi(`/Users/GetUserById?badge=${id}`);
 };
+export const GetActiveAdminsApi = async () => {
+  return await fetchFromApi(`/Users/GetAllActiveAdmins`);
+};
 export const getUserNameByUserId = async (id) => {
   const user = await getUserApi(id);
   return user.username;

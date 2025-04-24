@@ -12,12 +12,12 @@ const validateTrainingDetails = (details) => {
       hasErrors = true;
     }
   
-    if (!details?.trainingObjectives) {
+    if (!details?.trainingObjectives?.trim()) {
       newErrors.trainingObjectives = "This field is required.";
       hasErrors = true;
     }
   
-    if (!details?.venue) {
+    if (!details?.venue?.trim()) {
       newErrors.venue = "This field is required.";
       hasErrors = true;
     }

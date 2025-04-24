@@ -1,7 +1,6 @@
 import CommonTable from "../General/CommonTable";
 import proptype from "prop-types"
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
-import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 
 const ExternalFacilitatorList = ({
   trainers,
@@ -24,13 +23,12 @@ const ExternalFacilitatorList = ({
     },
     {
       field: "departmentOrganization",
-      header: "Department Organization",
+      header: "Department / Organization",
     },
   ];
   return (
     <>
-    {mappedData?.loading ? <SkeletonDataTable/> :
-      <CommonTable hidePaginator columnItems={columnItems} dataTable={mappedData?.data} hideHeader/>}
+      <CommonTable hidePaginator columnItems={columnItems} dataTable={mappedData?.data} hideHeader loading={mappedData?.loading}/>
     </>
   );
 };

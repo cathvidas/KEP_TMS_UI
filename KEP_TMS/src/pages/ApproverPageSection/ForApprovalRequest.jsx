@@ -8,6 +8,7 @@ import CommonTable from "../../components/General/CommonTable";
 import trainingRequestService from "../../services/trainingRequestService";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
+import { APP_DOMAIN } from "../../api/constants";
 
 const ForApprovalRequest = () => {
   const [request, setRequest] = useState([]);
@@ -42,7 +43,7 @@ const ForApprovalRequest = () => {
         severity="success"
         className="rounded"
         text
-        onClick={() => navigate(`/KEP_TMS/TrainingDetail/${data?.id}`)}
+        onClick={() => navigate(`${APP_DOMAIN}/TrainingDetail/${data?.id}`)}
       />
   </div>
     );

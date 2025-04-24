@@ -50,8 +50,8 @@ export const TrainingRequestForm = () => {
 
   const [errors, setErrors] = useState({
     details: {},
-    schedules: "",
-    participants: "",
+    schedules: {},
+    participants: {},
   });
   const handleResponse = useCallback((data) => {
     details.current = data;
@@ -99,7 +99,7 @@ export const TrainingRequestForm = () => {
               `Training request successfully ${draft ? "saved" : "submitted"}.`
             );
             setTimeout(() => {
-              navigate(draft ? "/KEP_TMS/RequestList/Draft" : "/KEP_TMS/TrainingDetail/" + formmatedData.id);
+              navigate(draft ? `${APP_DOMAIN}/RequestList/Draft` : `${APP_DOMAIN}/TrainingDetail/` + formmatedData.id);
             }, 2500);
           }
         );
@@ -123,7 +123,7 @@ export const TrainingRequestForm = () => {
                 `Training request successfully ${draft ? "saved" : "submitted"}.`
               );
               setTimeout(() => {
-                navigate(draft ? "/KEP_TMS/RequestList/Draft" : "/KEP_TMS/TrainingDetail/" + res?.data?.id);
+                navigate(draft ? `${APP_DOMAIN}/RequestList/Draft` : `${APP_DOMAIN}/TrainingDetail/` + res?.data?.id);
               }, 2500);
             }
           );
@@ -136,14 +136,8 @@ export const TrainingRequestForm = () => {
   const handleButtonOnClick = (index, isDraft) => {
     //detail and schedule validation
     if (index === 0) {
-      const validateDates =
-        details.current?.status?.id === statusCode.APPROVED ||
-        details.current?.status?.id === statusCode.CLOSED
-          ? false
-          : true;
       const schedulesIsValid = validateTrainingSchedules(
-        details.current?.trainingDates,
-        validateDates
+        details.current?.trainingDates, false
       );
       const { hasErrors, newErrors } = validateTrainingDetails(details.current);
       let detailsValid = !hasErrors;
@@ -167,7 +161,7 @@ export const TrainingRequestForm = () => {
           setErrors((prevErrors) => ({
             ...prevErrors,
             details: {},
-            schedules: "",
+            schedules: {},
           }));
         }
       }

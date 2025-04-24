@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';  
-import { useNavigate } from 'react-router-dom';  
+import { useLocation, useNavigate } from 'react-router-dom';  
 import { ClearSessions, SessionGetToken } from '../../services/sessions';
 import { confirmAction } from '../../services/sweetalert';
+import { APP_DOMAIN } from '../../api/constants';
 
 const SESSION_TIMEOUT_DURATION = 30 * 60000; // 30 minutes  
 
 const SessionTimeout = () => {  
     const [isLoggedOut, setLoggedOut] = useState(false);  
     const navigate = useNavigate();  
+    const location = useLocation();
     useEffect(() => {  
         let timeoutId;  
 
@@ -28,18 +30,18 @@ const SessionTimeout = () => {
         };  
 
         const logout = () => {
-          if (SessionGetToken()) {
+          if (SessionGetToken() && (location.pathname != APP_DOMAIN || location.pathname != APP_DOMAIN + "/")) {
             setLoggedOut(true);
             ClearSessions(); // Clear the session data
             confirmAction({
               title: "Timeout",
-              text: "Session timeout, please login again.",
+              text: "Session timeout, please login again.", 
               hideCancelButton: true,
               confirmButtonColor: "#3085d6",
               confirmButtonText: "OK",
               preventOutsideClick: true,
               onConfirm: () => {
-                navigate("/KEP_TMS/");
+                navigate(`${APP_DOMAIN}/`);
               },
             });
           }

@@ -8,12 +8,13 @@ import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 import proptype from "prop-types";
-import { formatDateOnly } from "../../utils/datetime/Formatting";
+import { formatDateOnly, formatDateTime } from "../../utils/datetime/Formatting";
 import { SessionGetEmployeeId } from "../../services/sessions";
 import TraineeStatusTemplate from "../TrainingPageComponents/TraineeStatusColumn";
 import RequestStatusColumn from "../TrainingPageComponents/RequestStatusColumn";
 import { mapTRequestToTableData } from "../../services/DataMapping/TrainingRequestData";
 import {
+  APP_DOMAIN,
   SearchValueConstant,
   statusCode,
   TrainingType,
@@ -24,6 +25,9 @@ import getStatusById from "../../utils/status/getStatusById";
 import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 import ErrorTemplate from "../General/ErrorTemplate";
 import ExportDataForm from "../forms/ModalForms/ExportDataForm";
+import { actionFailed, actionSuccessful, confirmAction } from "../../services/sweetalert";
+import handleResponseAsync from "../../services/handleResponseAsync";
+import trainingRequestService from "../../services/trainingRequestService";
 const TrainingRequestList = ({
   headingTitle,
   allowEdit = true,
@@ -33,6 +37,7 @@ const TrainingRequestList = ({
   isFacilitator,
   requestStatus,
   trainingType,
+  reload
 }) => {
   const [paginatorConfig, setPaginatorConfig] = useState({
     first: 0,
@@ -78,11 +83,6 @@ const TrainingRequestList = ({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  // const [filteredData, setFilteredData] = useState(data);
-  // const mapFilteredData = (e) => {
-  //   const f = data?.filter((item) => e?.some(y => item.id === y.id));
-  //   setFilteredData(f);
-  // };
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     setPaginatorConfig((prev) => ({
@@ -99,7 +99,7 @@ const TrainingRequestList = ({
   };
   const navigate = useNavigate();
   const handleButtonClick = (id, page) => {
-    navigate(`/KEP_TMS/${page}/${id}`);
+    navigate(`${APP_DOMAIN}/${page}/${id}`);
   };
   const actionTemplate = (data) => {
     return (
@@ -115,19 +115,46 @@ const TrainingRequestList = ({
             onClick={() => handleButtonClick(data.id, "TrainingDetail")}
           />
         )}
-        {(allowEdit && !(data?.statusId == statusCode.CLOSED || data?.statusId == statusCode.APPROVED)) && (
+        {allowEdit && !(data?.statusId == statusCode.CLOSED || data?.statusId == statusCode.APPROVED) && (
+            <Button
+              type="button"
+              icon="pi pi-pencil"
+              size="small"
+              className="rounded"
+              text
+              onClick={() => handleButtonClick(data.id, "Request/Update")}
+            />
+          )}
+        {data?.statusId == statusCode.DRAFTED && (
           <Button
             type="button"
-            icon="pi pi-pencil"
+            icon="pi pi-trash"
             size="small"
+            severity="danger"
             className="rounded"
             text
-            onClick={() => handleButtonClick(data.id, "Request/Update")}
+            onClick={() => deleteDraft(data.id, "TrainingDetail")}
           />
         )}
       </div>
     );
   };
+  const deleteDraft = (id) =>{
+    confirmAction({
+      showLoaderOnConfirm: true,
+      text: "Are you sure you want to delete this draft?",
+      title: "Delete Draft!",
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Delete",
+      onConfirm: () => handleResponseAsync(
+        () => trainingRequestService.deleteTrainingRequest(id),
+        (e) => {actionSuccessful("Success!", e?.message ?? "Successfully deleted draft");
+          if(reload){reload();}
+        },
+        (err) => actionFailed("Error!", err?.message ?? err ?? "Failed to delete draft")
+      )
+    })
+  }
   const renderHeader = () => {
     return (
       <div className="flex flex-wrap gap-2 align-items-center">
@@ -217,7 +244,7 @@ const TrainingRequestList = ({
                 header="Created"
                 style={{ width: "8%" }}
                 body={(rowData) => {
-                  return formatDateOnly(rowData.createdDate);
+                  return formatDateTime(rowData.createdDate);
                 }}
               ></Column>
             )}
@@ -275,5 +302,6 @@ TrainingRequestList.propTypes = {
   isTrainee: proptype.bool,
   requestStatus: proptype.any,
   trainingType: proptype.any,
+  reload: proptype.func,
 };
 export default TrainingRequestList;

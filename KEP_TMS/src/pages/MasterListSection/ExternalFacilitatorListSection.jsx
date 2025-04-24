@@ -4,13 +4,10 @@ import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
-import { formatDateOnly } from "../../utils/datetime/Formatting";
+import { formatDateTime } from "../../utils/datetime/Formatting";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
 import getStatusById from "../../utils/status/getStatusById";
 import { Paginator } from "primereact/paginator";
-import handleResponseAsync from "../../services/handleResponseAsync";
-import externalFacilitatorService from "../../services/externalFacilitatorService";
-import { actionSuccessful, confirmAction } from "../../services/sweetalert";
 import ExternalFacilitatorForm from "../../components/forms/ModalForms/ExternalFacilitatorForm";
 
 const ExternalFacilitatorListSection = () => {
@@ -49,7 +46,6 @@ const ExternalFacilitatorListSection = () => {
             setVisible({ ...visible, form: true });
           }}
         />
-        <Button type="button" size="small" text icon="pi pi-trash" severity="danger" className="rounded-circle" onClick={()=>handleDelete(rowData.id)} />
         </div>
     </>
   );
@@ -57,7 +53,7 @@ const ExternalFacilitatorListSection = () => {
     {
       field: "",
       header: "No",
-      body: (_, { rowIndex }) => <>{paginatorConfig.first + 1+ rowIndex}</>,
+      body: (_, { rowIndex }) => <>{paginatorConfig.first + 1 + rowIndex}</>,
     },
     {
       field: "name",
@@ -73,8 +69,9 @@ const ExternalFacilitatorListSection = () => {
     },
     {
       field: "createdDate",
-      header: "Created",
-      body: (rowData) => formatDateOnly(rowData.createdDate),
+      header: "Created Date",
+      body: (rowData) =>
+        formatDateTime(rowData.updatedDate ?? rowData.createdDate),
     },
     {
       field: "status",
@@ -114,21 +111,6 @@ const ExternalFacilitatorListSection = () => {
       </div>
     </div>
   );
-  const handleDelete = (id) => {
-    confirmAction({
-      title: "Confirm Deletion",
-      text: `Are you sure you want to delete this Program?`,
-      confirmButtonText: "Delete",
-      cancelButtonText: "Cancel",
-      onConfirm: () =>
-        handleResponseAsync(
-          () => externalFacilitatorService.deleteExternalFacilitator(id),
-          (e)=>{actionSuccessful("Success", e.message);
-            setTrigger(prev=>prev+1)
-          }
-        ),
-    });
-  };
   return (
     <>
       {loading ? (
@@ -194,9 +176,9 @@ const ExternalFacilitatorListSection = () => {
               <h6><strong>Department / Organization:</strong> <span>{selectedData?.departmentOrganization}</span></h6>
               <h6><strong>Position:</strong> <span>{selectedData?.position}</span></h6>
               <h6><strong>Status:</strong> <span>{getStatusById(selectedData?.statusId)}</span></h6>
-              <h6><strong>Created:</strong> <span>{formatDateOnly(selectedData?.createdDate)}{" by "}
+              <h6><strong>Created:</strong> <span>{formatDateTime(selectedData?.createdDate)}{" by "}
               {selectedData?.createdBy}</span></h6>
-              <h6><strong>Added:</strong> <span>{selectedData?.updatedDate ? `${formatDateOnly(selectedData?.updatedDate)} by ${selectedData?.updatedBy}`: "N/A"}</span></h6>
+              <h6><strong>Added:</strong> <span>{selectedData?.updatedDate ? `${formatDateTime(selectedData?.updatedDate)} by ${selectedData?.updatedBy}`: "N/A"}</span></h6>
             </Modal.Body>
             <Modal.Footer>
               <Button

@@ -1,6 +1,4 @@
-import { AddAttachmentsAccessApi, addAttachmentsApi, DeleteAttachmentAccessApi, deleteAttachmentApi, GetAttachmentAccessApi, getAttachmentByReferenceApi, GetAttachmentsApi, getModuleAttachmentByIdApi } from "../api/attachmentApi";
-import { attachmentType } from "../api/constants";
-import trainingRequestService from "./trainingRequestService";
+import { AddAttachmentsAccessApi, addAttachmentsApi, DeleteAttachmentAccessApi, deleteAttachmentApi, GetAttachmentAccessApi, getAttachmentByReferenceApi, GetAttachmentsApi, getModuleAttachmentByIdApi, GetVideoFileApi } from "../api/attachmentApi";
 
 const attachmentService = {
   getModuleAttachmentById: async (id) => {
@@ -31,25 +29,6 @@ const attachmentService = {
     );
     return response.status === 1 ? response?.data : [];
   },
-  getAllTraineeCertificate: async (id) => {
-    const oldTrainings = await attachmentService.getAttachmentByReference(
-      id,
-      attachmentType.CERTIFICATE,
-    );
-    const newTrainings =
-      await trainingRequestService.getTrainingRequestByTraineeId(id);
-    const updated = await Promise.all(
-      newTrainings?.map(async (item) => {
-        const res = await attachmentService.getAttachmentByReference(
-          item.id,
-          attachmentType.CERTIFICATE,
-          null
-        );
-        return { ...item, certificate: res };
-      })
-    );
-    return {oldTrainings, newTrainings: updated};
-  },
   addAttachmentsAccess: async (id, data, creator
   ) => {
     const response = await AddAttachmentsAccessApi(id, data, creator
@@ -76,6 +55,10 @@ const attachmentService = {
     if (response.status !== 1) {
       throw new Error(response);
     }
+    return response;
+  },
+  getVideoFile: async (id, empBadge) => {
+    const response = await GetVideoFileApi(id, empBadge);
     return response;
   },
 };

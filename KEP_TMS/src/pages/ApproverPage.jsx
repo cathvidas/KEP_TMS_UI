@@ -8,6 +8,7 @@ import ForApprovaleffectiveness from "./ApproverPageSection/ForApprovalEffective
 import commonHook from "../hooks/commonHook";
 import { SessionGetEmployeeId } from "../services/sessions";
 import ForApprovalReport from "./ApproverPageSection/ForApprovalReport";
+import { APP_DOMAIN } from "../api/constants";
 
 const ApproverPage = () => {
   const [trigger, setTrigger] = useState(0);
@@ -31,7 +32,7 @@ const ApproverPage = () => {
         {
           label: "Requests",
           icon: "pi pi-list-check",
-          command: () => navigate(`/KEP_TMS/List/ForApproval/Requests`),
+          command: () => navigate(`${APP_DOMAIN}/List/ForApproval/Requests`),
           template: MenuItemTemplate,
           active: currentContent === 0 ? true : false,
           badge: data?.requests?.length > 0 ?{value: data?.requests?.length}:false
@@ -39,7 +40,7 @@ const ApproverPage = () => {
         {
           label: "Effectiveness",
           icon: "pi pi-file",
-          command: () => navigate(`/KEP_TMS/List/ForApproval/Effectiveness`),
+          command: () => navigate(`${APP_DOMAIN}/List/ForApproval/Effectiveness`),
           template: MenuItemTemplate,
           active: currentContent === 1 ? true : false,
           badge: data?.effectiveness?.length > 0 ?{value: data?.effectiveness?.length}:false
@@ -47,7 +48,7 @@ const ApproverPage = () => {
         {
           label: "Report",
           icon: "pi pi-file-check",
-          command: () => navigate(`/KEP_TMS/List/ForApproval/Reports`),
+          command: () => navigate(`${APP_DOMAIN}/List/ForApproval/Reports`),
           template: MenuItemTemplate,
           active: currentContent === 2 ? true : false,
           badge: data?.reports?.length > 0 ?{value: data?.reports?.length}:false

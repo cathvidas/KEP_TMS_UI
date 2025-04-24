@@ -47,19 +47,19 @@ const ProviderForm = ({ handleShow, handleClose, selectedData, onFinish }) => {
   const validateForm = () => {
     let formErrors = {};
     let isValid = true;
-    if (!formData.name) {
+    if (!formData?.name?.trim()) {
       formErrors.name = "Name is required";
       isValid = false;
     }
-    if (formData.categoryId === 0) {
+    if (formData?.categoryId === 0) {
       formErrors.categoryId = "Category is required";
       isValid = false;
     }
-    if (!formData.contactNumber) {
-      formErrors.contactNumber = "Contact Number is required";
+    if (!formData?.contactNumber?.trim()) {
+      formErrors.contactNumber = "This field is required. Put N/A if not available";
       isValid = false;
     }
-    if (!formData.statusId && selectedData) {
+    if (!formData?.statusId && selectedData) {
       formErrors.status = "This field is required";
       isValid = false;
     }

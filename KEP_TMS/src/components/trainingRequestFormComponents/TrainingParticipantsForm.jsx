@@ -42,7 +42,7 @@ const TrainingParticipantsForm = ({
   useEffect(() => {
     setPaginatorConfig((prev) => ({
       ...prev,
-      value: filter?.value || filter.department,
+      value: filter?.name || filter.department,
     }));
   }, [filter]);
 
@@ -77,7 +77,7 @@ const TrainingParticipantsForm = ({
   useEffect(() => {
     const fetchDatas = async () => {
       const user = users?.data?.results;
-      const activeUsers = user.filter((user) => user.statusName !== "Inactive");
+      const activeUsers = (user || []).filter((user) => user.statusName !== "Inactive");
       const availableUsers = activeUsers
         .filter(
           (x) =>
@@ -102,11 +102,6 @@ const TrainingParticipantsForm = ({
   }, [data, users?.data?.results, participants, paginatorConfig]);
   useEffect(() => {
     var filtered = list.users;
-    if (filter?.name != null && filter?.name != "") {
-      filtered = list.users.filter((user) =>
-        user?.name?.toLowerCase().includes(filter?.name?.toLowerCase())
-      );
-    }
     if (filter?.department != null && filter?.department != "") {
       filtered = list.users.filter((user) =>
         user?.departmentName
@@ -195,6 +190,7 @@ const TrainingParticipantsForm = ({
       <SearchBar handleOnInput={setFilter} options={departments} />
       <div className="overflow-auto max-vh-100 mt-2">
         <UserList
+        loading={users?.loading}
         scrollHeight={"60vh"}
           leadingElement={true}
           userlist={

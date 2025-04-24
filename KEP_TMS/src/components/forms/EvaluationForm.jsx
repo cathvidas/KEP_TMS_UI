@@ -16,9 +16,10 @@ import { formatDateTime } from "../../utils/datetime/Formatting";
 import handleGeneratePdf from "../../services/common/handleGeneratePdf";
 import FacilitatorRatingExportTemplate from "../General/FacilitatorRatingExportTemplate";
 import commonHook from "../../hooks/commonHook";
-import { TrainingType } from "../../api/constants";
 import userHook from "../../hooks/userHook";
-const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
+import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
+import oldTrainingsHook from "../../hooks/oldTrainingsHook";
+const EvaluationForm = ({ data, userData,onFinish, defaultValue, oldSystem }) => {
   const [annotation, setAnnotation] = useState(evaluationConstant.annotation);
   const [contentMethodology, setContentMethodology] = useState(evaluationConstant.contentMethodology);
   const [programLogisticsRating, setProgramLogisticsRating] = useState(evaluationConstant.programLogisticsRating);
@@ -39,12 +40,18 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
   const handleOnChange = (value, name, field, setField) => {
     setField({ ...field, [name]: value });
   }
-  const handlefacilitatorRating = (value, name, index) => {
+  const handlefacilitatorRating = (value, name, faci) => {
+    const faciId = faci.facilitatorBadge ?? faci.externalFacilitatorId;
     const updatedfacilitatorRating = [...facilitatorRating]; // Create a copy of the array
-    updatedfacilitatorRating[index] = {
-      ...updatedfacilitatorRating[index],
-      [name]: value,
-    }; // Update the content of the first element
+    const faciRating = updatedfacilitatorRating.find(fac => fac.facilitatorBadge === faciId?.toString());
+    if (faciRating) {
+      faciRating[name] = value;
+    }else{
+      updatedfacilitatorRating.push({
+        facilitatorBadge: faciId,
+        [name]: value,
+      });
+    }
     if(updatedfacilitatorRating){
     setFacilitatorRating(updatedfacilitatorRating);}
   };
@@ -52,10 +59,11 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
     const isValid = validateForm();
     if (isValid) {
       confirmAction({
+        showLoaderOnConfirm: true,
         onConfirm: () => {
           handleResponseAsync(
-            () => evaluationService.createTrainingEvaluation(data?.trainingType?.id === TrainingType.INTERNAL ? {...getFormData, 
-              facilitatorRating: facilitatorRating,} :getFormData),
+            () => evaluationService.createTrainingEvaluation({...getFormData, 
+              facilitatorRating: facilitatorRating}),
             (e) => {actionSuccessful("Success", e.message);
               onFinish();
             },
@@ -113,6 +121,11 @@ const EvaluationForm = ({ data, userData,onFinish, defaultValue }) => {
     setErrors(formErrors)
     return isValid;
   }
+   const getFaciRating = (faci, fieldName) =>{
+    const faciId = faci.facilitatorBadge ?? faci.externalFacilitatorId;
+    const rating = facilitatorRating.find((faci)=> faci.facilitatorBadge === faciId?.toString());
+    return rating ? rating[fieldName] : null;
+  }
   useEffect(()=>{
     if(defaultValue){
       setContentMethodology(defaultValue?.contentMethodology);
@@ -129,7 +142,7 @@ useEffect(()=>{
     let ratings = [];
     data?.trainingFacilitators.map((faci)=>{
       ratings.push({
-        facilitatorBadge: faci?.facilitatorBadge,
+        facilitatorBadge: faci?.isExternal ? faci?.externalFacilitatorId?.toString() : faci?.facilitatorBadge,
       });
     });
     setFacilitatorRating(ratings)
@@ -157,7 +170,13 @@ const reportTemplateRef = useRef();
             />
             <AutoCompleteField
               label="Facilitator/s"
-              value={commonHook.useFormattedFacilitatorList(data?.trainingFacilitators)?.data}
+              value={
+                commonHook.useFormattedFacilitatorList(
+                  data?.trainingFacilitators,
+                  oldSystem,
+                  "N/A"
+                )?.data
+              }
               className="col-12"
             />
             <AutoCompleteField
@@ -171,117 +190,119 @@ const reportTemplateRef = useRef();
             <AutoCompleteField label="Venue" value={data?.venue} />
           </Row>
           <br />
-          {/* <Row> */}
           <p>
             <b className="form-label">INSTRUCTIONS:</b> Please respond to EVERY
             item. In each instance, circle the response that represents your
             true opinion:
           </p>
-          <label className="form-label">PROGRAM CONTENT AND METHODOLOGY</label>
-          <ul className="ps-5">
-            <li>
-              <small>
-                <b>SA (5) </b>You <b>strongly agree</b> with the statement.
-              </small>
-            </li>
-            <li>
-              <small>
-                <b>A (4) </b>You <b>generally agree</b> with the statement but,
-                have some reservations
-              </small>
-            </li>
-            <li>
-              <small>
-                <b>U (3) </b>You are <b>undecided</b>.
-              </small>
-            </li>
-            <li>
-              <small>
-                <b>D (2) </b>You <b>generally disagree</b> with the statement.
-              </small>
-            </li>
-            <li>
-              <small>
-                <b>SD (1) </b>You <b>strongly disagree</b> with the statement.
-              </small>
-            </li>
-          </ul>
+          <Form.Group>
+            <label className="form-label">
+              PROGRAM CONTENT AND METHODOLOGY
+            </label>
+            <ul className="ps-5">
+              <li>
+                <small>
+                  <b>SA (5) </b>You <b>strongly agree</b> with the statement.
+                </small>
+              </li>
+              <li>
+                <small>
+                  <b>A (4) </b>You <b>generally agree</b> with the statement
+                  but, have some reservations
+                </small>
+              </li>
+              <li>
+                <small>
+                  <b>U (3) </b>You are <b>undecided</b>.
+                </small>
+              </li>
+              <li>
+                <small>
+                  <b>D (2) </b>You <b>generally disagree</b> with the statement.
+                </small>
+              </li>
+              <li>
+                <small>
+                  <b>SD (1) </b>You <b>strongly disagree</b> with the statement.
+                </small>
+              </li>
+            </ul>
+            <hr />
+            {errors.contentMethodology && (
+              <ErrorTemplate message={errors.contentMethodology} />
+            )}
+            <RateFieldItem
+              sequenceNo={1}
+              label="The objectives of the training were met."
+              value={contentMethodology?.cmOne}
+              onChange={(e) =>
+                handleOnChange(
+                  e,
+                  "cmOne",
+                  contentMethodology,
+                  setContentMethodology
+                )
+              }
+              readOnly={isSubmitted}
+            />
+            <RateFieldItem
+              sequenceNo={2}
+              label="The module was relevant to my present work or future professional career."
+              value={contentMethodology?.cmTwo}
+              onChange={(e) =>
+                handleOnChange(
+                  e,
+                  "cmTwo",
+                  contentMethodology,
+                  setContentMethodology
+                )
+              }
+              readOnly={isSubmitted}
+            />
+            <RateFieldItem
+              sequenceNo={3}
+              label="The course content was highly related to the stated course learning objectives."
+              value={contentMethodology?.cmThree}
+              onChange={(e) =>
+                handleOnChange(
+                  e,
+                  "cmThree",
+                  contentMethodology,
+                  setContentMethodology
+                )
+              }
+              readOnly={isSubmitted}
+            />
+            <RateFieldItem
+              sequenceNo={4}
+              label="The materials & training methods used in the program were clear, understandable and suitable."
+              value={contentMethodology?.cmFour}
+              onChange={(e) =>
+                handleOnChange(
+                  e,
+                  "cmFour",
+                  contentMethodology,
+                  setContentMethodology
+                )
+              }
+              readOnly={isSubmitted}
+            />
+            <RateFieldItem
+              sequenceNo={5}
+              label="Ample time has been given for the module"
+              value={contentMethodology?.cmFive}
+              onChange={(e) =>
+                handleOnChange(
+                  e,
+                  "cmFive",
+                  contentMethodology,
+                  setContentMethodology
+                )
+              }
+              readOnly={isSubmitted}
+            />
+          </Form.Group>
           <hr />
-          {errors.contentMethodology && (
-            <ErrorTemplate message={errors.contentMethodology} />
-          )}
-          <RateFieldItem
-            sequenceNo={1}
-            label="The objectives of the training were met."
-            value={contentMethodology?.cmOne}
-            onChange={(e) =>
-              handleOnChange(
-                e,
-                "cmOne",
-                contentMethodology,
-                setContentMethodology
-              )
-            }
-            readOnly={isSubmitted}
-          />
-          <RateFieldItem
-            sequenceNo={2}
-            label="The module was relevant to my present work or future professional career."
-            value={contentMethodology?.cmTwo}
-            onChange={(e) =>
-              handleOnChange(
-                e,
-                "cmTwo",
-                contentMethodology,
-                setContentMethodology
-              )
-            }
-            readOnly={isSubmitted}
-          />
-          <RateFieldItem
-            sequenceNo={3}
-            label="The course content was highly related to the stated course learning objectives."
-            value={contentMethodology?.cmThree}
-            onChange={(e) =>
-              handleOnChange(
-                e,
-                "cmThree",
-                contentMethodology,
-                setContentMethodology
-              )
-            }
-            readOnly={isSubmitted}
-          />
-          <RateFieldItem
-            sequenceNo={4}
-            label="The materials & training methods used in the program were clear, understandable and suitable."
-            value={contentMethodology?.cmFour}
-            onChange={(e) =>
-              handleOnChange(
-                e,
-                "cmFour",
-                contentMethodology,
-                setContentMethodology
-              )
-            }
-            readOnly={isSubmitted}
-          />
-          <RateFieldItem
-            sequenceNo={5}
-            label="Ample time has been given for the module"
-            value={contentMethodology?.cmFive}
-            onChange={(e) =>
-              handleOnChange(
-                e,
-                "cmFive",
-                contentMethodology,
-                setContentMethodology
-              )
-            }
-            readOnly={isSubmitted}
-          />
-          <hr />
-          {/* </Row> */}
           <Form.Group>
             <b>
               6. Which topics covered were most useful?
@@ -330,134 +351,149 @@ const reportTemplateRef = useRef();
             ></textarea>
             {errors.cmSeven && <ErrorTemplate message={errors.cmSeven} />}
           </Form.Group>
-          <label className="form-label mt-3">PROGRAM LOGISTICS</label>
-          {errors.programLogisticsRating && (
-            <ErrorTemplate message={errors.programLogisticsRating} />
-          )}
-          <RateFieldItem
-            label="Handouts & other training materials"
-            value={programLogisticsRating?.plrOne}
-            readOnly={isSubmitted}
-            onChange={(e) =>
-              handleOnChange(
-                e,
-                "plrOne",
-                programLogisticsRating,
-                setProgramLogisticsRating
-              )
-            }
-          />
-          <RateFieldItem
-            label="Audio-visual presentation/multi-media resources"
-            value={programLogisticsRating?.plrTwo}
-            readOnly={isSubmitted}
-            onChange={(e) =>
-              handleOnChange(
-                e,
-                "plrTwo",
-                programLogisticsRating,
-                setProgramLogisticsRating
-              )
-            }
-          />
-          <RateFieldItem
-            label="Facilities (lay-out, temperature, etc.)"
-            value={programLogisticsRating?.plrThree}
-            readOnly={isSubmitted}
-            onChange={(e) =>
-              handleOnChange(
-                e,
-                "plrThree",
-                programLogisticsRating,
-                setProgramLogisticsRating
-              )
-            }
-          />
-          <RateFieldItem
-            label="Equipment & supplies"
-            value={programLogisticsRating?.plrFour}
-            readOnly={isSubmitted}
-            onChange={(e) =>
-              handleOnChange(
-                e,
-                "plrFour",
-                programLogisticsRating,
-                setProgramLogisticsRating
-              )
-            }
-          />
-          {data?.trainingType?.id === TrainingType.INTERNAL && <>
-            <hr />
+          <Form.Group>
+            <label className="form-label mt-3">PROGRAM LOGISTICS</label>
+            {errors.programLogisticsRating && (
+              <ErrorTemplate message={errors.programLogisticsRating} />
+            )}
+            <RateFieldItem
+              label="Handouts & other training materials"
+              value={programLogisticsRating?.plrOne}
+              readOnly={isSubmitted}
+              onChange={(e) =>
+                handleOnChange(
+                  e,
+                  "plrOne",
+                  programLogisticsRating,
+                  setProgramLogisticsRating
+                )
+              }
+            />
+            <RateFieldItem
+              label="Audio-visual presentation/multi-media resources"
+              value={programLogisticsRating?.plrTwo}
+              readOnly={isSubmitted}
+              onChange={(e) =>
+                handleOnChange(
+                  e,
+                  "plrTwo",
+                  programLogisticsRating,
+                  setProgramLogisticsRating
+                )
+              }
+            />
+            <RateFieldItem
+              label="Facilities (lay-out, temperature, etc.)"
+              value={programLogisticsRating?.plrThree}
+              readOnly={isSubmitted}
+              onChange={(e) =>
+                handleOnChange(
+                  e,
+                  "plrThree",
+                  programLogisticsRating,
+                  setProgramLogisticsRating
+                )
+              }
+            />
+            <RateFieldItem
+              label="Equipment & supplies"
+              value={programLogisticsRating?.plrFour}
+              readOnly={isSubmitted}
+              onChange={(e) =>
+                handleOnChange(
+                  e,
+                  "plrFour",
+                  programLogisticsRating,
+                  setProgramLogisticsRating
+                )
+              }
+            />
+          </Form.Group>
+          <hr />
           <label className="form-label m-0">FACILITATOR/S: </label>
-
           {errors.facilitatorRating && (
             <ErrorTemplate message={errors.facilitatorRating} />
           )}
           <TabView className="custom-tab hideExport">
-            {data?.trainingFacilitators.map((faci, index) => {
+            {data?.trainingFacilitators.map((faci) => {
               return (
                 <TabPanel
-                  header={!faci?.isExternal ? userHook.useUserById(faci?.facilitatorBadge)?.data?.fullname: "" }
+                  header={
+                    oldSystem
+                      ? oldTrainingsHook.useOldSystemFacilitator(
+                          faci?.externalFacilitatorId
+                        )?.data?.fullname
+                      : !faci?.isExternal
+                      ? userHook.useUserById(faci?.facilitatorBadge)?.data
+                          ?.fullname
+                      : externalFacilitatorHook?.useExternalFacilitatorById(
+                          faci?.externalFacilitatorId
+                        )?.data?.name
+                  }
                   className="active"
                   key={faci?.id}
                 >
                   <RateFieldItem
                     label="Clarity of Presentation (delivery, platform skills, etc.)"
-                    value={facilitatorRating && facilitatorRating[index]?.frOne}
+                    value={getFaciRating(faci, "frOne")}
                     readOnly={isSubmitted}
-                    onChange={(e) => handlefacilitatorRating(e, "frOne", index)}
+                    onChange={(e) => handlefacilitatorRating(e, "frOne", faci)}
                   />
                   <RateFieldItem
                     label="Mastery of subject matter"
-                    value={facilitatorRating && facilitatorRating[index]?.frTwo}
+                    value={getFaciRating(faci, "frTwo")}
                     readOnly={isSubmitted}
-                    onChange={(e) => handlefacilitatorRating(e, "frTwo", index)}
+                    onChange={(e) => handlefacilitatorRating(e, "frTwo", faci)}
                   />
                   <RateFieldItem
                     label="Managing discussions"
-                    value={facilitatorRating && facilitatorRating[index]?.frThree}
+                    value={getFaciRating(faci, "frThree")}
                     readOnly={isSubmitted}
                     onChange={(e) =>
-                      handlefacilitatorRating(e, "frThree", index)
+                      handlefacilitatorRating(e, "frThree", faci)
                     }
                   />
                   <RateFieldItem
                     label="Motivates learning"
-                    value={facilitatorRating && facilitatorRating[index]?.frFour}
+                    value={getFaciRating(faci, "frFour")}
                     readOnly={isSubmitted}
                     onChange={(e) =>
-                      handlefacilitatorRating(e, "frFour", index)
+                      handlefacilitatorRating(e, "frFour", faci)
                     }
                   />
                   <RateFieldItem
                     label="Balanced theory w/ real life applications/examples"
-                    value={facilitatorRating && facilitatorRating[index]?.frFive}
+                    value={getFaciRating(faci, "frFive")}
                     readOnly={isSubmitted}
-                    onChange={(e) => handlefacilitatorRating(e, "frFive", index)}
+                    onChange={(e) =>
+                      handlefacilitatorRating(e, "frFive", faci)
+                    }
                   />
                   <RateFieldItem
                     label="Clear & well organized lectures/activities (time management)"
-                    value={facilitatorRating && facilitatorRating[index]?.frSix}
+                    value={getFaciRating(faci, "frSix")}
                     readOnly={isSubmitted}
-                    onChange={(e) =>
-                      handlefacilitatorRating(e, "frSix", index)
-                    }
+                    onChange={(e) => handlefacilitatorRating(e, "frSix", faci)}
                   />
                 </TabPanel>
               );
             })}
           </TabView>
-          
           <div className="d-none showExport">
-            <FacilitatorRatingExportTemplate facilitators={data?.trainingFacilitators} facilitatorRating={facilitatorRating}/>
-          </div></>}
+            <FacilitatorRatingExportTemplate
+              facilitators={data?.trainingFacilitators}
+              facilitatorRating={facilitatorRating}
+            />
+          </div>
           <hr />
           {errors.overallRating && (
             <ErrorTemplate message={errors.overallRating} />
           )}
           <div className="d-flex align-items-center justify-content-between mb-1">
-            <p className="m-0 fw-bold">Overall Rating of the program:
-            <span className="form-label required"></span></p>
+            <p className="m-0 fw-bold">
+              Overall Rating of the program:
+              <span className="form-label required"></span>
+            </p>
             <Rating
               cancel={false}
               value={overallRating}
@@ -467,8 +503,10 @@ const reportTemplateRef = useRef();
           </div>
           <hr />
           <Form.Group className="mt-2">
-            <b>Comments on the module & other suggestions for Improvement:
-            <span className="form-label required"></span></b>
+            <b>
+              Comments on the module & other suggestions for Improvement:
+              <span className="form-label required"></span>
+            </b>
             <textarea
               className="form-control"
               name=""
@@ -488,35 +526,34 @@ const reportTemplateRef = useRef();
       </div>
       {data?.trainingParticipants?.some(
         (x) => x.employeeBadge === SessionGetEmployeeId()
-      ) &&
-        !isSubmitted ? (
-          <div className="text-end mt-3">
-            <Button
-              type="button"
-              icon="pi pi-eraser"
-              label="Reset"
-              className="rounded"
-              severity="secondary"
-              onClick={() => {
-                setContentMethodology(evaluationConstant.contentMethodology);
-                setProgramLogisticsRating(
-                  evaluationConstant.programLogisticsRating
-                );
-                setFacilitatorRating(evaluationConstant.facilitatorRating);
-                setAnnotation(evaluationConstant.annotation);
-                setOverallRating(evaluationConstant.overallRating);
-              }}
-            />
-            <Button
-              type="button"
-              icon="pi pi-cloud-upload"
-              label="Submit Form"
-              className="rounded ms-2"
-              severity="success"
-              onClick={handleSubmit}
-            />
-          </div>
-        ): 
+      ) && !isSubmitted ? (
+        <div className="text-end mt-3">
+          <Button
+            type="button"
+            icon="pi pi-eraser"
+            label="Reset"
+            className="rounded"
+            severity="secondary"
+            onClick={() => {
+              setContentMethodology(evaluationConstant.contentMethodology);
+              setProgramLogisticsRating(
+                evaluationConstant.programLogisticsRating
+              );
+              setFacilitatorRating(evaluationConstant.facilitatorRating);
+              setAnnotation(evaluationConstant.annotation);
+              setOverallRating(evaluationConstant.overallRating);
+            }}
+          />
+          <Button
+            type="button"
+            icon="pi pi-cloud-upload"
+            label="Submit Form"
+            className="rounded ms-2"
+            severity="success"
+            onClick={handleSubmit}
+          />
+        </div>
+      ) : (
         <div className="text-end mt-3">
           <Button
             type="button"
@@ -527,7 +564,8 @@ const reportTemplateRef = useRef();
             severity="help"
             onClick={() => handleGeneratePdf(reportTemplateRef.current)}
           />
-        </div>}
+        </div>
+      )}
     </Card.Body>
   );
 };
@@ -537,6 +575,7 @@ EvaluationForm.propTypes = {
   userData: proptype.object,
   courseId: proptype.string,
   defaultValue: proptype.object,
-  onFinish: proptype.func
+  onFinish: proptype.func,
+  oldSystem: proptype.bool,
 };
 export default EvaluationForm;

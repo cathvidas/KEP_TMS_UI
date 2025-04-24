@@ -8,7 +8,7 @@ import {
 import proptype from 'prop-types'
 import { useEffect, useState } from "react";
 const SearchBar = ({handleOnInput, options}) => {
-  const [filter, setFilter] = useState({value: "", department: ""});
+  const [filter, setFilter] = useState({name: "", department: ""});
   
   useEffect(()=>{
     handleOnInput(filter)
@@ -34,8 +34,8 @@ const SearchBar = ({handleOnInput, options}) => {
               placeholder="search employee"
               aria-label="Username"
               aria-describedby="basic-addon1"
-              value={filter.value}
-              onChange={(e) =>setFilter({...filter, value: e.target.value})}
+              value={filter.name}
+              onChange={(e) =>setFilter({...filter, name: e.target.value})}
             />
             {options && 
             <div className="position-absolute top-50 end-0 translate-middle-y border border-0 text-muted p-2">

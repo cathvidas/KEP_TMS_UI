@@ -2,9 +2,9 @@ import { approveTrainingFormApi } from "../api/commonApi";
 import { ActivityType } from "../api/constants";
 import {
   createTrainingEffectivenessApi,
-  getAllEffectivenessApi,
   getApproverAssignedEffectivenessApi,
   getEffectivenessByIdApi,
+  GetEffectivenessByRequestIdApi,
   getPagedEffectivenessApi,
   getTrainingEffectivenessToEvaluateApi,
   updateEffectivenessApi,
@@ -68,9 +68,9 @@ const effectivenessService = {
     }
     return {};
   },
-  getAllEffectiveness: async () => {
-    const response = await getAllEffectivenessApi();
-    return response.status === 1 ? response?.data : [];
+  getEffectivenessByRequestId: async (reqId) => {
+    const response = await GetEffectivenessByRequestIdApi(reqId || 0);   
+    return response?.status == 1 ? response?.data : [];
   },
   getApproverAssignedEffectiveness: async (id) => {
     const response = await getApproverAssignedEffectivenessApi(id);

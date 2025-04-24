@@ -42,3 +42,6 @@ export const getFaciliatorRatingApi = async (requestId, facilitatorBadge) =>{
 export const rerouteApproverApi = async (data) =>{
     return await fetchFromApi(`Services/AssignApprover`, "POST", data)
 }
+export const GetDepartmentManagerApi = async (userId) =>{
+    return await fetchFromApi(`Services/GetDepartmentManager?EmployeeBadge=${userId}`,)
+}

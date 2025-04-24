@@ -29,8 +29,12 @@ const DetailsOverview = ({ data , showCost }) => {
         <Col className="col-12">
           <DetailItem
             label="Objective"
-            value={data?.trainingObjectives ?? "N/A"}
             textStyle=" "
+            value={
+              <div style={{ whiteSpace: "pre-wrap" }}>
+                {data?.trainingObjectives}
+              </div>
+            }
           />
         </Col>
         <Col className="col-12 col-md-3">
@@ -54,31 +58,34 @@ const DetailsOverview = ({ data , showCost }) => {
             value={formatTotalTime(calculateTotalHours(data?.trainingDates))}
           />
         </Col>
-        {showCost &&<>
-        <Col className="col-6 col-md-3">
-          <DetailItem
-            label="Training Fee"
-            value={formatCurrency(data?.trainingFee)}
-          />
-        </Col>
-        <Col className="col-6 col-md-3">
-          <DetailItem
-            label="Total Training Cost"
-            value={formatCurrency(data?.totalTrainingFee)}
-          />
-        </Col>
-        <Col className="col-6 col-md-3">
-          <DetailItem
-            label="Discounted Rate"
-            value={formatCurrency(data?.discountedRate)}
-          />
-        </Col>
-        <Col className="col-6 col-md-3">
-          <DetailItem
-            label="Cut-off Date"
-            value={formatDateOnly(data?.cutOffDate ?? "N/A")}
-          />
-        </Col></>}
+        {showCost && (
+          <>
+            <Col className="col-6 col-md-3">
+              <DetailItem
+                label="Training Fee"
+                value={formatCurrency(data?.trainingFee)}
+              />
+            </Col>
+            <Col className="col-6 col-md-3">
+              <DetailItem
+                label="Total Training Cost"
+                value={formatCurrency(data?.totalTrainingFee)}
+              />
+            </Col>
+            <Col className="col-6 col-md-3">
+              <DetailItem
+                label="Discounted Rate"
+                value={formatCurrency(data?.discountedRate)}
+              />
+            </Col>
+            <Col className="col-6 col-md-3">
+              <DetailItem
+                label="Cut-off Date"
+                value={formatDateOnly(data?.cutOffDate ?? "N/A")}
+              />
+            </Col>
+          </>
+        )}
       </Row>
     </div>
   );

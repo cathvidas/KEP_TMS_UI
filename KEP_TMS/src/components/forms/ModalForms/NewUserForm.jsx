@@ -303,7 +303,6 @@ const NewUserForm = ({
                 }
               />
               <FormFieldItem
-                required
                 error={error?.password}
                 label="Password"
                 col="col-lg-4 col-sm-6"

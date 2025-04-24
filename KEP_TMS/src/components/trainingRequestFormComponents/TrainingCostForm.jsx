@@ -6,7 +6,7 @@ import proptype from "prop-types";
 import { useEffect, useState } from "react";
 import { SectionHeading } from "../General/Section";
 import Select from "react-select";
-import { statusCode, TrainingType } from "../../api/constants";
+import { statusCode } from "../../api/constants";
 import externalFacilitatorHook from "../../hooks/externalFacilitatorHook";
 import providerHook from "../../hooks/providerHook";
 
@@ -19,7 +19,6 @@ const TrainingCostForm = ({
   const [cost, setCost] = useState(data.trainingFee);
   const [totalCost, setTotalCost] = useState(0);
   const [providers, setProviders] = useState([]);
-  const [trainers, setTrainers] = useState([]);
   const [trainerOptions, setTrainerOptions] = useState([]);
   const [withEarlyRate, setWithEarlyRate] = useState(false);
   const [pageConfig, setPageConfig] = useState({
@@ -102,13 +101,7 @@ const TrainingCostForm = ({
     } else {
       setWithEarlyRate(false);
     }
-    if (formData?.trainingType?.id === TrainingType.EXTERNAL) {
-      setTrainers(formData.trainingFacilitators);
-    }
   }, [formData]);
-  useEffect(() => {
-      setFormData((prev) => ({ ...prev, trainingFacilitators: trainers }));
-  }, [trainers]);
   return (
     <>
       <SectionHeading
@@ -306,6 +299,6 @@ TrainingCostForm.propTypes = {
   formData: proptype.object.isRequired,
   handleResponse: proptype.func,
   providersData: proptype.object,
-  errors: proptype.object,
+  errors: proptype.any,
 };
 export default TrainingCostForm;

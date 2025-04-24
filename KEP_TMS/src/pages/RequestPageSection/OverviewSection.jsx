@@ -24,7 +24,7 @@ import { confirmAction } from "../../services/sweetalert";
 import handleResponseAsync from "../../services/handleResponseAsync";
 import trainingRequestService from "../../services/trainingRequestService";
 import { validateTrainingRequestForm } from "../../services/inputValidation/validateTrainingRequestForm";
-import { ActivityType, statusCode } from "../../api/constants";
+import { ActivityType, APP_DOMAIN, statusCode } from "../../api/constants";
 import SpeedDialButtonItemTemplate from "../../components/General/SpeedDialButtonItemTemplate";
 import RequestAuditTrailLogsItem from "../../components/TrainingPageComponents/RequestAuditTrailLogsItem";
 import { Dialog } from "primereact/dialog";
@@ -33,6 +33,9 @@ import CommentBox from "../../components/General/CommentBox";
 import handleApproveRequest from "../../services/handlers/handleApproveRequest";
 import ActivityStatus from "../../components/General/ActivityStatus";
 import TrainingFacilitatorList from "../../components/List/TrainingFacilitatorList";
+import OldSystemFacilitatorList from "../../components/List/OldSystemFacilitatorList";
+import OldSystemActivityList from "../../components/List/OldSystemActivityList";
+import { DetailItem } from "../UserPageSection/UserDetailView";
 const OverviewSection = ({
   data,
   showFacilitators = false,
@@ -41,6 +44,7 @@ const OverviewSection = ({
   userReports,
   logs,
   reloadData,
+  isOldSystem
 }) => {
   const navigate = useNavigate();
   const toast = useRef(null);
@@ -77,7 +81,7 @@ const OverviewSection = ({
       SessionGetEmployeeId(),
       userReports ?? null,
       () => cancelRequest(),
-      () => navigate("/KEP_TMS/Request/Update/" + data.id),
+      () => navigate(`${APP_DOMAIN}/Request/Update/${data.id}`),
       () => setShowCommentBox(true),
       reloadData
     );
@@ -102,7 +106,7 @@ const OverviewSection = ({
     {
       label: "Update",
       icon: "pi pi-pencil",
-      command: () => navigate("/KEP_TMS/Request/Update/" + data.id),
+      command: () => navigate(`${APP_DOMAIN}/Request/Update/${data.id}`),
       template: SpeedDialButtonItemTemplate,
       inactive: ( data?.status?.id === statusCode.APPROVED || data?.status?.id === statusCode.CLOSED)
     },
@@ -167,19 +171,39 @@ const OverviewSection = ({
           <h3 className="text-center theme-color m-0">
             {data?.trainingType?.name} Training Request
           </h3>
-         
+
           <h6 className="text-muted text-center mb-3">Request ID: {data.id}</h6>
-          {showApprovers &&
-          <> <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
-            <span> REQUESTOR: {data?.requestor?.fullname}</span>
-            <span> BADGE NO: {data?.requestor?.employeeBadge}</span>
-            <span> DEPARTMENT: {data?.requestor?.departmentName}</span>
-            <span> DATE: {formatDateTime(data?.createdDate)}</span>
-            {(isAdmin || data?.requesterBadge === SessionGetEmployeeId())&&
-            <span> STATUS: <ActivityStatus icon={data?.status?.id == statusCode.INACTIVE ? "pi pi-ban": ""} 
-            severity={data?.status?.id == statusCode.INACTIVE ? "text-danger": ""} 
-            status={data?.status?.id == statusCode.INACTIVE ? "Cancelled": data?.status?.id} /></span>}
-          </div></>}
+          {showApprovers && (
+            <>
+              {" "}
+              <div className="h6 d-flex flex-md-wrap flex-column flex-lg-row gap-lg-3 gap-1 pb-3 justify-content-md-around border-bottom">
+                <DetailItem label="Requestor" value={data?.requestor?.fullname} />
+                <DetailItem label="Badge No" value={data?.requestor?.employeeBadge} />
+                <DetailItem label="Department" value={data?.requestor?.departmentName} />
+                <DetailItem label="Date" value={formatDateTime(data?.createdDate)} />
+                {(isAdmin ||
+                  data?.requesterBadge === SessionGetEmployeeId()) && (
+                    <DetailItem label="Status" value={ <ActivityStatus
+                          icon={
+                            data?.status?.id == statusCode.INACTIVE
+                              ? "pi pi-ban"
+                              : ""
+                          }
+                          severity={
+                            data?.status?.id == statusCode.INACTIVE
+                              ? "text-danger"
+                              : ""
+                          }
+                          status={
+                            data?.status?.id == statusCode.INACTIVE
+                              ? "Cancelled"
+                              : data?.status?.id
+                          }
+                        />} />
+                )}
+              </div>
+            </>
+          )}
         </div>
         <div className="flex justify-content-between">
           <SectionHeading
@@ -194,111 +218,123 @@ const OverviewSection = ({
           icon={<FontAwesomeIcon icon={faCalendar} />}
         />
         <TrainingScheduleList schedules={data.trainingDates} />
-          <>
-            <br />
-            <SectionHeading
-              title="Participants"
-              icon={<FontAwesomeIcon icon={faUsers} />}
-            />
-            {data.trainingParticipants?.length > 0 ? (
-              <div className="w-100 overflow-hidden">
-                <small className="text-muted">
-                  {data.trainingParticipants?.length} participants{" "}
-                </small>
-                <UserList
-                  leadingElement={true}
-                  col="3"
-                  userlist={data.trainingParticipants}
-                  property={"name"}
-                  // allowEffectiveness
-                />
-              </div>
-            ) : (
-              <EmptyState placeholder="No participants added" />
-            )}
-          </>
-        {showFacilitators && (
-          <>
-            <br />
-            <SectionHeading
-              title="Facilitator"
-              icon={<FontAwesomeIcon icon={faUsers} />}
-            />
-           <TrainingFacilitatorList requestData={data} />
-          </>
-        )}
-        {showApprovers&& data?.status?.id != statusCode.DRAFTED && (
-          <>
-            <br />
-            <hr />
-            <div className="">
-              <h6 className="theme-color fw-bold">Routes</h6>
-              <ApproverList
-                data={data}
-                activityType={ActivityType.REQUEST}
-                hasEmailForm
-                activityLogs={logs}
-                optionColumn={actionBodyTemplate}
-                reloadData={reloadData}
+        <>
+          <br />
+          <SectionHeading
+            title="Participants"
+            icon={<FontAwesomeIcon icon={faUsers} />}
+          />
+          {data.trainingParticipants?.length > 0 ? (
+            <div className="w-100 overflow-hidden">
+              <small className="text-muted">
+                {data.trainingParticipants?.length} participants{" "}
+              </small>
+              <UserList
+                leadingElement={true}
+                col="3"
+                userlist={data.trainingParticipants}
+                property={"name"}
+                // allowEffectiveness
               />
             </div>
-            {logs && (
-              <>
-                <ActivityList
-                  data={logs}
-                  label={"Activities"}
-                />
-              </>
-            )}
+          ) : (
+            <EmptyState placeholder="No participants added" />
+          )}
+        </>
+        {isOldSystem && <>
+            <SectionHeading
+              title="Facilitators"
+              icon={<FontAwesomeIcon icon={faUsers} />}
+            />
+            <OldSystemFacilitatorList
+              facilitators={data?.trainingFacilitators}
+            />
+            <hr />
+            <OldSystemActivityList activityType={ActivityType.REQUEST} trainingType={data?.trainingType?.id} id={data?.id}/>
+        </>}
+        {(!isOldSystem && showFacilitators) && (
+          <>
+            <br />
+            <SectionHeading
+              title="Facilitators"
+              icon={<FontAwesomeIcon icon={faUsers} />}
+            />
+            <TrainingFacilitatorList requestData={data} />
           </>
         )}
+        {(!isOldSystem &&
+          showApprovers &&
+          data?.status?.id != statusCode.DRAFTED) && (
+            <>
+              <br />
+              <hr />
+              <div className="">
+                <SectionHeading title="Routes" />
+                <ApproverList
+                  data={data}
+                  activityType={ActivityType.REQUEST}
+                  hasEmailForm
+                  activityLogs={logs}
+                  optionColumn={actionBodyTemplate}
+                  reloadData={reloadData}
+                />
+              </div>
+              {logs && (
+                <>
+                  <ActivityList data={logs} label={"Activities"} />
+                </>
+              )}
+            </>
+          )}
       </div>
-      {data?.status?.id != statusCode.DRAFTED && <>
-      <Dialog
-        header="History Log"
-        visible={showLogModal}
-        maximizable
-        style={{ width: "50vw", minHeight: "50vh" }}
-        onHide={() => {
-          if (!showLogModal) return;
-          setShowLogModal(false);
-        }}
-      >
-        <hr className="mt-0" />
-        <RequestAuditTrailLogsItem data={data} />
-      </Dialog>
-      <CommentBox
-        show={showCommentBox}
-        header="Comments"
-        onClose={() => setShowCommentBox(false)}
-        confirmButton={{ label: "Return Request" }}
-        onSubmit={(e) =>
-          handleApproveRequest({
-            id: data?.id,
-            approve: false,
-            onFinish: reloadData,
-            remarks: e,
-            user: SessionGetEmployeeId(),
-          })
-        }
-        description="Please state your reason for returning this Training Request."
-      />
-      {(isAdmin ||
-        data?.requesterBadge == SessionGetEmployeeId()) && (
-        <div className="position-absolute bottom-0  mb-3 me-4 end-0">
-          <Toast ref={toast2} />
-          <Tooltip
-            target=".speeddial-bottom-right  .p-speeddial-action"
-            position="left"
+      {data?.status?.id != statusCode.DRAFTED && (
+        <>
+          <Dialog
+            header="History Log"
+            visible={showLogModal}
+            maximizable
+            style={{ width: "50vw", minHeight: "50vh" }}
+            onHide={() => {
+              if (!showLogModal) return;
+              setShowLogModal(false);
+            }}
+          >
+            <hr className="mt-0" />
+            <RequestAuditTrailLogsItem data={data} />
+          </Dialog>
+          <CommentBox
+            show={showCommentBox}
+            header="Comments"
+            onClose={() => setShowCommentBox(false)}
+            confirmButton={{ label: "Return Request" }}
+            onSubmit={(e) =>
+              handleApproveRequest({
+                id: data?.id,
+                approve: false,
+                onFinish: reloadData,
+                remarks: e,
+                user: SessionGetEmployeeId(),
+              })
+            }
+            description="Please state your reason for returning this Training Request."
           />
-          <SpeedDial
-            model={items}
-            direction="up"
-            className="speeddial-bottom-right  end-0 bottom-0 custom-link text-white"
-            buttonClassName="p-button-default rounded-circle "
-          />
-        </div>
-      )}</>}
+          {(isAdmin || data?.requesterBadge == SessionGetEmployeeId()) && (
+            <div className="position-absolute bottom-0  mb-3 me-4 end-0">
+              <Toast ref={toast2} />
+              <Tooltip
+                target=".speeddial-bottom-right  .p-speeddial-action"
+                position="left"
+              />
+              <SpeedDial
+                model={items}
+                direction="up"
+                className="speeddial-bottom-right  end-0 bottom-0 custom-link text-white"
+                buttonClassName="p-button-default rounded-circle "
+              />
+            </div>
+          )}
+        </>
+      )}
     </>
   );
 };
@@ -313,5 +349,6 @@ OverviewSection.propTypes = {
   logs: proptype.array,
   activityRoutes: proptype.array,
   reloadData: proptype.func,
+  isOldSystem: proptype.bool,
 };
 export default OverviewSection;

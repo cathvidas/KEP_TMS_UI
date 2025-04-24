@@ -145,7 +145,6 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
                     className="form-control"
                     type="date"
                     name="date"
-                    min={formatDateOnly(new Date(), "dash")}
                     value={schedData?.date}
                     onChange={handleInputChange}
                     // required
@@ -231,7 +230,7 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
 TrainingScheduleForm.propTypes = {
   formData: proptype.object,
   handleResponse: proptype.func,
-  errors: proptype.string,
+  errors: proptype.any,
 };
 export default TrainingScheduleForm;
   

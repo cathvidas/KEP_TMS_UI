@@ -36,12 +36,13 @@ const TableEmailTemplate = ({ items, value, label, hideInNull = false }) => {
           </tr>
         </thead>
         <tbody>
-          {value?.map((item) => (
+          {value?.map((item, i) => (
             <>
-              <tr>
+              <tr key={i}>
                 {items?.map((x) => (
                   <>
                     <td style={{ padding: "5px"}}>
+                      {x.body && <>{item[x?.body]}</>}
                       {x?.getName ?
                         userHook.useUserById(item[x?.field])?.data?.fullname:
                         item[x?.field]}

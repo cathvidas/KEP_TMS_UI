@@ -96,17 +96,19 @@ const CostApprovalMatrixSection = () => {
     {
       field: "title",
       header: "Title",
+      body: (rowData) =>
+        userHook.useUserById(rowData.employeeBadge)?.data?.position,
     },
     {
       field: "cost",
-      header: "Cost Range",
+      header: "Amount",
     },
     {
       field: "description",
       header: "Modified By",
       body: (rowData) =>
         userHook.useUserById(rowData.updatedBy ?? rowData.createdBy)?.data
-          ?.fullname ?? rowData?.createdBy,
+          ?.fullname ?? rowData.updatedBy ?? rowData.createdBy,
     },
     {
       field: "createdDate",
@@ -130,7 +132,7 @@ const CostApprovalMatrixSection = () => {
     <div className="flex justify-content-between">
       <div className="flex flex-wrap gap-3">
         <div className="flex theme-color">
-          <h6 className="theme-color m-0 fw-bold">Cost Codes</h6>
+          <h6 className="theme-color m-0 fw-bold">Cost Approval Matrix</h6>
         </div>
         <Button
           type="button"

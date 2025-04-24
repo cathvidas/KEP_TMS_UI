@@ -29,6 +29,7 @@ const Login = () => {
   // response variables
   const handleLogin = async (e) => {
     e.preventDefault();
+    if(loading) {return};
     if (validateLogin(badge, password)) {
       var data = {
         employeeId: e.target.badge.value?.trim(),
@@ -43,7 +44,7 @@ const Login = () => {
         setConfirmPassword("");
       } else if(res){
         if(location.pathname === APP_DOMAIN || location.pathname === APP_DOMAIN + "/"){
-          navigate("/KEP_TMS/Dashboard");
+          navigate(`${APP_DOMAIN}/Dashboard`);
         }
         else{
           navigate()}
@@ -142,7 +143,7 @@ const Login = () => {
                     </Form.Group>}
                     <Form.Group className="mb-3">
                       <Button
-                        className="d-block w-100 p-3 rounded"
+                        className={`d-block w-100 p-3 rounded ${loading ? "opacity-50" : ""}`}
                         type="submit"
                         style={{
                           background: "#2eb396",

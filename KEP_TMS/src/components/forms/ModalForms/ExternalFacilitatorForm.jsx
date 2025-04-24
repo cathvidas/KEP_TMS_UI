@@ -55,7 +55,7 @@ const ExternalFacilitatorForm = ({ handleShow, handleClose, selectedData, onFini
   };
   const validateForm = useCallback(() => {
     let formErrors = {};
-    if (!formData.name) {
+    if (!formData?.name?.trim()) {
       formErrors.name = "This field is required";
     }
     setErrors(formErrors);

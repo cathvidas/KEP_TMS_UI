@@ -1,4 +1,4 @@
-import { createUserApi, getAllUsersApi, getUserApi, getUsersByRoleApi, GetUserTotalAccumulatedHoursApi, SetPasswordApi, updateUserApi } from "../api/userApi";
+import { createUserApi, GetActiveAdminsApi, getAllUsersApi, getUserApi, getUsersByRoleApi, GetUserTotalAccumulatedHoursApi, SetPasswordApi, updateUserApi } from "../api/userApi";
 
 const userService = {
   getAllUsers: async (pageNumber, pageSize, searchValue) => {
@@ -13,8 +13,12 @@ const userService = {
       const response = await getUsersByRoleApi(pageNumber, pageSize,role, searchValue);
       return response;
   },
+  getActiveAdmins: async () => {
+      const response = await GetActiveAdminsApi();
+      return response?.status === 1 ? response.data : {};
+  },
   getUserById: async (id) => {
-    const response = await getUserApi(id);
+    const response = await getUserApi(id || 0);
     return response?.status === 1 ? response.data : {};
   },
   createUser: async (user) => {

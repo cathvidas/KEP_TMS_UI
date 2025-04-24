@@ -3,17 +3,22 @@ import CommonTable from "../../components/General/CommonTable";
 import { SectionHeading } from "../../components/General/Section";
 import StatusColor from "../../components/General/StatusColor";
 import proptype from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import EffectivenessForm from "../../components/forms/EffectivenessForm";
 import TrainingReportForm from "../../components/forms/TrainingReportForm";
 import EvaluationForm from "../../components/forms/EvaluationForm";
-import { ActivityType, UserTypeValue } from "../../api/constants";
+import { ActivityType, statusCode, UserTypeValue } from "../../api/constants";
 import getStatusById from "../../utils/status/getStatusById";
 import getTraineeExamDetail from "../../services/common/getTraineeExamDetail";
 import ExamDetails from "../../components/Exam/ExamDetails";
 import GeneralEmailTemplate from "../../components/email/GeneralEmailTemplate";
 import { SessionGetRole } from "../../services/sessions";
+import SkeletonDataTable from "../../components/Skeleton/SkeletonDataTable";
+import effectivenessHook from "../../hooks/effectivenessHook";
+import trainingReportHook from "../../hooks/trainingReportHook";
+import evaluationHook from "../../hooks/evaluationHook";
+import NotFoundPage from "../NotFoundPage";
 const MonitoringReportView = ({
   data,
   reportType,
@@ -22,11 +27,22 @@ const MonitoringReportView = ({
   formData,
   typeId,
   examDetail,
-  onRefresh
+  onRefresh,
+  oldSystem,
 }) => {
   const [showForm, setShowForm] = useState(false);
   const [showEmailTemplate, setShowEmailTemplate] = useState(false);
   const [selectedData, setSelectedData] = useState({});
+  const [selectedFormData, setSelectedFormData] = useState({});
+  const queuedFormData = typeId === ActivityType.EFFECTIVENESS ? effectivenessHook.useEffectivenessById(selectedData?.effectivenessDetail?.id):
+   typeId === ActivityType.REPORT ? trainingReportHook.useTrainingReportById(selectedData?.reportDetail?.id) : 
+   typeId === ActivityType.EVALUATION? evaluationHook.useEvaluationById(selectedData?.evaluationDetail?.id) : null;
+   useEffect(()=>{
+    if(oldSystem){
+      setSelectedFormData(selectedData[reportType])
+    }else{
+    setSelectedFormData(queuedFormData?.data)}
+   }, [selectedData, oldSystem, queuedFormData, reportType])
   const actionTemplate = (rowData) => {
     return (
       <>
@@ -39,7 +55,7 @@ const MonitoringReportView = ({
             );
             setShowForm(true);
           }}
-          disabled={rowData[reportType]?.id ? false : true}
+          disabled={!rowData[reportType]?.id}
         />
       </>
     );
@@ -127,7 +143,12 @@ const MonitoringReportView = ({
       });
     }
     columnItems.push(
-      typeId !== ActivityType.EXAM
+      oldSystem ? {
+        field: "exam",
+        header: "Status",
+        body: (rowData) => <>{rowData[reportType]?.statusName ??rowData[reportType]?.status ?? "N/A"}</>
+      } :
+      (typeId !== ActivityType.EXAM && !oldSystem)
         ? {
             field: "department",
             header: "Status",
@@ -136,7 +157,7 @@ const MonitoringReportView = ({
                 {typeId === ActivityType.EVALUATION
                   ? rowData[reportType]?.status ?? "Not yet submitted"
                   : StatusColor({
-                      status:
+                      status: rowData[reportType]?.statusName ?? rowData[reportType]?.status ??
                         getStatusById(
                           rowData[reportType]?.currentRouting?.statusId
                         ) ?? "Pending",
@@ -152,7 +173,7 @@ const MonitoringReportView = ({
             header: "Current Approver",
             body: (rowData) => (
               <>
-                {rowData[reportType]?.currentRouting?.assignedDetail
+                {rowData[reportType]?.currentApproverName ?? rowData[reportType]?.currentApprover ?? rowData[reportType]?.currentRouting?.assignedDetail
                   ?.fullname ?? "N/A"}
               </>
             ),
@@ -182,6 +203,7 @@ const MonitoringReportView = ({
   addcolumns();
   return (
     <>
+    {SessionGetRole() === UserTypeValue.ADMIN ? <>
       {!showForm ? (
         <>
           {showEmailTemplate ? (
@@ -204,16 +226,16 @@ const MonitoringReportView = ({
                   icon={<i className="pi pi-clock"></i>}
                 />
               </div>
-
+                {formData?.loading ? <SkeletonDataTable/> :
               <CommonTable
-                headerComponent={
-                  SessionGetRole() === UserTypeValue.ADMIN ? (
+                headerComponent={data?.status?.id != statusCode.CLOSED &&
+                  SessionGetRole() === UserTypeValue.ADMIN && !oldSystem ? (
                     <HeaderComponent />
                   ) : null
                 }
                 dataTable={formData?.data}
                 columnItems={columnItems}
-              />
+              />}
             </>
           )}
         </>
@@ -263,16 +285,17 @@ const MonitoringReportView = ({
                     onFinish={onRefresh}
                     data={data}
                     userData={selectedData?.userDetail}
-                    formData={selectedData?.effectivenessDetail}
+                    formData={selectedFormData}
                     currentRouting={
-                      selectedData?.effectivenessDetail?.currentRouting
+                      selectedFormData?.currentRouting
                     }
                     auditTrail={
-                      selectedData?.effectivenessDetail?.auditTrail
-                        ? selectedData?.effectivenessDetail?.auditTrail
+                      selectedFormData?.auditTrail
+                        ? selectedFormData?.auditTrail
                         : []
                     }
                     isAdmin
+                    oldSystem={oldSystem}
                   />
                 )}
                 {typeId === ActivityType.REPORT && (
@@ -280,15 +303,16 @@ const MonitoringReportView = ({
                     onFinish={onRefresh}
                     data={data}
                     userData={selectedData?.userDetail}
-                    defaultValue={selectedData[reportType]}
+                    defaultValue={selectedFormData}
                     isSubmitted
                     isAdmin
+                    oldSystem={oldSystem}
                     auditTrail={
-                      selectedData?.reportDetail?.auditTrail
-                        ? selectedData?.reportDetail?.auditTrail[0]
+                      selectedFormData?.auditTrail
+                        ? selectedFormData?.auditTrail[0]
                         : {}
                     }
-                    currentRouting={selectedData?.reportDetail?.currentRouting}
+                    currentRouting={selectedFormData?.currentRouting}
                   />
                 )}
                 {typeId === ActivityType.EVALUATION && (
@@ -297,6 +321,7 @@ const MonitoringReportView = ({
                     data={data}
                     userData={selectedData?.userDetail}
                     defaultValue={selectedData?.evaluationDetail}
+                    oldSystem={oldSystem}
                   />
                 )}
               </>
@@ -306,6 +331,7 @@ const MonitoringReportView = ({
           </Card>
         </>
       )}{" "}
+      </> : <NotFoundPage/>}
     </>
   );
 };
@@ -319,5 +345,6 @@ MonitoringReportView.propTypes = {
   typeId: proptype.number,
   examDetail: proptype.array,
   onRefresh: proptype.func,
+  oldSystem: proptype.bool,
 };
 export default MonitoringReportView;

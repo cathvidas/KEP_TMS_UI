@@ -8,7 +8,9 @@ import GeneralEmailTemplate from "../../components/email/GeneralEmailTemplate";
 import { useState } from "react";
 import { Card } from "react-bootstrap";
 import { SectionHeading } from "../../components/General/Section";
-import { ActivityType } from "../../api/constants";
+import { ActivityType, UserTypeValue } from "../../api/constants";
+import NotFoundPage from "../NotFoundPage";
+import { SessionGetRole } from "../../services/sessions";
 
 const MonitoringExamView = ({ requestData, examList, onRefresh }) => {
     
@@ -88,6 +90,7 @@ const MonitoringExamView = ({ requestData, examList, onRefresh }) => {
   addcolumns();
   return(
     <>
+      {SessionGetRole() === UserTypeValue.ADMIN ? <>
       {!showForm ? (
         <>
           {showEmailTemplate ? (
@@ -157,7 +160,7 @@ const MonitoringExamView = ({ requestData, examList, onRefresh }) => {
             )}
           </Card>
         </>
-      )}{" "}
+      )}{" "}</>: <NotFoundPage/>}
     </>)
 };
 MonitoringExamView.propTypes = {

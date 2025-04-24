@@ -18,11 +18,11 @@ export const updateTrainingRequestApi = async (data)=>{
 export const getTrainingRequestByApproverApi = async (id) =>{
     return await fetchFromApi(`Services/GetAssignedRequests?assignedTo=${id}`);
 }
-export const getTrainingRequestByTraineeIdApi = async (id) =>{
-    return await fetchFromApi(`TrainingRequest/GetByParticipant?participantBadge=${id}`);
+export const GetTrainingsAttendedApi = async (id) =>{
+    return await fetchFromApi(`TrainingRequest/GetTrainingsAttended?ParticipantBadge=${id}`);
 }
-export const getTrainingRequestByFacilitatorIdApi = async (id) =>{
-    return await fetchFromApi(`TrainingRequest/GetByFacilitator?facilitatorBadge=${id}`);
+export const GetTrainingsFacilitatedApi = async (id) =>{
+    return await fetchFromApi(`TrainingRequest/GetTrainingsFacilitated?EmployeeBadge=${id}`);
 }
 export const GetTrainingRequestSummaryApi = async (id) =>{
     return await fetchFromApi(`TrainingRequest/GetTrainingRequestSummary?employeeBadge=${id}`);
@@ -42,4 +42,7 @@ export const getPagedTrainingRequestsApi = async (pageNumber, pageSize, searchVa
         url += `&fourthSearchValue=${fourthSearchValue}`
     }
     return await fetchFromApi(url);
+}
+export const DeleteTrainingRequestApi = async (id) =>{
+    return await fetchFromApi(`TrainingRequest/DeleteTrainingRequest?Id=${id}`, "DELETE");
 }

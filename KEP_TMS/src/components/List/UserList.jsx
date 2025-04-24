@@ -5,6 +5,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import StatusColor from "../General/StatusColor";
 import effectivenessHook from "../../hooks/effectivenessHook";
+import SkeletonDataTable from "../Skeleton/SkeletonDataTable";
 
 export const UserList = ({
   userlist,
@@ -17,7 +18,8 @@ export const UserList = ({
   allowEffectiveness = false,
   sortable= false,
   selectionMode,showSelected,
-  handleScroll
+  handleScroll,
+  loading
 }) => {
   // const [filters, setFilters] = useState(filterTemp);
   const [selected, setSelected] = useState([]);
@@ -35,7 +37,7 @@ export const UserList = ({
   }, [selected, handleParticipants]);
   const actionBodyTemplate = (data) => {
     return (
-      <Button type="button" severity="danger" icon="pi pi-trash" text onClick={() => setRemoveEmpBadge(data.employeeBadge)}/>
+      <Button type="button" severity="danger" className="py-0" icon="pi pi-trash" text onClick={() => setRemoveEmpBadge(data.employeeBadge)}/>
     );
   };
   const effectivenessTemplate = (rowData) => {
@@ -72,15 +74,16 @@ export const UserList = ({
     <>
     {showSelected &&
     <div className="flex flex-wrap gap- mb-2">
-          {selected?.map(item =><><div
+          {selected?.map((item, index) =><><div
         className="ps-2 py-1  rounded"
         style={{ backgroundColor: 'var(--highlight-bg)', color: 'var(--highlight-text-color)'}}
         >
-            <span>{item?.fullname} </span> <Button type="button" className="p-0" size="small" text icon="pi pi-times" onClick={()=>unselectUser(item?.employeeBadge)}/>
+            <span key={index}>{item?.fullname} </span> <Button type="button" className="p-0" size="small" text icon="pi pi-times" onClick={()=>unselectUser(item?.employeeBadge)}/>
     </div>
           </>)}
       
     </div>}
+    {loading ? <SkeletonDataTable/> : <>
       {userlist && (
         <>
         
@@ -105,8 +108,8 @@ export const UserList = ({
               ></Column>
             )}
             <Column header="No" body={(_, { rowIndex }) => rowIndex + 1}  sortable={sortable}/>
-            <Column field="fullname" header="Name" sortable={sortable}></Column>
             <Column field="employeeBadge" header="Employee Id" sortable={sortable}></Column>
+            <Column field="fullname" header="Name" sortable={sortable}></Column>
             <Column field="position" header="Position" sortable={sortable}></Column>
             <Column field="departmentName" header="Department" sortable={sortable}></Column>
             {allowEffectiveness && 
@@ -124,7 +127,7 @@ export const UserList = ({
             {column && column}
           </DataTable>
         </>
-      )}
+      )}</>}
     </>
   );
 };
@@ -145,4 +148,5 @@ UserList.propTypes = {
   selectionMode: proptype.bool,
   showSelected: proptype.bool,
   handleScroll: proptype.func,
+  loading: proptype.bool,
 };

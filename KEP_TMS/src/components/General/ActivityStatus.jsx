@@ -1,6 +1,6 @@
 import proptype from "prop-types";
 import { statusCode } from "../../api/constants";
-const ActivityStatus = ({ showIcon = true, icon, status, severity, color }) => {
+const ActivityStatus = ({ showIcon = true, icon, status, severity, color, block }) => {
   let newIcon = "";
   let newColor = "";
   let customColor = color ? color : "";
@@ -55,7 +55,7 @@ const ActivityStatus = ({ showIcon = true, icon, status, severity, color }) => {
   return (
     <>
       <span
-        className={`${severity ? severity : (!color && newColor) ? newColor : color}`}
+        className={`${severity ? severity : (!color && newColor) ? newColor : color} ${block ? "d-block":""} text-center`}
         style={{ color: customColor }}
       >
         {showIcon && (
@@ -72,9 +72,10 @@ const ActivityStatus = ({ showIcon = true, icon, status, severity, color }) => {
 
 ActivityStatus.propTypes = {
   showIcon: proptype.bool,
-  status: proptype.string,
+  status: proptype.any,
   severity: proptype.string,
   color: proptype.string,
   icon: proptype.string,
+  block: proptype.bool,
 };
 export default ActivityStatus;

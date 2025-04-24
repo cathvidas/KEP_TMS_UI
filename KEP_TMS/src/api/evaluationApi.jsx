@@ -9,3 +9,6 @@ export const getAllTrainingEvaluationApi = async () =>{
 export const getTrainingEvaluationByIdApi = async (id) =>{
     return await fetchFromApi(`/TrainingEvaluation/GetTrainingEvaluationById?id=${id}`)
 }
+export const GetTrainingEvaluationsByRequestIdApi = async (id) =>{
+    return await fetchFromApi(`/TrainingEvaluation/GetTrainingEvaluationsByRequestId?RequestId=${id}`)
+}

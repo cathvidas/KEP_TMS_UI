@@ -45,8 +45,8 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
   }, [details]);
 
   //Emtpty field validation
-  const handleOnChange = (name, value) => {
-    setErrors({ ...errors, [name]: value ? "" : "This field is required." });
+  const handleOnChange = (name, value, isString) => {
+    setErrors({ ...errors, [name]: (isString ? !value?.trim() : !value) ? "This field is required." : "" });
     setDetails((obj) => ({ ...obj, [name]: value }));
   };
   return (
@@ -63,20 +63,29 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
           label={"Program"}
           FieldComponent={
             <Select
-            onInputChange={(e) =>
-              setPageConfig((prev) => ({ ...prev, value: e }))
-            }
-            onMenuScrollToBottom={() =>
-              setPageConfig((prev) => ({ ...prev, size: prev.size + 10 }))
-            }
-            isLoading={programs?.loading ? true : false}
+              onInputChange={(e) =>
+                setPageConfig((prev) => ({ ...prev, value: e }))
+              }
+              onMenuScrollToBottom={() =>
+                setPageConfig((prev) => ({ ...prev, size: prev.size + 10 }))
+              }
+              isLoading={programs?.loading ? true : false}
               options={options.programs}
-              name="TProgram"              
-              value={details?.trainingProgram?.id ? {
-                label: details?.trainingProgram?.name,
-                value: details?.trainingProgram?.id,
-              }: ""}
-              onChange={(e) => handleOnChange("trainingProgram", {id: e.value, name: e.label})}
+              name="TProgram"
+              value={
+                details?.trainingProgram?.id
+                  ? {
+                      label: details?.trainingProgram?.name,
+                      value: details?.trainingProgram?.id,
+                    }
+                  : ""
+              }
+              onChange={(e) =>
+                handleOnChange("trainingProgram", {
+                  id: e.value,
+                  name: e.label,
+                })
+              }
             />
           }
         />
@@ -88,11 +97,16 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
           FieldComponent={
             <Select
               isLoading={categories?.loading ? true : false}
-              options={options.categories}              
+              options={options.categories}
               value={options.categories.filter(
                 (x) => x.value === details.trainingCategory?.id
               )}
-              onChange={(e) => handleOnChange("trainingCategory", {id:e.value, name:e.label})}
+              onChange={(e) =>
+                handleOnChange("trainingCategory", {
+                  id: e.value,
+                  name: e.label,
+                })
+              }
             />
           }
         />
@@ -107,7 +121,7 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
               placeholder="Training objective"
               value={details.trainingObjectives}
               name="trainingObjectives"
-              onChange={(e)=>handleOnChange(e.target.name, e.target.value)}
+              onChange={(e)=>handleOnChange(e.target.name, e.target.value, true)}
             ></textarea>
           }
         />
@@ -121,9 +135,9 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
               className="form-control"
               name="venue"
               placeholder="Venue"
-              value={details.venue}              
+              value={details.venue}
               onChange={(e) => {
-                handleOnChange(e.target.name, e.target.value);
+                handleOnChange(e.target.name, e.target.value, true);
               }}
             />
           }

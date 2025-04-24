@@ -16,7 +16,8 @@ const evaluationConstant ={
       id: 0,
       plrOne: 0,
       plrTwo: 0,
-      plrThree: 0
+      plrThree: 0,
+      plrFour: 0,
     },
     overallRating: 0,
     annotation: "",

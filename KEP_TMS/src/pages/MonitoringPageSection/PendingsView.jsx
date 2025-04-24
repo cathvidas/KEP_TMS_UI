@@ -2,11 +2,12 @@ import { SectionHeading } from "../../components/General/Section";
 import proptype from "prop-types";
 import CommonTable from "../../components/General/CommonTable";
 import { useState } from "react";
-import { OtherConstant } from "../../api/constants";
+import { OtherConstant, statusCode, UserTypeValue } from "../../api/constants";
 import { Button } from "primereact/button";
 import TrainingFormsEmailTemplate from "../../components/email/TrainingFormsEmailTemplate";
-import getStatusById from "../../utils/status/getStatusById";
-const PendingView = ({ data, formData, examDetail }) => {
+import NotFoundPage from "../NotFoundPage";
+import { SessionGetRole } from "../../services/sessions";
+const PendingView = ({ data, formData, examDetail, oldSystem }) => {
   const [showEmailTemplate, setShowEmailTemplate] = useState(false);
   const getExamSumary = (traineeId) => {
     const exams = examDetail?.filter((item) =>
@@ -44,7 +45,7 @@ const PendingView = ({ data, formData, examDetail }) => {
         <>
           {" "}
           {data?.durationInHours >= OtherConstant.EFFECTIVENESS_MINHOUR
-            ? rowData?.effectivenessDetail?.currentRouting?.statusId ? getStatusById(rowData?.effectivenessDetail?.currentRouting?.statusId) :
+            ? rowData?.effectivenessDetail?.id ? "Submitted" :
               "Not yet submitted"
             : "N/A"}
         </>
@@ -54,13 +55,13 @@ const PendingView = ({ data, formData, examDetail }) => {
       field: "Report",
       header: "Report",
       body: (rowData) => (
-        <>{rowData?.reportDetail?.currentRouting?.statusId ? getStatusById(rowData?.reportDetail?.currentRouting?.statusId) : "Not yet submitted"}</>
+        <>{rowData?.reportDetail?.id ? "Submitted" : "Not yet submitted"}</>
       ),
     },
     {
       field: "Evaluation",
       header: "Evaluation",
-      body: (rowData) => <>{rowData?.evaluationDetail?.status ?? "Not yet submitted"}</>,
+      body: (rowData) => <>{rowData?.evaluationDetail?.id ? "Submitted" : "Not yet submitted"}</>,
     },
     {
       field: "exam",
@@ -85,7 +86,8 @@ const PendingView = ({ data, formData, examDetail }) => {
     );
   };
   return (
-    <>
+    <>   
+    {SessionGetRole() === UserTypeValue.ADMIN ? <>
       {!showEmailTemplate ? (
         <>
           <SectionHeading
@@ -93,7 +95,7 @@ const PendingView = ({ data, formData, examDetail }) => {
             icon={<i className="pi pi-clock"></i>}
           />
           <CommonTable
-            headerComponent={<HeaderComponent />}
+            headerComponent={!oldSystem && data?.status?.id != statusCode.CLOSED ? <HeaderComponent /> : null}
             dataTable={formData?.data}
             columnItems={columnItems}
             dataKey={data?.data?.userDetail?.id}
@@ -107,13 +109,14 @@ const PendingView = ({ data, formData, examDetail }) => {
           onClose={() => setShowEmailTemplate(false)}
           disableFormLink
         />
-      )}{" "}
+      )}{" "}</> : <NotFoundPage/>}
     </>
   );
 };
 PendingView.propTypes = {
   data: proptype.object.isRequired,
-  formData: proptype.object.isRequired,
+  formData: proptype.object,
   examDetail: proptype.array,
+  oldSystem: proptype.bool,
 };
 export default PendingView;

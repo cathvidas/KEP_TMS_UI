@@ -1,4 +1,4 @@
-import { disapproveActivityApi, getActivityApproversApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, getFaciliatorRatingApi, getRoutingActivityWithAuditTrailApi, rerouteApproverApi } from "../api/commonApi";
+import { disapproveActivityApi, getActivityApproversApi, getAllDepartmentsApi, getAllEmployeeTypesApi, getAllPositionsApi, getAllRolesApi, getApprovedFormsApi, getAuditTrailApi, GetDepartmentManagerApi, getFaciliatorRatingApi, getRoutingActivityWithAuditTrailApi, rerouteApproverApi } from "../api/commonApi";
 import routingService from "./common/routingService";
 import userMapping from "./DataMapping/userMapping";
 import userService from "./userService";
@@ -83,6 +83,10 @@ const commonService = {
       throw new Error(response.message);
     }
     return response;
+  },
+  getDepartmentManager: async (userId) => {
+    const response = await GetDepartmentManagerApi(userId);
+    return response.status === 1 ? response?.data : null;
   },
 };
 
