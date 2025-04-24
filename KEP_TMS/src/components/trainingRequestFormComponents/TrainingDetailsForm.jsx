@@ -45,8 +45,8 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
   }, [details]);
 
   //Emtpty field validation
-  const handleOnChange = (name, value) => {
-    setErrors({ ...errors, [name]: value ? "" : "This field is required." });
+  const handleOnChange = (name, value, isString) => {
+    setErrors({ ...errors, [name]: (isString ? !value?.trim() : !value) ? "This field is required." : "" });
     setDetails((obj) => ({ ...obj, [name]: value }));
   };
   return (
@@ -121,7 +121,7 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
               placeholder="Training objective"
               value={details.trainingObjectives}
               name="trainingObjectives"
-              onChange={(e)=>handleOnChange(e.target.name, e.target.value)}
+              onChange={(e)=>handleOnChange(e.target.name, e.target.value, true)}
             ></textarea>
           }
         />
@@ -137,7 +137,7 @@ const TrainingDetailsForm = ({ handleResponse, formData , error, categories}) =>
               placeholder="Venue"
               value={details.venue}
               onChange={(e) => {
-                handleOnChange(e.target.name, e.target.value);
+                handleOnChange(e.target.name, e.target.value, true);
               }}
             />
           }
