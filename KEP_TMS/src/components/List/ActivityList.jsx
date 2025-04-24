@@ -4,12 +4,13 @@ import proptype from "prop-types";
 import { Button } from "primereact/button";
 import { Collapse } from "react-bootstrap";
 import { SectionHeading } from "../General/Section";
+import userHook from "../../hooks/userHook";
 
 const ActivityList = ({ data, show = true, label, toggle }) => {
   const [isShow, setIsShow] = useState(show);
   const items = [
     { field: "no", header: "No", body:(_,{rowIndex})=><>{rowIndex+1}</> },
-    { field: "name", header: "Processed By" },
+    { field: "name", header: "Processed By", body: (rowData) => <>{rowData?.name ? rowData.name : rowData?.userId ? userHook.useUserById(rowData?.userId)?.data?.fullname : "N/A"}</> },
     { field: "process", header: "Process" },
     { field: "date", header: "Date" },
     { field: "remark", header: "Remarks" },
