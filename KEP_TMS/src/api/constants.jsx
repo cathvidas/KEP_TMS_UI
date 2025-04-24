@@ -6,7 +6,11 @@ const testEnvi = {
     API_BASE_URL: "http://kep-testenvw16:2024/api",
     APPLICATION_BASE_URL: "http://kep-testenvw16:1010/KEP_TMS/"
 }
-const currentServer = testEnvi;
+const prod = {
+    API_BASE_URL: "http://keplocalwebp01:2024/api",
+    APPLICATION_BASE_URL: "http://keplocalwebp01:1010/KEP_TMS/"
+}
+const currentServer = prod;
 export const API_BASE_URL = currentServer.API_BASE_URL //The base URL for API requests.
 export const APPLICATION_BASE_URL = currentServer.APPLICATION_BASE_URL // The base URL for the application.
 export const APP_DOMAIN = "/KEP_TMS" //The root path for the application.
