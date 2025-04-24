@@ -145,7 +145,7 @@ const TrainingScheduleForm = ({ formData, handleResponse, errors }) => {
                     className="form-control"
                     type="date"
                     name="date"
-                    min={formatDateOnly(new Date(), "dash")}
+                    min={formData?.id > 0 ? "" : formatDateOnly(new Date(), "dash")}
                     value={schedData?.date}
                     onChange={handleInputChange}
                     // required
